@@ -20,12 +20,12 @@ module HomeConcern
     case request.path
     when %r{\A/web/statuses/(?<status_id>\d+)\z}
       status_id = Regexp.last_match[:status_id]
-      status = Status.where(visibility: [:public, :unlisted]).find(status_id)
-      return short_account_status_path(status.account, status) if status.local?
+      status = Status.where(visibility: [:public, :unlisted]).find_by(id: status_id)
+      return short_account_status_path(status.account, status) if status && status.local?
     when %r{\A/web/accounts/(?<account_id>\d+)\z}
       account_id = Regexp.last_match[:account_id]
-      account = Account.find(account_id)
-      return short_account_path(account) if account.local?
+      account = Account.find_by(id: account_id)
+      return short_account_path(account) if account && account.local?
     when %r{\A/web/timelines/tag/(?<tag>.+)\z}
       return tag_path(URI.decode(Regexp.last_match[:tag]))
     end

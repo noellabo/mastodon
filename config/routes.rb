@@ -112,6 +112,8 @@ Rails.application.routes.draw do
 
   get '/intent/statuses/new', to: redirect(path: '/share')
 
+  get '/media_proxy/:id/(*any)', to: 'media_proxy#show', as: :media_proxy
+
   # Remote follow
   resource :authorize_follow, only: [:show, :create]
   resource :share, only: [:show, :create]
