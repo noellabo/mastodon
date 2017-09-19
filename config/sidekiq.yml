@@ -36,6 +36,3 @@
   trend_tag_scheduler:
     cron: '*/30 * * * *'
     class: Scheduler::TrendTagScheduler
-  local_status_count_scheduler:
-    cron: '*/10 * * * *'
-    class: Scheduler::LocalStatusCountScheduler

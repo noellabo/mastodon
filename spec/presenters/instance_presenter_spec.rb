@@ -102,7 +102,7 @@ describe InstancePresenter do
     it "returns the number of local statuses" do
       cache = double
       allow(Rails).to receive(:cache).and_return(cache)
-      allow(cache).to receive(:fetch).with("local_status_count", expires_in: 15.minutes).and_return(234)
+      allow(cache).to receive(:fetch).with("local_status_count").and_return(234)
 
       expect(instance_presenter.status_count).to eq(234)
     end
