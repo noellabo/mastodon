@@ -325,28 +325,12 @@
         "id": "confirmations.mute.confirm"
       },
       {
-        "defaultMessage": "Unpin",
-        "id": "confirmations.unpin.confirm"
-      },
-      {
-        "defaultMessage": "Pin",
-        "id": "confirmations.pin.confirm"
-      },
-      {
         "defaultMessage": "Are you sure you want to block {name}?",
         "id": "confirmations.block.message"
       },
       {
         "defaultMessage": "Are you sure you want to mute {name}?",
         "id": "confirmations.mute.message"
-      },
-      {
-        "defaultMessage": "Unpin from your profile. Are you sure?",
-        "id": "confirmations.unpin.message"
-      },
-      {
-        "defaultMessage": "This will prepend any previously pinned Toot. Are you sure?",
-        "id": "confirmations.pin.message"
       }
     ],
     "path": "app/javascript/mastodon/containers/status_container.json"
@@ -1526,15 +1510,6 @@
       }
     ],
     "path": "app/javascript/mastodon/features/ui/components/upload_area.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "Close",
-        "id": "lightbox.close"
-      }
-    ],
-    "path": "app/javascript/mastodon/features/ui/components/video_modal.json"
   },
   {
     "descriptors": [
