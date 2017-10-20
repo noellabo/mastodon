@@ -95,7 +95,7 @@ export default class GettingStarted extends ImmutablePureComponent {
           <ColumnSubheading text={intl.formatMessage(messages.settings_subheading)} />
           <ColumnLink icon='book' text={intl.formatMessage(messages.info)} href='/about/more' />
           <ColumnLink icon='cog' text={intl.formatMessage(messages.preferences)} href='/settings/preferences' />
-          <ColumnLink icon='question-circle' text={intl.formatMessage(messages.help)} to='/timelines/tag/pawooヘルプ' />
+          <ColumnLink icon='question-circle' text={intl.formatMessage(messages.help)} href='https://pawoo.pixiv.help/hc/ja' rel='noopener' target='_blank' />
           <ColumnLink icon='sign-out' text={intl.formatMessage(messages.sign_out)} href='/auth/sign_out' method='delete' />
         </div>
 
