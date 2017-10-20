@@ -27,6 +27,18 @@ class Announcements extends React.PureComponent {
 
     announcements.push(
       {
+        id: 12,
+        icon: '/announcements/icon_2x_360.png',
+        body: '#20歳のパウーちゃん 結果発表',
+        link: [
+          {
+            reactRouter: false,
+            inline: false,
+            href: 'https://www.pixivision.net/ja/a/2940',
+            body: '受賞者発表ページはこちら！',
+          },
+        ],
+      }, {
         id: 1,
         icon: '/announcements/icon_2x_360.png',
         body: 'PawooのiOS・Android版アプリをリリースしました！！',
@@ -68,7 +80,7 @@ class Announcements extends React.PureComponent {
           },
         ],
       }
-      // NOTE: id: 11 まで使用した
+      // NOTE: id: 12 まで使用した
     );
 
     this.announcements = Immutable.fromJS(announcements);
