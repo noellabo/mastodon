@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'react-router-dom/Link';
 
-const ColumnLink = ({ icon, text, to, href, method }) => {
+const ColumnLink = ({ icon, text, to, href, method, ...other }) => {
   if (href) {
     return (
-      <a href={href} className='column-link' data-method={method}>
+      <a href={href} className='column-link' data-method={method} {...other}>
         <i className={`fa fa-fw fa-${icon} column-link__icon`} />
         {text}
       </a>
