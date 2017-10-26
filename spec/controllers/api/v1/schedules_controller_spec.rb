@@ -90,8 +90,7 @@ RSpec.describe Api::V1::SchedulesController, type: :controller do
         it 'does not add pagination headers if not necessary' do
           get :index
 
-          expect(response.headers['Link'].find_link(['rel', 'next'])).to eq nil
-          expect(response.headers['Link'].find_link(['rel', 'prev'])).to eq nil
+          expect(response.headers['Link']).to be_nil
         end
       end
     end

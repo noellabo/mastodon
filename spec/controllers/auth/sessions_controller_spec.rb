@@ -85,7 +85,7 @@ RSpec.describe Auth::SessionsController, type: :controller do
         end
 
         it 'shows a login error' do
-          expect(flash[:alert]).to match I18n.t('devise.failure.invalid', authentication_keys: 'Email')
+          expect(flash[:alert]).to match I18n.t('devise.failure.invalid', authentication_keys: I18n.t('activerecord.attributes.user.email'))
         end
 
         it "doesn't log the user in" do
