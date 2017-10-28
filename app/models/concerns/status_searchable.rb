@@ -4,7 +4,7 @@ module StatusSearchable
   included do
     include Elasticsearch::Model
 
-    index_name 'pawoo'
+    index_name ENV['TEST_ENV_NUMBER'] ? "pawoo_test#{ENV['TEST_ENV_NUMBER']}" : 'pawoo'
     document_type 'status'
 
     status_search_es_settings = {
