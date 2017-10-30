@@ -145,7 +145,7 @@ jobs:
             exit 1
 
       # Run tests
-      - run: bundle exec parallel_test --group-by filesize --type rspec -- --profile -- $(circleci tests glob spec/**/*_spec.rb | circleci tests split --split-by=filesize)
+      - run: bundle exec parallel_test --group-by filesize --type rspec -- --profile -- $(circleci tests glob 'spec/**/*_spec.rb' | circleci tests split --split-by=filesize)
       - run: if [ $CIRCLE_NODE_INDEX = 0 ]; then npm test; fi
 
       # Save compiled assets
