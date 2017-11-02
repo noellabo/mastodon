@@ -27,15 +27,17 @@ class Announcements extends React.PureComponent {
 
     announcements.push(
       {
-        id: 12,
+        id: 13,
         icon: '/announcements/icon_2x_360.png',
-        body: '#20歳のパウーちゃん 結果発表',
+        body: `【企画予告】
+PaintsChainer × Pawoo
+AI三姉妹イラスト企画開催決定！`,
         link: [
           {
-            reactRouter: false,
+            reactRouter: true,
             inline: false,
-            href: 'https://www.pixivision.net/ja/a/2940',
-            body: '受賞者発表ページはこちら！',
+            href: '/statuses/51259014',
+            body: '企画詳細はこちら！',
           },
         ],
       }, {
@@ -80,7 +82,7 @@ class Announcements extends React.PureComponent {
           },
         ],
       }
-      // NOTE: id: 12 まで使用した
+      // NOTE: id: 13 まで使用した
     );
 
     this.announcements = Immutable.fromJS(announcements);
