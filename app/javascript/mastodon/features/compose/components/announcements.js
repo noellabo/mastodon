@@ -27,16 +27,15 @@ class Announcements extends React.PureComponent {
 
     announcements.push(
       {
-        id: 13,
+        id: 14,
         icon: '/announcements/icon_2x_360.png',
-        body: `【企画予告】
-PaintsChainer × Pawoo
-AI三姉妹イラスト企画開催決定！`,
+        body: `PaintsChainer × Pawoo
+AI三姉妹イラスト企画開催中！`,
         link: [
           {
             reactRouter: true,
             inline: false,
-            href: '/statuses/51259014',
+            href: '/statuses/52025880',
             body: '企画詳細はこちら！',
           },
         ],
@@ -82,7 +81,7 @@ AI三姉妹イラスト企画開催決定！`,
           },
         ],
       }
-      // NOTE: id: 13 まで使用した
+      // NOTE: id: 14 まで使用した
     );
 
     this.announcements = Immutable.fromJS(announcements);
