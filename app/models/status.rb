@@ -209,7 +209,7 @@ class Status < ApplicationRecord
         account_ids << item.reblog.account_id if item.reblog?
       end
 
-      accounts = Account.where(id: account_ids.uniq).map { |a| [a.id, a] }.to_h
+      accounts = Account.where(id: account_ids.uniq).preload(:oauth_authentications).map { |a| [a.id, a] }.to_h
 
       cached_items.each do |item|
         item.account = accounts[item.account_id]
