@@ -54,7 +54,7 @@
   "compose_form.privacy_disclaimer": "你的非公开嘟文将会被发送至 {domains} 上你所提及的用户。请确认你是否信任{domainsCount, plural, one {这个网站} other {这些网站}}？嘟文可见范围设置仅适用于 Mastodon 实例。如果 {domains} {domainsCount, plural, one {不是 Mastodon 实例} other {都不是 Mastodon 实例}}，我们将无法保证你的嘟文仍为非公开状态，这种情况下，你的嘟文可能会被转嘟或被其他用户看到。",
   "compose_form.publish": "嘟嘟",
   "compose_form.publish_loud": "{publish}！",
-  "compose_form.schedule_placeholder": "发送时间",
+  "compose_form.schedule_placeholder": "发布时间",
   "compose_form.sensitive": "将媒体文件标记为敏感内容",
   "compose_form.sensitive_message": "发布 R-18 内容时请务必点击眼睛图标并标记为敏感内容（NSFW）",
   "compose_form.spoiler": "折叠嘟文内容",
