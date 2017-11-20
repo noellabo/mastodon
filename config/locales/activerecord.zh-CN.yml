@@ -1,0 +1,31 @@
+zh-CN:
+  activemodel:
+    attributes:
+      form/account_filter:
+        keyword: 关键字
+        search_type: 搜索类型
+      form/account_filter/search_type:
+        ip: IP
+        email: 电子邮件地址
+        name: 用户名
+  activerecord:
+    attributes:
+      oauth_authentication:
+        provider: 提供商
+        uid: 用户 ID
+      media_attachment:
+        file: 文件
+        file_content_type: Content-Type
+        file_file_size: 文件大小
+      user:
+        email: 电子邮件地址
+    errors:
+      models:
+        account:
+          attributes:
+            username:
+              invalid: 只能使用字母、数字和下划线
+        status:
+          attributes:
+            reblog:
+              taken: 已经被转嘟过
