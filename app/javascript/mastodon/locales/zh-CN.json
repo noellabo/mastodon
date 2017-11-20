@@ -56,7 +56,7 @@
   "compose_form.publish_loud": "{publish}！",
   "compose_form.schedule_placeholder": "发布时间",
   "compose_form.sensitive": "将媒体文件标记为敏感内容",
-  "compose_form.sensitive_message": "发布 R-18 内容时请务必点击眼睛图标并标记为敏感内容（NSFW）",
+  "compose_form.sensitive_message": "发布色情内容时请务必点击眼睛图标并标记为敏感内容（NSFW）",
   "compose_form.spoiler": "折叠嘟文内容",
   "compose_form.spoiler_placeholder": "折叠部分的警告消息",
   "confirmation_modal.cancel": "取消",
