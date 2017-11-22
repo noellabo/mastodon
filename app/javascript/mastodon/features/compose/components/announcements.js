@@ -41,7 +41,7 @@ class Announcements extends React.PureComponent {
       }, {
         id: 1,
         icon: '/announcements/icon_2x_360.png',
-        body: 'PawooのiOS・Android版アプリをリリースしました！！',
+        body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
         link: [
           {
             reactRouter: false,
