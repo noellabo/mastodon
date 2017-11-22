@@ -55,18 +55,6 @@ class Announcements extends React.PureComponent {
             body: 'おすすめユーザー（実験中）',
           },
         ],
-      }, {
-        id: 9,
-        icon: '/announcements/icon_2x_360.png',
-        body: '音楽版Pawooリリース！楽曲投稿や共有プレイリストで盛り上がろう！',
-        link: [
-          {
-            reactRouter: false,
-            inline: false,
-            href: 'https://music.pawoo.net/?ref=pawoo-announcements',
-            body: 'Pawoo Music',
-          },
-        ],
       }
       // NOTE: id: 11 まで使用した
     );
