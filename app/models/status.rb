@@ -150,7 +150,7 @@ class Status < ApplicationRecord
     (spoiler_text.presence || text).truncate(33, omission: '')
   end
 
-  after_create :store_uri, if: :local?
+  after_create_commit :store_uri, if: :local?
 
   before_validation :prepare_contents, if: :local?
   before_validation :set_reblog
