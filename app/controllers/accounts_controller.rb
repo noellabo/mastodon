@@ -12,9 +12,11 @@ class AccountsController < ApplicationController
     respond_to do |format|
       format.html do
         @pinned_statuses = []
+        @current_page = (params[:page] || 1).to_i
 
         if current_account && @account.blocking?(current_account)
           @statuses = []
+          @statuses_collection = []
           return
         end
 
