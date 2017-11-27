@@ -134,27 +134,4 @@ RSpec.describe ResolveRemoteAccountService do
     expect(fail_occurred).to be false
     expect(return_values).to_not include(nil)
   end
-
-  it 'processes one remote account at a time using locks' do
-    wait_for_start = true
-    fail_occurred  = false
-    return_values  = []
-
-    threads = Array.new(5) do
-      Thread.new do
-        true while wait_for_start
-        begin
-          return_values << subject.call('foo@localdomain.com')
-        rescue ActiveRecord::RecordNotUnique
-          fail_occurred = true
-        end
-      end
-    end
-
-    wait_for_start = false
-    threads.each(&:join)
-
-    expect(fail_occurred).to be false
-    expect(return_values).to_not include(nil)
-  end
 end
