@@ -1,6 +1,6 @@
 - content_for :page_title do
-  - if @statuses.current_page > 1
-    = "page #{@statuses.current_page} - #{display_name(@account)} - #{@account.acct}"
+  - if @current_page > 1
+    = "page #{@current_page} - #{display_name(@account)} - #{@account.acct}"
   - else
     = "#{display_name(@account)} - #{@account.acct}"
 
@@ -30,7 +30,7 @@
     = active_link_to t('accounts.posts_with_replies'), short_account_with_replies_url(@account)
     = active_link_to t('accounts.media'), short_account_media_url(@account)
 
-  - if @statuses.empty?
+  - if @statuses_collection.empty?
     .accounts-grid
       = render 'nothing_here'
   - else
@@ -41,5 +41,6 @@
       = render partial: 'stream_entries/status', collection: @statuses_collection, as: :status
 
   .pagination
-    = link_to safe_join([t('pagination.next'), fa_icon('chevron-right')], ' '), next_url, class: 'next', rel: 'next' unless @statuses.last_page?
-    = link_to safe_join([fa_icon('chevron-left'), t('pagination.prev')], ' '), prev_url, class: 'prev', rel: 'prev' unless @statuses.first_page?
+    - if @statuses_collection.present?
+      = link_to safe_join([t('pagination.next'), fa_icon('chevron-right')], ' '), next_url, class: 'next', rel: 'next' unless @statuses.last_page?
+      = link_to safe_join([fa_icon('chevron-left'), t('pagination.prev')], ' '), prev_url, class: 'prev', rel: 'prev' unless @statuses.first_page?

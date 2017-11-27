@@ -149,7 +149,7 @@ class Status < ApplicationRecord
     (spoiler_text.presence || text).truncate(33, omission: '')
   end
 
-  after_create :store_uri, if: :local?
+  after_create_commit :store_uri, if: :local?
 
   before_validation :prepare_contents, if: :local?
   before_validation :set_reblog
@@ -208,7 +208,7 @@ class Status < ApplicationRecord
         account_ids << item.reblog.account_id if item.reblog?
       end
 
-      accounts = Account.where(id: account_ids.uniq).map { |a| [a.id, a] }.to_h
+      accounts = Account.where(id: account_ids.uniq).preload(:oauth_authentications).map { |a| [a.id, a] }.to_h
 
       cached_items.each do |item|
         item.account = accounts[item.account_id]
@@ -230,10 +230,7 @@ class Status < ApplicationRecord
         # non-followers can see everything that isn't private/direct, but can see stuff they are mentioned in.
         visibility.push(:private) if account.following?(target_account)
 
-        joins("LEFT OUTER JOIN mentions ON statuses.id = mentions.status_id AND mentions.account_id = #{account.id}")
-          .where(arel_table[:visibility].in(visibility).or(Mention.arel_table[:id].not_eq(nil)))
-          .published
-          .order(visibility: :desc)
+        where(visibility: visibility).or(where(id: account.mentions.select(:status_id))).published
       end
     end
 

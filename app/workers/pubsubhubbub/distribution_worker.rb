@@ -8,7 +8,7 @@ class Pubsubhubbub::DistributionWorker
   def perform(stream_entry_ids)
     stream_entries = StreamEntry.where(id: stream_entry_ids).includes(:status).reject do |e|
       # directメッセージや時間制限tootは配信しない
-      e.status&.direct_visibility? ||
+      e.status.nil? || e.status&.direct_visibility? ||
         (e.status&.local? && TimeLimit.from_tags(e.status&.tags)) ||
         (e.status&.reblog? && e.status.reblog.local? && TimeLimit.from_tags(e.status.reblog.tags))
     end

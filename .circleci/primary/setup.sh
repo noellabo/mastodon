@@ -99,14 +99,17 @@ export PATH=$HOME/.rbenv/bin:$PATH
 hash -r
 if ! which rbenv > /dev/null; then
   curl -Lf https://github.com/rbenv/rbenv/archive/master.tar.gz | tar zxf -
-  curl -Lf https://github.com/rbenv/ruby-build/archive/master.tar.gz | tar zxf -
   mv rbenv-master ~/.rbenv
-  mkdir ~/.rbenv/plugins
-  mv ruby-build-master ~/.rbenv/plugins/ruby-build
   hash -r
 fi
 eval "$(rbenv init -)"
 if ! rbenv version-name > /dev/null; then
+  # Force upgrade ruby-build to find latest ruby archive
+  rm -fr ~/.rbenv/plugins/ruby-build
+  curl -Lf https://github.com/rbenv/ruby-build/archive/master.tar.gz | tar zxf -
+  mkdir -p ~/.rbenv/plugins
+  mv ruby-build-master ~/.rbenv/plugins/ruby-build
+
   CONFIGURE_OPTS='--disable-install-doc' rbenv install $(cat .ruby-version)
   gem update --system
   gem install bundler

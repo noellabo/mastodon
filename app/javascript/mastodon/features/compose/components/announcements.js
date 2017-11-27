@@ -27,21 +27,22 @@ class Announcements extends React.PureComponent {
 
     announcements.push(
       {
-        id: 11,
+        id: 14,
         icon: '/announcements/icon_2x_360.png',
-        body: 'ユーザー20万人突破記念「パウーちゃん」擬人化イラスト募集！！',
+        body: `PaintsChainer × Pawoo
+AI三姉妹イラスト企画開催中！`,
         link: [
           {
-            reactRouter: false,
+            reactRouter: true,
             inline: false,
-            href: 'https://pawoo.net/@pixiv/36520971',
-            body: '企画詳細はこちら',
+            href: '/statuses/52025880',
+            body: '企画詳細はこちら！',
           },
         ],
       }, {
         id: 1,
         icon: '/announcements/icon_2x_360.png',
-        body: 'PawooのiOS・Android版アプリをリリースしました！！',
+        body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
         link: [
           {
             reactRouter: false,
@@ -67,20 +68,8 @@ class Announcements extends React.PureComponent {
             body: 'おすすめユーザー（実験中）',
           },
         ],
-      }, {
-        id: 9,
-        icon: '/announcements/icon_2x_360.png',
-        body: '音楽版Pawooリリース！楽曲投稿や共有プレイリストで盛り上がろう！',
-        link: [
-          {
-            reactRouter: false,
-            inline: false,
-            href: 'https://music.pawoo.net/?ref=pawoo-announcements',
-            body: 'Pawoo Music',
-          },
-        ],
       }
-      // NOTE: id: 11 まで使用した
+      // NOTE: id: 14 まで使用した
     );
 
     this.announcements = Immutable.fromJS(announcements);

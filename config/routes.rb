@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   authenticate :user, lambda { |u| u.admin? } do
     mount Sidekiq::Web, at: 'sidekiq', as: :sidekiq
     mount PgHero::Engine, at: 'pghero', as: :pghero
-    mount AdminScript::Engine, at: 'admin_scripts', as: :admin_scripts
   end
 
   use_doorkeeper do

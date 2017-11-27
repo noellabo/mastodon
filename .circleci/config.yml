@@ -8,10 +8,16 @@ jobs:
           POSTGRES_USER: root
       - image: redis:3.2.4
       - image: docker.elastic.co/elasticsearch/elasticsearch:5.4.0
-        command:
+        environment:
+          ES_JAVA_OPTS: -Xms1g -Xmx1g
+        entrypoint:
           - /bin/sh
           - -c
-          - elasticsearch-plugin remove x-pack && elasticsearch-plugin install analysis-kuromoji && elasticsearch-plugin install analysis-icu && elasticsearch
+          - >
+            elasticsearch-plugin remove x-pack &&
+            elasticsearch-plugin install analysis-kuromoji &&
+            elasticsearch-plugin install analysis-icu &&
+            elasticsearch
 
     environment:
       CONTINUOUS_INTEGRATION: true # for fuubar gem
@@ -25,6 +31,17 @@ jobs:
     working_directory: /app
     parallelism: 2
     steps:
+      - run:
+          name: Check vm.max_map_count for elasticsearch container
+          command: |
+            vm_max_map_count=$(sysctl --values vm.max_map_count)
+            if [ $vm_max_map_count -ge 262144 ]; then
+              exit 0
+            fi
+            >&2 echo "Error: elasticsearch container requires vm.max_map_count >= 262144 but $vm_max_map_count now."
+            >&2 echo "Please execute 'sudo sysctl --write vm.max_map_count=262144' to raise that value on your docker host."
+            >&2 echo "See https://www.elastic.co/guide/en/elasticsearch/reference/5.4/docker.html#docker-cli-run-prod-mode"
+            exit 1
       - run: cat /proc/cpuinfo
       - checkout
       - run: ./.circleci/primary/setup.sh
@@ -55,12 +72,11 @@ jobs:
       - save_cache:
           key: yarn/{{ checksum ".nvmrc" }}.{{ checksum "yarn.lock" }}/1
           paths:
-            - ~/.cache/.yarn
             - node_modules
 
       # Start assets precompilation. It wastes about 60 seconds, so that runs on background.
       - restore_cache:
-          key: assets/{{ checksum "tmp/circleci/master.hash" }}/2
+          key: assets/{{ checksum "tmp/circleci/master.hash" }}/3
       - run:
           command: |
             # `rake assets:precompile error_page:generate` causes curious error: https://circleci.com/gh/pixiv/pawoo/2274
@@ -106,7 +122,7 @@ jobs:
           name: Wait for Elasticsearch container
           command: |
             for i in $(seq 60); do
-              if curl -fsv http://127.0.0.1:9200/_stats?pretty; then
+              if curl -fsv http://$ELASTICSEARCH_HOST:9200/_stats?pretty; then
                 exit 0
               fi
               sleep 0.5;
@@ -127,14 +143,17 @@ jobs:
               sleep 0.5;
             done
             exit 1
-      - save_cache:
-          key: assets/{{ checksum "tmp/circleci/master.hash" }}/2
-          paths:
-            - public/assets
-            - tmp/cache/assets
 
       # Run tests
-      - run: bundle exec parallel_test --group-by filesize --type rspec -- --profile -- $(circleci tests glob spec/**/*_spec.rb | circleci tests split --split-by=filesize)
+      - run: bundle exec parallel_test --group-by filesize --type rspec -- --profile -- $(circleci tests glob 'spec/**/*_spec.rb' | circleci tests split --split-by=filesize)
       - run: if [ $CIRCLE_NODE_INDEX = 0 ]; then npm test; fi
+
+      # Save compiled assets
+      - save_cache:
+          key: assets/{{ checksum "tmp/circleci/master.hash" }}/3
+          paths:
+            - public/assets
+            - public/packs-test
+            - tmp/cache/babel-loader
 
       - run: ./bin/spring stop

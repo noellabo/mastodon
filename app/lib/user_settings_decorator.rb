@@ -73,7 +73,7 @@ class UserSettingsDecorator
   end
 
   def boolean_cast_setting(key)
-    settings[key] == '1'
+    settings[key].nil? ? user.settings[key.gsub(/^setting_/, '')] : settings[key] == '1'
   end
 
   def coerced_settings(key)

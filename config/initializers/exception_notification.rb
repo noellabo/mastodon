@@ -9,6 +9,7 @@ ExceptionNotification.configure do |config|
     ActionController::ParameterMissing
     ActiveRecord::RecordNotUnique
     HTTP::TimeoutError
+    HTTP::ConnectionError
     HTTP::Redirector::TooManyRedirectsError
     HTTP::Redirector::EndlessRedirectError
     OpenSSL::SSL::SSLError
@@ -20,12 +21,21 @@ ExceptionNotification.configure do |config|
     Pubsubhubbub::ConfirmationWorker
     Pubsubhubbub::DistributionWorker
     Pubsubhubbub::SubscribeWorker
+    ActivityPub::DeliveryWorker
     LinkCrawlWorker
   ].freeze
 
+  ignore_worker_errors = {
+    'ActiveRecord::RecordInvalid' => ['ActivityPub::ProcessingWorker'],
+  }
+
   config.ignore_if do |_exception, options|
     sidekiq = (options || {})&.dig(:data, :sidekiq)
-    ignore_worker = sidekiq && ignore_workers.include?(sidekiq.dig(:job, 'class'))
+    if sidekiq
+      worker_class = sidekiq.dig(:job, 'class')
+      ignore_worker = ignore_workers.include?(worker_class)
+      ignore_worker ||= ignore_worker_errors[sidekiq.dig(:job, 'error_class')]&.include?(worker_class)
+    end
 
     !Rails.env.production? || ignore_worker
   end

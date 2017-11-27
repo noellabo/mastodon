@@ -80,7 +80,7 @@ gem 'rdf-normalize', '~> 0.3.1'
 # extra
 gem 'exception_notification'
 gem 'slack-notifier'
-gem 'admin_script'
+gem 'type_attributes'
 gem 'activerecord-import'
 gem 'elasticsearch-model', '~> 5.0'
 

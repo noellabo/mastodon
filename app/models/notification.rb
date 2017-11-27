@@ -24,8 +24,8 @@ class Notification < ApplicationRecord
     favourite:      'Favourite',
   }.freeze
 
-  STATUS_INCLUDES = [:stream_entry, :media_attachments, :tags, mentions: { account: :oauth_authentications },
-                     reblog: [:stream_entry, :media_attachments, :tags, account: :oauth_authentications, mentions: { account: :oauth_authentications }], account: :oauth_authentications].freeze
+  STATUS_INCLUDES = [:application, :stream_entry, :media_attachments, :tags, mentions: { account: :oauth_authentications },
+                     reblog: [:stream_entry, :application, :media_attachments, :tags, account: :oauth_authentications, mentions: { account: :oauth_authentications }], account: :oauth_authentications].freeze
 
   belongs_to :account
   belongs_to :from_account, class_name: 'Account'
@@ -47,7 +47,7 @@ class Notification < ApplicationRecord
     where(activity_type: types)
   }
 
-  cache_associated :from_account, status: STATUS_INCLUDES, mention: [status: STATUS_INCLUDES], favourite: [:account, status: STATUS_INCLUDES], follow: :account
+  cache_associated from_account: :oauth_authentications, status: STATUS_INCLUDES, mention: [status: STATUS_INCLUDES], favourite: [account: :oauth_authentications, status: STATUS_INCLUDES], follow: { account: :oauth_authentications }
 
   def type
     @type ||= TYPE_CLASS_MAP.invert[activity_type].to_sym
@@ -56,9 +56,11 @@ class Notification < ApplicationRecord
   def target_status
     case type
     when :reblog
-      activity&.reblog
-    when :favourite, :mention
-      activity&.status
+      status&.reblog
+    when :favourite
+      favourite&.status
+    when :mention
+      mention&.status
     end
   end
 
