@@ -32,6 +32,7 @@ ja:
     hosted_on: Mastodon hosted on %{domain}
     learn_more: もっと詳しく
     other_instances: 他のインスタンス
+    register: 登録する
     source_code: ソースコード
     status_count_after: トゥート
     status_count_before: トゥート数
@@ -66,6 +67,7 @@ ja:
       email: E-mail
       feed_url: フィードURL
       followers: フォロワー数
+      followers_url: Followers URL
       follows: フォロー数
       inbox_url: Inbox URL
       ip: IP
@@ -100,6 +102,7 @@ ja:
       resubscribe: 再講読
       salmon_url: Salmon URL
       search: 検索
+      shared_inbox_url: Shared Inbox URL
       show:
         created_reports: このアカウントで作られたレポート
         report: レポート
@@ -148,6 +151,8 @@ ja:
     instances:
       account_count: 既知のアカウント数
       domain_name: ドメイン名
+      reset: リセット
+      search: 検索
       title: 既知のインスタンス
     oauth_authentications:
       linked: 連携中
@@ -206,6 +211,9 @@ ja:
         desc_html: あなたは独自のプライバシーポリシーや利用規約、そのほかの法的根拠を書くことができます。HTMLタグが使えます
         title: カスタム利用規約
       site_title: インスタンスの名前
+      thumbnail:
+        desc_html: OpenGraphとAPIによるプレビューに使用されます。サイズは1200×630px推奨です。
+        title: インスタンスのサムネイル
       timeline_preview:
         desc_html: ランディングページに公開タイムラインを表示します
         title: タイムラインプレビュー
