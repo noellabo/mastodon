@@ -27,19 +27,6 @@ class Announcements extends React.PureComponent {
 
     announcements.push(
       {
-        id: 14,
-        icon: '/announcements/icon_2x_360.png',
-        body: `PaintsChainer × Pawoo
-AI三姉妹イラスト企画開催中！`,
-        link: [
-          {
-            reactRouter: true,
-            inline: false,
-            href: '/statuses/52025880',
-            body: '企画詳細はこちら！',
-          },
-        ],
-      }, {
         id: 1,
         icon: '/announcements/icon_2x_360.png',
         body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
