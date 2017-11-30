@@ -37,7 +37,7 @@ export default class HashtagEditor extends ImmutablePureComponent {
     const hashtag = getHashtagWord(value);
     if (hashtag) {
       this.setState({ value, lastToken: hashtag });
-      this.props.onSuggestionsFetchRequested(hashtag, 'hashtag-editor');
+      this.props.onSuggestionsFetchRequested(hashtag);
     } else {
       this.setState({ value, lastToken: null });
       this.props.onSuggestionsClearRequested();
@@ -140,7 +140,7 @@ export default class HashtagEditor extends ImmutablePureComponent {
         data-index={i}
         onClick={this.onSuggestionClick}
       >
-        #{tag}
+        {tag}
       </div>
     );
   }

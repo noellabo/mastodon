@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Avatar from './avatar';
 import DisplayName from './display_name';
 import MediaGallery from './media_gallery';
-import VideoPlayer from './video_player';
+import Video from '../features/video';
 import Permalink from './permalink';
 import IconButton from './icon_button';
 import { defineMessages, injectIntl } from 'react-intl';
@@ -22,7 +22,7 @@ export default class SuggestedAccount extends React.PureComponent {
 
   static propTypes = {
     account: ImmutablePropTypes.map.isRequired,
-    me: PropTypes.number.isRequired,
+    me: PropTypes.string.isRequired,
     onFollow: PropTypes.func.isRequired,
     onOpenVideo: PropTypes.func.isRequired,
     onOpenMedia: PropTypes.func.isRequired,
@@ -48,7 +48,16 @@ export default class SuggestedAccount extends React.PureComponent {
       if (attachments.some(item => item.get('type') === 'unknown')) {
         // Do nothing
       } else if (attachments.first().get('type') === 'video') {
-        media = <VideoPlayer media={attachments.first()} onOpenVideo={this.props.onOpenVideo} />;
+        const video = attachments.first();
+        media = (
+          <Video
+            preview={video.get('preview_url')}
+            src={video.get('url')}
+            height={132}
+            onOpenVideo={this.handleOpenVideo}
+            sensitive={status.get('sensitive')}
+          />
+        );
       } else {
         media = <MediaGallery media={attachments} height={132} onOpenMedia={this.props.onOpenMedia} autoPlayGif={false} expandMedia={false} lineMedia />;
       }

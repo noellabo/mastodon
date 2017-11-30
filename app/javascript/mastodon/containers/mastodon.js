@@ -3,9 +3,8 @@ import { connect, Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import configureStore from '../store/configureStore';
 import { showOnboardingOnce } from '../actions/onboarding';
-import BrowserRouter from 'react-router-dom/BrowserRouter';
-import Route from 'react-router-dom/Route';
-import ScrollContext from 'react-router-scroll/lib/ScrollBehaviorContext';
+import { BrowserRouter, Route } from 'react-router-dom';
+import { ScrollContext } from 'react-router-scroll';
 import CommunityTimeline from '../features/community_timeline';
 import ScheduledStatuses from '../features/scheduled_statuses';
 import Compose from '../features/compose';
@@ -14,6 +13,7 @@ import { hydrateStore } from '../actions/store';
 import { connectUserStream } from '../actions/streaming';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { getLocale } from '../locales';
+
 const { localeData, messages } = getLocale();
 addLocaleData(localeData);
 

@@ -5,7 +5,7 @@
   %script#initial-state{ type: 'application/json' }!= json_escape(@initial_state_json)
   = javascript_pack_tag 'application', integrity: true, crossorigin: 'anonymous'
   = javascript_pack_tag 'public', integrity: true, crossorigin: 'anonymous'
-  = render partial: 'og'
+  = render partial: 'shared/og'
 
 .about-cols
   .about-col.left

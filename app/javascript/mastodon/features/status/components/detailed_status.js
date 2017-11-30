@@ -7,7 +7,7 @@ import DisplayName from '../../../components/display_name';
 import StatusContent from '../../../components/status_content';
 import MediaGallery from '../../../components/media_gallery';
 import AttachmentList from '../../../components/attachment_list';
-import Link from 'react-router-dom/Link';
+import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedNumber } from 'react-intl';
 import CardContainer from '../containers/card_container';
 import ImmutablePureComponent from 'react-immutable-pure-component';
@@ -44,9 +44,11 @@ export default class DetailedStatus extends ImmutablePureComponent {
 
     let media           = '';
     let applicationLink = '';
+    let reblogLink = '';
+    let reblogIcon = 'retweet';
 
     let attachments = status.get('media_attachments');
-    if (status.getIn(['pixiv_cards'], Immutable.List()).size > 0) {
+    if (attachments.size === 0 && status.getIn(['pixiv_cards'], Immutable.List()).size > 0) {
       attachments = status.get('pixiv_cards').map(card => {
         return Immutable.fromJS({
           id: Math.random().toString(),
@@ -76,7 +78,17 @@ export default class DetailedStatus extends ImmutablePureComponent {
           />
         );
       } else {
-        media = <MediaGallery sensitive={status.get('sensitive')} media={attachments} height={300} onOpenMedia={this.props.onOpenMedia} autoPlayGif={this.props.autoPlayGif} expandMedia />;
+        media = (
+          <MediaGallery
+            standalone
+            sensitive={status.get('sensitive')}
+            media={attachments}
+            height={300}
+            onOpenMedia={this.props.onOpenMedia}
+            autoPlayGif={this.props.autoPlayGif}
+            expandMedia
+          />
+        );
       }
     } else if (status.get('spoiler_text').length === 0) {
       media = <CardContainer statusId={status.get('id')} />;
@@ -84,6 +96,23 @@ export default class DetailedStatus extends ImmutablePureComponent {
 
     if (status.get('application')) {
       applicationLink = <span> · <a className='detailed-status__application' href={status.getIn(['application', 'website'])} target='_blank' rel='noopener'>{status.getIn(['application', 'name'])}</a></span>;
+    }
+
+    if (status.get('visibility') === 'direct') {
+      reblogIcon = 'envelope';
+    } else if (status.get('visibility') === 'private') {
+      reblogIcon = 'lock';
+    }
+
+    if (status.get('visibility') === 'private') {
+      reblogLink = <i className={`fa fa-${reblogIcon}`} />;
+    } else {
+      reblogLink = (<Link to={`/statuses/${status.get('id')}/reblogs`} className='detailed-status__link'>
+        <i className={`fa fa-${reblogIcon}`} />
+        <span className='detailed-status__reblogs'>
+          <FormattedNumber value={status.get('reblogs_count')} />
+        </span>
+      </Link>);
     }
 
     return (
@@ -100,12 +129,7 @@ export default class DetailedStatus extends ImmutablePureComponent {
         <div className='detailed-status__meta'>
           <a className='detailed-status__datetime' href={status.get('url')} target='_blank' rel='noopener'>
             <FormattedDate value={new Date(status.get('created_at'))} hour12={false} year='numeric' month='short' day='2-digit' hour='2-digit' minute='2-digit' />
-          </a>{applicationLink} · <Link to={`/statuses/${status.get('id')}/reblogs`} className='detailed-status__link'>
-            <i className='fa fa-retweet' />
-            <span className='detailed-status__reblogs'>
-              <FormattedNumber value={status.get('reblogs_count')} />
-            </span>
-          </Link> · <Link to={`/statuses/${status.get('id')}/favourites`} className='detailed-status__link'>
+          </a>{applicationLink} · {reblogLink} · <Link to={`/statuses/${status.get('id')}/favourites`} className='detailed-status__link'>
             <i className='fa fa-star' />
             <span className='detailed-status__favorites'>
               <FormattedNumber value={status.get('favourites_count')} />

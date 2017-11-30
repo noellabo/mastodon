@@ -12,9 +12,7 @@ import {
   insertEmojiCompose,
   requestImageCache,
   insertTagCompose,
-  clearComposeHashTagSuggestions,
   fetchComposeHashTagSuggestions,
-  selectComposeHashTagSuggestion,
 } from '../../../actions/compose';
 
 const mapStateToProps = state => ({
@@ -63,16 +61,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(selectComposeSuggestion(position, token, accountId));
   },
 
-  onHashTagSuggestionsClearRequested() {
-    dispatch(clearComposeHashTagSuggestions());
-  },
-
   onHashTagSuggestionsFetchRequested(token) {
     dispatch(fetchComposeHashTagSuggestions(token));
-  },
-
-  onHashTagSuggestionsSelected(tokenStart, token, value) {
-    dispatch(selectComposeHashTagSuggestion(tokenStart, token, value));
   },
 
   onChangeDateTime (dateTime) {

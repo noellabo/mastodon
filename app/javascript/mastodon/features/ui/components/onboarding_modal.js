@@ -61,9 +61,7 @@ const PageTwo = ({ me }) => (
         onFetchSuggestions={noop}
         onSuggestionSelected={noop}
         showSearch
-        onHashTagSuggestionsClearRequested={noop}
         onHashTagSuggestionsFetchRequested={noop}
-        onHashTagSuggestionsSelected={noop}
         onSelectTimeLimit={noop}
       />
     </div>

@@ -23,6 +23,16 @@ ActiveRecord::Schema.define(version: 20171122130650) do
     t.index ["account_id", "domain"], name: "index_account_domain_blocks_on_account_id_and_domain", unique: true
   end
 
+  create_table "account_moderation_notes", force: :cascade do |t|
+    t.text "content", null: false
+    t.bigint "account_id", null: false
+    t.bigint "target_account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_account_moderation_notes_on_account_id"
+    t.index ["target_account_id"], name: "index_account_moderation_notes_on_target_account_id"
+  end
+
   create_table "accounts", force: :cascade do |t|
     t.string "username", default: "", null: false
     t.string "domain"
@@ -89,6 +99,21 @@ ActiveRecord::Schema.define(version: 20171122130650) do
     t.index ["uri"], name: "index_conversations_on_uri", unique: true
   end
 
+  create_table "custom_emojis", force: :cascade do |t|
+    t.string "shortcode", default: "", null: false
+    t.string "domain"
+    t.string "image_file_name"
+    t.string "image_content_type"
+    t.integer "image_file_size"
+    t.datetime "image_updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "disabled", default: false, null: false
+    t.string "uri"
+    t.string "image_remote_url"
+    t.index ["shortcode", "domain"], name: "index_custom_emojis_on_shortcode_and_domain", unique: true
+  end
+
   create_table "domain_blocks", force: :cascade do |t|
     t.string "domain", default: "", null: false
     t.datetime "created_at", null: false
@@ -96,6 +121,12 @@ ActiveRecord::Schema.define(version: 20171122130650) do
     t.integer "severity", default: 0
     t.boolean "reject_media", default: false, null: false
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
+  end
+
+  create_table "email_domain_blocks", force: :cascade do |t|
+    t.string "domain", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "favourites", force: :cascade do |t|
@@ -162,6 +193,7 @@ ActiveRecord::Schema.define(version: 20171122130650) do
     t.integer "type", default: 0, null: false
     t.json "file_meta"
     t.bigint "account_id"
+    t.text "description"
     t.index ["account_id"], name: "index_media_attachments_on_account_id"
     t.index ["shortcode"], name: "index_media_attachments_on_shortcode", unique: true
     t.index ["status_id"], name: "index_media_attachments_on_status_id"
@@ -347,7 +379,7 @@ ActiveRecord::Schema.define(version: 20171122130650) do
     t.index ["status_id"], name: "index_status_pins_on_status_id"
   end
 
-  create_table "statuses", force: :cascade do |t|
+  create_table "statuses", id: :bigint, default: -> { "timestamp_id('statuses'::text)" }, force: :cascade do |t|
     t.string "uri"
     t.text "text", default: "", null: false
     t.datetime "created_at", null: false
@@ -376,8 +408,7 @@ ActiveRecord::Schema.define(version: 20171122130650) do
 
   create_table "statuses_tags", id: false, force: :cascade do |t|
     t.bigint "status_id", null: false
-    t.integer "tag_id", null: false
-    t.bigint "tag_id_cm"
+    t.bigint "tag_id", null: false
     t.index ["status_id"], name: "index_statuses_tags_on_status_id"
     t.index ["tag_id", "status_id"], name: "index_statuses_tags_on_tag_id_and_status_id", unique: true
   end
@@ -485,6 +516,8 @@ ActiveRecord::Schema.define(version: 20171122130650) do
   end
 
   add_foreign_key "account_domain_blocks", "accounts", name: "fk_206c6029bd", on_delete: :cascade
+  add_foreign_key "account_moderation_notes", "accounts"
+  add_foreign_key "account_moderation_notes", "accounts", column: "target_account_id"
   add_foreign_key "blocks", "accounts", column: "target_account_id", name: "fk_9571bfabc1", on_delete: :cascade
   add_foreign_key "blocks", "accounts", name: "fk_4269e03e65", on_delete: :cascade
   add_foreign_key "conversation_mutes", "accounts", name: "fk_225b4212bb", on_delete: :cascade

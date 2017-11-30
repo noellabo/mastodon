@@ -34,18 +34,50 @@ export default class StatusList extends ImmutablePureComponent {
     displayPinned: false,
   };
 
+  handleMoveUp = id => {
+    const elementIndex = this.props.statusIds.indexOf(id) - 1;
+    this._selectChild(elementIndex);
+  }
+
+  handleMoveDown = id => {
+    const elementIndex = this.props.statusIds.indexOf(id) + 1;
+    this._selectChild(elementIndex);
+  }
+
+  _selectChild (index) {
+    const element = this.node.node.querySelector(`article:nth-of-type(${index + 1}) .focusable`);
+
+    if (element) {
+      element.focus();
+    }
+  }
+
+  setRef = c => {
+    this.node = c;
+  }
+
   render () {
     const { statusIds, squareMedia, expandMedia, standalone, schedule, displayPinned, ...other } = this.props;
     const { isLoading } = other;
 
     const scrollableContent = (isLoading || statusIds.size > 0) ? (
       statusIds.map((statusId) => (
-        <StatusContainer key={statusId} id={statusId} squareMedia={squareMedia} expandMedia={expandMedia} standalone={standalone} schedule={schedule} displayPinned={displayPinned} />
+        <StatusContainer
+          key={statusId}
+          id={statusId}
+          onMoveUp={this.handleMoveUp}
+          onMoveDown={this.handleMoveDown}
+          squareMedia={squareMedia}
+          expandMedia={expandMedia}
+          standalone={standalone}
+          schedule={schedule}
+          displayPinned={displayPinned}
+        />
       ))
     ) : null;
 
     return (
-      <ScrollableList {...other}>
+      <ScrollableList {...other} ref={this.setRef}>
         {scrollableContent}
       </ScrollableList>
     );

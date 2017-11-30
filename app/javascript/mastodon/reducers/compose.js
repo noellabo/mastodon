@@ -21,12 +21,13 @@ import {
   COMPOSE_SPOILERNESS_CHANGE,
   COMPOSE_SPOILER_TEXT_CHANGE,
   COMPOSE_VISIBILITY_CHANGE,
-  COMPOSE_HASH_TAG_CLEAR,
-  COMPOSE_HASH_TAG_READY,
-  COMPOSE_HASH_TAG_SELECT,
   COMPOSE_COMPOSING_CHANGE,
   COMPOSE_EMOJI_INSERT,
   COMPOSE_TAG_INSERT,
+  COMPOSE_UPLOAD_CHANGE_REQUEST,
+  COMPOSE_UPLOAD_CHANGE_SUCCESS,
+  COMPOSE_UPLOAD_CHANGE_FAIL,
+  COMPOSE_RESET,
 } from '../actions/compose';
 import { TIMELINE_DELETE } from '../actions/timelines';
 import { STORE_HYDRATE } from '../actions/store';
@@ -51,7 +52,6 @@ const initialState = ImmutableMap({
   media_attachments: ImmutableList(),
   suggestion_token: null,
   suggestions: ImmutableList(),
-  hash_tag_suggestions: ImmutableList(),
   me: null,
   default_privacy: 'public',
   default_sensitive: false,
@@ -127,18 +127,8 @@ const insertSuggestion = (state, position, token, completion) => {
   });
 };
 
-const insertHashTag = (state, position, token, completion) => {
-  return state.withMutations(map => {
-    map.update('text', oldText => `${oldText.slice(0, position)}${completion} ${oldText.slice(position + token.length)}`);
-    map.set('hash_tag_token', null);
-    map.update('hash_tag_suggestions', ImmutableList(), list => list.clear());
-    map.set('focusDate', new Date());
-    map.set('idempotencyKey', uuid());
-  });
-};
-
 const insertEmoji = (state, position, emojiData) => {
-  const emoji = emojiData.unicode.split('-').map(code => String.fromCodePoint(parseInt(code, 16))).join('');
+  const emoji = emojiData.native;
 
   return state.withMutations(map => {
     map.update('text', oldText => `${oldText.slice(0, position)}${emoji} ${oldText.slice(position)}`);
@@ -233,6 +223,7 @@ export default function compose(state = initialState, action) {
       }
     });
   case COMPOSE_REPLY_CANCEL:
+  case COMPOSE_RESET:
     return state.withMutations(map => {
       map.set('in_reply_to', null);
       map.set('text', '');
@@ -242,15 +233,15 @@ export default function compose(state = initialState, action) {
       map.set('idempotencyKey', uuid());
     });
   case COMPOSE_SUBMIT_REQUEST:
+  case COMPOSE_UPLOAD_CHANGE_REQUEST:
     return state.set('is_submitting', true);
   case COMPOSE_SUBMIT_SUCCESS:
     return clearAll(state);
   case COMPOSE_SUBMIT_FAIL:
+  case COMPOSE_UPLOAD_CHANGE_FAIL:
     return state.set('is_submitting', false);
   case COMPOSE_UPLOAD_REQUEST:
-    return state.withMutations(map => {
-      map.set('is_uploading', true);
-    });
+    return state.set('is_uploading', true);
   case COMPOSE_UPLOAD_SUCCESS:
     return appendMedia(state, fromJS(action.media));
   case COMPOSE_UPLOAD_FAIL:
@@ -267,15 +258,12 @@ export default function compose(state = initialState, action) {
   case COMPOSE_SUGGESTIONS_CLEAR:
     return state.update('suggestions', ImmutableList(), list => list.clear()).set('suggestion_token', null);
   case COMPOSE_SUGGESTIONS_READY:
-    return state.set('suggestions', ImmutableList(action.accounts.map(item => item.id))).set('suggestion_token', action.token);
+    if (action.tags) {
+      return state.set('suggestions', ImmutableList(action.tags)).set('suggestion_token', action.token);
+    }
+    return state.set('suggestions', ImmutableList(action.accounts ? action.accounts.map(item => item.id) : action.emojis)).set('suggestion_token', action.token);
   case COMPOSE_SUGGESTION_SELECT:
     return insertSuggestion(state, action.position, action.token, action.completion);
-  case COMPOSE_HASH_TAG_CLEAR:
-    return state.update('hash_tag_suggestions', ImmutableList(), list => list.clear()).set('hash_tag_token', null);
-  case COMPOSE_HASH_TAG_READY:
-    return state.set('hash_tag_suggestions', ImmutableList(action.tags)).set('hash_tag_token', action.token);
-  case COMPOSE_HASH_TAG_SELECT:
-    return insertHashTag(state, action.position, action.token, action.completion);
   case TIMELINE_DELETE:
     if (action.id === state.get('in_reply_to')) {
       return state.set('in_reply_to', null);
@@ -286,6 +274,16 @@ export default function compose(state = initialState, action) {
     return insertEmoji(state, action.position, action.emoji);
   case COMPOSE_TAG_INSERT:
     return insertTag(state, action.tag);
+  case COMPOSE_UPLOAD_CHANGE_SUCCESS:
+    return state
+      .set('is_submitting', false)
+      .update('media_attachments', list => list.map(item => {
+        if (item.get('id') === action.media.id) {
+          return item.set('description', action.media.description);
+        }
+
+        return item;
+      }));
   default:
     return state;
   }

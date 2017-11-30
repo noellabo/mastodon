@@ -9,6 +9,10 @@ class REST::AccountSerializer < ActiveModel::Serializer
 
   belongs_to :oauth_authentications
 
+  def id
+    object.id.to_s
+  end
+
   def note
     Formatter.instance.simplified_format(object)
   end

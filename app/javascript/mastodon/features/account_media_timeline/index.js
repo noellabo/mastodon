@@ -26,7 +26,7 @@ class AccountMediaTimeline extends React.PureComponent {
     statusIds: ImmutablePropTypes.list,
     isLoading: PropTypes.bool,
     hasMore: PropTypes.bool,
-    me: PropTypes.number.isRequired,
+    me: PropTypes.string.isRequired,
   };
 
   componentWillMount () {

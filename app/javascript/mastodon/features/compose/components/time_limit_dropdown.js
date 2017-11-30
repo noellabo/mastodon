@@ -1,5 +1,5 @@
 import React from 'react';
-import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
+import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown'; // TODO
 import PropTypes from 'prop-types';
 import { injectIntl, defineMessages } from 'react-intl';
 

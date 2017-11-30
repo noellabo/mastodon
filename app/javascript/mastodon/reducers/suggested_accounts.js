@@ -2,7 +2,7 @@ import {
   SUGGESTED_ACCOUNTS_FETCH_SUCCESS,
   SUGGESTED_ACCOUNTS_EXPAND_SUCCESS,
 } from '../actions/suggested_accounts';
-import emojify from '../emoji';
+import emojify from '../features/emoji/emoji';
 import escapeTextContentForBrowser from 'escape-html';
 import Immutable from 'immutable';
 

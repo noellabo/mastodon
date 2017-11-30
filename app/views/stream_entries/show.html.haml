@@ -23,8 +23,6 @@
   = render 'stream_entries/og_description', activity: @stream_entry.activity
   = render 'stream_entries/og_image', activity: @stream_entry.activity, account: @account
 
-  = opengraph 'twitter:card', 'summary_large_image'
-
   -# 以下の条件にマッチするときnoindexをつける:
   -# - 100文字未満かつ、画像がついていない
   -# - サイレンスされている
