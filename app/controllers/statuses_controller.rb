@@ -16,8 +16,8 @@ class StatusesController < ApplicationController
         @ancestors   = @status.reply? ? cache_collection(@status.ancestors(current_account), Status) : []
         @descendants = cache_collection(@status.descendants(current_account), Status)
 
-        #@status_pagination = StatusPagination.new(@status, current_account)
-        #set_link_headers(@status_pagination.previous, @status_pagination.next)
+        @status_pagination = StatusPagination.new(@status, current_account)
+        set_link_headers(@status_pagination.previous, @status_pagination.next)
 
         render 'stream_entries/show'
       end
