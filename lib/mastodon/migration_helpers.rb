@@ -476,7 +476,8 @@ module Mastodon
     # new - The new column name.
     # type - The type of the new column. If no type is given the old column's
     #        type is used.
-    def rename_column_concurrently(table, old, new, type: nil)
+    # skip_changing_null - skip to run change_column_null
+    def rename_column_concurrently(table, old, new, type: nil, skip_changing_null: false)
       if transaction_open?
         raise 'rename_column_concurrently can not be run inside a transaction'
       end
@@ -531,7 +532,7 @@ module Mastodon
 
       update_column_in_batches(table, new, Arel::Table.new(table)[old])
 
-      change_column_null(table, new, false) unless old_col.null
+      change_column_null(table, new, false) if !old_col.null && !skip_changing_null
 
       copy_indexes(table, old, new)
       copy_foreign_keys(table, old, new)
@@ -542,10 +543,11 @@ module Mastodon
     # table - The table containing the column.
     # column - The name of the column to change.
     # new_type - The new column type.
-    def change_column_type_concurrently(table, column, new_type)
+    # skip_changing_null - skip to run change_column_null
+    def change_column_type_concurrently(table, column, new_type, skip_changing_null: false)
       temp_column = rename_column_name(column)
 
-      rename_column_concurrently(table, column, temp_column, type: new_type)
+      rename_column_concurrently(table, column, temp_column, type: new_type, skip_changing_null: skip_changing_null)
 
       # Primary keys don't necessarily have an associated index.
       if ActiveRecord::Base.get_primary_key(table) == column.to_s
@@ -596,7 +598,7 @@ module Mastodon
             o.conname as name,
             o.confdeltype as on_delete
           from pg_constraint o
-          left join pg_class f on f.oid = o.confrelid 
+          left join pg_class f on f.oid = o.confrelid
           left join pg_class c on c.oid = o.conrelid
           left join pg_class m on m.oid = o.conrelid
           where o.contype = 'f'

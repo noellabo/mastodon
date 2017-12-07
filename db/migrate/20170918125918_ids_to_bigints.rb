@@ -9,21 +9,14 @@ class IdsToBigints < ActiveRecord::Migration[5.1]
     [:account_domain_blocks, :account_id],
     [:account_domain_blocks, :id],
     [:accounts, :id],
-    [:blocks, :account_id],
     [:blocks, :id],
-    [:blocks, :target_account_id],
+    [:blocks, :account_id],
     [:conversation_mutes, :account_id],
     [:conversation_mutes, :id],
     [:domain_blocks, :id],
     [:favourites, :account_id],
-    [:favourites, :id],
-    [:favourites, :status_id],
     [:follow_requests, :account_id],
-    [:follow_requests, :id],
-    [:follow_requests, :target_account_id],
     [:follows, :account_id],
-    [:follows, :id],
-    [:follows, :target_account_id],
     [:imports, :account_id],
     [:imports, :id],
     [:media_attachments, :account_id],
@@ -31,11 +24,7 @@ class IdsToBigints < ActiveRecord::Migration[5.1]
     [:mentions, :account_id],
     [:mentions, :id],
     [:mutes, :account_id],
-    [:mutes, :id],
-    [:mutes, :target_account_id],
     [:notifications, :account_id],
-    [:notifications, :from_account_id],
-    [:notifications, :id],
     [:oauth_access_grants, :application_id],
     [:oauth_access_grants, :id],
     [:oauth_access_grants, :resource_owner_id],
@@ -56,7 +45,6 @@ class IdsToBigints < ActiveRecord::Migration[5.1]
     [:statuses, :account_id],
     [:statuses, :application_id],
     [:statuses, :in_reply_to_account_id],
-    [:stream_entries, :account_id],
     [:stream_entries, :id],
     [:subscriptions, :account_id],
     [:subscriptions, :id],
@@ -81,7 +69,48 @@ class IdsToBigints < ActiveRecord::Migration[5.1]
   ]
   INCLUDED_COLUMNS << [:deprecated_preview_cards, :id] if table_exists?(:deprecated_preview_cards)
 
-  def migrate_columns(to_type)
+  def migrate_column_stage1(to_type)
+    show_warning
+
+    ordered_columns.each do |column_parts|
+      table, column = column_parts
+
+      # Skip this if we're resuming and already did this one.
+      next if column_for(table, column).sql_type == to_type.to_s
+
+      change_column_type_concurrently table, column, to_type, skip_changing_null: true
+    end
+  end
+
+  def migrate_column_stage2(to_type)
+    show_warning
+
+    ordered_columns.each do |column_parts|
+      table, column = column_parts
+
+      # Skip this if we're resuming and already did this one.
+      next if column_for(table, column).sql_type == to_type.to_s
+
+      temp_column = rename_column_name(column)
+      change_column_null(table, temp_column, false) unless column_for(table, column).null
+    end
+  end
+
+  def migrate_column_stage3(to_type)
+    show_warning
+
+    ordered_columns.each do |column_parts|
+      table, column = column_parts
+
+      # Skip this if we're resuming and already did this one.
+      next if column_for(table, column).sql_type == to_type.to_s
+
+      cleanup_concurrent_column_type_change table, column
+    end
+  end
+
+  def show_warning
+    return
     # Print out a warning that this will probably take a while.
     say ''
     say 'WARNING: This migration may take a *long* time for large instances'
@@ -98,7 +127,9 @@ class IdsToBigints < ActiveRecord::Migration[5.1]
       say "Continuing in #{i} second#{i == 1 ? '' : 's'}...", true
       sleep 1
     end
+  end
 
+  def ordered_columns
     tables = INCLUDED_COLUMNS.map(&:first).uniq
     table_sizes = {}
 
@@ -107,26 +138,16 @@ class IdsToBigints < ActiveRecord::Migration[5.1]
       table_sizes[table] = estimate_rows_in_table(table)
     end
 
-    ordered_columns = INCLUDED_COLUMNS.sort_by do |col_parts|
+    INCLUDED_COLUMNS.sort_by do |col_parts|
       [-table_sizes[col_parts.first], col_parts.last]
-    end
-
-    ordered_columns.each do |column_parts|
-      table, column = column_parts
-
-      # Skip this if we're resuming and already did this one.
-      next if column_for(table, column).sql_type == to_type.to_s
-
-      change_column_type_concurrently table, column, to_type
-      cleanup_concurrent_column_type_change table, column
     end
   end
 
   def up
-    migrate_columns(:bigint)
+    migrate_column_stage1(:bigint)
   end
 
   def down
-    migrate_columns(:integer)
+    migrate_column_stage3(:integer)
   end
 end
