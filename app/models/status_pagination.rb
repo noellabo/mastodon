@@ -22,18 +22,11 @@ class StatusPagination
       Status.without_reblogs,   # ブーストは含まない
       permitted_statuses,       # 閲覧権限がある
       without_tree_path,        # 現在のステータスのリプライは含まない(すでに同じページ内で表示されているため)
-      id_in_range,              # 最適化のために、探索を打ち切るidのrangeを指定する
-      Status.order(created_at: :desc)
     ].compact.inject(&:merge)
   end
 
   def id
     Status.arel_table[:id]
-  end
-
-  def id_in_range
-    min_max = @status.account.statuses.select(id.maximum.as('max_id')).select(id.minimum.as('min_id')).reorder(nil).group(:account_id).first
-    Status.where(id.between(min_max.min_id..min_max.max_id)) if min_max
   end
 
   def permitted_statuses
