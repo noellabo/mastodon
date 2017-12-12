@@ -43,7 +43,7 @@ class Api::V1::Accounts::StatusesController < Api::BaseController
   end
 
   def permitted_account_statuses
-    @account.statuses.permitted_for(@account, current_account).published
+    @account.statuses.permitted_for(@account, current_account)
   end
 
   def only_media_scope
@@ -51,7 +51,8 @@ class Api::V1::Accounts::StatusesController < Api::BaseController
   end
 
   def account_media_status_ids
-    @account.media_attachments.attached.reorder(nil).select(:status_id).distinct
+    # `SELECT DISTINCT id, updated_at` is too slow, so pluck ids at first, and then select id, updated_at with ids.
+    default_statuses.joins(:media_attachments).distinct(:id).pluck(:id)
   end
 
   def pinned_scope
