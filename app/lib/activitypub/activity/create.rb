@@ -17,11 +17,13 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   private
 
   def process_status
+    media_attachments = process_attachments
+
     ApplicationRecord.transaction do
       @status = Status.create!(status_params)
 
       process_tags(@status)
-      process_attachments(@status)
+      attach_media(@status, media_attachments)
     end
 
     resolve_thread(@status)
@@ -79,20 +81,32 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     account.mentions.create(status: status)
   end
 
-  def process_attachments(status)
+  def process_attachments
     return unless @object['attachment'].is_a?(Array)
+
+    media_attachments = []
 
     @object['attachment'].each do |attachment|
       next if unsupported_media_type?(attachment['mediaType'])
 
       href             = Addressable::URI.parse(attachment['url']).normalize.to_s
-      media_attachment = MediaAttachment.create(status: status, account: status.account, remote_url: href)
+      media_attachment = MediaAttachment.create(account: @account, remote_url: href)
+      media_attachments << media_attachment
 
       next if skip_download?
 
       media_attachment.file_remote_url = href
       media_attachment.save
     end
+
+    media_attachments
+  end
+
+  def attach_media(status, media_attachments)
+    return if media_attachments.blank?
+
+    media = MediaAttachment.where(status_id: nil, id: media_attachments.take(4).map(&:id))
+    media.update(status_id: status.id)
   end
 
   def resolve_thread(status)
