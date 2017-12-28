@@ -3,7 +3,7 @@
 
 - content_for :header_tags do
   %script#initial-state{ type: 'application/json' }!= json_escape(@initial_state_json)
-  = javascript_pack_tag 'application', integrity: true, crossorigin: 'anonymous'
+  = javascript_pack_tag 'about', integrity: true, crossorigin: 'anonymous'
   = javascript_pack_tag 'public', integrity: true, crossorigin: 'anonymous'
 
   %meta{ property: 'og:site_name', content: site_title }/
@@ -119,4 +119,4 @@
 
   .about-col.right
     .about-timeline-container
-      #mastodon{ data: { props: Oj.dump(default_props) } }
+      #mastodon-timeline{ data: { props: Oj.dump(default_props) } }

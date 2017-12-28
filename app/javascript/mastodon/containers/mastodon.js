@@ -6,7 +6,6 @@ import { showOnboardingOnce } from '../actions/onboarding';
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 import Route from 'react-router-dom/Route';
 import ScrollContext from 'react-router-scroll/lib/ScrollBehaviorContext';
-import CommunityTimeline from '../features/community_timeline';
 import ScheduledStatuses from '../features/scheduled_statuses';
 import Compose from '../features/compose';
 import UI from '../features/ui';
@@ -71,22 +70,6 @@ export default class Mastodon extends React.PureComponent {
                 <UI className='scheduled_statuses__container' intent>
                   <Compose schedule />
                   <Route path='*' component={connect(() => ({ standalone: true }))(ScheduledStatuses)} />
-                </UI>
-              </ScrollContext>
-            </BrowserRouter>
-          </Provider>
-        </IntlProvider>
-      );
-    }
-
-    if (this.appmode === 'about') {
-      return (
-        <IntlProvider locale={locale} messages={messages}>
-          <Provider store={store}>
-            <BrowserRouter basename='/about'>
-              <ScrollContext>
-                <UI intent>
-                  <Route path='*' component={connect(() => ({ standalone: true }))(CommunityTimeline)} />
                 </UI>
               </ScrollContext>
             </BrowserRouter>
