@@ -12,6 +12,9 @@
   subscriptions_scheduler:
     cron: '0 19,0 * * *'
     class: Scheduler::SubscriptionsScheduler
+  delete_duplicated_subscription_retry_job_scheduler:
+    cron: '20 19,0 * * *'
+    class: Scheduler::DeleteDuplicatedSubscriptionRetryJobScheduler
   media_cleanup_scheduler:
     cron: '5 19 * * *'
     class: Scheduler::MediaCleanupScheduler
@@ -33,4 +36,3 @@
   trend_tag_scheduler:
     cron: '*/30 * * * *'
     class: Scheduler::TrendTagScheduler
-
