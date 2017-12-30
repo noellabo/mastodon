@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require 'sidekiq-scheduler'
+
 class Scheduler::DeleteDuplicatedSubscriptionRetryJobScheduler
+  include Sidekiq::Worker
+
   def perform
     retries = Sidekiq::RetrySet.new
     subscribe_worker_retries = retries.select { |entry| entry.item['class'] == 'Pubsubhubbub::SubscribeWorker' }
