@@ -128,8 +128,9 @@ ActiveRecord::Schema.define(version: 20171226094803) do
     t.integer "target_account_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id", "id"], name: "index_follows_on_account_id_and_id"
     t.index ["account_id", "target_account_id"], name: "index_follows_on_account_id_and_target_account_id", unique: true
-    t.index ["target_account_id"], name: "index_follows_on_target_account_id"
+    t.index ["target_account_id", "id"], name: "index_follows_on_target_account_id_and_id"
   end
 
   create_table "imports", id: :serial, force: :cascade do |t|
