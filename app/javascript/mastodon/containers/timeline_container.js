@@ -5,7 +5,7 @@ import configureStore from '../store/configureStore';
 import { hydrateStore } from '../actions/store';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { getLocale } from '../locales';
-import PublicTimeline from '../features/standalone/public_timeline';
+import CommunityTimeline from '../features/standalone/community_timeline';
 
 const { localeData, messages } = getLocale();
 addLocaleData(localeData);
@@ -30,7 +30,7 @@ export default class TimelineContainer extends React.PureComponent {
     return (
       <IntlProvider locale={locale} messages={messages}>
         <Provider store={store}>
-          <PublicTimeline />
+          <CommunityTimeline />
         </Provider>
       </IntlProvider>
     );

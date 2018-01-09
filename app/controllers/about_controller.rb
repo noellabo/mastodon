@@ -46,7 +46,6 @@ class AboutController < ApplicationController
     {
       settings: {},
       token: current_session&.token,
-      appmode: 'about',
     }
   end
 end

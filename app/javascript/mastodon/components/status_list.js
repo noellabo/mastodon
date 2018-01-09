@@ -21,7 +21,6 @@ export default class StatusList extends ImmutablePureComponent {
     emptyMessage: PropTypes.node,
     expandMedia: PropTypes.bool,
     squareMedia: PropTypes.bool,
-    standalone: PropTypes.bool,
     schedule: PropTypes.bool,
     displayPinned: PropTypes.bool,
   };
@@ -30,17 +29,16 @@ export default class StatusList extends ImmutablePureComponent {
     trackScroll: true,
     expandMedia: false,
     squareMedia: false,
-    standalone: false,
     displayPinned: false,
   };
 
   render () {
-    const { statusIds, squareMedia, expandMedia, standalone, schedule, displayPinned, ...other } = this.props;
+    const { statusIds, squareMedia, expandMedia, schedule, displayPinned, ...other } = this.props;
     const { isLoading } = other;
 
     const scrollableContent = (isLoading || statusIds.size > 0) ? (
       statusIds.map((statusId) => (
-        <StatusContainer key={statusId} id={statusId} squareMedia={squareMedia} expandMedia={expandMedia} standalone={standalone} schedule={schedule} displayPinned={displayPinned} />
+        <StatusContainer key={statusId} id={statusId} squareMedia={squareMedia} expandMedia={expandMedia} schedule={schedule} displayPinned={displayPinned} />
       ))
     ) : null;
 

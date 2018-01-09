@@ -31,11 +31,6 @@ export default class CommunityTimeline extends React.PureComponent {
     intl: PropTypes.object.isRequired,
     hasUnread: PropTypes.bool,
     multiColumn: PropTypes.bool,
-    standalone: PropTypes.bool,
-  };
-
-  static defaultProps = {
-    standalone: false,
   };
 
   handlePin = () => {
@@ -58,16 +53,10 @@ export default class CommunityTimeline extends React.PureComponent {
   }
 
   componentDidMount () {
-    const { dispatch, standalone } = this.props;
+    const { dispatch } = this.props;
 
-    if (!standalone) {
-      dispatch(refreshCommunityTimeline());
-      this.disconnect = dispatch(connectCommunityStream());
-    } else {
-      this.interval = setInterval(() => {
-        dispatch(refreshCommunityTimeline());
-      }, 2000);
-    }
+    dispatch(refreshCommunityTimeline());
+    this.disconnect = dispatch(connectCommunityStream());
   }
 
   componentWillUnmount () {
@@ -75,8 +64,6 @@ export default class CommunityTimeline extends React.PureComponent {
       this.disconnect();
       this.disconnect = null;
     }
-
-    clearInterval(this.interval);
   }
 
   setRef = c => {
@@ -88,35 +75,22 @@ export default class CommunityTimeline extends React.PureComponent {
   }
 
   render () {
-    let heading;
-    const { intl, hasUnread, columnId, multiColumn, standalone } = this.props;
+    const { intl, hasUnread, columnId, multiColumn } = this.props;
     const pinned = !!columnId;
-
-    if (standalone) {
-      heading = (
-        <div style={{ display: 'inline-block', verticalAlign: 'top' }}>
-          <div>Pawooのローカルタイムライン</div>
-          <div style={{ fontSize: '12px' }}>投稿をリアルタイムに流しています</div>
-        </div>
-      );
-    } else {
-      heading = intl.formatMessage(messages.title);
-    }
 
     return (
       <Column ref={this.setRef}>
         <ColumnHeader
           icon='users'
           active={hasUnread}
-          title={heading}
+          title={intl.formatMessage(messages.title)}
           onPin={this.handlePin}
           onMove={this.handleMove}
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
-          showBackButton={!standalone}
         >
-          {!standalone && <ColumnSettingsContainer />}
+          <ColumnSettingsContainer />
         </ColumnHeader>
 
         <StatusListContainer
@@ -125,7 +99,6 @@ export default class CommunityTimeline extends React.PureComponent {
           timelineId='community'
           loadMore={this.handleLoadMore}
           emptyMessage={<FormattedMessage id='empty_column.community' defaultMessage='The local timeline is empty. Write something publicly to get the ball rolling!' />}
-          standalone={standalone}
         />
       </Column>
     );
