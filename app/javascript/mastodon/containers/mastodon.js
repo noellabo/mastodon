@@ -85,7 +85,7 @@ export default class Mastodon extends React.PureComponent {
           <Provider store={store}>
             <BrowserRouter basename='/web'>
               <ScrollContext>
-                <Route path='/' component={gaTracker(UI)} />
+                <Route path='/' component={gaTracker(UI, '/web')} />
               </ScrollContext>
             </BrowserRouter>
           </Provider>
