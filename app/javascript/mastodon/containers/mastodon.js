@@ -13,6 +13,7 @@ import { hydrateStore } from '../actions/store';
 import { connectUserStream } from '../actions/streaming';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { getLocale } from '../locales';
+import gaTracker from '../components/ga_tracker';
 const { localeData, messages } = getLocale();
 addLocaleData(localeData);
 
@@ -84,7 +85,7 @@ export default class Mastodon extends React.PureComponent {
           <Provider store={store}>
             <BrowserRouter basename='/web'>
               <ScrollContext>
-                <Route path='/' component={UI} />
+                <Route path='/' component={gaTracker(UI)} />
               </ScrollContext>
             </BrowserRouter>
           </Provider>
