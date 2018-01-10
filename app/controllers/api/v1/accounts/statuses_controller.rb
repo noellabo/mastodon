@@ -51,8 +51,7 @@ class Api::V1::Accounts::StatusesController < Api::BaseController
   end
 
   def account_media_status_ids
-    # `SELECT DISTINCT id, updated_at` is too slow, so pluck ids at first, and then select id, updated_at with ids.
-    default_statuses.joins(:media_attachments).distinct(:id).pluck(:id)
+    @account.media_attachments.attached.reorder(nil).select(:status_id).distinct
   end
 
   def pinned_scope
