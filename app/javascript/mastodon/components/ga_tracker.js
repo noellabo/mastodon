@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { trackPage } from '../actions/ga';
 
-const gaTracker = (WrappedComponent) => {
+const gaTracker = (WrappedComponent, prefix = '') => {
 
   const HOC = class extends Component {
 
@@ -12,7 +12,7 @@ const gaTracker = (WrappedComponent) => {
 
     componentDidMount() {
       const page = this.props.location.pathname;
-      trackPage(page);
+      trackPage(`${prefix}${page}`);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -20,7 +20,7 @@ const gaTracker = (WrappedComponent) => {
       const nextPage = nextProps.location.pathname;
 
       if (currentPage !== nextPage) {
-        trackPage(nextPage);
+        trackPage(`${prefix}${nextPage}`);
       }
     }
 
