@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { trackPage } from '../actions/ga';
+import { trackPage, startHeartbeat } from '../actions/ga';
 
 const gaTracker = (WrappedComponent, prefix = '') => {
 
@@ -13,6 +13,7 @@ const gaTracker = (WrappedComponent, prefix = '') => {
     componentDidMount() {
       const page = this.props.location.pathname;
       trackPage(`${prefix}${page}`);
+      startHeartbeat();
     }
 
     componentWillReceiveProps(nextProps) {
