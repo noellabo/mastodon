@@ -3,7 +3,7 @@
 
 - content_for :header_tags do
   %script#initial-state{ type: 'application/json' }!= json_escape(@initial_state_json)
-  = javascript_pack_tag 'application', integrity: true, crossorigin: 'anonymous'
+  = javascript_pack_tag 'about', integrity: true, crossorigin: 'anonymous'
   = javascript_pack_tag 'public', integrity: true, crossorigin: 'anonymous'
   = render partial: 'shared/og'
 
@@ -86,8 +86,8 @@
       %p.title= t 'about.features.real_conversation_title'
       %p= t 'about.features.real_conversation_body'
 
-      %p.title= t 'about.features.not_a_product_title'
-      %p= t 'about.features.not_a_product_body'
+      /%p.title= t 'about.features.not_a_product_title'
+      /%p= t 'about.features.not_a_product_body'
 
       %p.title= t 'about.features.within_reach_title'
       %p= t 'about.features.within_reach_body'
@@ -110,4 +110,4 @@
 
   .about-col.right
     .about-timeline-container
-      #mastodon{ data: { props: Oj.dump(default_props) } }
+      #mastodon-timeline{ data: { props: Oj.dump(default_props) } }

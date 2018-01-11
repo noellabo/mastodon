@@ -1,11 +1,10 @@
 import React from 'react';
-import { connect, Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import configureStore from '../store/configureStore';
 import { showOnboardingOnce } from '../actions/onboarding';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { ScrollContext } from 'react-router-scroll';
-import CommunityTimeline from '../features/community_timeline';
 import ScheduledStatuses from '../features/scheduled_statuses';
 import Compose from '../features/compose';
 import UI from '../features/ui';
@@ -13,6 +12,7 @@ import { hydrateStore } from '../actions/store';
 import { connectUserStream } from '../actions/streaming';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { getLocale } from '../locales';
+import gaTracker from '../components/ga_tracker';
 
 const { localeData, messages } = getLocale();
 addLocaleData(localeData);
@@ -70,23 +70,7 @@ export default class Mastodon extends React.PureComponent {
               <ScrollContext>
                 <UI className='scheduled_statuses__container' intent>
                   <Compose schedule />
-                  <Route path='*' component={connect(() => ({ standalone: true }))(ScheduledStatuses)} />
-                </UI>
-              </ScrollContext>
-            </BrowserRouter>
-          </Provider>
-        </IntlProvider>
-      );
-    }
-
-    if (this.appmode === 'about') {
-      return (
-        <IntlProvider locale={locale} messages={messages}>
-          <Provider store={store}>
-            <BrowserRouter basename='/about'>
-              <ScrollContext>
-                <UI intent>
-                  <Route path='*' component={connect(() => ({ standalone: true }))(CommunityTimeline)} />
+                  <Route path='*' component={ScheduledStatuses} />
                 </UI>
               </ScrollContext>
             </BrowserRouter>
@@ -101,7 +85,7 @@ export default class Mastodon extends React.PureComponent {
           <Provider store={store}>
             <BrowserRouter basename='/web'>
               <ScrollContext>
-                <Route path='/' component={UI} />
+                <Route path='/' component={gaTracker(UI, '/web')} />
               </ScrollContext>
             </BrowserRouter>
           </Provider>

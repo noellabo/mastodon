@@ -12,6 +12,9 @@
   subscriptions_scheduler:
     cron: '<%= Random.rand(0..59) %> 19,0 * * *'
     class: Scheduler::SubscriptionsScheduler
+  delete_duplicated_subscription_retry_job_scheduler:
+    cron: '20 19,0 * * *'
+    class: Scheduler::DeleteDuplicatedSubscriptionRetryJobScheduler
   media_cleanup_scheduler:
     cron: '<%= Random.rand(0..59) %> <%= Random.rand(18..20) %> * * *'
     class: Scheduler::MediaCleanupScheduler

@@ -43,7 +43,6 @@ export default class Status extends ImmutablePureComponent {
     muted: PropTypes.bool,
     expandMedia: PropTypes.bool,
     squareMedia: PropTypes.bool,
-    standalone: PropTypes.bool,
     schedule: PropTypes.bool,
     onPin: PropTypes.func,
     displayPinned: PropTypes.bool,
@@ -85,10 +84,8 @@ export default class Status extends ImmutablePureComponent {
   }
 
   handleAccountClick = (e) => {
-    if (this.props.standalone) {
-      e.preventDefault();
-    } else if (this.context.router && e.button === 0) {
-      const id = e.currentTarget.getAttribute('data-id');
+    if (this.context.router && e.button === 0) {
+      const id = Number(e.currentTarget.getAttribute('data-id'));
       e.preventDefault();
       this.context.router.history.push(`/accounts/${id}`);
     }
@@ -163,7 +160,7 @@ export default class Status extends ImmutablePureComponent {
     const { hidden }     = this.props;
     const { isExpanded } = this.state;
 
-    let { status, account, expandMedia, squareMedia, standalone, schedule, ...other } = this.props;
+    let { status, account, expandMedia, squareMedia, schedule, ...other } = this.props;
 
     if (status === null) {
       return null;
@@ -275,11 +272,11 @@ export default class Status extends ImmutablePureComponent {
               </a>
             </div>
 
-            <StatusContent status={status} onClick={this.handleClick} expanded={isExpanded} onExpandedToggle={this.handleExpandedToggle} standalone={standalone} />
+            <StatusContent status={status} onClick={this.handleClick} expanded={isExpanded} onExpandedToggle={this.handleExpandedToggle} />
 
             {media}
 
-            {!standalone && <StatusActionBar status={status} account={account} schedule={schedule} {...other} />}
+            <StatusActionBar status={status} account={account} schedule={schedule} {...other} />
           </div>
         </div>
       </HotKeys>

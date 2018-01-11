@@ -25,12 +25,12 @@ describe UserMailer, type: :mailer do
       receiver.update!(locale: nil)
       expect(mail.body.encoded).to include receiver.email
       expect(mail.body.encoded).to include 'spec'
-      expect(mail.body.encoded).to include Rails.configuration.x.local_domain
+      expect(mail.body.encoded).to include Setting.site_title
     end
 
     include_examples 'localized subject',
                      'devise.mailer.confirmation_instructions.subject',
-                     instance: Rails.configuration.x.local_domain
+                     instance: Setting.site_title
   end
 
   describe 'reset_password_instructions' do

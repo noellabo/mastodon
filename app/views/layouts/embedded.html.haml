@@ -3,6 +3,8 @@
   %head
     %meta{ charset: 'utf-8' }/
     %meta{ name: 'robots', content: 'noindex' }/
+    - if current_account
+      %meta{ name: 'ga-uid', content: current_account.id }/
 
     = stylesheet_pack_tag 'common', media: 'all'
     = stylesheet_pack_tag Setting.default_settings['theme'], media: 'all'
