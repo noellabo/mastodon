@@ -250,6 +250,56 @@ RSpec.describe Account, type: :model do
     end
   end
 
+  describe '#latest_popular_media_attachments' do
+    subject { account.latest_popular_media_attachments }
+
+    let(:account) { Fabricate(:account) }
+    let(:latest_public_status) { Fabricate(:status, account: account, created_at: 1.minutes.ago, visibility: :public) }
+    let(:latest_unlisted_status) { Fabricate(:status, account: account, created_at: 1.minutes.ago, visibility: :unlisted) }
+    let(:old_status) { Fabricate(:status, account: account, created_at: 1.month.ago, visibility: :public) }
+    let(:old_status2) { Fabricate(:status, account: account, created_at: 2.month.ago, visibility: :public) }
+    let(:sensitive_status) { Fabricate(:status, account: account, created_at: 1.minutes.ago, sensitive: true) }
+    let(:private_status) { Fabricate(:status, account: account, created_at: 1.minutes.ago, visibility: :private) }
+    let(:direct_status) { Fabricate(:status, account: account, created_at: 1.minutes.ago, visibility: :direct) }
+    let(:media_statuses) { [latest_public_status, latest_unlisted_status, old_status, old_status2, sensitive_status, private_status, direct_status] }
+
+    before do
+      media_statuses.each do |status|
+        Fabricate(:media_attachment, account: account, status: status, created_at: status.created_at)
+      end
+    end
+
+    it 'does not include media of sensitive_status' do
+      expect(subject.map(&:id)).not_to include sensitive_status.media_attachments.first.id
+    end
+
+    it 'does not include media of private_status' do
+      expect(subject.map(&:id)).not_to include private_status.media_attachments.first.id
+    end
+
+    it 'does not include media of direct_status' do
+      expect(subject.map(&:id)).not_to include direct_status.media_attachments.first.id
+    end
+
+    context 'less than 3 recent media' do
+      it { expect(subject.size).to eq 3 }
+      it 'includes media of latest status preferentially' do
+        expect(subject.map(&:id)).to include(*[latest_public_status.media_attachments.first.id, latest_unlisted_status.media_attachments.first.id])
+      end
+      it 'includes media of old_status' do
+        expect(subject.map(&:id)).to include old_status.media_attachments.first.id
+      end
+    end
+
+    context 'no recent media' do
+      let(:media_statuses) { [old_status, old_status2, sensitive_status, private_status, direct_status] }
+      it { expect(subject.size).to eq 2 }
+      it 'includes media of old_status' do
+        expect(subject.map(&:id)).to include(*[old_status.media_attachments.first.id, old_status2.media_attachments.first.id])
+      end
+    end
+  end
+
   describe '.search_for' do
     before do
       _missing = Fabricate(

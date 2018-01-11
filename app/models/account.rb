@@ -177,16 +177,22 @@ class Account < ApplicationRecord
   end
 
   def latest_popular_media_attachments
-    limit_id = Rails.cache.fetch('suggested_account:limit_attachment_id') do
-      MediaAttachment.where('created_at < ?', 1.week.ago).select(:id).reorder(id: :desc).limit(1).first&.id || 0
+    limit_id = Rails.cache.fetch('suggested_account:limit_attachment_id', expires_in: 12.hours) do
+      MediaAttachment.where('created_at < ?', 2.weeks.ago).select(:id).reorder(id: :desc).limit(1).first&.id || 0
     end
 
-    media_attachments_ids = Rails.cache.fetch("suggested_account:published_attachments:#{id}") do
-      base_query = media_attachments.joins(:status).where(statuses: { sensitive: false, visibility: [:public, :unlisted] }).limit(3)
-      latest_popular_query = base_query.where('media_attachments.id > ?', limit_id).reorder(Status.arel_table[:favourites_count].desc)
-      latest_query = base_query.reorder(Status.arel_table[:id].desc)
+    media_attachments_ids = Rails.cache.fetch("suggested_account:published_attachments:#{id}", expires_in: 1.hour) do
+      attachments_limit = 3
+      base_query = media_attachments.joins(:status).where(statuses: { sensitive: false, visibility: [:public, :unlisted] })
+      attachments_ids = base_query.where('media_attachments.id > ?', limit_id).reorder(Status.arel_table[:favourites_count].desc).limit(attachments_limit).pluck(:id)
 
-      latest_popular_query.pluck(:id).presence || latest_query.pluck(:id)
+      # 足りない場合は新しいメディアを取得
+      if attachments_ids.size < attachments_limit
+        rest_limit = attachments_limit - attachments_ids.size
+        attachments_ids += base_query.where.not(id: attachments_ids).reorder(Status.arel_table[:id].desc).limit(rest_limit).pluck(:id)
+      end
+
+      attachments_ids
     end
 
     MediaAttachment.where(id: media_attachments_ids)
