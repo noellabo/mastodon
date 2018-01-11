@@ -110,7 +110,6 @@ class IdsToBigints < ActiveRecord::Migration[5.1]
   end
 
   def show_warning
-    return
     # Print out a warning that this will probably take a while.
     say ''
     say 'WARNING: This migration may take a *long* time for large instances'
