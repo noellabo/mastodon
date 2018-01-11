@@ -376,7 +376,7 @@ module Mastodon
 
         migrated += batch_size
         if Time.now - last_time > 1
-          status = "Migrated #{migrated} rows"
+          status = "Migrated #{table_name}.#{column} #{migrated} rows start_id: #{start_id}"
 
           percentage = 100.0 * migrated / total
           status += " (~#{sprintf('%.2f', percentage)}%, "
