@@ -38,7 +38,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :test
 
   # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :log # elasticsearch-railsで大量の警告が出るので一旦ファイルに書き出すように変更
+  config.active_support.deprecation = :stderr
 
   # Generate random VAPID keys
   vapid_key = Webpush.generate_key
