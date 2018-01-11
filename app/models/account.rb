@@ -176,9 +176,17 @@ class Account < ApplicationRecord
     Rails.cache.fetch("exclude_domains_for:#{id}") { domain_blocks.pluck(:domain) }
   end
 
-  def popular_media_attachments
+  def latest_popular_media_attachments
+    limit_id = Rails.cache.fetch('suggested_account:limit_attachment_id') do
+      MediaAttachment.where('created_at < ?', 1.week.ago).select(:id).reorder(id: :desc).limit(1).first&.id || 0
+    end
+
     media_attachments_ids = Rails.cache.fetch("suggested_account:published_attachments:#{id}") do
-      media_attachments.joins(:status).where(statuses: { sensitive: false, visibility: [:public, :unlisted] }).reorder(Status.arel_table[:favourites_count].desc).limit(3).pluck(:id)
+      base_query = media_attachments.joins(:status).where(statuses: { sensitive: false, visibility: [:public, :unlisted] }).limit(3)
+      latest_popular_query = base_query.where('media_attachments.id > ?', limit_id).reorder(Status.arel_table[:favourites_count].desc)
+      latest_query = base_query.reorder(Status.arel_table[:id].desc)
+
+      latest_popular_query.pluck(:id).presence || latest_query.pluck(:id)
     end
 
     MediaAttachment.where(id: media_attachments_ids)
