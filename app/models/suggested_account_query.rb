@@ -114,7 +114,7 @@ class SuggestedAccountQuery
 
     # sort_byにより、取得したAccountがidsの順番通りになるよう再度並び替える
     default_scoped.where(id: ids)
-                  .preload(:media_attachments, :oauth_authentications)
+                  .preload(:oauth_authentications)
                   .limit(limit)
                   .sort_by { |account| ids.index(account.id) }
   end
