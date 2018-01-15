@@ -21,7 +21,7 @@ class PostStatusService < BaseService
       return Status.find(existing_id) if existing_id
     end
 
-    media  = validate_media!(options[:media_ids])
+    media = validate_media!(options[:media_ids])
     published = options[:published]
 
     status = nil
@@ -48,16 +48,7 @@ class PostStatusService < BaseService
     if published
       ScheduledDistributionWorker.perform_at(published, status.id)
     else
-      # 抽出したハッシュタグを使用するため、ProcessHashtagsServiceの後に実行されなければならない
-      process_mentions_service.call(status)
-
-      DistributionWorker.perform_async(status.id)
-      Pubsubhubbub::DistributionWorker.perform_async(status.stream_entry.id)
-      ActivityPub::DistributionWorker.perform_async(status.id)
-      ActivityPub::ReplyDistributionWorker.perform_async(status.id) if status.reply? && status.thread.account.local?
-
-      time_limit = TimeLimit.from_tags(status.tags)
-      RemovalWorker.perform_in(time_limit.to_duration, status.id) if time_limit
+      DistributionService.new.call(status)
     end
 
     if options[:idempotency].present?

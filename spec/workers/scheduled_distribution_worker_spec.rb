@@ -28,7 +28,7 @@ describe ScheduledDistributionWorker do
       new_status = Status.find_by!(text: TEXT)
       new_stream_entry = new_status.stream_entry
 
-      expect(new_stream_entry).to eq old_stream_entry
+      expect(new_stream_entry).not_to eq old_stream_entry
     end
 
     it 'updates media attachments' do
