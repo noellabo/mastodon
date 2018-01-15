@@ -2,9 +2,9 @@ class AddIndexOnStatusesForApiV1AccountsAccountIdStatuses < ActiveRecord::Migrat
   disable_ddl_transaction!
 
   def change
-    # safety_assured do
+    safety_assured do
       add_index :statuses, [:account_id, :id, :visibility, :updated_at], order: { id: :desc }, algorithm: :concurrently, name: :index_statuses_20180106
-    # end
+    end
     remove_index :statuses, name: :index_statuses_on_account_id_id
   end
 end
