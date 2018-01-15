@@ -43,7 +43,7 @@ class IdsToBigints < ActiveRecord::Migration[5.1]
     [:settings, :id],
     [:settings, :thing_id],
     [:statuses, :account_id],
-    [:statuses, :application_id],
+    # [:statuses, :application_id], # TODO データのコピーが終了したので一旦外す。stage 2を実行する前に戻す
     [:statuses, :in_reply_to_account_id],
     [:stream_entries, :id],
     [:subscriptions, :account_id],
