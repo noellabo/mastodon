@@ -2970,7 +2970,13 @@ button.icon-button.active i.fa-retweet {
   filter: none;
 }
 
-.privacy-dropdown__dropdown, .time-limit-dropdown__dropdown {
+.time-limit-dropdown {
+  position: absolute;
+  right: 3px;
+  top: 30px;
+}
+
+.privacy-dropdown__dropdown {
   position: absolute;
   background: $simple-background-color;
   box-shadow: 2px 4px 15px rgba($base-shadow-color, 0.4);
@@ -2980,8 +2986,12 @@ button.icon-button.active i.fa-retweet {
 }
 
 .time-limit-dropdown__dropdown {
-  left: -210px;
-  top: 0;
+  position: absolute;
+  background: $simple-background-color;
+  box-shadow: 2px 4px 15px rgba($base-shadow-color, 0.4);
+  border-radius: 4px;
+  margin-left: 0;
+  overflow: hidden;
 }
 
 .time-limit-dropdown__header {

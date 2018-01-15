@@ -16,7 +16,7 @@ import PrivacyDropdownContainer from '../containers/privacy_dropdown_container';
 import SensitiveButtonContainer from '../containers/sensitive_button_container';
 import SensitiveGuideContainer from '../containers/sensitive_guide_container';
 import EmojiPickerDropdown from '../containers/emoji_picker_dropdown_container';
-import TimeLimitDropdown from './time_limit_dropdown';
+import TimeLimitDropdownContainer from '../containers/time_limit_dropdown_container';
 import UploadFormContainer from '../containers/upload_form_container';
 import WarningContainer from '../containers/warning_container';
 import { isMobile } from '../../../is_mobile';
@@ -229,7 +229,7 @@ export default class ComposeForm extends ImmutablePureComponent {
           />
 
           <EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} />
-          <TimeLimitDropdown onSelectTimeLimit={this.handleSelectTimeLimit} />
+          <TimeLimitDropdownContainer onSelectTimeLimit={this.handleSelectTimeLimit} />
         </div>
 
         <div className='compose-form__modifiers'>

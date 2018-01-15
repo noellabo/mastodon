@@ -13,6 +13,7 @@ export default class ActionsModal extends ImmutablePureComponent {
 
   static propTypes = {
     status: ImmutablePropTypes.map,
+    header: PropTypes.node,
     actions: PropTypes.array,
     onClick: PropTypes.func,
   };
@@ -62,6 +63,7 @@ export default class ActionsModal extends ImmutablePureComponent {
 
     return (
       <div className='modal-root__modal actions-modal'>
+        {this.props.header}
         {status}
 
         <ul>
