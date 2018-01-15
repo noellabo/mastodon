@@ -144,32 +144,22 @@ RSpec.describe FeedManager do
   end
 
   describe '#push' do
-    let(:accounts) { [Fabricate(:account), Fabricate(:account)] }
-    let(:status) { Fabricate(:status) }
-    let(:instance) { FeedManager.instance }
+    it 'performs pushing updates into home timelines' do
+      accounts = [Fabricate(:account), Fabricate(:account)]
+      status = Fabricate(:status)
 
-    before do
       accounts.each do |account|
         Redis.current.setex("subscribed:timeline:#{account.id}", 10, '1')
       end
-    end
 
-    it 'performs pushing updates into home timelines' do
       expect(PushUpdateWorker).to receive(:perform_async).with(accounts.map(&:id), status.id)
 
-      instance.push(:home, accounts, status)
-    end
-
-    it 'skips pushing update if the status is reblog and within top 40 statuses' do
-      allow(instance).to receive(:insert_and_check).and_return false
-      expect(PushUpdateWorker).to_not receive(:perform_async)
-
-      reblog = Fabricate(:status, reblog: status)
-      instance.push(:home, accounts, reblog)
+      FeedManager.instance.push(:home, accounts, status)
     end
 
     it 'trims timelines if they will have more than FeedManager::MAX_ITEMS' do
       account = Fabricate(:account)
+      status = Fabricate(:status)
       members = FeedManager::MAX_ITEMS.times.map { |count| [count, count] }
       Redis.current.zadd("feed:type:#{account.id}", members)
 
@@ -364,6 +354,18 @@ RSpec.describe FeedManager do
 
       deletion = Oj.dump(event: :delete, payload: status.id.to_s)
       expect(Redis.current).to have_received(:publish).with("timeline:#{receiver.id}", deletion)
+    end
+  end
+
+  describe '#populate_feed' do
+    it 'call #add_to_feed' do
+      account = Fabricate(:account)
+      Fabricate(:status, account: account, text: 'out of range', created_at: 1.month.ago)
+      latest_status = Fabricate(:status, account: account, text: 'last', created_at: 1.week.ago)
+
+      allow(FeedManager.instance).to receive(:add_to_feed).with(:home, account, latest_status).once
+
+      FeedManager.instance.populate_feed(account)
     end
   end
 end

@@ -9,6 +9,7 @@ class FeedManager
 
   # An approximation of the number of statuses per 14 days
   MIN_ID_RANGE = 2_097_152
+  MAX_POPULATE_DURATION = 2.weeks
 
   # Must be <= MAX_ITEMS or the tracking sets will grow forever
   REBLOG_FALLOFF = 40
@@ -121,15 +122,35 @@ class FeedManager
     end
   end
 
+  def calc_since_id
+    first_snowflake_status = Status.reorder(id: :asc).find_by('id > 100000000')
+    last_sequence_status = Status.find_by('id < 100000000')
+
+    # snowflakeになったあとのトゥートがない
+    unless first_snowflake_status
+      first_status = Status.first
+      return if first_status.nil?
+
+      return first_status.id - FeedManager::MIN_ID_RANGE
+    end
+
+    diff = first_snowflake_status.created_at - FeedManager::MAX_POPULATE_DURATION.ago
+
+    # 2週間前のトゥートがsnowflakeになった or snowflake前のトゥートがない
+    # TODO: 2週間以上経ったらこの部分以外の処理を消す
+    return Mastodon::Snowflake.id_at(FeedManager::MAX_POPULATE_DURATION.ago) if diff <= 0 || last_sequence_status.nil?
+
+    # 2週間に満たない場合は、足りない日数相当のsnowflake前のトゥートIDまで含める
+    diff_day = diff / 1.day
+    last_sequence_status.id - (FeedManager::MIN_ID_RANGE * (diff_day / FeedManager::MAX_POPULATE_DURATION)).to_i
+  end
+
   def populate_feed(account)
-    first_status = Status.first
-
-    return if first_status.nil?
-
     added  = 0
     limit  = FeedManager::MAX_ITEMS / 2
     max_id = nil
-    since_id = first_status.id - FeedManager::MIN_ID_RANGE
+    since_id = calc_since_id
+    return unless since_id
 
     loop do
       statuses = Status.as_home_timeline(account)
