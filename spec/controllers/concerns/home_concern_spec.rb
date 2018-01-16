@@ -31,7 +31,6 @@ describe ApplicationController, type: :controller do
 
       it 'assigns token' do
         app = Doorkeeper::Application.create!(name: 'Web', superapp: true, redirect_uri: Doorkeeper.configuration.native_redirect_uri)
-        allow(Doorkeeper.configuration).to receive(:access_token_expires_in).and_return(42)
 
         subject
         json = JSON.parse(assigns(:initial_state_json), symbolize_names: true)
@@ -41,7 +40,6 @@ describe ApplicationController, type: :controller do
         expect(token.application).to eq app
         expect(token.resource_owner_id).to eq user.id
         expect(token.scopes).to eq Doorkeeper::OAuth::Scopes.from_string('read write follow')
-        expect(token.expires_in_seconds).to eq 42
         expect(token.use_refresh_token?).to eq false
       end
 
@@ -63,7 +61,7 @@ describe ApplicationController, type: :controller do
         Setting.site_contact_username = admin.username
         subject
         json = JSON.parse(assigns(:initial_state_json), symbolize_names: true)
-        expect(json[:meta][:admin]).to eq admin.id
+        expect(json[:meta][:admin]).to eq admin.id.to_s
       end
 
       it 'assigns streaming_api_base_url' do

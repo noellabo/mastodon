@@ -6,8 +6,8 @@ RSpec.describe Scheduler::DeleteElasticsearchDocumentsWorker do
       -> { described_class.new.perform }
     end
 
-    let!(:expired_status) { Fabricate(:status, id: 1, visibility: 'public', created_at: described_class::EXPIRE_BEFORE.ago) }
-    let!(:latest_status) { Fabricate(:status, id: 2, visibility: 'public') }
+    let!(:expired_status) { Fabricate(:status, visibility: 'public', created_at: described_class::EXPIRE_BEFORE.ago) }
+    let!(:latest_status) { Fabricate(:status,  visibility: 'public', created_at: 1.day.ago) }
 
     def status_ids
       Status.__elasticsearch__.refresh_index!
