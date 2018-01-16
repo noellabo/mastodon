@@ -67,7 +67,6 @@ export default class ComposeForm extends ImmutablePureComponent {
     onPaste: PropTypes.func.isRequired,
     onPickEmoji: PropTypes.func.isRequired,
     showSearch: PropTypes.bool,
-    onHashTagSuggestionsFetchRequested: PropTypes.func.isRequired,
     onSelectTimeLimit: PropTypes.func.isRequired,
     onInsertHashtag: PropTypes.func.isRequired,
   };
@@ -119,7 +118,7 @@ export default class ComposeForm extends ImmutablePureComponent {
 
   onHashTagSuggestionsFetchRequested = (token) => {
     this.setState({ tagSuggestionFrom: 'hashtag-editor' });
-    this.props.onHashTagSuggestionsFetchRequested(token);
+    this.props.onFetchSuggestions(`#${token}`);
   }
 
   handleChangeSpoilerText = (e) => {

@@ -336,14 +336,6 @@ export function fetchComposeSuggestions(token) {
   };
 };
 
-export function fetchComposeHashTagSuggestions(token) {
-  return (dispatch, getState) => {
-    if (token[0] === '#') {
-      fetchComposeSuggestionsHashTag(dispatch, getState, token);
-    }
-  };
-};
-
 export function readyComposeSuggestionsEmojis(token, emojis) {
   return {
     type: COMPOSE_SUGGESTIONS_READY,

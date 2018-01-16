@@ -12,7 +12,6 @@ import {
   insertEmojiCompose,
   requestImageCache,
   insertTagCompose,
-  fetchComposeHashTagSuggestions,
 } from '../../../actions/compose';
 
 const mapStateToProps = state => ({
@@ -59,10 +58,6 @@ const mapDispatchToProps = (dispatch) => ({
 
   onSuggestionSelected (position, token, accountId) {
     dispatch(selectComposeSuggestion(position, token, accountId));
-  },
-
-  onHashTagSuggestionsFetchRequested(token) {
-    dispatch(fetchComposeHashTagSuggestions(token));
   },
 
   onChangeDateTime (dateTime) {
