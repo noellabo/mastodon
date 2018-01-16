@@ -787,9 +787,20 @@
   flex-direction: column;
   height: 100%;
 
-  > #mastodon, > .scrollable {
+  #mastodon-scheduled-statuses {
     flex: 1;
-    min-height: 0;
+    display: flex;
+
+    .scheduled_statuses {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      .scrollable {
+        flex: 1;
+        min-height: 0;
+      }
+    }
   }
 }
 

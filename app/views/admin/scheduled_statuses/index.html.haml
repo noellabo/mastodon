@@ -1,6 +1,6 @@
 - content_for :header_tags do
   %script#initial-state{ type: 'application/json' }!= json_escape(@initial_state_json)
-  = javascript_pack_tag 'application', integrity: true, crossorigin: 'anonymous'
+  = javascript_pack_tag 'scheduled_statuses', integrity: true, crossorigin: 'anonymous'
 
 - content_for :page_title do
   = t('admin.scheduled_statuses.title')
@@ -19,4 +19,4 @@
 
         = render 'application/flashes'
 
-        #mastodon{ data: { props: Oj.dump(default_props) } }
+        #mastodon-scheduled-statuses{ data: { props: Oj.dump(default_props) } }
