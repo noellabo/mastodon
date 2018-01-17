@@ -363,9 +363,88 @@ RSpec.describe FeedManager do
       Fabricate(:status, account: account, text: 'out of range', created_at: 1.month.ago)
       latest_status = Fabricate(:status, account: account, text: 'last', created_at: 1.week.ago)
 
-      allow(FeedManager.instance).to receive(:add_to_feed).with(:home, account, latest_status).once
+      allow(FeedManager.instance).to receive(:add_to_feed).once
+      allow(FeedManager.instance).to receive(:add_to_feed).with(:home, account, latest_status)
 
       FeedManager.instance.populate_feed(account)
+    end
+  end
+
+  describe '#calc_since_id' do
+    subject { FeedManager.instance.calc_since_id(base_id) }
+
+    let(:account) { Fabricate(:account) }
+    let(:base_id) { nil }
+
+    context 'no base_id' do
+      context 'when do not exist snowflake status' do
+        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
+        let!(:status2) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 20) }
+
+        it { is_expected.to eq 20 }
+      end
+
+      context 'when status posted 2 weeks ago was snowflake' do
+        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
+        let!(:status2) { Fabricate(:status, account: account, created_at: (2.weeks + 1.day).ago) }
+        let!(:status3) { Fabricate(:status, account: account, created_at: (2.weeks - 1.day).ago) }
+
+        it { is_expected.to be_between(status2.id, status3.id)  }
+      end
+
+      context 'when all statuses is snowflake' do
+        let!(:status1) { Fabricate(:status, account: account, created_at: (2.weeks + 1.day).ago) }
+        let!(:status2) { Fabricate(:status, account: account, created_at: (2.weeks - 1.day).ago) }
+
+        it { is_expected.to be_between(status1.id, status2.id)  }
+      end
+
+      context 'when status posted 2 weeks ago was not snowflake' do
+        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
+        let!(:status2) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 20) }
+        let!(:status3) { Fabricate(:status, account: account, created_at: (2.weeks - 1.day).ago) }
+
+        it { is_expected.to be_between(status2.id - FeedManager::MIN_ID_RANGE, status2.id) }
+      end
+    end
+
+    context 'with base_id' do
+      context 'when status id that is not snowflake' do
+        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
+        let!(:status2) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 20) }
+        let(:base_id) { status1.id }
+
+        it { is_expected.to eq 10 }
+      end
+
+      context 'when status posted 2 weeks ago was snowflake' do
+        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
+        let!(:status2) { Fabricate(:status, account: account, created_at: (2.weeks + 2.day).ago) }
+        let!(:status3) { Fabricate(:status, account: account, created_at: 2.weeks.ago) }
+        let!(:status4) { Fabricate(:status, account: account, created_at: 1.day.ago) }
+        let(:base_id) { status4.id }
+
+        it { is_expected.to be_between(status2.id, status3.id)  }
+      end
+
+      context 'when all statuses is snowflake' do
+        let!(:status1) { Fabricate(:status, account: account, created_at: (2.weeks + 2.day).ago) }
+        let!(:status2) { Fabricate(:status, account: account, created_at: 2.weeks.ago) }
+        let!(:status3) { Fabricate(:status, account: account, created_at: 1.day.ago) }
+        let(:base_id) { status3.id }
+
+        it { is_expected.to be_between(status1.id, status2.id)  }
+      end
+
+      context 'when status posted 2 weeks ago was not snowflake' do
+        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
+        let!(:status2) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 20) }
+        let!(:status3) { Fabricate(:status, account: account, created_at: (2.weeks - 1.day).ago) }
+        let!(:status4) { Fabricate(:status, account: account, created_at: 1.day.ago) }
+        let(:base_id) { status4.id }
+
+        it { is_expected.to be_between(status2.id - FeedManager::MIN_ID_RANGE, status2.id) }
+      end
     end
   end
 end
