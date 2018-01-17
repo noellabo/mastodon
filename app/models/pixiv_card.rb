@@ -22,6 +22,17 @@ class PixivCard < ApplicationRecord
     self.image_url = PixivUrl::PixivTwitterImage.cache_or_fetch(url)
   end
 
+  def to_hash_like_media_attachment
+    {
+      id: id.to_s,
+      preview_url: image_url,
+      remote_url: '',
+      text_url: url,
+      type: 'image',
+      url: image_url,
+    }
+  end
+
   private
 
   def replace_image_url_scheme

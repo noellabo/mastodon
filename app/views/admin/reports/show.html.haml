@@ -36,7 +36,7 @@
         .batch-checkbox
           = f.check_box :status_ids, { multiple: true, include_hidden: false }, status.id
         .activity-stream.activity-stream-headless
-          .entry= render 'stream_entries/simple_status', status: status, expand_media: false
+          .entry= render 'stream_entries/simple_status', status: status
         .report-status__actions
           - unless status.media_attachments.empty?
             = link_to admin_report_reported_status_path(@report, status, status: { sensitive: !status.sensitive }), method: :put, class: 'icon-button nsfw-button', title: t("admin.reports.nsfw.#{!status.sensitive}") do
