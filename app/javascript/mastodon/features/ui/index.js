@@ -87,18 +87,12 @@ export default class UI extends React.Component {
     router: PropTypes.object.isRequired,
   };
 
-  static defaultProps = {
-    intent: false,
-  };
-
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.node,
     isComposing: PropTypes.bool,
     me: PropTypes.string,
     location: PropTypes.object,
-    className: PropTypes.string,
-    intent: PropTypes.bool,
   };
 
   state = {
@@ -191,10 +185,8 @@ export default class UI extends React.Component {
       navigator.serviceWorker.addEventListener('message', this.handleServiceWorkerPostMessage);
     }
 
-    if (!this.props.intent) {
-      this.props.dispatch(refreshHomeTimeline());
-      this.props.dispatch(refreshNotifications());
-    }
+    this.props.dispatch(refreshHomeTimeline());
+    this.props.dispatch(refreshNotifications());
   }
 
   componentDidMount () {
@@ -331,16 +323,7 @@ export default class UI extends React.Component {
 
   render () {
     const { width, draggingOver } = this.state;
-    const { intent, children } = this.props;
-
-    if (intent) {
-      return (
-        <div className={this.props.className}>
-          {children}
-          <ModalContainer />
-        </div>
-      );
-    }
+    const { children } = this.props;
 
     const handlers = {
       new: this.handleHotkeyNew,

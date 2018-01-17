@@ -142,7 +142,7 @@ class Item extends React.PureComponent {
           onClick={this.handleClick}
           target='_blank'
         >
-          <img src={previewUrl} srcSet={srcSet} sizes={sizes}  alt={attachment.get('description')} title={attachment.get('description')} style={expandMedia ? { width: '100%' } : null} />
+          <img src={previewUrl} srcSet={srcSet} sizes={sizes} alt={attachment.get('description')} title={attachment.get('description')} style={expandMedia ? { width: '100%' } : null} />
         </a>
       );
     } else if (attachment.get('type') === 'gifv') {

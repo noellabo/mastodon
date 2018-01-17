@@ -85,7 +85,7 @@ export default class Status extends ImmutablePureComponent {
 
   handleAccountClick = (e) => {
     if (this.context.router && e.button === 0) {
-      const id = Number(e.currentTarget.getAttribute('data-id'));
+      const id = e.currentTarget.getAttribute('data-id');
       e.preventDefault();
       this.context.router.history.push(`/accounts/${id}`);
     }

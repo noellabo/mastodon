@@ -17,7 +17,7 @@ const mapStateToProps = (state, props) => ({
   isLoading: state.getIn(['timelines', `account:${props.params.accountId}`, 'isLoading']),
   hasMore: !!state.getIn(['timelines', `account:${props.params.accountId}`, 'next']),
   me: state.getIn(['meta', 'me']),
-  pinnedStatusIds: state.getIn(['timelines', `account:${Number(props.params.accountId)}:pinned_status`, 'items'], ImmutableList()),
+  pinnedStatusIds: state.getIn(['timelines', `account:${props.params.accountId}:pinned_status`, 'items'], ImmutableList()),
 });
 
 @connect(mapStateToProps)

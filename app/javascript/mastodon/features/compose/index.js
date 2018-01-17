@@ -28,7 +28,6 @@ const messages = defineMessages({
 const mapStateToProps = state => ({
   columns: state.getIn(['settings', 'columns']),
   showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
-  submitting: state.getIn(['compose', 'is_submitting']),
 });
 
 @connect(mapStateToProps)
@@ -41,7 +40,6 @@ export default class Compose extends React.PureComponent {
     multiColumn: PropTypes.bool,
     showSearch: PropTypes.bool,
     intl: PropTypes.object.isRequired,
-    submitting: PropTypes.bool,
   };
 
   componentDidMount () {
