@@ -1,6 +1,4 @@
 @import 'application';
 
-@import "pawoo-theme/about";
+// pawoo-themeが後から読み込まれるので、同じcssセレクタを記述した場合はこちらが優先される
 @import "pawoo-theme/theme";
-@import "pawoo-theme/oauth_authentications";
-@import "pawoo-theme/react-datetime";

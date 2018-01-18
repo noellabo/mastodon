@@ -1,0 +1,7 @@
+.admin-wrapper {
+  @media screen and (max-width: 600px) {
+    .content-wrapper {
+      height: 100%; // スマホの場合予約投稿が見えなくなるのを防ぐ
+    }
+  }
+}

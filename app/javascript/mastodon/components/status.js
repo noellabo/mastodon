@@ -175,6 +175,8 @@ export default class Status extends ImmutablePureComponent {
       );
     }
 
+    const pinned = this.props.displayPinned && status.get('pinned');
+
     if (status.get('reblog', null) !== null && typeof status.get('reblog') === 'object') {
       const display_name_html = { __html: status.getIn(['account', 'display_name_html']) };
 
@@ -187,7 +189,7 @@ export default class Status extends ImmutablePureComponent {
 
       account = status.get('account');
       status  = status.get('reblog');
-    } else if (this.props.displayPinned && status.get('pinned')) {
+    } else if (pinned) {
       prepend = (
         <div className='status__prepend'>
           <div className='status__prepend-icon-wrapper'><i className='fa fa-fw fa-thumb-tack status__prepend-icon' /></div>
@@ -256,12 +258,12 @@ export default class Status extends ImmutablePureComponent {
 
     return (
       <HotKeys handlers={handlers}>
-        <div className={classNames('status__wrapper', `status__wrapper-${status.get('visibility')}`, { focusable: !this.props.muted })} tabIndex={this.props.muted ? null : 0}>
+        <div className={classNames('status__wrapper', `status__wrapper-${status.get('visibility')}`, { focusable: !this.props.muted, pinned })} tabIndex={this.props.muted ? null : 0}>
           {prepend}
 
           <div className={classNames('status', `status-${status.get('visibility')}`, { muted: this.props.muted })} data-id={status.get('id')}>
             <div className='status__info'>
-              <a href={status.get('url')} className='status__relative-time' target='_blank' rel='noopener'><Timestamp absolute={schedule} timestamp={status.get('created_at')} /></a>
+              <a href={status.get('url')} className='status__time' target='_blank' rel='noopener'><Timestamp absolute={schedule} timestamp={status.get('created_at')} /></a>
 
               <a onClick={this.handleAccountClick} target='_blank' data-id={status.getIn(['account', 'id'])} href={status.getIn(['account', 'url'])} title={status.getIn(['account', 'acct'])} className='status__display-name'>
                 <div className='status__avatar'>

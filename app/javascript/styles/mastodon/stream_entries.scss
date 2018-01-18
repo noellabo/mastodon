@@ -78,7 +78,8 @@
         float: right;
         font-size: 14px;
 
-        .status__time {
+        .status__time,
+        .status__relative-time {
           color: $ui-primary-color;
         }
       }

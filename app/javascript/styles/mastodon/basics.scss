@@ -1,5 +1,5 @@
 body {
-  font-family: 'mastodon-font-sans-serif', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo sans-serif, sans-serif;
+  font-family: 'mastodon-font-sans-serif', sans-serif;
   background: $ui-base-color;
   background-size: cover;
   background-attachment: fixed;
@@ -118,32 +118,5 @@ button {
     height: 100%;
     align-items: center;
     justify-content: center;
-  }
-}
-
-.separate {
-  display: flex;
-  align-items: center;
-  position: relative;
-  margin: 40px auto;
-  text-align: center;
-
-  span {
-    flex: 0 0 auto;
-    padding: 0 10px;
-  }
-
-  &:before {
-    display: block;
-    content: '';
-    width: 50%;
-    border-bottom: 1px solid $ui-primary-color;
-  }
-
-  &:after {
-    display: block;
-    content: '';
-    width: 50%;
-    border-bottom: 1px solid $ui-primary-color;
   }
 }

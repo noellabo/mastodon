@@ -15,12 +15,14 @@ $button-icon-scale-ration-on-pc: 0.85;
   }
 }
 
+// 「Boostされました」のアイコンの色を変える
 .status__prepend {
   i.fa-retweet {
     color: $ui-highlight-color;
   }
 }
 
+// 名前の部分を薄めに
 .status {
   .display-name strong {
     opacity: 0.85;
@@ -32,13 +34,9 @@ $button-icon-scale-ration-on-pc: 0.85;
   color: $ui-primary-color;
 }
 
-.including-brand {
-  text-transform: none !important;
-  display: inline;
-}
-
-@media screen and (min-width: 1025px) {
-  .status {
+// PCサイズのときはアイコンボタンを小さめに
+.status {
+  @media screen and (min-width: 631px) {
     .icon-button {
       font-size: 18px * $button-icon-scale-ration-on-pc !important;
       width: 23.1429px * $button-icon-scale-ration-on-pc  !important;
@@ -51,18 +49,6 @@ $button-icon-scale-ration-on-pc: 0.85;
       &.active > i.fa-retweet {
         transform: rotate(0deg) scale($button-icon-scale-ration-on-pc) translateY(0.5px) !important;
       }
-    }
-  }
-}
-
-.status__action-bar-dropdown {
-  .dropdown__content {
-    width: 210px;
-  }
-
-  .dropdown--active {
-    .dropdown__content > ul > li > a {
-      width: auto;
     }
   }
 }
@@ -223,5 +209,147 @@ $button-icon-scale-ration-on-pc: 0.85;
   &:focus {
     color: lighten($ui-base-color, 8%);
     background: lighten($ui-base-color, 26%);
+  }
+}
+
+.scheduled_statuses__container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  #mastodon-scheduled-statuses {
+    flex: 1;
+    display: flex;
+
+    .scheduled_statuses {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      .scrollable {
+        flex: 1;
+        min-height: 0;
+      }
+    }
+  }
+}
+
+.suggested_accounts__scrollable {
+  $button-height: 36px;
+
+  position: relative;
+
+  .suggested_accounts__local_timeline_button {
+    height: 30px;
+  }
+
+  .account__suggested_accounts_media {
+    padding-left: 13px;
+    $media-height: 90px;
+
+    .media-gallery {
+      max-height: $media-height;
+    }
+
+    .media-gallery__item {
+      max-height: $media-height;
+    }
+  }
+
+  .load-more {
+    margin-bottom: $button-height;
+  }
+
+  .button {
+    position: absolute;
+    bottom: 0;
+    width: 97%;
+    height: $button-height;
+    line-height: $button-height;
+  }
+}
+
+.account__header {
+  .account__header__oauth-authentications a {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+}
+
+.drawer__block{
+  margin-bottom: 10px;
+  background: lighten($ui-base-color, 13%);
+}
+
+.hashtag-editor {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba($ui-base-color, 0.1);
+  font-size: 12px;
+
+  .hastag-editor__input {
+    padding-left: 0;
+    font-size: 12px;
+    border-radius: 0 0 4px;
+  }
+
+  .fa-hashtag {
+    color: rgba($ui-base-color, 0.7);
+    padding-left: 5px;
+  }
+}
+
+.time-limit-dropdown {
+  position: absolute;
+  right: 3px;
+  top: 30px;
+
+  .time-limit-dropdown__header {
+    padding: 10px;
+    color: $ui-base-color;
+    border-bottom: 1px solid lighten($ui-secondary-color, 4%);
+  }
+
+  .time-limit-dropdown__header_note {
+    font-size: 10px;
+    color: lighten($ui-base-color, 50%);
+  }
+
+  .time-limit-dropdown__dropdown {
+    position: absolute;
+    background: $simple-background-color;
+    box-shadow: 2px 4px 15px rgba($base-shadow-color, 0.4);
+    border-radius: 4px;
+    margin-left: 0;
+    overflow: hidden;
+  }
+}
+
+.search-results__search-statuses {
+  background: lighten($ui-base-color, 8%);
+  color: $primary-text-color;
+  display: block;
+  margin: 10px;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+
+  &:hover {
+    background: lighten($ui-base-color, 11%);
+  }
+}
+
+.search-results__search-statuses-icon {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+// 画像の表示位置を中央よりちょっと上にする
+.media-gallery__item-thumbnail {
+  &, img {
+    object-position: 50% 20%;
   }
 }

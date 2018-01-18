@@ -84,7 +84,6 @@
   }
 
   .content {
-    box-sizing: border-box;
     max-width: 700px;
     padding: 20px 15px;
     padding-top: 60px;
@@ -172,8 +171,6 @@
   @media screen and (max-width: 600px) {
     display: block;
     overflow-y: auto;
-    overflow-x: hidden;
-    max-width: 100%;
     -webkit-overflow-scrolling: touch;
 
     .sidebar-wrapper,
@@ -270,14 +267,6 @@
     color: $ui-secondary-color;
   }
 
-  &:first-child {
-    margin-right: 10px;
-  }
-
-  a {
-    color: $ui-secondary-color;
-  }
-
   .account-card {
     flex: 1 1 auto;
   }
@@ -315,7 +304,6 @@
 
 .batch-form-box {
   display: flex;
-  margin-bottom: 10px;
   flex-wrap: wrap;
   margin-bottom: 5px;
 

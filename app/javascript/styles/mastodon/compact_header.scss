@@ -1,15 +1,10 @@
 .compact-header {
-  background: $base-shadow-color;
-  border-radius: 4px 4px 0 0;
-  box-shadow: 0 0 15px rgba($base-shadow-color, 0.2);
-  padding: 20px 0;
-
   h1 {
     font-size: 24px;
     line-height: 28px;
     color: $ui-primary-color;
     font-weight: 500;
-    margin-left: 15px;
+    margin-bottom: 20px;
     padding: 0 10px;
     word-wrap: break-word;
 

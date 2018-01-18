@@ -1,24 +1,27 @@
 - content_for :page_title do
-  - if @statuses.current_page > 1
-    = "page #{@statuses.current_page} - ##{@tag.name}"
-  - else
-    = "##{@tag.name}"
+  = "##{@tag.name}"
 
-= render 'accounts/service_logo'
+- content_for :header_tags do
+  %script#initial-state{ type: 'application/json' }!= json_escape(@initial_state_json)
+  = javascript_pack_tag 'about', integrity: true, crossorigin: 'anonymous'
+  = render 'og'
 
-- if show_landing_strip?
-  = render partial: 'shared/landing_strip_tag', locals: { tag: @tag }
+.landing-page.tag-page
+  .features
+    .container
+      #mastodon-timeline{ data: { props: Oj.dump(default_props.merge(hashtag: @tag.name)) } }
 
-.compact-header
-  %h1= "##{@tag.name}"
+      .about-mastodon
+        .about-hashtag
+          .brand
+            = link_to root_url do
+              = image_tag asset_pack_path('service_logo.png'), alt: 'Pawoo'
 
-- if @statuses.empty?
-  .accounts-grid
-    = render partial: 'accounts/nothing_here'
-- else
-  .activity-stream.h-feed
-    = render partial: 'stream_entries/status', collection: @statuses_collection, as: :status
+          %p= t 'about.about_hashtag_html', hashtag: @tag.name
 
-  .pagination
-    = link_to_next_page @statuses, safe_join([t('pagination.next'), fa_icon('chevron-right')], ' '), class: 'next'
-    = link_to_prev_page @statuses, safe_join([fa_icon('chevron-left'), t('pagination.prev')], ' '), class: 'prev'
+          .cta
+            = link_to t('auth.login'), new_user_session_path, class: 'button button-secondary'
+            = link_to t('about.learn_more'), root_url, class: 'button button-alternative'
+
+        .features-list.pawoo-features
+          = render 'about/pawoo_features'

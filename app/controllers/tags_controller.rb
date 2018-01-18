@@ -4,15 +4,13 @@ class TagsController < ApplicationController
   before_action :set_body_classes
   before_action :set_instance_presenter
 
-  STATUSES_PER_PAGE = 20
-
   def show
-    @tag                 = Tag.find_by!(name: params[:id].downcase)
-    @statuses            = Status.as_tag_timeline(@tag, current_account, params[:local]).page(params[:page]).per(STATUSES_PER_PAGE).without_count
-    @statuses_collection = cache_collection(@tag.nil? ? [] : @statuses, Status)
+    @tag = Tag.find_by!(name: params[:id].downcase)
 
     respond_to do |format|
       format.html do
+        serializable_resource = ActiveModelSerializers::SerializableResource.new(InitialStatePresenter.new(initial_state_params), serializer: InitialStateSerializer)
+        @initial_state_json   = serializable_resource.to_json
       end
 
       format.json do
