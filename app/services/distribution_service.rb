@@ -11,7 +11,7 @@ class DistributionService < BaseService
     ActivityPub::DistributionWorker.perform_async(status.id)
     ActivityPub::ReplyDistributionWorker.perform_async(status.id) if status.reply? && status.thread.account.local?
 
-    time_limit = TimeLimit.from_tags(status.tags)
+    time_limit = TimeLimit.from_status(status)
     RemovalWorker.perform_in(time_limit.to_duration, status.id) if time_limit
   end
 end

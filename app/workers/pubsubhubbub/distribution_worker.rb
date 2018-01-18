@@ -6,12 +6,7 @@ class Pubsubhubbub::DistributionWorker
   sidekiq_options queue: 'push'
 
   def perform(stream_entry_ids)
-    stream_entries = StreamEntry.where(id: stream_entry_ids).includes(:status).reject do |e|
-      # directメッセージや時間制限tootは配信しない
-      e.status.nil? || e.status.hidden? ||
-        (e.status.local? && TimeLimit.from_tags(e.status.tags)) ||
-        (e.status.reblog? && e.status.reblog.local? && TimeLimit.from_tags(e.status.reblog.tags))
-    end
+    stream_entries = StreamEntry.where(id: stream_entry_ids).includes(:status).reject { |e| e.status.nil? || e.status.hidden? || TimeLimit.from_status(e.status).present? }
 
     return if stream_entries.empty?
 

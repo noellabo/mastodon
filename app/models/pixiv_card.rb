@@ -9,7 +9,6 @@
 #  image_url :string
 #
 
-
 class PixivCard < ApplicationRecord
   belongs_to :status, required: true
   validates :url, presence: true

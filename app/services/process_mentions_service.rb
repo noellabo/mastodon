@@ -35,18 +35,16 @@ class ProcessMentionsService < BaseService
   private
 
   def create_notification(status, mention)
-    time_limit = TimeLimit.from_tags(status.tags)
+    time_limit = TimeLimit.from_status(status)
 
     mentioned_account = mention.account
 
     if mentioned_account.local?
       NotifyService.new.call(mentioned_account, mention)
-    elsif time_limit.nil?
-      if mentioned_account.ostatus? && !status.stream_entry.hidden?
-        NotificationWorker.perform_async(stream_entry_to_xml(status.stream_entry), status.account_id, mentioned_account.id)
-      elsif mentioned_account.activitypub?
-        ActivityPub::DeliveryWorker.perform_async(build_json(mention.status), mention.status.account_id, mentioned_account.inbox_url)
-      end
+    elsif time_limit.nil? && mentioned_account.ostatus? && !status.stream_entry.hidden?
+      NotificationWorker.perform_async(stream_entry_to_xml(status.stream_entry), status.account_id, mentioned_account.id)
+    elsif time_limit.nil? && mentioned_account.activitypub?
+      ActivityPub::DeliveryWorker.perform_async(build_json(mention.status), mention.status.account_id, mentioned_account.inbox_url)
     end
   end
 
