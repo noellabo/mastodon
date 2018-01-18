@@ -300,5 +300,14 @@ namespace :mastodon do
         end
       end
     end
+
+    desc 'Remove all home feed regeneration markers'
+    task remove_regeneration_markers: :environment do
+      keys = Redis.current.keys('account:*:regeneration')
+
+      Redis.current.pipelined do
+        keys.each { |key| Redis.current.del(key) }
+      end
+    end
   end
 end
