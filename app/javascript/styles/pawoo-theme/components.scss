@@ -303,6 +303,15 @@ $button-icon-scale-ration-on-pc: 0.85;
   position: absolute;
   right: 3px;
   top: 30px;
+}
+
+.time-limit-dropdown__dropdown {
+  position: absolute;
+  background: $simple-background-color;
+  box-shadow: 2px 4px 15px rgba($base-shadow-color, 0.4);
+  border-radius: 4px;
+  margin-left: 0;
+  overflow: hidden;
 
   .time-limit-dropdown__header {
     padding: 10px;
@@ -313,15 +322,6 @@ $button-icon-scale-ration-on-pc: 0.85;
   .time-limit-dropdown__header_note {
     font-size: 10px;
     color: lighten($ui-base-color, 50%);
-  }
-
-  .time-limit-dropdown__dropdown {
-    position: absolute;
-    background: $simple-background-color;
-    box-shadow: 2px 4px 15px rgba($base-shadow-color, 0.4);
-    border-radius: 4px;
-    margin-left: 0;
-    overflow: hidden;
   }
 }
 
