@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 
 class Api::V1::SearchController < Api::BaseController
-  before_action :require_user!, only: [:statuses]
+  include Authorization
+
   RESULTS_LIMIT = 5
   MAX_HITS_TOTAL = 10_000 # this value should be the same with index.max_result.window in ElasticSearch
 
   before_action -> { doorkeeper_authorize! :read }
-  before_action :require_user!
+  before_action :require_user!, only: [:statuses]
 
   respond_to :json
 
   def index
-    @search = Search.new(search_results)
+    @search = Search.new(search)
     render json: @search, serializer: REST::SearchSerializer
   end
 
@@ -37,6 +38,18 @@ class Api::V1::SearchController < Api::BaseController
   end
 
   private
+
+  def search
+    search_results.tap do |search|
+      search[:statuses].keep_if do |status|
+        begin
+          authorize status, :show?
+        rescue Mastodon::NotPermittedError
+          false
+        end
+      end
+    end
+  end
 
   def search_results
     SearchService.new.call(

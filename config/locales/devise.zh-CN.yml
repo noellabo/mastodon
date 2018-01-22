@@ -17,13 +17,17 @@ zh-CN:
       unconfirmed: 继续操作前请先确认你的帐户。
     mailer:
       confirmation_instructions:
-        subject: Pawoo 帐户确认信息
+        subject: Pawoo：确认 %{instance} 帐户信息
+      email_changed:
+        subject: Pawoo：电子邮件地址已被修改
       password_change:
-        subject: Pawoo 密码已被重置
+        subject: Pawoo：密码已被重置
+      reconfirmation_instructions:
+        subject: Pawoo：确认 %{instance} 电子邮件地址
       reset_password_instructions:
-        subject: Pawoo 重置密码信息
+        subject: Pawoo：重置密码信息
       unlock_instructions:
-        subject: Pawoo 帐户解锁信息
+        subject: Pawoo：帐户解锁信息
     omniauth_callbacks:
       failure: 由于%{reason}，无法从%{kind}获得授权。
       success: 成功地从%{kind}获得授权。
@@ -35,14 +39,12 @@ zh-CN:
       updated_not_active: 你的密码已修改成功。
     registrations:
       destroyed: 再见！你的帐户已成功注销。我们希望很快可以再见到你。
-      signed_up: 欢迎来到 Pawoo！你已注册成功。
+      signed_up: 欢迎！你已注册成功。
       signed_up_but_inactive: 你已注册，但尚未激活帐户。
       signed_up_but_locked: 你已注册，但帐户被锁定了。
       signed_up_but_unconfirmed: 一封带有确认链接的邮件已经发送至你的邮箱，请点击邮件中的链接以激活你的帐户。如果没有，请检查你的垃圾邮箱。
       update_needs_confirmation: 信息更新成功，但我们需要验证你的新电子邮件地址，请点击邮件中的链接以确认。如果没有，请检查你的垃圾邮箱。
       updated: 帐户资料更新成功。
-      user:
-        send_paranoid_instructions: 一封用于设置密码的邮件已经发送至你的邮箱
     sessions:
       already_signed_out: 已成功登出。
       signed_in: 登录成功。

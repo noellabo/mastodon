@@ -3,71 +3,61 @@
 require 'doorkeeper/grape/authorization_decorator'
 
 class Rack::Attack
-  LIMIT = 60
-  PERIOD = 1.minute
+  class Request
+    def authenticated_token
+      return @token if defined?(@token)
 
-  BLACK_LIST_IPS = [
-    '118.241.187.114', # 不正アカウント作成
-    '60.108.149.247',  # botで負荷かける
-    '122.196.21.73',   # 不正アカウント作成
-    '153.203.141.229', # 不正アカウント作成
-    '60.86.227.33'     # 不正アカウント作成
-  ].freeze
+      @token = Doorkeeper::OAuth::Token.authenticate(
+        Doorkeeper::Grape::AuthorizationDecorator.new(self),
+        *Doorkeeper.configuration.access_token_methods
+      )
+    end
 
-  def self.push_temporary_blacklist(value)
-    Redis.current.sadd("Rack::Attack:temporary_blacklist", value)
+    def authenticated_user_id
+      authenticated_token&.resource_owner_id
+    end
+
+    def unauthenticated?
+      !authenticated_user_id
+    end
+
+    def api_request?
+      path.start_with?('/api')
+    end
+
+    def web_request?
+      !api_request?
+    end
   end
+
+  PROTECTED_PATHS = %w(
+    /auth/sign_in
+    /auth
+    /auth/password
+  ).freeze
+
+  PROTECTED_PATHS_REGEX = Regexp.union(PROTECTED_PATHS.map { |path| /\A#{Regexp.escape(path)}/ })
 
   # Always allow requests from localhost
   # (blocklist & throttles are skipped)
-  safelist('allow from localhost') do |req|
+  Rack::Attack.safelist('allow from localhost') do |req|
     # Requests are allowed if the return value is truthy
     '127.0.0.1' == req.ip || '::1' == req.ip
   end
 
-  blocklist('bot users') do |req|
-    BLACK_LIST_IPS.include?(req.ip)
+  throttle('throttle_authenticated_api', limit: 300, period: 5.minutes) do |req|
+    req.api_request? && req.authenticated_user_id
   end
 
-  # Rate limits for the API
-  # throttle('api_ip', limit: 300, period: PERIOD) do |req|
-  #   req.ip if req.path =~ /\A\/api\/v/
-  # end
-
-  # Rate limits for the API
-  throttle('api_access_token', limit: LIMIT, period: PERIOD) do |req|
-    next unless req.post? && req.path.start_with?('/api/v1') && (req.path =~ /follow/ || req.path == '/api/v1/statuses')
-
-    # return access_token
-    decorated_request = Doorkeeper::Grape::AuthorizationDecorator.new(req)
-    Doorkeeper::OAuth::Token.from_request(decorated_request, *Doorkeeper.configuration.access_token_methods)
+  throttle('throttle_unauthenticated_api', limit: 7_500, period: 5.minutes) do |req|
+    req.ip if req.api_request?
   end
 
-  throttle('accounts_follow_unfollow', limit: LIMIT, period: PERIOD) do |req|
-    req.ip if req.post? && req.path =~ %r{\A/users/[^/]+/(?:follow|unfollow)}
-  end
-
-  # Rate limit logins
-  throttle('login', limit: LIMIT, period: PERIOD) do |req|
-    req.ip if req.path == '/auth/sign_in' && req.post?
-  end
-
-  # Rate limit sign-ups
-  throttle('register', limit: 10, period: 5.minutes) do |req|
-    req.ip if req.path == '/auth' && req.post?
-  end
-
-  # Rate limit forgotten passwords
-  throttle('reminder', limit: LIMIT, period: PERIOD) do |req|
-    req.ip if req.path == '/auth/password' && req.post?
+  throttle('protected_paths', limit: 25, period: 5.minutes) do |req|
+    req.ip if req.post? && req.path =~ PROTECTED_PATHS_REGEX
   end
 
   self.throttled_response = lambda do |env|
-    if env.dig('rack.attack.throttle_data', 'register')
-      req = ActionDispatch::Request.new(env)
-      self.push_temporary_blacklist(req.remote_ip)
-    end
-
     now        = Time.now.utc
     match_data = env['rack.attack.match_data']
 
