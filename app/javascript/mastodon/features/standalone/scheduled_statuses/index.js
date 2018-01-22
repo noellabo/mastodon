@@ -38,8 +38,6 @@ export default class ScheduledStatuses extends ImmutablePureComponent {
   render () {
     const { loaded, statusIds, hasMore } = this.props;
 
-    console.log(statusIds.toJS());
-
     const statusList = loaded ? (
       <StatusList
         scrollKey='scheduledStatuses'
