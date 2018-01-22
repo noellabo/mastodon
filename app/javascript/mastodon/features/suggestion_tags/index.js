@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Link from 'react-router-dom/Link';
 import { refreshSuggestionTags } from '../../actions/suggestion_tags';
-import { ScrollContainer } from 'react-router-scroll';
+import { ScrollContainer } from 'react-router-scroll-4';
 import { defineMessages, injectIntl } from 'react-intl';
 import Column from '../../components/column';
 import ColumnHeader from '../../components/column_header';

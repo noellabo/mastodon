@@ -8,7 +8,7 @@ import {
   fetchSuggestedAccounts,
   expandSuggestedAccounts,
 } from '../../actions/suggested_accounts';
-import { ScrollContainer } from 'react-router-scroll';
+import { ScrollContainer } from 'react-router-scroll-4';
 import { defineMessages, injectIntl } from 'react-intl';
 import SuggestedAccountContainer from '../../containers/suggested_account_container';
 import Column from '../ui/components/column';
