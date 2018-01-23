@@ -9,9 +9,17 @@ class FeedManager
 
   # An approximation of the number of statuses per 14 days
   MIN_ID_RANGE = 2_097_152
+  MAX_POPULATE_DURATION = 2.weeks
 
-  def key(type, id)
-    "feed:#{type}:#{id}"
+  NOT_SNOWFLAKE_ID = 100_000_000
+
+  # Must be <= MAX_ITEMS or the tracking sets will grow forever
+  REBLOG_FALLOFF = 40
+
+  def key(type, id, subtype = nil)
+    return "feed:#{type}:#{id}" unless subtype
+
+    "feed:#{type}:#{id}:#{subtype}"
   end
 
   def filter?(timeline_type, status, receiver_id)
@@ -27,30 +35,53 @@ class FeedManager
   def push(timeline_type, accounts, status)
     accounts = Array.wrap(accounts)
     accounts = accounts.select do |account|
-      insert_and_check(timeline_type, status, account)
+      add_to_feed(timeline_type, account, status)
     end
 
-    PushUpdateWorker.perform_async(accounts.map(&:id), status.id) unless accounts.empty?
+    return false if accounts.empty?
+
+    push_accounts = accounts.select do |account|
+      trim(timeline_type, account.id)
+
+      push_update_required?(timeline_type, account.id)
+    end
+
+    PushUpdateWorker.perform_async(push_accounts.map(&:id), status.id)
+
+    true
   end
 
-  def insert_and_check(timeline_type, status, account)
-    timeline_key = key(timeline_type, account.id)
+  def unpush(timeline_type, account, status)
+    return false unless remove_from_feed(timeline_type, account, status)
 
-    if status.reblog?
-      # If the original status is within 40 statuses from top, do not re-insert it into the feed
-      rank = redis.zrevrank(timeline_key, status.reblog_of_id)
-      return if !rank.nil? && rank < 40
-      redis.zadd(timeline_key, status.id, status.reblog_of_id)
-    else
-      redis.zadd(timeline_key, status.id, status.id)
-      trim(timeline_type, account.id)
-    end
+    payload = Oj.dump(event: :delete, payload: status.id.to_s)
+    Redis.current.publish("timeline:#{account.id}", payload)
 
-    push_update_required?(timeline_type, account.id)
+    true
   end
 
   def trim(type, account_id)
-    redis.zremrangebyrank(key(type, account_id), '0', (-(FeedManager::MAX_ITEMS + 1)).to_s)
+    timeline_key = key(type, account_id)
+    reblog_key = key(type, account_id, 'reblogs')
+    # Remove any items past the MAX_ITEMS'th entry in our feed
+    redis.zremrangebyrank(timeline_key, '0', (-(FeedManager::MAX_ITEMS + 1)).to_s)
+
+    # Get the score of the REBLOG_FALLOFF'th item in our feed, and stop
+    # tracking anything after it for deduplication purposes.
+    falloff_rank = FeedManager::REBLOG_FALLOFF - 1
+    falloff_range = redis.zrevrange(timeline_key, falloff_rank, falloff_rank, with_scores: true)
+    falloff_score = falloff_range&.first&.last&.to_i || 0
+
+    # Get any reblogs we might have to clean up after.
+    redis.zrangebyscore(reblog_key, 0, falloff_score).each do |reblogged_id|
+      # Remove it from the set of reblogs we're tracking *first* to avoid races.
+      redis.zrem(reblog_key, reblogged_id)
+      # Just drop any set we might have created to track additional reblogs.
+      # This means that if this reblog is deleted, we won't automatically insert
+      # another reblog, but also that any new reblog can be inserted into the
+      # feed.
+      redis.del(key(type, account_id, "reblogs:#{reblogged_id}"))
+    end
   end
 
   def push_update_required?(timeline_type, account_id)
@@ -66,11 +97,9 @@ class FeedManager
       query = query.where('id > ?', oldest_home_score)
     end
 
-    redis.pipelined do
-      query.each do |status|
-        next if status.direct_visibility? || filter?(:home, status, into_account)
-        redis.zadd(timeline_key, status.id, status.id)
-      end
+    query.each do |status|
+      next if status.direct_visibility? || filter?(:home, status, into_account)
+      add_to_feed(:home, into_account, status)
     end
 
     trim(:home, into_account.id)
@@ -80,22 +109,85 @@ class FeedManager
     timeline_key = key(:home, into_account.id)
     oldest_home_score = redis.zrange(timeline_key, 0, 0, with_scores: true)&.first&.last&.to_i || 0
 
-    from_account.statuses.published.select('id').where('id > ?', oldest_home_score).reorder(nil).find_in_batches do |statuses|
-      redis.pipelined do
-        statuses.each do |status|
-          redis.zrem(timeline_key, status.id)
-          redis.zremrangebyscore(timeline_key, status.id, status.id)
-        end
-      end
+    from_account.statuses.published.select('id, reblog_of_id').where('id > ?', oldest_home_score).reorder(nil).find_each do |status|
+      remove_from_feed(:home, into_account, status)
     end
   end
 
   def clear_from_timeline(account, target_account)
     timeline_key = key(:home, account.id)
     timeline_status_ids = redis.zrange(timeline_key, 0, -1)
-    target_status_ids = Status.where(id: timeline_status_ids, account: target_account).ids
+    target_statuses = Status.where(id: timeline_status_ids, account: target_account)
 
-    redis.zrem(timeline_key, target_status_ids) if target_status_ids.present?
+    target_statuses.each do |status|
+      unpush(:home, account, status)
+    end
+  end
+
+  def calc_since_id(base_id = nil)
+    return calc_since_id_from_base_id(base_id) if base_id
+
+    first_snowflake_status = Status.reorder(id: :asc).find_by('id > ?', NOT_SNOWFLAKE_ID)
+    last_sequence_status = Status.find_by('id < ?', NOT_SNOWFLAKE_ID)
+
+    # snowflakeになったあとのトゥートがない
+    unless first_snowflake_status
+      first_status = Status.first
+      return if first_status.nil?
+
+      return first_status.id - FeedManager::MIN_ID_RANGE
+    end
+
+    diff = first_snowflake_status.created_at - FeedManager::MAX_POPULATE_DURATION.ago
+
+    # 2週間前のトゥートがsnowflake or snowflake化前のトゥートがない
+    # TODO: 2週間以上経ったらこの部分以外の処理を消す
+    return Mastodon::Snowflake.id_at(FeedManager::MAX_POPULATE_DURATION.ago) if diff <= 0 || last_sequence_status.nil?
+
+    # 2週間のトゥートがsnowflakeじゃない場合は、足りない日数相当のsnowflake前のトゥートIDまで含める
+    last_sequence_status.id - (FeedManager::MIN_ID_RANGE * (diff.to_f / FeedManager::MAX_POPULATE_DURATION)).ceil
+  end
+
+  def calc_since_id_from_base_id(base_id)
+    # snowflake前のidベース
+    return base_id - FeedManager::MIN_ID_RANGE if base_id < NOT_SNOWFLAKE_ID
+
+    last_sequence_status = Status.find_by('id < ?', NOT_SNOWFLAKE_ID)
+    first_snowflake_status = Status.reorder(id: :asc).find_by('id > ?', NOT_SNOWFLAKE_ID)
+
+    base_time = Time.zone.at((base_id >> 16) / 1000)
+    since_time = base_time - FeedManager::MAX_POPULATE_DURATION
+
+    # 2週間前のトゥートがsnowflake or snowflake化前のトゥートがない
+    return Mastodon::Snowflake.id_at(since_time) if since_time >= first_snowflake_status.created_at || last_sequence_status.nil?
+
+    # 2週間のトゥートがsnowflakeじゃない場合は、足りない日数相当のsnowflake前のトゥートIDまで含める
+    diff_day = (first_snowflake_status.created_at - since_time) / 1.day
+    last_sequence_status.id - (FeedManager::MIN_ID_RANGE * (diff_day / FeedManager::MAX_POPULATE_DURATION)).to_i
+  end
+
+  def populate_feed(account)
+    added  = 0
+    limit  = FeedManager::MAX_ITEMS / 2
+    max_id = nil
+    since_id = calc_since_id
+    return unless since_id
+
+    loop do
+      statuses = Status.as_home_timeline(account)
+                       .paginate_by_max_id(limit, max_id, since_id)
+
+      break if statuses.empty?
+
+      statuses.each do |status|
+        next if filter_from_home?(status, account)
+        added += 1 if add_to_feed(:home, account, status)
+      end
+
+      break unless added.zero?
+
+      max_id = statuses.last.id
+    end
   end
 
   private
@@ -105,7 +197,8 @@ class FeedManager
   end
 
   def filter_from_home?(status, receiver_id)
-    return true if status.reply? && (status.in_reply_to_id.nil? || status.in_reply_to_account_id.nil?)
+    return false if receiver_id == status.account_id
+    return true  if status.reply? && (status.in_reply_to_id.nil? || status.in_reply_to_account_id.nil?)
 
     check_for_mutes = [status.account_id]
     check_for_mutes.concat([status.reblog.account_id]) if status.reblog?
@@ -142,5 +235,77 @@ class FeedManager
     should_filter ||= (status.account.silenced? && !Follow.where(account_id: receiver_id, target_account_id: status.account_id).exists?) # of if the account is silenced and I'm not following them
 
     should_filter
+  end
+
+  # Adds a status to an account's feed, returning true if a status was
+  # added, and false if it was not added to the feed. Note that this is
+  # an internal helper: callers must call trim or push updates if
+  # either action is appropriate.
+  def add_to_feed(timeline_type, account, status)
+    timeline_key = key(timeline_type, account.id)
+    reblog_key   = key(timeline_type, account.id, 'reblogs')
+
+    if status.reblog?
+      # If the original status or a reblog of it is within
+      # REBLOG_FALLOFF statuses from the top, do not re-insert it into
+      # the feed
+      rank = redis.zrevrank(timeline_key, status.reblog_of_id)
+
+      return false if !rank.nil? && rank < FeedManager::REBLOG_FALLOFF
+
+      reblog_rank = redis.zrevrank(reblog_key, status.reblog_of_id)
+      if reblog_rank.nil?
+        # This is not something we've already seen reblogged, so we
+        # can just add it to the feed (and note that we're
+        # reblogging it).
+        redis.zadd(timeline_key, status.id, status.id)
+        redis.zadd(reblog_key, status.id, status.reblog_of_id)
+      else
+        # Another reblog of the same status was already in the
+        # REBLOG_FALLOFF most recent statuses, so we note that this
+        # is an "extra" reblog, by storing it in reblog_set_key.
+        reblog_set_key = key(timeline_type, account.id, "reblogs:#{status.reblog_of_id}")
+        redis.sadd(reblog_set_key, status.id)
+        return false
+      end
+    else
+      redis.zadd(timeline_key, status.id, status.id)
+    end
+
+    true
+  end
+
+  # Removes an individual status from a feed, correctly handling cases
+  # with reblogs, and returning true if a status was removed. As with
+  # `add_to_feed`, this does not trigger push updates, so callers must
+  # do so if appropriate.
+  def remove_from_feed(timeline_type, account, status)
+    timeline_key = key(timeline_type, account.id)
+
+    if status.reblog?
+      # 1. If the reblogging status is not in the feed, stop.
+      status_rank = redis.zrevrank(timeline_key, status.id)
+      return false if status_rank.nil?
+
+      # 2. Remove reblog from set of this status's reblogs.
+      reblog_set_key = key(timeline_type, account.id, "reblogs:#{status.reblog_of_id}")
+
+      redis.srem(reblog_set_key, status.id)
+      # 3. Re-insert another reblog or original into the feed if one
+      # remains in the set. We could pick a random element, but this
+      # set should generally be small, and it seems ideal to show the
+      # oldest potential such reblog.
+      other_reblog = redis.smembers(reblog_set_key).map(&:to_i).sort.first
+
+      redis.zadd(timeline_key, other_reblog, other_reblog) if other_reblog
+
+      # 4. Remove the reblogging status from the feed (as normal)
+      # (outside conditional)
+    else
+      # If the original is getting deleted, no use for reblog references
+      redis.del(key(timeline_type, account.id, "reblogs:#{status.id}"))
+    end
+
+    redis.zrem(timeline_key, status.id)
   end
 end

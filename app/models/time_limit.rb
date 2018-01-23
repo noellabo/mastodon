@@ -10,6 +10,15 @@ class TimeLimit
     tags.map { |tag| new(tag.name) }.find(&:valid?)
   end
 
+  def self.from_status(status)
+    return unless status
+
+    status = status.reblog if status.reblog?
+    return unless status.local?
+
+    from_tags(status.tags)
+  end
+
   def initialize(name)
     @name = name
   end

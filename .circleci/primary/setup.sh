@@ -112,7 +112,7 @@ if ! rbenv version-name > /dev/null; then
 
   CONFIGURE_OPTS='--disable-install-doc' rbenv install $(cat .ruby-version)
   gem update --system
-  gem install bundler
+  gem install bundler --force
 fi
 
 if [ -v LOCAL_DOMAIN ]; then

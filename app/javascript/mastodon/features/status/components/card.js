@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import punycode from 'punycode';
 import classnames from 'classnames';
@@ -22,10 +23,19 @@ export default class Card extends React.PureComponent {
 
   static propTypes = {
     card: ImmutablePropTypes.map,
+    maxDescription: PropTypes.number,
+  };
+
+  static defaultProps = {
+    maxDescription: 50,
+  };
+
+  state = {
+    width: 0,
   };
 
   renderLink () {
-    const { card } = this.props;
+    const { card, maxDescription } = this.props;
 
     let image    = '';
     let provider = card.get('provider_name');
@@ -52,7 +62,7 @@ export default class Card extends React.PureComponent {
 
         <div className='status-card__content'>
           <strong className='status-card__title' title={card.get('title')}>{card.get('title')}</strong>
-          <p className='status-card__description'>{(card.get('description') || '').substring(0, 50)}</p>
+          <p className='status-card__description'>{(card.get('description') || '').substring(0, maxDescription)}</p>
           <span className='status-card__host'>{provider}</span>
         </div>
       </a>
@@ -69,14 +79,25 @@ export default class Card extends React.PureComponent {
     );
   }
 
+  setRef = c => {
+    if (c) {
+      this.setState({ width: c.offsetWidth });
+    }
+  }
+
   renderVideo () {
-    const { card } = this.props;
-    const content  = { __html: card.get('html') };
+    const { card }  = this.props;
+    const content   = { __html: card.get('html') };
+    const { width } = this.state;
+    const ratio     = card.get('width') / card.get('height');
+    const height    = card.get('width') > card.get('height') ? (width / ratio) : (width * ratio);
 
     return (
       <div
+        ref={this.setRef}
         className='status-card-video'
         dangerouslySetInnerHTML={content}
+        style={{ height }}
       />
     );
   }

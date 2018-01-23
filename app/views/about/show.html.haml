@@ -5,16 +5,7 @@
   %script#initial-state{ type: 'application/json' }!= json_escape(@initial_state_json)
   = javascript_pack_tag 'about', integrity: true, crossorigin: 'anonymous'
   = javascript_pack_tag 'public', integrity: true, crossorigin: 'anonymous'
-
-  %meta{ property: 'og:site_name', content: site_title }/
-  %meta{ property: 'og:url', content: about_url }/
-  %meta{ property: 'og:type', content: 'website' }/
-  %meta{ property: 'og:title', content: site_hostname }/
-  %meta{ property: 'og:description', content: strip_tags(@instance_presenter.site_description.presence || t('about.about_mastodon_html')) }/
-  %meta{ property: 'og:image', content: asset_pack_path('mastodon_small.jpg', protocol: :request) }/
-  %meta{ property: 'og:image:width', content: '400' }/
-  %meta{ property: 'og:image:height', content: '400' }/
-  %meta{ property: 'twitter:card', content: 'summary' }/
+  = render partial: 'shared/og'
 
 .about-cols
   .about-col.left
@@ -53,28 +44,7 @@
             = image_tag asset_pack_path('about/badge-googleplay.png'), width: 190
 
     .about-col-body
-      %p.main ＼ Pawooの特徴 ／
-
-      %p.title 一度に500文字までのテキスト・画像・動画を投稿できる
-
-      = image_tag asset_pack_path('about/submit-form.png'), width: '100%'
-
-      %p.title Pawooにはたくさんのユーザーがいて、わいわいしてる場を楽しめる
-      %p
-        ローカルタイムラインを見れば、Pawoo内での会話がすべて流れてくるので、フォローしている人がいなくても使い始めから楽しい！
-
-      %p.title 投稿時に公開範囲を制限できる
-      %p
-        例えば、Pawoo上のユーザーに広く見てもらいたいイラストと、フォロワーのみに見せたいイラストを分けて投稿することができる！
-
-      %p.title Pawooだけの機能「メディアタイムライン」がとっても面白い
-      %p
-        投稿された画像や動画だけが一覧で見れる「メディアタイムライン」機能が追加されています。
-        メディアタイムラインには常に多数のイラストが登場し、クリエイター間での交流も盛んに行われています。
-
-      %p.title pixivアカウントと連携できる
-      %p
-        創作活動が好きなpixivユーザーがもっと気軽に楽しく参加できるよう、pixivアカウントとの連携し、pixivの作品をPawooでシェアできる機能を追加しています。
+      = render 'pawoo_features'
 
       .simple_form.signup
         = link_to new_user_registration_path do

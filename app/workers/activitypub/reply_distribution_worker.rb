@@ -21,7 +21,7 @@ class ActivityPub::ReplyDistributionWorker
   private
 
   def skip_distribution?
-    @status.private_visibility? || @status.direct_visibility? || (@status.local? && TimeLimit.from_tags(@status.tags))
+    @status.private_visibility? || @status.direct_visibility? || TimeLimit.from_status(@status).present?
   end
 
   def inboxes

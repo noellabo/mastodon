@@ -7,6 +7,10 @@ Rails.application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
 
+  # Disable caching.
+  config.action_controller.perform_caching = false
+  config.cache_store = :null_store
+
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
   # preloads Rails for running tests, you may have to set it to true.
@@ -38,7 +42,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :test
 
   # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :log # elasticsearch-railsで大量の警告が出るので一旦ファイルに書き出すように変更
+  config.active_support.deprecation = :stderr
 
   # Generate random VAPID keys
   vapid_key = Webpush.generate_key

@@ -12,9 +12,6 @@ import {
   insertEmojiCompose,
   requestImageCache,
   insertTagCompose,
-  clearComposeHashTagSuggestions,
-  fetchComposeHashTagSuggestions,
-  selectComposeHashTagSuggestion,
 } from '../../../actions/compose';
 
 const mapStateToProps = state => ({
@@ -31,8 +28,6 @@ const mapStateToProps = state => ({
   is_uploading: state.getIn(['compose', 'is_uploading']),
   me: state.getIn(['compose', 'me']),
   showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
-  hash_tag_suggestions: state.getIn(['compose', 'hash_tag_suggestions']),
-  hash_tag_token: state.getIn(['compose', 'hash_tag_token']),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -61,18 +56,6 @@ const mapDispatchToProps = (dispatch) => ({
 
   onSuggestionSelected (position, token, accountId) {
     dispatch(selectComposeSuggestion(position, token, accountId));
-  },
-
-  onHashTagSuggestionsClearRequested() {
-    dispatch(clearComposeHashTagSuggestions());
-  },
-
-  onHashTagSuggestionsFetchRequested(token) {
-    dispatch(fetchComposeHashTagSuggestions(token));
-  },
-
-  onHashTagSuggestionsSelected(tokenStart, token, value) {
-    dispatch(selectComposeHashTagSuggestion(tokenStart, token, value));
   },
 
   onChangeDateTime (dateTime) {

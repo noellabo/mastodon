@@ -7,7 +7,7 @@ module Streamable
     has_one :stream_entry, as: :activity
 
     after_create do
-      account.stream_entries.create!(activity: self, hidden: hidden?, created_at: created_at) if needs_stream_entry?
+      account.stream_entries.create!(activity: self, hidden: hidden?) if needs_stream_entry?
     end
   end
 

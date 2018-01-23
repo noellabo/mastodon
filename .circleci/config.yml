@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: pawoo/circleci-primary:20170907
+      - image: pawoo/circleci-primary:20180111
       - image: postgres:9.5.4
         environment:
           POSTGRES_USER: root
@@ -134,7 +134,7 @@ jobs:
       - run:
           name: Wait for assets precompilation
           command: |
-            for i in $(seq 120); do
+            for i in $(seq 240); do
               if [ -f tmp/circleci/assets.success ]; then
                 exit 0
               elif [ -f tmp/circleci/assets.failure ]; then

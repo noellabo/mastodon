@@ -1,11 +1,12 @@
 ---
 ja:
   about:
+    about_hashtag_html: ハッシュタグ <strong>#%{hashtag}</strong> の付いた公開トゥートです。どこでもいいので、連合に参加しているSNS上にアカウントを作れば会話に参加することができます。
     about_mastodon_html: |
       マストドンは、所属するインスタンスを選んでアカウントを登録し、トゥートと呼ばれる投稿を通じてコミュニケーションを楽しむSNSです。
       オープンソースで公開されているため、誰でも自分のインスタンスを立ち上げることが可能である他、様々なインスタンスにアカウントを持つこともできます。
       また、インスタンス間を超えたやり取りも可能であるため、様々なコミュニティを介したコミュニケーションが展開されています。
-    about_this: このインスタンスについて
+    about_this: 詳細情報
     closed_registrations: 現在このインスタンスでの新規登録は受け付けていません。しかし、他のインスタンスにアカウントを作成しても全く同じネットワークに参加することができます。
     contact: お問い合わせ先
     contact_body_mastodon: Pawoo内からはこちら
@@ -32,6 +33,7 @@ ja:
     hosted_on: Mastodon hosted on %{domain}
     learn_more: もっと詳しく
     other_instances: 他のインスタンス
+    register: 登録する
     source_code: ソースコード
     status_count_after: トゥート
     status_count_before: トゥート数
@@ -55,8 +57,15 @@ ja:
       admin: Admin
     unfollow: フォロー解除
   admin:
+    account_moderation_notes:
+      account: モデレータ
+      create: 書き込む
+      created_at: 日付
+      created_msg: モデレーションメモを書き込みました
+      delete: 削除
+      destroyed_msg: モデレーションメモを削除しました
     accounts:
-      are_you_sure: 本当に実行しますか?
+      are_you_sure: 本当に実行しますか？
       confirm: 確認
       confirmed: 確認済み
       disable_two_factor_authentication: 二段階認証を無効にする
@@ -66,6 +75,7 @@ ja:
       email: E-mail
       feed_url: フィードURL
       followers: フォロワー数
+      followers_url: Followers URL
       follows: フォロー数
       inbox_url: Inbox URL
       ip: IP
@@ -80,6 +90,7 @@ ja:
         silenced: サイレンス中
         suspended: 停止中
         title: モデレーション
+      moderation_notes: モデレーションメモ
       most_recent_activity: 直近の活動
       most_recent_ip: 直近のIP
       not_subscribed: 購読していない
@@ -100,6 +111,7 @@ ja:
       resubscribe: 再講読
       salmon_url: Salmon URL
       search: 検索
+      shared_inbox_url: Shared Inbox URL
       show:
         created_reports: このアカウントで作られたレポート
         report: レポート
@@ -113,6 +125,25 @@ ja:
       unsubscribe: 購読の解除
       username: ユーザー名
       web: Web
+    custom_emojis:
+      copied_msg: 絵文字のコピーをローカルに作成しました
+      copy: コピー
+      copy_failed_msg: 絵文字のコピーをローカルに作成できませんでした
+      created_msg: 絵文字の追加に成功しました
+      delete: 削除
+      destroyed_msg: 絵文字の削除に成功しました
+      disable: 無効化
+      disabled_msg: 絵文字を無効化しました
+      emoji: 絵文字
+      enable: 有効化
+      enabled_msg: 絵文字を有効化しました
+      image_hint: 50KBまでのPNG画像を利用できます。
+      new:
+        title: 新規カスタム絵文字の追加
+      shortcode: ショートコード
+      shortcode_hint: 2文字以上の半角英数字とアンダーバーのみ利用できます。
+      title: カスタム絵文字
+      upload: アップロード
     domain_blocks:
       add_new: 新規追加
       created_msg: ドメインブロック処理を完了しました
@@ -145,9 +176,21 @@ ja:
         undo: 元に戻す
       title: ドメインブロック
       undo: 元に戻す
+    email_domain_blocks:
+      add_new: 新規追加
+      created_msg: 処理を完了しました
+      delete: 消去
+      destroyed_msg: 消去しました
+      domain: ドメイン
+      new:
+        create: ブロックを作成
+        title: 新規メールドメインブロック
+      title: メールドメインブロック
     instances:
       account_count: 既知のアカウント数
       domain_name: ドメイン名
+      reset: リセット
+      search: 検索
       title: 既知のインスタンス
     oauth_authentications:
       linked: 連携中
@@ -188,7 +231,7 @@ ja:
         username: 連絡先のユーザー名
       registrations:
         closed_message:
-          desc_html: 新規登録を停止しているときにフロントページに表示されます。HTMLタグが使えます
+          desc_html: 新規登録を停止しているときにフロントページに表示されます。HTMLタグが使えます。
           title: 新規登録停止時のメッセージ
         deletion:
           desc_html: 誰でも自分のアカウントを削除できるようにします
@@ -200,12 +243,15 @@ ja:
         desc_html: フロントページへの表示と meta タグに使用される紹介文です。HTMLタグ、特に<code>&lt;a&gt;</code> と <code>&lt;em&gt;</code>が使えます。
         title: インスタンスの説明
       site_description_extended:
-        desc_html: あなたのインスタンスにおける行動規範やルール、ガイドライン、そのほかの記述をする際に最適な場所です。HTMLタグが使えます
+        desc_html: あなたのインスタンスにおける行動規範やルール、ガイドライン、そのほかの記述をする際に最適な場所です。HTMLタグが使えます。
         title: カスタム詳細説明
       site_terms:
-        desc_html: あなたは独自のプライバシーポリシーや利用規約、そのほかの法的根拠を書くことができます。HTMLタグが使えます
+        desc_html: あなたは独自のプライバシーポリシーや利用規約、そのほかの法的根拠を書くことができます。HTMLタグが使えます。
         title: カスタム利用規約
       site_title: インスタンスの名前
+      thumbnail:
+        desc_html: OpenGraphとAPIによるプレビューに使用されます。サイズは1200×630px推奨です。
+        title: インスタンスのサムネイル
       timeline_preview:
         desc_html: ランディングページに公開タイムラインを表示します
         title: タイムラインプレビュー
@@ -242,9 +288,10 @@ ja:
       body: "%{reporter} が %{target} を通報しました"
       subject: "%{instance} の新しい通報 (#%{id})"
   application_mailer:
+    salutation: "%{name} さん"
     settings: 'メール設定の変更: %{link}'
     signature: Mastodon %{instance} インスタンスからの通知
-    view: 'View:'
+    view: リンク
   applications:
     created: アプリが作成されました
     destroyed: アプリが削除されました
@@ -275,7 +322,7 @@ ja:
     error: 残念ながら、リモートアカウント情報の取得中にエラーが発生しました。
     follow: フォロー
     follow_request: 'あなたは以下のアカウントにフォローリクエストを送信しました:'
-    following: '成功! あなたは現在以下のアカウントをフォローしています:'
+    following: '成功！ あなたは現在以下のアカウントをフォローしています:'
     post_follow:
       close: またはこのウィンドウを閉じます
       return: ユーザーのプロフィールに戻る
@@ -307,14 +354,16 @@ ja:
     exists_oauth_authentications_html: アカウント削除の前に、<a href="%{path}">pixivアカウント連携</a>を解除してください。
   errors:
     top: トップに戻る
-    '403': このページを表示する権限がありません
+    '403': このページを表示する権限がありません。
     '404': お探しのページは見つかりませんでした。
     '410': お探しのページはもう存在しません。
     '422':
       content: セキュリティ認証に失敗しました。Cookieをブロックしていませんか？
       title: セキュリティ認証に失敗
     '429': リクエストの制限に達しました。
-    '500': エラーが発生しました。
+    '500':
+      content: もうしわけありませんが、なにかが間違っています。
+      title: このページは正しくありません
     '503': ただいまメンテナンスを行なっております。
     noscript_html: Pawooのウェブアプリケーションを利用する場合はJavaScriptを有効にしてください。またはあなたのプラットフォーム向けの<a href="https://github.com/tootsuite/documentation/blob/master/Using-Mastodon/Apps.md">Mastodonネイティブアプリ</a>を探すことができます。
   exports:
@@ -340,11 +389,11 @@ ja:
     powered_by: powered by %{link}
     save_changes: 変更を保存
     validation_errors:
-      one: エラーが発生しました。以下のエラーを確認してください
-      other: エラーが発生しました。以下の%{count}個のエラーを確認してください
+      one: エラーが発生しました。以下のエラーを確認してください。
+      other: エラーが発生しました。以下の%{count}個のエラーを確認してください。
   imports:
     preface: 他のインスタンスでエクスポートされたファイルから、フォロー/ブロックした情報をこのインスタンス上のアカウントにインポートできます。
-    success: ファイルは正常にアップロードされ、現在処理中です。しばらくしてから確認してください
+    success: ファイルは正常にアップロードされ、現在処理中です。しばらくしてから確認してください。
     types:
       blocking: ブロックしたアカウントリスト
       following: フォロー中のアカウントリスト
@@ -374,7 +423,7 @@ ja:
       body: "%{name} さんにフォローされています"
       subject: "%{name} さんにフォローされています"
     follow_request:
-      body: "%{name} さんがあなたにフォローをリクエストしました。"
+      body: "%{name} さんがあなたにフォローをリクエストしました"
       subject: "%{name} さんからのフォローリクエスト"
     mention:
       body: "%{name} さんから返信がありました:"
@@ -408,6 +457,11 @@ ja:
     next: 次
     prev: 前
     truncate: "&hellip;"
+  preferences:
+    languages: 言語
+    other: その他
+    publishing: 投稿
+    web: ウェブ
   push_notifications:
     favourite:
       title: あなたのトゥートが %{name} さんにお気に入り登録されました
@@ -475,6 +529,7 @@ ja:
     export: データのエクスポート
     followers: 信頼済みのインスタンス
     import: データのインポート
+    notifications: 通知
     oauth_authentications: pixivアカウント連携
     preferences: ユーザー設定
     push_notification_preferences: 通知設定
@@ -572,12 +627,14 @@ ja:
 
       <p>オリジナルの出典 <a href="https://github.com/discourse/discourse">Discourse privacy policy</a>.</p>
     title: "%{instance} 利用規約・プライバシーポリシー"
+  themes:
+    default: Mastodon
   time:
     formats:
       default: "%Y年%m月%d日 %H:%M"
   two_factor_authentication:
-    code_hint: 確認するには認証アプリで表示されたコードを入力してください
-    description_html: "<strong>二段階認証</strong>を有効にすると、ログイン時にスマートフォンで生成されるワンタイムパスワードが必要になります。"
+    code_hint: 確認するには認証アプリで表示されたコードを入力してください。
+    description_html: "<strong>二段階認証</strong>を有効にするとログイン時、電話でコードを受け取る必要があります。"
     disable: 無効
     enable: 有効
     enabled: 二段階認証は有効になっています

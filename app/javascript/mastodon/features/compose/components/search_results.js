@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import AccountContainer from '../../../containers/account_container';
 import StatusContainer from '../../../containers/status_container';
-import Link from 'react-router-dom/Link';
+import { Link } from 'react-router-dom';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
 export default class SearchResults extends ImmutablePureComponent {

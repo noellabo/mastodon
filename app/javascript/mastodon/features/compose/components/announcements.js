@@ -5,17 +5,45 @@ import IconButton from '../../../components/icon_button';
 
 const storageKey = 'announcements_dismissed';
 
+// NOTE: id: 15 まで使用した
+const announcements = [
+  {
+    id: 1,
+    icon: '/announcements/icon_2x_360.png',
+    body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
+    link: [
+      {
+        reactRouter: false,
+        inline: true,
+        href: 'https://itunes.apple.com/us/app/%E3%83%9E%E3%82%B9%E3%83%88%E3%83%89%E3%83%B3%E3%82%A2%E3%83%97%E3%83%AA-pawoo/id1229070679?l=ja&ls=1&mt=8',
+        body: 'Appストア',
+      }, {
+        reactRouter: false,
+        inline: true,
+        href: 'https://play.google.com/store/apps/details?id=jp.pxv.pawoo&hl=ja',
+        body: 'Google Playストア',
+      },
+    ],
+  }, {
+    id: 7,
+    icon: '/announcements/icon_2x_360.png',
+    body: 'Pawooにどんなユーザーさんがいるのか見てみよう！',
+    link: [
+      {
+        reactRouter: true,
+        inline: false,
+        href: '/suggested_accounts',
+        body: 'おすすめユーザー（実験中）',
+      },
+    ],
+  },
+];
+
 class Announcements extends React.PureComponent {
 
-  componentDidUpdate (prevProps, prevState) {
-    if (prevState.dismissed !== this.state.dismissed) {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(this.state.dismissed));
-      } catch (e) {}
-    }
-  }
+  constructor (props, context) {
+    super(props, context);
 
-  componentWillMount () {
     try {
       const dismissed = JSON.parse(localStorage.getItem(storageKey));
       this.state = { dismissed: Array.isArray(dismissed) ? dismissed : [] };
@@ -23,43 +51,15 @@ class Announcements extends React.PureComponent {
       this.state = { dismissed: [] };
     }
 
-    const announcements = [];
-
-    announcements.push(
-      {
-        id: 1,
-        icon: '/announcements/icon_2x_360.png',
-        body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
-        link: [
-          {
-            reactRouter: false,
-            inline: true,
-            href: 'https://itunes.apple.com/us/app/%E3%83%9E%E3%82%B9%E3%83%88%E3%83%89%E3%83%B3%E3%82%A2%E3%83%97%E3%83%AA-pawoo/id1229070679?l=ja&ls=1&mt=8',
-            body: 'Appストア',
-          }, {
-            reactRouter: false,
-            inline: true,
-            href: 'https://play.google.com/store/apps/details?id=jp.pxv.pawoo&hl=ja',
-            body: 'Google Playストア',
-          },
-        ],
-      }, {
-        id: 7,
-        icon: '/announcements/icon_2x_360.png',
-        body: 'Pawooにどんなユーザーさんがいるのか見てみよう！',
-        link: [
-          {
-            reactRouter: true,
-            inline: false,
-            href: '/suggested_accounts',
-            body: 'おすすめユーザー（実験中）',
-          },
-        ],
-      }
-      // NOTE: id: 15 まで使用した
-    );
-
     this.announcements = Immutable.fromJS(announcements);
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (prevState.dismissed !== this.state.dismissed) {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(this.state.dismissed));
+      } catch (e) {}
+    }
   }
 
   handleDismiss = (event) => {

@@ -1,7 +1,15 @@
 # frozen_string_literal: true
 
 class FetchLinkCardService < BaseService
-  URL_PATTERN = %r{https?://\S+}
+  URL_PATTERN = %r{
+    (                                                                                                 #   $1 URL
+      (https?:\/\/)                                                                                   #   $2 Protocol (required)
+      (#{Twitter::Regex[:valid_domain]})                                                              #   $3 Domain(s)
+      (?::(#{Twitter::Regex[:valid_port_number]}))?                                                   #   $4 Port number (optional)
+      (/#{Twitter::Regex[:valid_url_path]}*)?                                                         #   $5 URL Path and anchor
+      (\?#{Twitter::Regex[:valid_url_query_chars]}*#{Twitter::Regex[:valid_url_query_ending_chars]})? #   $6 Query String
+    )
+  }iox
 
   def call(status)
     @status = status
@@ -14,20 +22,21 @@ class FetchLinkCardService < BaseService
     RedisLock.acquire(lock_options) do |lock|
       if lock.acquired?
         @card = PreviewCard.find_by(url: @url)
-        process_url if @card.nil?
+        process_url if @card.nil? || @card.updated_at <= 2.weeks.ago
       end
     end
 
-    attach_card unless @card.nil?
-  rescue HTTP::ConnectionError, OpenSSL::SSL::SSLError
+    attach_card if @card&.persisted?
+  rescue HTTP::Error, Addressable::URI::InvalidURIError => e
+    Rails.logger.debug "Error fetching link #{@url}: #{e}"
     nil
   end
 
   private
 
   def process_url
-    @card = PreviewCard.new(url: @url)
-    res   = Request.new(:head, @url).perform
+    @card ||= PreviewCard.new(url: @url)
+    res     = Request.new(:head, @url).perform
 
     return if res.code != 200 || res.mime_type != 'text/html'
 
@@ -40,7 +49,7 @@ class FetchLinkCardService < BaseService
 
   def parse_urls
     if @status.local?
-      urls = @status.text.match(URL_PATTERN).to_a.map { |uri| Addressable::URI.parse(uri).normalize }
+      urls = @status.text.scan(URL_PATTERN).map { |array| Addressable::URI.parse(array[0]).normalize }
     else
       html  = Nokogiri::HTML(@status.text)
       links = html.css('a')
@@ -62,6 +71,8 @@ class FetchLinkCardService < BaseService
 
   def attempt_oembed
     response = OEmbed::Providers.get(@url)
+
+    return false unless response.respond_to?(:type)
 
     @card.type          = response.type
     @card.title         = response.respond_to?(:title)         ? response.title         : ''
@@ -104,14 +115,27 @@ class FetchLinkCardService < BaseService
     detector.strip_tags = true
 
     guess = detector.detect(html, response.charset)
-    page  = Nokogiri::HTML(html, nil, guess&.fetch(:encoding))
+    page  = Nokogiri::HTML(html, nil, guess&.fetch(:encoding, nil))
 
-    @card.type             = :link
-    @card.title            = meta_property(page, 'og:title') || page.at_xpath('//title')&.content || ''
-    @card.description      = meta_property(page, 'og:description') || meta_property(page, 'description') || ''
-    @card.image_remote_url = meta_property(page, 'og:image') if meta_property(page, 'og:image')
+    if meta_property(page, 'twitter:player')
+      @card.type   = :video
+      @card.width  = meta_property(page, 'twitter:player:width') || 0
+      @card.height = meta_property(page, 'twitter:player:height') || 0
+      @card.html   = content_tag(:iframe, nil, src: meta_property(page, 'twitter:player'),
+                                               width: @card.width,
+                                               height: @card.height,
+                                               allowtransparency: 'true',
+                                               scrolling: 'no',
+                                               frameborder: '0')
+    else
+      @card.type             = :link
+      @card.image_remote_url = meta_property(page, 'og:image') if meta_property(page, 'og:image')
+    end
 
-    return if @card.title.blank?
+    @card.title            = meta_property(page, 'og:title').presence || page.at_xpath('//title')&.content || ''
+    @card.description      = meta_property(page, 'og:description').presence || meta_property(page, 'description') || ''
+
+    return if @card.title.blank? && @card.html.blank?
 
     @card.save_with_optional_image!
   end

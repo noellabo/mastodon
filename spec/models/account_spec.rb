@@ -261,7 +261,9 @@ RSpec.describe Account, type: :model do
     let(:sensitive_status) { Fabricate(:status, account: account, created_at: 1.minutes.ago, sensitive: true) }
     let(:private_status) { Fabricate(:status, account: account, created_at: 1.minutes.ago, visibility: :private) }
     let(:direct_status) { Fabricate(:status, account: account, created_at: 1.minutes.ago, visibility: :direct) }
-    let(:media_statuses) { [latest_public_status, latest_unlisted_status, old_status, old_status2, sensitive_status, private_status, direct_status] }
+
+    # 古い順に作成されるように気をつける
+    let(:media_statuses) { [old_status2, old_status, latest_public_status, latest_unlisted_status, sensitive_status, private_status, direct_status] }
 
     before do
       media_statuses.each do |status|
@@ -292,7 +294,7 @@ RSpec.describe Account, type: :model do
     end
 
     context 'no recent media' do
-      let(:media_statuses) { [old_status, old_status2, sensitive_status, private_status, direct_status] }
+      let(:media_statuses) { [old_status2, old_status, sensitive_status, private_status, direct_status] }
       it { expect(subject.size).to eq 2 }
       it 'includes media of old_status' do
         expect(subject.map(&:id)).to include(*[old_status.media_attachments.first.id, old_status2.media_attachments.first.id])

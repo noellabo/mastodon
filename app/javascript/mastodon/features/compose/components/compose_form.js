@@ -8,7 +8,6 @@ import Immutable from 'immutable';
 import ReplyIndicatorContainer from '../containers/reply_indicator_container';
 import AutosuggestTextarea from '../../../components/autosuggest_textarea';
 import HashtagEditor from '../../../components/hashtag_editor';
-import { debounce } from 'lodash';
 import UploadButtonContainer from '../containers/upload_button_container';
 import { defineMessages, injectIntl } from 'react-intl';
 import Collapsable from '../../../components/collapsable';
@@ -16,8 +15,8 @@ import SpoilerButtonContainer from '../containers/spoiler_button_container';
 import PrivacyDropdownContainer from '../containers/privacy_dropdown_container';
 import SensitiveButtonContainer from '../containers/sensitive_button_container';
 import SensitiveGuideContainer from '../containers/sensitive_guide_container';
-import EmojiPickerDropdown from './emoji_picker_dropdown';
-import TimeLimitDropdown from './time_limit_dropdown';
+import EmojiPickerDropdown from '../containers/emoji_picker_dropdown_container';
+import TimeLimitDropdownContainer from '../containers/time_limit_dropdown_container';
 import UploadFormContainer from '../containers/upload_form_container';
 import WarningContainer from '../containers/warning_container';
 import { isMobile } from '../../../is_mobile';
@@ -57,7 +56,7 @@ export default class ComposeForm extends ImmutablePureComponent {
     preselectDate: PropTypes.instanceOf(Date),
     is_submitting: PropTypes.bool,
     is_uploading: PropTypes.bool,
-    me: PropTypes.number,
+    me: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onClearSuggestions: PropTypes.func.isRequired,
@@ -68,11 +67,6 @@ export default class ComposeForm extends ImmutablePureComponent {
     onPaste: PropTypes.func.isRequired,
     onPickEmoji: PropTypes.func.isRequired,
     showSearch: PropTypes.bool,
-    hash_tag_suggestions: ImmutablePropTypes.list,
-    hash_tag_token: PropTypes.string,
-    onHashTagSuggestionsClearRequested: PropTypes.func.isRequired,
-    onHashTagSuggestionsFetchRequested: PropTypes.func.isRequired,
-    onHashTagSuggestionsSelected: PropTypes.func.isRequired,
     onSelectTimeLimit: PropTypes.func.isRequired,
     onInsertHashtag: PropTypes.func.isRequired,
   };
@@ -108,31 +102,23 @@ export default class ComposeForm extends ImmutablePureComponent {
 
   onSuggestionsClearRequested = () => {
     this.props.onClearSuggestions();
+    this.setState({ tagSuggestionFrom: null });
   }
 
-  onSuggestionsFetchRequested = debounce((token) => {
+  onSuggestionsFetchRequested = (token) => {
+    this.setState({ tagSuggestionFrom: 'autosuggested-textarea' });
     this.props.onFetchSuggestions(token);
-  }, 500, { trailing: true })
+  }
 
   onSuggestionSelected = (tokenStart, token, value) => {
     this._restoreCaret = 'suggestion';
     this.props.onSuggestionSelected(tokenStart, token, value);
-  }
-
-  onHashTagSuggestionsClearRequested = () => {
-    this.props.onHashTagSuggestionsClearRequested();
     this.setState({ tagSuggestionFrom: null });
   }
 
-  onHashTagSuggestionsFetchRequested = (token, tagSuggestionFrom) => {
-    this.props.onHashTagSuggestionsFetchRequested(token);
-    this.setState({ tagSuggestionFrom });
-  }
-
-  onHashTagSuggestionsSelected = (tokenStart, token, value) => {
-    this._restoreCaret = 'suggestion';
-    this.props.onHashTagSuggestionsSelected(tokenStart, token, value);
-    this.setState({ tagSuggestionFrom: null });
+  onHashTagSuggestionsFetchRequested = (token) => {
+    this.setState({ tagSuggestionFrom: 'hashtag-editor' });
+    this.props.onFetchSuggestions(`#${token}`);
   }
 
   handleChangeSpoilerText = (e) => {
@@ -186,7 +172,7 @@ export default class ComposeForm extends ImmutablePureComponent {
 
   handleEmojiPick = (data) => {
     const position     = this.autosuggestTextarea.textarea.selectionStart;
-    const emojiChar    = data.unicode.split('-').map(code => String.fromCodePoint(parseInt(code, 16))).join('');
+    const emojiChar    = data.native;
     this._restoreCaret = position + emojiChar.length + 1;
     this.props.onPickEmoji(position, data);
   }
@@ -232,21 +218,17 @@ export default class ComposeForm extends ImmutablePureComponent {
             disabled={disabled}
             value={this.props.text}
             onChange={this.handleChange}
-            suggestions={this.props.suggestions}
+            suggestions={tagSuggestionFrom === 'autosuggested-textarea' ? this.props.suggestions : Immutable.List()}
             onKeyDown={this.handleKeyDown}
             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
             onSuggestionSelected={this.onSuggestionSelected}
             onPaste={onPaste}
             autoFocus={!showSearch && !isMobile(window.innerWidth)}
-            hash_tag_suggestions={tagSuggestionFrom === 'autosuggested-textarea' ? this.props.hash_tag_suggestions : Immutable.List()}
-            onHashTagSuggestionsFetchRequested={this.onHashTagSuggestionsFetchRequested}
-            onHashTagSuggestionsClearRequested={this.onHashTagSuggestionsClearRequested}
-            onHashTagSuggestionsSelected={this.onHashTagSuggestionsSelected}
           />
 
           <EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} />
-          <TimeLimitDropdown onSelectTimeLimit={this.handleSelectTimeLimit} />
+          <TimeLimitDropdownContainer onSelectTimeLimit={this.handleSelectTimeLimit} />
         </div>
 
         <div className='compose-form__modifiers'>
@@ -254,9 +236,9 @@ export default class ComposeForm extends ImmutablePureComponent {
           <HashtagEditor
             placeholder={intl.formatMessage(messages.hashtag_editor_placeholder)}
             disabled={disabled}
-            suggestions={tagSuggestionFrom === 'hashtag-editor' ? this.props.hash_tag_suggestions : Immutable.List()}
+            suggestions={tagSuggestionFrom === 'hashtag-editor' ? this.props.suggestions : Immutable.List()}
             onSuggestionsFetchRequested={this.onHashTagSuggestionsFetchRequested}
-            onSuggestionsClearRequested={this.onHashTagSuggestionsClearRequested}
+            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
             onInsertHashtag={this.props.onInsertHashtag}
           />
         </div>

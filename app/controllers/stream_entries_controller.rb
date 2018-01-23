@@ -24,7 +24,8 @@ class StreamEntriesController < ApplicationController
       end
 
       format.atom do
-        return not_found if TimeLimit.from_tags(@stream_entry.status&.tags)
+        return not_found if TimeLimit.from_status(@stream_entry.status)
+
         render xml: OStatus::AtomSerializer.render(OStatus::AtomSerializer.new.entry(@stream_entry, true))
       end
     end

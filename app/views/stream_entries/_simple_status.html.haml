@@ -16,43 +16,16 @@
   .status__content.p-name.emojify<
     - if status.spoiler_text?
       %p{ style: 'margin-bottom: 0' }<
-        %span.p-summary> #{status.spoiler_text}&nbsp;
+        %span.p-summary> #{Formatter.instance.format_spoiler(status)}&nbsp;
         %a.status__content__spoiler-link{ href: '#' }= t('statuses.show_more')
-    .e-content{ lang: status.language, style: "display: #{status.spoiler_text? ? 'none' : 'block'}; direction: #{rtl_status?(status) ? 'rtl' : 'ltr'}" }= Formatter.instance.format(status)
+    .e-content{ lang: status.language, style: "display: #{status.spoiler_text? ? 'none' : 'block'}; direction: #{rtl_status?(status) ? 'rtl' : 'ltr'}" }= Formatter.instance.format(status, custom_emojify: true)
 
   - unless status.media_attachments.empty?
-    .status__attachments
-      = render partial: 'stream_entries/content_spoiler', locals: { sensitive: status.sensitive? }
-      - if status.media_attachments.first.video?
-        .status__attachments__inner
-          .video-item
-            = link_to (status.media_attachments.first.remote_url.blank? ? status.media_attachments.first.file.url(:original) : status.media_attachments.first.remote_url), style: "background-image: url(#{status.media_attachments.first.file.url(:small)})", target: '_blank', rel: 'noopener', class: 'u-video' do
-              .video-item__play
-                = fa_icon('play')
-      - else
-        .status__attachments__inner{ class: expand_media ? 'expand_media' : '' }
-          - status.media_attachments.each do |media|
-            = render partial: 'stream_entries/media', locals: { media: media, expand_media: expand_media }
-
-  - pixiv_cards = status.pixiv_cards.select(&:image_url?)
-  - if pixiv_cards.present?
-    .status__attachments
-      = render partial: 'stream_entries/content_spoiler', locals: { sensitive: status.sensitive? }
-      - klass = 'expand_media' if expand_media
-
-      - if pixiv_cards.size > 1 && pixiv_cards.size.odd?
-        .status__attachments__inner.pixiv-twitter-card{ class: klass }
-          - pixiv_card = pixiv_cards.shift
-          .media-item
-            - style = "background-image: url(#{pixiv_card.image_url})" unless expand_media
-            = link_to pixiv_card.url, style: style, target: '_blank', rel: 'noopener', class: "u-photo" do
-              - if expand_media
-                %img{ src: pixiv_card.image_url, class: 'pixiv-twitter-card' }
-
-      .status__attachments__inner.pixiv-twitter-card{ class: klass }
-        - pixiv_cards.each do |pixiv_card|
-          .media-item
-            - style = "background-image: url(#{pixiv_card.image_url})" unless expand_media
-            = link_to pixiv_card.url, style: style, target: '_blank', rel: 'noopener', class: "u-photo" do
-              - if expand_media
-                %img{ src: pixiv_card.image_url, class: 'pixiv-twitter-card' }
+    - if status.media_attachments.first.video?
+      - video = status.media_attachments.first
+      %div{ data: { component: 'Video', props: Oj.dump(src: video.file.url(:original), preview: video.file.url(:small), sensitive: status.sensitive?, width: 610, height: 343) }}
+    - else
+      %div{ data: { component: 'MediaGallery', props: Oj.dump(height: 343, sensitive: status.sensitive?, 'autoPlayGif': current_account&.user&.setting_auto_play_gif, media: status.media_attachments.map { |a| ActiveModelSerializers::SerializableResource.new(a, serializer: REST::MediaAttachmentSerializer).as_json }) }}
+  - else
+    - if pixiv_cards = status.pixiv_cards.select(&:image_url?).presence
+      %div{ data: { component: 'MediaGallery', props: Oj.dump(height: 343, sensitive: status.sensitive?, 'autoPlayGif': current_account&.user&.setting_auto_play_gif, media: pixiv_cards.map(&:to_hash_like_media_attachment)) }}

@@ -7,10 +7,10 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { mountCompose, unmountCompose } from '../../actions/compose';
-import Link from 'react-router-dom/Link';
+import { Link } from 'react-router-dom';
 import { injectIntl, defineMessages } from 'react-intl';
 import SearchContainer from './containers/search_container';
-import Motion from 'react-motion/lib/Motion';
+import Motion from '../ui/util/optional_motion';
 import spring from 'react-motion/lib/spring';
 import SearchResultsContainer from './containers/search_results_container';
 import { changeComposing } from '../../actions/compose';
@@ -28,7 +28,6 @@ const messages = defineMessages({
 const mapStateToProps = state => ({
   columns: state.getIn(['settings', 'columns']),
   showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
-  submitting: state.getIn(['compose', 'is_submitting']),
 });
 
 @connect(mapStateToProps)
@@ -41,8 +40,6 @@ export default class Compose extends React.PureComponent {
     multiColumn: PropTypes.bool,
     showSearch: PropTypes.bool,
     intl: PropTypes.object.isRequired,
-    schedule: PropTypes.bool,
-    submitting: PropTypes.bool,
   };
 
   componentDidMount () {
@@ -62,10 +59,6 @@ export default class Compose extends React.PureComponent {
   }
 
   render () {
-    if (this.props.schedule) {
-      return (<ComposeFormContainer scheduling />);
-    }
-
     const { multiColumn, showSearch, intl } = this.props;
 
     let header = '';

@@ -23,15 +23,23 @@ class StatusesController < ApplicationController
       end
 
       format.json do
-        return not_found if TimeLimit.from_tags(@status.tags)
-        render json: @status, serializer: ActivityPub::NoteSerializer, adapter: ActivityPub::Adapter, content_type: 'application/activity+json'
+        return not_found if TimeLimit.from_status(@status)
+
+        render json: @status,
+               serializer: ActivityPub::NoteSerializer,
+               adapter: ActivityPub::Adapter,
+               content_type: 'application/activity+json'
       end
     end
   end
 
   def activity
-    return not_found if TimeLimit.from_tags(@status.tags)
-    render json: @status, serializer: ActivityPub::ActivitySerializer, adapter: ActivityPub::Adapter, content_type: 'application/activity+json'
+    return not_found if TimeLimit.from_status(@status)
+
+    render json: @status,
+           serializer: ActivityPub::ActivitySerializer,
+           adapter: ActivityPub::Adapter,
+           content_type: 'application/activity+json'
   end
 
   def embed

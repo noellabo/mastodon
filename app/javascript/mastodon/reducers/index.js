@@ -22,6 +22,8 @@ import compose from './compose';
 import search from './search';
 import media_attachments from './media_attachments';
 import notifications from './notifications';
+import height_cache from './height_cache';
+import custom_emojis from './custom_emojis';
 
 const reducers = {
   timelines,
@@ -44,6 +46,8 @@ const reducers = {
   search,
   media_attachments,
   notifications,
+  height_cache,
+  custom_emojis,
   suggested_accounts,
   trend_tags,
   suggestion_tags,

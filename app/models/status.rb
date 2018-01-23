@@ -31,7 +31,6 @@ class Status < ApplicationRecord
   include Cacheable
   include StatusThreadingConcern
   include StatusSearchable
-  include EmojiHelper
 
   enum visibility: [:public, :unlisted, :private, :direct], _suffix: :visibility
 
@@ -58,7 +57,7 @@ class Status < ApplicationRecord
   has_one :status_pin, dependent: :destroy
   has_one :stream_entry, as: :activity, inverse_of: :status
 
-  validates :uri, uniqueness: true, unless: :local?
+  validates :uri, uniqueness: true, presence: true, unless: :local?
   validates :text, presence: true, unless: :reblog?
   validates_with StatusLengthValidator
   validates :reblog, uniqueness: { scope: :account }, if: :reblog?
@@ -76,7 +75,6 @@ class Status < ApplicationRecord
   scope :without_reblogs, -> { where('statuses.reblog_of_id IS NULL') }
   scope :with_public_visibility, -> { where(visibility: :public).published }
   scope :tagged_with, ->(tag) { joins(:statuses_tags).where(statuses_tags: { tag_id: tag }) }
-  scope :local_only, -> { left_outer_joins(:account).where(accounts: { domain: nil }) }
   scope :excluding_silenced_accounts, -> { left_outer_joins(:account).where(accounts: { silenced: false }) }
   scope :including_silenced_accounts, -> { left_outer_joins(:account).where(accounts: { silenced: true }) }
   scope :not_excluded_by_account, ->(account) { where.not(account_id: account.excluded_from_timeline_account_ids) }
@@ -150,7 +148,13 @@ class Status < ApplicationRecord
     (spoiler_text.presence || text).truncate(33, omission: '')
   end
 
+  def emojis
+    CustomEmoji.from_text([spoiler_text, text].join(' '), account.domain)
+  end
+
   after_create_commit :store_uri, if: :local?
+
+  around_create Mastodon::Snowflake::Callbacks
 
   before_validation :prepare_contents, if: :local?
   before_validation :set_reblog
@@ -161,7 +165,7 @@ class Status < ApplicationRecord
 
   class << self
     def not_in_filtered_languages(account)
-      where.not(language: account.filtered_languages)
+      where(language: nil).or where.not(language: account.filtered_languages)
     end
 
     def as_home_timeline(account)
@@ -209,7 +213,11 @@ class Status < ApplicationRecord
         account_ids << item.reblog.account_id if item.reblog?
       end
 
-      accounts = Account.where(id: account_ids.uniq).preload(:oauth_authentications).map { |a| [a.id, a] }.to_h
+      account_ids.uniq!
+
+      return if account_ids.empty?
+
+      accounts = Account.where(id: account_ids).preload(:oauth_authentications).map { |a| [a.id, a] }.to_h
 
       cached_items.each do |item|
         item.account = accounts[item.account_id]
@@ -238,7 +246,7 @@ class Status < ApplicationRecord
     private
 
     def timeline_scope(local_only = false)
-      starting_scope = local_only ? Status.local_only : Status
+      starting_scope = local_only ? Status.local : Status
       starting_scope
         .with_public_visibility
         .without_reblogs
@@ -281,9 +289,6 @@ class Status < ApplicationRecord
   def prepare_contents
     text&.strip!
     spoiler_text&.strip!
-
-    self.text         = emojify(text)
-    self.spoiler_text = emojify(spoiler_text)
   end
 
   def set_reblog

@@ -1,19 +1,17 @@
 import React from 'react';
-import { connect, Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import configureStore from '../store/configureStore';
 import { showOnboardingOnce } from '../actions/onboarding';
-import BrowserRouter from 'react-router-dom/BrowserRouter';
-import Route from 'react-router-dom/Route';
-import ScrollContext from 'react-router-scroll/lib/ScrollBehaviorContext';
-import ScheduledStatuses from '../features/scheduled_statuses';
-import Compose from '../features/compose';
+import { BrowserRouter, Route } from 'react-router-dom';
+import { ScrollContext } from 'react-router-scroll';
 import UI from '../features/ui';
 import { hydrateStore } from '../actions/store';
 import { connectUserStream } from '../actions/streaming';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { getLocale } from '../locales';
 import gaTracker from '../components/ga_tracker';
+
 const { localeData, messages } = getLocale();
 addLocaleData(localeData);
 
@@ -27,13 +25,7 @@ export default class Mastodon extends React.PureComponent {
     locale: PropTypes.string.isRequired,
   };
 
-  componentWillMount() {
-    this.appmode = store.getState().getIn(['meta', 'appmode']);
-  }
-
   componentDidMount() {
-    if (this.appmode !== 'default') return;
-
     this.disconnect = store.dispatch(connectUserStream());
 
     // Desktop notifications
@@ -62,38 +54,17 @@ export default class Mastodon extends React.PureComponent {
   render () {
     const { locale } = this.props;
 
-    if (this.appmode === 'scheduledStatuses') {
-      return (
-        <IntlProvider locale={locale} messages={messages}>
-          <Provider store={store}>
-            <BrowserRouter basename='/admin/scheduled_statuses'>
-              <ScrollContext>
-                <UI className='scheduled_statuses__container' intent>
-                  <Compose schedule />
-                  <Route path='*' component={connect(() => ({ standalone: true }))(ScheduledStatuses)} />
-                </UI>
-              </ScrollContext>
-            </BrowserRouter>
-          </Provider>
-        </IntlProvider>
-      );
-    }
-
-    if (this.appmode === 'default') {
-      return (
-        <IntlProvider locale={locale} messages={messages}>
-          <Provider store={store}>
-            <BrowserRouter basename='/web'>
-              <ScrollContext>
-                <Route path='/' component={gaTracker(UI, '/web')} />
-              </ScrollContext>
-            </BrowserRouter>
-          </Provider>
-        </IntlProvider>
-      );
-    }
-
-    return <div />;
+    return (
+      <IntlProvider locale={locale} messages={messages}>
+        <Provider store={store}>
+          <BrowserRouter basename='/web'>
+            <ScrollContext>
+              <Route path='/' component={gaTracker(UI, '/web')} />
+            </ScrollContext>
+          </BrowserRouter>
+        </Provider>
+      </IntlProvider>
+    );
   }
 
 }

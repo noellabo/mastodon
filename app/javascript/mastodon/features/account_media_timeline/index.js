@@ -26,24 +26,24 @@ class AccountMediaTimeline extends React.PureComponent {
     statusIds: ImmutablePropTypes.list,
     isLoading: PropTypes.bool,
     hasMore: PropTypes.bool,
-    me: PropTypes.number.isRequired,
+    me: PropTypes.string.isRequired,
   };
 
   componentWillMount () {
-    this.props.dispatch(fetchAccount(Number(this.props.params.accountId)));
-    this.props.dispatch(refreshAccountMediaTimeline(Number(this.props.params.accountId)));
+    this.props.dispatch(fetchAccount(this.props.params.accountId));
+    this.props.dispatch(refreshAccountMediaTimeline(this.props.params.accountId));
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.accountId !== this.props.params.accountId && nextProps.params.accountId) {
-      this.props.dispatch(fetchAccount(Number(nextProps.params.accountId)));
-      this.props.dispatch(refreshAccountMediaTimeline(Number(nextProps.params.accountId)));
+      this.props.dispatch(fetchAccount(nextProps.params.accountId));
+      this.props.dispatch(refreshAccountMediaTimeline(nextProps.params.accountId));
     }
   }
 
   handleScrollToBottom = () => {
     if (this.props.hasMore) {
-      this.props.dispatch(expandAccountMediaTimeline(Number(this.props.params.accountId)));
+      this.props.dispatch(expandAccountMediaTimeline(this.props.params.accountId));
     }
   }
 

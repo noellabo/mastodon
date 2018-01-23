@@ -15,68 +15,12 @@ describe Api::V1::Timelines::HomeController do
     let(:token) { Fabricate(:accessible_access_token, resource_owner_id: user.id, scopes: 'read') }
 
     describe 'GET #show' do
-      context 'when max id is given' do
-        it 'limits since id with max id' do
-          Fabricate(:status, account: user.account, text: 'out of range', id: 1)
-          Fabricate(:status, account: user.account, text: 'last', id: 2)
-          Redis.current.set("account:#{user.account.id}:regeneration", 1)
-
-          get :show, params: { max_id: FeedManager::MIN_ID_RANGE + 1 }
-
-          expect(response.body).to include 'last'
-          expect(response.body).not_to include 'out of range'
-        end
-      end
-
-      context 'when max id is not given' do
-        it 'limits since id with the id of the latest status' do
-          Fabricate(:status, account: user.account, text: 'out of range', id: 1)
-          Fabricate(:status, account: user.account, text: 'last', id: 2)
-          Fabricate(:status, account: user.account, text: 'first', id: FeedManager::MIN_ID_RANGE + 1)
-          Redis.current.set("account:#{user.account.id}:regeneration", 1)
-
-          get :show
-
-          expect(response.body).to include 'last'
-          expect(response.body).not_to include 'out of range'
-        end
-
-        it 'returns http success even if there is no status' do
-          get :show
-          expect(response).to have_http_status(:success)
-        end
-      end
-
-      context 'when since id is given' do
-        it 'limits since id' do
-          Fabricate(:status, account: user.account, text: 'out of range', id: 2)
-          Fabricate(:status, account: user.account, text: 'last', id: 3)
-          Redis.current.set("account:#{user.account.id}:regeneration", 1)
-
-          get :show, params: { max_id: FeedManager::MIN_ID_RANGE + 2, since_id: 1 }
-
-          expect(response.body).to include 'last'
-          expect(response.body).not_to include 'out of range'
-        end
-      end
-
-      context 'when since id is not given' do
-        it 'limits since id' do
-          Fabricate(:status, account: user.account, text: 'out of range', id: 1)
-          Fabricate(:status, account: user.account, text: 'last', id: 2)
-          Redis.current.set("account:#{user.account.id}:regeneration", 1)
-
-          get :show, params: { max_id: FeedManager::MIN_ID_RANGE + 1 }
-
-          expect(response.body).to include 'last'
-          expect(response.body).not_to include 'out of range'
-        end
+      before do
+        follow = Fabricate(:follow, account: user.account)
+        PostStatusService.new.call(follow.target_account, 'New status for user home timeline.')
       end
 
       it 'returns http success' do
-        follow = Fabricate(:follow, account: user.account)
-        PostStatusService.new.call(follow.target_account, 'New status for user home timeline.')
-
         get :show
 
         expect(response).to have_http_status(:success)

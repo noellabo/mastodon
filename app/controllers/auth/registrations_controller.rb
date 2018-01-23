@@ -7,6 +7,7 @@ class Auth::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
   before_action :set_sessions, only: [:edit, :update]
   before_action :store_current_location, only: [:edit]
+  before_action :set_instance_presenter, only: [:new, :create, :update]
 
   def update
     if current_user.initial_password_usage
@@ -57,6 +58,10 @@ class Auth::RegistrationsController < Devise::RegistrationsController
   end
 
   private
+
+  def set_instance_presenter
+    @instance_presenter = InstancePresenter.new
+  end
 
   def determine_layout
     %w(edit update).include?(action_name) ? 'admin' : 'auth'

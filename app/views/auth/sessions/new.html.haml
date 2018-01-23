@@ -1,6 +1,9 @@
 - content_for :page_title do
   = t('auth.login')
 
+- content_for :header_tags do
+  = render partial: 'shared/og'
+
 = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
   .omniauth
     = render 'oauth/authorizations/pixiv_auth', auth_type: 'signin'

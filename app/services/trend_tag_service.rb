@@ -135,8 +135,7 @@ class TrendTagService < BaseService
 
   def recent_public_statuses(time)
     time_from = time.ago(SPAN)
-    latest_id = Status.maximum(:id) || 0
-    min_id = [latest_id - 100_000, 0].max # 全件探索は重いので雑に間引く
+    min_id = Mastodon::Snowflake.id_at(1.hour.ago) # 全件探索は重いので雑に間引く
 
     recent_tags = Status.with_public_visibility.where(created_at: time_from..time).where(Status.arel_table[:id].gteq(min_id))
     recent_tags.local.joins(:tags).preload(:tags).distinct

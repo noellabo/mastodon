@@ -125,6 +125,7 @@ export default class StatusContent extends React.PureComponent {
     const directionStyle = { direction: 'ltr' };
     const classNames = classnames('status__content', {
       'status__content--with-action': this.props.onClick && this.context.router,
+      'status__content--with-spoiler': status.get('spoiler_text').length > 0,
     });
 
     if (isRtl(status.get('search_index'))) {
@@ -147,7 +148,7 @@ export default class StatusContent extends React.PureComponent {
       }
 
       return (
-        <div className={classNames} ref={this.setRef} tabIndex='0' aria-label={status.get('search_index')} onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}>
+        <div className={classNames} ref={this.setRef} tabIndex='0' onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}>
           <p style={{ marginBottom: hidden && status.get('mentions').isEmpty() ? '0px' : null }}>
             <span dangerouslySetInnerHTML={spoilerContent} />
             {' '}
@@ -156,7 +157,7 @@ export default class StatusContent extends React.PureComponent {
 
           {mentionsPlaceholder}
 
-          <div tabIndex={!hidden && 0} className={`status__content__text ${!hidden ? 'status__content__text--visible' : ''}`} style={directionStyle} dangerouslySetInnerHTML={content} />
+          <div tabIndex={!hidden ? 0 : null} className={`status__content__text ${!hidden ? 'status__content__text--visible' : ''}`} style={directionStyle} dangerouslySetInnerHTML={content} />
         </div>
       );
     } else if (this.props.onClick) {
@@ -164,7 +165,6 @@ export default class StatusContent extends React.PureComponent {
         <div
           ref={this.setRef}
           tabIndex='0'
-          aria-label={status.get('search_index')}
           className={classNames}
           style={directionStyle}
           onMouseDown={this.handleMouseDown}
@@ -176,7 +176,6 @@ export default class StatusContent extends React.PureComponent {
       return (
         <div
           tabIndex='0'
-          aria-label={status.get('search_index')}
           ref={this.setRef}
           className='status__content'
           style={directionStyle}

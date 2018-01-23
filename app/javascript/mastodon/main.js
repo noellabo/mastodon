@@ -1,6 +1,5 @@
-import * as OfflinePluginRuntime from 'offline-plugin/runtime';
 import * as WebPushSubscription from './web_push_subscription';
-import Mastodon from 'mastodon/containers/mastodon';
+import Mastodon from './containers/mastodon';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ready from './ready';
@@ -13,7 +12,7 @@ function main() {
   if (window.history && history.replaceState) {
     const { pathname, search, hash } = window.location;
     const path = pathname + search + hash;
-    if (!(/^\/(web|about|admin\/scheduled_statuses)(\/|$)/).test(path)) {
+    if (!(/^\/web[$/]/).test(path)) {
       history.replaceState(null, document.title, `/web${path}`);
     }
   }
@@ -25,7 +24,7 @@ function main() {
     ReactDOM.render(<Mastodon {...props} />, mountNode);
     if (process.env.NODE_ENV === 'production') {
       // avoid offline in dev mode because it's harder to debug
-      OfflinePluginRuntime.install();
+      require('offline-plugin/runtime').install();
       WebPushSubscription.register();
     }
     perf.stop('main()');

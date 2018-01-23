@@ -51,7 +51,6 @@ const PageTwo = ({ me }) => (
         suggestions={ImmutableList()}
         mentionedDomains={[]}
         spoiler={false}
-        hash_tag_suggestions={ImmutableList()}
         onChange={noop}
         onSubmit={noop}
         onPaste={noop}
@@ -61,9 +60,6 @@ const PageTwo = ({ me }) => (
         onFetchSuggestions={noop}
         onSuggestionSelected={noop}
         showSearch
-        onHashTagSuggestionsClearRequested={noop}
-        onHashTagSuggestionsFetchRequested={noop}
-        onHashTagSuggestionsSelected={noop}
         onSelectTimeLimit={noop}
       />
     </div>

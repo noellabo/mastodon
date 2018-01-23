@@ -14,6 +14,42 @@ describe TimeLimit do
     end
   end
 
+  describe '.from_status' do
+    subject { TimeLimit.from_status(target_status)&.to_duration }
+
+    let(:tag) { Fabricate(:tag, name: "exp1m") }
+    let(:local_status) { Fabricate(:status, tags: [tag]) }
+    let(:remote_status) { Fabricate(:status, tags: [tag], local: false, account: Fabricate(:account, domain: 'pawoo.net')) }
+
+    context 'when status is local' do
+      let(:target_status) { local_status }
+
+      it { is_expected.to eq(1.minute) }
+    end
+
+    context 'when status is remote' do
+      let(:target_status) { remote_status }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when status is reblog' do
+      let(:target_status) {  Fabricate(:status, tags: [tag], reblog: reblog_target) }
+
+      context 'reblog target is local status' do
+        let(:reblog_target) { local_status }
+
+        it { is_expected.to eq(1.minute) }
+      end
+
+      context 'when status is remote' do
+        let(:reblog_target) { remote_status }
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
   describe '#valid?' do
     context 'valid tag_name' do
       it 'returns true' do

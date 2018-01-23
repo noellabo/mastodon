@@ -11,6 +11,8 @@ module Admin
 
     def show
       @oauth_authentication = @account.oauth_authentications.find_by(provider: :pixiv)
+      @account_moderation_note = current_account.account_moderation_notes.new(target_account: @account)
+      @moderation_notes = @account.targeted_moderation_notes.latest
     end
 
     def subscribe

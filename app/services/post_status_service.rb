@@ -33,7 +33,7 @@ class PostStatusService < BaseService
                                         sensitive: options[:sensitive],
                                         spoiler_text: options[:spoiler_text] || '',
                                         visibility: options[:visibility] || account.user&.setting_default_privacy,
-                                        language: detect_language_for(text, account),
+                                        language: LanguageDetector.instance.detect(text, account),
                                         application: options[:application])
 
       attach_media(status, media)
@@ -65,8 +65,7 @@ class PostStatusService < BaseService
 
     raise Mastodon::ValidationError, I18n.t('media_attachments.validations.too_many') if media_ids.size > 4
 
-    target_media_ids = media_ids.take(4).map(&:to_i)
-    media = target_media_ids.blank? ? [] : MediaAttachment.where(status_id: nil).where(id: target_media_ids)
+    media = MediaAttachment.where(status_id: nil).where(id: media_ids.take(4).map(&:to_i))
 
     raise Mastodon::ValidationError, I18n.t('media_attachments.validations.images_and_video') if media.size > 1 && media.find(&:video?)
 
@@ -90,12 +89,8 @@ class PostStatusService < BaseService
   end
 
   def attach_media(status, media)
-    return if media.nil? || media.empty?
+    return if media.nil?
     media.update(status_id: status.id)
-  end
-
-  def detect_language_for(text, account)
-    LanguageDetector.new(text, account).to_iso_s
   end
 
   def process_mentions_service

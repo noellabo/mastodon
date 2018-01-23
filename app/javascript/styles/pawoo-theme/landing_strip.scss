@@ -1,0 +1,13 @@
+.landing-form {
+  text-align: center;
+  margin-bottom: 20px;
+
+  .button {
+    margin: 0 4px;
+    padding: 0 40px;
+  }
+
+  .signin {
+    background-color: lighten($ui-base-color, 26%);
+  }
+}
