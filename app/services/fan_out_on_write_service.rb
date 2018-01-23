@@ -68,7 +68,7 @@ class FanOutOnWriteService < BaseService
         end
       end
     else
-      followers.find_in_batches do |target_lists|
+      lists.find_in_batches do |target_lists|
         FeedInsertWorker.push_bulk(target_lists) do |list|
           [status.id, list.id, :list]
         end

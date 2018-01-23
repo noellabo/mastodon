@@ -15,6 +15,9 @@ class FeedInsertWorker
       @followers = @lists.map(&:account)
     end
 
+    # 互換性維持のため、対象のidが見つからない場合はtrueを返す
+    return true if @followers.blank?
+
     check_and_insert
   rescue ActiveRecord::RecordNotFound
     true

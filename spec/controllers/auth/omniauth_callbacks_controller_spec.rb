@@ -82,7 +82,7 @@ RSpec.describe Auth::OmniauthCallbacksController, type: :controller do
 
           it 'synchronize email address' do
             is_expected.to change {
-              controller.current_user.reload.email
+              user.reload.email
             }.from(user.email).to(auth['info']['email'])
             expect(flash[:notice]).to be_present
           end

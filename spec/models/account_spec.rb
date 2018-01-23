@@ -328,7 +328,7 @@ RSpec.describe Account, type: :model do
     end
   end
 
-  describe '#latest_popular_media_attachments' do
+  describe '#latest_popular_media_attachments', disable_cache: true do
     subject { account.latest_popular_media_attachments }
 
     let(:account) { Fabricate(:account) }

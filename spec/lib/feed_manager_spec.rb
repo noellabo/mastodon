@@ -150,7 +150,7 @@ RSpec.describe FeedManager do
     end
   end
 
-  describe '#push' do
+  describe '#push_to_home' do
     it 'performs pushing updates into home timelines' do
       accounts = [Fabricate(:account), Fabricate(:account)]
       status = Fabricate(:status)
@@ -159,9 +159,9 @@ RSpec.describe FeedManager do
         Redis.current.setex("subscribed:timeline:#{account.id}", 10, '1')
       end
 
-      expect(PushUpdateWorker).to receive(:perform_async).with(accounts.map(&:id), status.id)
+      expect(PushUpdateWorker).to receive(:perform_async).with(accounts.map(&:id), status.id, :home)
 
-      FeedManager.instance.push(:home, accounts, status)
+      FeedManager.instance.push_to_home(accounts, status)
     end
 
     it 'trims timelines if they will have more than FeedManager::MAX_ITEMS' do
@@ -253,6 +253,21 @@ RSpec.describe FeedManager do
         # The second reblog should also be accepted
         expect(FeedManager.instance.push_to_home(account, reblogs.last)).to be true
       end
+    end
+  end
+
+  describe '#push_to_list' do
+    it 'performs pushing updates into home timelines' do
+      lists = [Fabricate(:list, account: Fabricate(:account)), Fabricate(:list, account: Fabricate(:account))]
+      status = Fabricate(:status)
+
+      lists.each do |list|
+        Redis.current.setex("subscribed:timeline:list:#{list.id}", 10, '1')
+      end
+
+      expect(PushUpdateWorker).to receive(:perform_async).with(lists.map(&:id), status.id, :list)
+
+      FeedManager.instance.push_to_list(lists, status)
     end
   end
 

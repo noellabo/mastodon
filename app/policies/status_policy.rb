@@ -6,7 +6,7 @@ class StatusPolicy < ApplicationPolicy
   end
 
   def show?
-    return false if status.created_at.future? && status.account != account
+    return false if record.created_at.future? && record.account != current_account
 
     if direct?
       owned? || record.mentions.where(account: current_account).exists?

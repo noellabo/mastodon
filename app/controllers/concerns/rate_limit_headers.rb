@@ -10,14 +10,9 @@ module RateLimitHeaders
   private
 
   def set_rate_limit_headers
-    now        = Time.now.utc
-    request.env['rack.attack.throttle_data'].keys.grep(/\Aapi/).each do |api_key|
-      match_data = request.env['rack.attack.throttle_data'][api_key]
-
-      response.headers['X-RateLimit-Limit']     = match_data[:limit].to_s
-      response.headers['X-RateLimit-Remaining'] = (match_data[:limit] - match_data[:count]).to_s
-      response.headers['X-RateLimit-Reset']     = (now + (match_data[:period] - now.to_i % match_data[:period])).iso8601(6)
-    end
+    apply_header_limit
+    apply_header_remaining
+    apply_header_reset
   end
 
   def rate_limited_request?

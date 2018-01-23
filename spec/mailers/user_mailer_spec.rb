@@ -40,9 +40,9 @@ describe UserMailer, type: :mailer do
       receiver.update!(email: 'new-email@example.com', locale: nil)
       expect(mail.body.encoded).to include 'new-email@example.com'
       expect(mail.body.encoded).to include 'spec'
-      expect(mail.body.encoded).to include Rails.configuration.x.local_domain
+      expect(mail.body.encoded).to include Setting.site_title
       expect(mail.subject).to eq I18n.t('devise.mailer.reconfirmation_instructions.subject',
-                                        instance: Rails.configuration.x.local_domain,
+                                        instance: Setting.site_title,
                                         locale: I18n.default_locale)
     end
   end

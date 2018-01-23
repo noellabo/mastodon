@@ -11,7 +11,7 @@ describe FeedInsertWorker do
 
     context 'when there are no records' do
       it 'skips push with missing status' do
-        instance = double(push_to_home: nil, filter?: false)
+        instance = double(push_to_home: nil)
         allow(FeedManager).to receive(:instance).and_return(instance)
         result = subject.perform(nil, follower.id)
 
@@ -20,7 +20,7 @@ describe FeedInsertWorker do
       end
 
       it 'skips push with missing account' do
-        instance = double(push_to_home: nil, filter?: false)
+        instance = double(push_to_home: nil)
         allow(FeedManager).to receive(:instance).and_return(instance)
         result = subject.perform(status.id, nil)
 
