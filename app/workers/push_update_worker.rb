@@ -6,7 +6,7 @@ class PushUpdateWorker
   def perform(ids, status_id, timeline_type = :home)
     status = Status.find(status_id)
 
-    case timeline_type
+    case timeline_type.to_sym
     when :home
       Account.where(id: ids).each do |account|
         publish(status, account, "timeline:#{account.id}")
