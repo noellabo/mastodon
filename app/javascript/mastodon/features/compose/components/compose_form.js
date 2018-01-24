@@ -252,24 +252,20 @@ export default class ComposeForm extends ImmutablePureComponent {
           <div className='character-counter__wrapper'><CharacterCounter max={500} text={text} /></div>
         </div>
 
-        <div>
-          {
-            scheduling && (
-              <DateTime
-                className='compose-form__datetime'
-                inputProps={{
-                  className: 'compose-form__datetime-input',
-                  placeholder: intl.formatMessage(messages.schedule_placeholder),
-                }}
-                onChange={this.props.onChangeDateTime}
-                value={this.props.published}
-              />
-            )
-          }
+        <div className='compose-form__publish'>
+          {scheduling && (
+            <DateTime
+              className='compose-form__datetime'
+              inputProps={{
+                className: 'compose-form__datetime-input',
+                placeholder: intl.formatMessage(messages.schedule_placeholder),
+              }}
+              onChange={this.props.onChangeDateTime}
+              value={this.props.published}
+            />
+          )}
 
-          <div className='compose-form__publish'>
-            <div className='compose-form__publish-button-wrapper'><Button text={publishText} onClick={this.handleSubmit} disabled={disabled || this.props.is_uploading || typeof this.props.published === 'string' || length(text) > 500 || (text.length !== 0 && text.trim().length === 0)} block /></div>
-          </div>
+          <div className='compose-form__publish-button-wrapper'><Button text={publishText} onClick={this.handleSubmit} disabled={disabled || this.props.is_uploading || typeof this.props.published === 'string' || length(text) > 500 || (text.length !== 0 && text.trim().length === 0)} block /></div>
         </div>
 
         <SensitiveGuideContainer />
