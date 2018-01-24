@@ -8,6 +8,7 @@ import {
 } from '../../../actions/timelines';
 import Column from '../../../components/column';
 import ColumnHeader from '../../../components/column_header';
+import { connectCommunityStream } from '../../../actions/streaming';
 
 @connect()
 export default class CommunityTimeline extends React.PureComponent {
@@ -28,18 +29,16 @@ export default class CommunityTimeline extends React.PureComponent {
     const { dispatch } = this.props;
 
     dispatch(refreshCommunityTimeline());
-
-    this.polling = setInterval(() => {
-      dispatch(refreshCommunityTimeline());
-    }, 3000);
+    this.disconnect = dispatch(connectCommunityStream());
   }
 
   componentWillUnmount () {
-    if (typeof this.polling !== 'undefined') {
-      clearInterval(this.polling);
-      this.polling = null;
+    if (this.disconnect) {
+      this.disconnect();
+      this.disconnect = null;
     }
   }
+
 
   handleLoadMore = () => {
     this.props.dispatch(expandCommunityTimeline());
