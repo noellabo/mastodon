@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from './api';
 import { store } from './containers/mastodon';
 import { setBrowserSupport, setSubscription, clearSubscription } from './actions/push_notifications';
 
@@ -36,7 +36,7 @@ const unsubscribe = ({ registration, subscription }) =>
   subscription ? subscription.unsubscribe().then(() => registration) : registration;
 
 const sendSubscriptionToBackend = (subscription) =>
-  axios.post('/api/web/push_subscriptions', {
+  api().post('/api/web/push_subscriptions', {
     subscription,
   }).then(response => response.data);
 
