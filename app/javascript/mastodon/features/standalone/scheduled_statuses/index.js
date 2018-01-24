@@ -44,7 +44,6 @@ export default class ScheduledStatuses extends ImmutablePureComponent {
         trackScroll={false}
         statusIds={statusIds}
         hasMore={hasMore}
-        me={null}
         schedule
         onScrollToBottom={this.handleScrollToBottom}
       />

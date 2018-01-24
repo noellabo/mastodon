@@ -136,13 +136,13 @@ export default class StatusActionBar extends ImmutablePureComponent {
 
     menu.push(null);
 
-    if (status.getIn(['account', 'id']) === me || withDismiss) {
+    if (!schedule && (status.getIn(['account', 'id']) === me || withDismiss)) {
       menu.push({ text: intl.formatMessage(mutingConversation ? messages.unmuteConversation : messages.muteConversation), action: this.handleConversationMuteClick });
       menu.push(null);
     }
 
     if (status.getIn(['account', 'id']) === me) {
-      if (publicStatus) {
+      if (publicStatus && !schedule) {
         menu.push({ text: intl.formatMessage(status.get('pinned') ? messages.unpin : messages.pin), action: this.handlePinClick });
       }
 
