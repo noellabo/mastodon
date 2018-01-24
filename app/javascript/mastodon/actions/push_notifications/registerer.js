@@ -35,7 +35,7 @@ const subscribe = (registration) =>
 const unsubscribe = ({ registration, subscription }) =>
   subscription ? subscription.unsubscribe().then(() => registration) : registration;
 
-const sendSubscriptionToBackend = (getState, subscription, me) => {
+const sendSubscriptionToBackend = (subscription, me) => {
   const params = { subscription };
 
   if (me) {
@@ -45,7 +45,7 @@ const sendSubscriptionToBackend = (getState, subscription, me) => {
     }
   }
 
-  return api(getState).post('/api/web/push_subscriptions', params).then(response => response.data);
+  return api().post('/api/web/push_subscriptions', params).then(response => response.data);
 };
 
 // Last one checks for payload support: https://web-push-book.gauntface.com/chapter-06/01-non-standards-browsers/#no-payload
@@ -85,13 +85,13 @@ export function register () {
             } else {
               // Something went wrong, try to subscribe again
               return unsubscribe({ registration, subscription }).then(subscribe).then(
-                subscription => sendSubscriptionToBackend(getState, subscription, me));
+                subscription => sendSubscriptionToBackend(subscription, me));
             }
           }
 
           // No subscription, try to subscribe
           return subscribe(registration).then(
-            subscription => sendSubscriptionToBackend(getState, subscription, me));
+            subscription => sendSubscriptionToBackend(subscription, me));
         })
         .then(subscription => {
           // If we got a PushSubscription (and not a subscription object from the backend)
@@ -137,7 +137,7 @@ export function saveSettings() {
     const alerts = state.get('alerts');
     const data = { alerts };
 
-    api(getState).put(`/api/web/push_subscriptions/${subscription.get('id')}`, {
+    api().put(`/api/web/push_subscriptions/${subscription.get('id')}`, {
       data,
     }).then(() => {
       const me = getState().getIn(['meta', 'me']);

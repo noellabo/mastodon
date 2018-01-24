@@ -146,43 +146,34 @@ class FeedManager
   def calc_since_id(base_id = nil)
     return calc_since_id_from_base_id(base_id) if base_id
 
-    first_snowflake_status = Status.reorder(id: :asc).find_by('id > ?', NOT_SNOWFLAKE_ID)
-    last_sequence_status = Status.find_by('id < ?', NOT_SNOWFLAKE_ID)
-
     # snowflakeになったあとのトゥートがない
-    unless first_snowflake_status
+    unless Status.reorder(id: :asc).where('id > ?', NOT_SNOWFLAKE_ID).exists?
       first_status = Status.first
       return if first_status.nil?
 
       return first_status.id - FeedManager::MIN_ID_RANGE
     end
 
-    diff = first_snowflake_status.created_at - FeedManager::MAX_POPULATE_DURATION.ago
-
-    # 2週間前のトゥートがsnowflake or snowflake化前のトゥートがない
-    # TODO: 2週間以上経ったらこの部分以外の処理を消す
-    return Mastodon::Snowflake.id_at(FeedManager::MAX_POPULATE_DURATION.ago) if diff <= 0 || last_sequence_status.nil?
-
-    # 2週間のトゥートがsnowflakeじゃない場合は、足りない日数相当のsnowflake前のトゥートIDまで含める
-    last_sequence_status.id - (FeedManager::MIN_ID_RANGE * (diff.to_f / FeedManager::MAX_POPULATE_DURATION)).ceil
+    calc_since_id_from_since_time(FeedManager::MAX_POPULATE_DURATION.ago)
   end
 
   def calc_since_id_from_base_id(base_id)
     # snowflake前のidベース
     return base_id - FeedManager::MIN_ID_RANGE if base_id < NOT_SNOWFLAKE_ID
 
-    last_sequence_status = Status.find_by('id < ?', NOT_SNOWFLAKE_ID)
-    first_snowflake_status = Status.reorder(id: :asc).find_by('id > ?', NOT_SNOWFLAKE_ID)
-
     base_time = Time.zone.at((base_id >> 16) / 1000)
-    since_time = base_time - FeedManager::MAX_POPULATE_DURATION
+    calc_since_id_from_since_time(base_time - FeedManager::MAX_POPULATE_DURATION)
+  end
 
-    # 2週間前のトゥートがsnowflake or snowflake化前のトゥートがない
-    return Mastodon::Snowflake.id_at(since_time) if since_time >= first_snowflake_status.created_at || last_sequence_status.nil?
+  def calc_since_id_from_since_time(since_time)
+    last_sequence_status = Status.find_by('id < ?', NOT_SNOWFLAKE_ID)
+
+    # snowflake化前のトゥートがない or 最後のsnowflake化前のトゥートの時刻より基準の時刻のほうが大きい
+    return Mastodon::Snowflake.id_at(since_time) if last_sequence_status.nil? || last_sequence_status.created_at < since_time
 
     # 2週間のトゥートがsnowflakeじゃない場合は、足りない日数相当のsnowflake前のトゥートIDまで含める
-    diff_day = (first_snowflake_status.created_at - since_time) / 1.day
-    last_sequence_status.id - (FeedManager::MIN_ID_RANGE * (diff_day / FeedManager::MAX_POPULATE_DURATION)).to_i
+    diff = last_sequence_status.created_at - since_time
+    last_sequence_status.id - (FeedManager::MIN_ID_RANGE * (diff / FeedManager::MAX_POPULATE_DURATION)).to_i
   end
 
   def populate_feed(account)

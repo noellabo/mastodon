@@ -277,7 +277,7 @@
   "time_limit.minutes": "{minutes, number} {minutes, plural, one {minutę} few {minuty} other {minut}} później",
   "time_limit.select_time_limit": "Określ czas, po którym wpis automatycznie zniknie (Beta)",
   "time_limit.time_limit_note": "Informacja: Jeśli zaznaczono, wpis nie pojawi się na zewnętrznych instancjach.",
-  "trend_tags.title": "Sugerowany tag",
+  "trend_tags.title": "Sugerowane tagi",
   "ui.beforeunload": "Utracisz tworzony wpis, jeżeli opuścisz Mastodona.",
   "upload_area.title": "Przeciągnij i upuść aby wysłać",
   "upload_button.label": "Dodaj zawartość multimedialną",
