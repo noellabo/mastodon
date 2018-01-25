@@ -38,7 +38,11 @@ const initialState = ImmutableMap({
   follow_requests: ImmutableMap(),
   blocks: ImmutableMap(),
   mutes: ImmutableMap(),
-  suggested_accounts: ImmutableMap(),
+  suggested_accounts: ImmutableMap({
+    isLoading: true,
+    next: null,
+    items: ImmutableList(),
+  }),
 });
 
 const normalizeList = (state, type, id, accounts, next) => {
@@ -54,17 +58,11 @@ const appendToList = (state, type, id, accounts, next) => {
   });
 };
 
-const normalizeSuggestedAccountsList = (state, type, accounts, next) => {
-  return state.setIn([type], ImmutableMap({
-    isLoading: false,
-    next,
-    items: ImmutableList(accounts.map(item => item.id)),
-  }));
-};
-
 const appendToSuggestedAccountsList = (state, type, accounts, next) => {
   return state.updateIn([type], map => {
-    return map.set('next', next).update('items', list => list.push(...accounts.map(item => item.id))).set('isLoading', false);
+    return map.set('next', next)
+      .update('items', list => list.push(...accounts.map(item => item.id)).toOrderedSet().toList())
+      .set('isLoading', false);
   });
 };
 
@@ -98,7 +96,6 @@ export default function userLists(state = initialState, action) {
   case MUTES_EXPAND_SUCCESS:
     return state.updateIn(['mutes', 'items'], list => list.concat(action.accounts.map(item => item.id))).setIn(['mutes', 'next'], action.next);
   case SUGGESTED_ACCOUNTS_FETCH_SUCCESS:
-    return normalizeSuggestedAccountsList(state, 'suggested_accounts', action.accounts, action.next);
   case SUGGESTED_ACCOUNTS_EXPAND_SUCCESS:
     return appendToSuggestedAccountsList(state, 'suggested_accounts', action.accounts, action.next);
   case SUGGESTED_ACCOUNTS_FETCH_REQUEST:
