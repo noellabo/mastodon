@@ -2,21 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import LoadingIndicator from '../../components/loading_indicator';
-import Link from 'react-router-dom/Link';
+import { Link } from 'react-router-dom';
+import { debounce } from 'lodash';
 import {
   fetchSuggestedAccounts,
   expandSuggestedAccounts,
 } from '../../actions/suggested_accounts';
-import { ScrollContainer } from 'react-router-scroll-4';
+import ScrollableList from '../../components/scrollable_list';
 import { defineMessages, injectIntl } from 'react-intl';
 import SuggestedAccountContainer from '../../containers/suggested_account_container';
 import Column from '../ui/components/column';
-import LoadMore from '../../components/load_more';
 import ColumnBackButtonSlim from '../../components/column_back_button_slim';
 
 const mapStateToProps = (state) => ({
   accountIds: state.getIn(['user_lists', 'suggested_accounts', 'items']),
+  hasMore: !!state.getIn(['user_lists', 'suggested_accounts', 'next']),
 });
 
 const messages = defineMessages({
@@ -37,6 +37,7 @@ class SuggestedAccounts extends React.PureComponent {
     intl: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     accountIds: ImmutablePropTypes.list,
+    hasMore: PropTypes.bool.isRequired,
   };
 
   componentWillMount () {
@@ -51,34 +52,44 @@ class SuggestedAccounts extends React.PureComponent {
     }
   }
 
+  handleScrollToBottom = debounce(() => {
+    this.props.dispatch(expandSuggestedAccounts());
+  }, 300, { leading: true });
+
   handleLoadMore = (e) => {
     e.preventDefault();
     this.props.dispatch(expandSuggestedAccounts());
   }
 
   render () {
-    const { accountIds, intl } = this.props;
+    const { accountIds, hasMore, intl } = this.props;
+    const isLoading = !accountIds;
 
-    if (!accountIds) {
-      return (
-        <Column>
-          <LoadingIndicator />
-        </Column>
-      );
+    let scrollableContent = null;
+
+    if (isLoading && this.scrollableContent) {
+      scrollableContent = this.scrollableContent;
+    } else if ((accountIds && accountIds.size > 0) || hasMore) {
+      scrollableContent = accountIds.map((id) => (
+        <SuggestedAccountContainer key={id} id={id} />
+      ));
+    } else {
+      scrollableContent = null;
     }
 
     return (
       <Column icon='user' active={false} heading={intl.formatMessage(messages.title)}>
         <ColumnBackButtonSlim />
 
-        <ScrollContainer scrollKey='suggested_accounts'>
-          <div className='scrollable suggested_accounts__scrollable' onScroll={this.handleScroll}>
-            <div className='suggested_accounts'>
-              {accountIds.map(id => <SuggestedAccountContainer key={id} id={id} withNote={false} />)}
-              <LoadMore onClick={this.handleLoadMore} />
-            </div>
-          </div>
-        </ScrollContainer>
+        <ScrollableList
+          scrollKey='suggested_accounts'
+          trackScroll
+          isLoading={isLoading}
+          hasMore={hasMore}
+          onScrollToBottom={this.handleScrollToBottom}
+        >
+          {scrollableContent}
+        </ScrollableList>
 
         <Link className='button' style={buttonStyle} to='/timelines/public/local'>
           {intl.formatMessage(messages.goToLocalTimeline)}

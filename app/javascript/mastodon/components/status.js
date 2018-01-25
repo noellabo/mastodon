@@ -218,7 +218,7 @@ export default class Status extends ImmutablePureComponent {
               preview={video.get('preview_url')}
               src={video.get('url')}
               width={239}
-              height={110}
+              height={squareMedia ? 229 : 132}
               sensitive={status.get('sensitive')}
               onOpenVideo={this.handleOpenVideo}
             />}

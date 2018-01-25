@@ -3,12 +3,15 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import Avatar from './avatar';
 import DisplayName from './display_name';
-import MediaGallery from './media_gallery';
-import Video from '../features/video';
 import Permalink from './permalink';
 import IconButton from './icon_button';
 import { defineMessages, injectIntl } from 'react-intl';
+import { MediaGallery, Video } from '../features/ui/util/async-components';
 import { me } from '../initial_state';
+
+// We use the component (and not the container) since we do not want
+// to use the progress bar to show download progress
+import Bundle from '../features/ui/components/bundle';
 
 const messages = defineMessages({
   follow: { id: 'account.follow', defaultMessage: 'Follow' },
@@ -33,6 +36,20 @@ export default class SuggestedAccount extends React.PureComponent {
     this.props.onFollow(this.props.account);
   }
 
+  renderLoadingMediaGallery = () => {
+    return <div className='media_gallery' style={{ height: 132 }} />;
+  }
+
+  renderLoadingVideoPlayer = () => {
+    return <div className='media-spoiler-video' style={{ height: 132 }} />;
+  }
+
+  handleOpenVideo = startTime => {
+    const { account } = this.props;
+
+    this.props.onOpenVideo(account.getIn(['media_attachments', 0]), startTime);
+  }
+
   render () {
     const { account, intl } = this.props;
 
@@ -50,18 +67,23 @@ export default class SuggestedAccount extends React.PureComponent {
       } else if (attachments.first().get('type') === 'video') {
         const video = attachments.first();
         media = (
-          <Video
-            preview={video.get('preview_url')}
-            src={video.get('url')}
-            height={132}
-            onOpenVideo={this.handleOpenVideo}
-          />
+          <Bundle fetchComponent={Video} loading={this.renderLoadingVideoPlayer} >
+            {Component => <Component
+              preview={video.get('preview_url')}
+              src={video.get('url')}
+              width={274}
+              height={132}
+              onOpenVideo={this.handleOpenVideo}
+            />}
+          </Bundle>
         );
       } else {
-        media = <MediaGallery media={attachments} height={132} onOpenMedia={this.props.onOpenMedia} autoPlayGif={false} expandMedia={false} lineMedia />;
+        media = (
+          <Bundle fetchComponent={MediaGallery} loading={this.renderLoadingMediaGallery} >
+            {Component => <Component media={attachments} height={132} onOpenMedia={this.props.onOpenMedia} lineMedia />}
+          </Bundle>
+        );
       }
-
-      media = (<div className='account__suggested_accounts_media'>{media}</div>);
     }
 
     if (account.get('id') !== me && account.get('relationship', null) !== null) {
@@ -83,7 +105,7 @@ export default class SuggestedAccount extends React.PureComponent {
     }
 
     return (
-      <div className='account'>
+      <div className='account suggested_account'>
         <div className='account__wrapper'>
           <Permalink key={account.get('id')} className='account__display-name' href={account.get('url')} to={`/accounts/${account.get('id')}`}>
             <div className='account__avatar-wrapper'><Avatar account={account} size={36} /></div>
@@ -95,7 +117,7 @@ export default class SuggestedAccount extends React.PureComponent {
           </div>
         </div>
 
-        {media}
+        <div className='suggested_account__media'>{media}</div>
       </div>
     );
   }
