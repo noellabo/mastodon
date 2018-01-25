@@ -16,7 +16,6 @@ const mapStateToProps = (state, props) => ({
   statusIds: state.getIn(['timelines', `account:${props.params.accountId}`, 'items'], ImmutableList()),
   isLoading: state.getIn(['timelines', `account:${props.params.accountId}`, 'isLoading']),
   hasMore: !!state.getIn(['timelines', `account:${props.params.accountId}`, 'next']),
-  me: state.getIn(['meta', 'me']),
   pinnedStatusIds: state.getIn(['timelines', `account:${props.params.accountId}:pinned_status`, 'items'], ImmutableList()),
 });
 
@@ -29,7 +28,6 @@ export default class AccountTimeline extends ImmutablePureComponent {
     statusIds: ImmutablePropTypes.list,
     isLoading: PropTypes.bool,
     hasMore: PropTypes.bool,
-    me: PropTypes.string.isRequired,
     pinnedStatusIds: ImmutablePropTypes.list,
   };
 
@@ -54,7 +52,7 @@ export default class AccountTimeline extends ImmutablePureComponent {
   }
 
   render () {
-    const { statusIds, isLoading, hasMore, me, pinnedStatusIds } = this.props;
+    const { statusIds, isLoading, hasMore, pinnedStatusIds } = this.props;
 
     if (!statusIds && isLoading) {
       return (
@@ -76,7 +74,6 @@ export default class AccountTimeline extends ImmutablePureComponent {
           statusIds={uniqueStatusIds}
           isLoading={isLoading}
           hasMore={hasMore}
-          me={me}
           onScrollToBottom={this.handleScrollToBottom}
           displayPinned
         />

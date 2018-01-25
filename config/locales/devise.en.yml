@@ -18,8 +18,12 @@ en:
     mailer:
       confirmation_instructions:
         subject: 'Pawoo: Confirmation instructions for %{instance}'
+      email_changed:
+        subject: 'Pawoo: Email changed'
       password_change:
         subject: 'Pawoo: Password changed'
+      reconfirmation_instructions:
+        subject: 'Pawoo: Confirm email for %{instance}'
       reset_password_instructions:
         subject: 'Pawoo: Reset password instructions'
       unlock_instructions:

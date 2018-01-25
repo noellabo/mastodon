@@ -15,7 +15,6 @@ const mapStateToProps = (state, props) => ({
   statusIds: state.getIn(['timelines', `account:${props.params.accountId}:media`, 'items'], Immutable.List()),
   isLoading: state.getIn(['timelines', `account:${props.params.accountId}:media`, 'isLoading'], false),
   hasMore: !!state.getIn(['timelines', `account:${props.params.accountId}:media`, 'next'], false),
-  me: state.getIn(['meta', 'me']),
 });
 
 class AccountMediaTimeline extends React.PureComponent {
@@ -26,7 +25,6 @@ class AccountMediaTimeline extends React.PureComponent {
     statusIds: ImmutablePropTypes.list,
     isLoading: PropTypes.bool,
     hasMore: PropTypes.bool,
-    me: PropTypes.string.isRequired,
   };
 
   componentWillMount () {
@@ -48,7 +46,7 @@ class AccountMediaTimeline extends React.PureComponent {
   }
 
   render () {
-    const { statusIds, isLoading, hasMore, me } = this.props;
+    const { statusIds, isLoading, hasMore } = this.props;
 
     if (!statusIds && isLoading) {
       return (
@@ -66,7 +64,6 @@ class AccountMediaTimeline extends React.PureComponent {
           statusIds={statusIds}
           isLoading={isLoading}
           hasMore={hasMore}
-          me={me}
           onScrollToBottom={this.handleScrollToBottom}
           scrollKey={'account_media_timeline'}
           expandMedia

@@ -18,8 +18,12 @@ pl:
     mailer:
       confirmation_instructions:
         subject: 'Pawoo: Instrukcje weryfikacji adresu e-mail'
+      email_changed:
+        subject: 'Pawoo: Zmieniono adres e-mail'
       password_change:
-        subject: 'Pawoo: Hasło zmienione'
+        subject: 'Pawoo: Zmieniono hasło'
+      reconfirmation_instructions:
+        subject: 'Pawoo: Potwierdź adres e-mail na &{instance}'
       reset_password_instructions:
         subject: 'Pawoo: Instrukcje ustawienia nowego hasła'
       unlock_instructions:

@@ -13,6 +13,7 @@ import settings from './settings';
 import push_notifications from './push_notifications';
 import status_lists from './status_lists';
 import cards from './cards';
+import mutes from './mutes';
 import reports from './reports';
 import suggested_accounts from './suggested_accounts';
 import trend_tags from './trend_tags';
@@ -24,6 +25,8 @@ import media_attachments from './media_attachments';
 import notifications from './notifications';
 import height_cache from './height_cache';
 import custom_emojis from './custom_emojis';
+import lists from './lists';
+import listEditor from './list_editor';
 
 const reducers = {
   timelines,
@@ -40,6 +43,7 @@ const reducers = {
   settings,
   push_notifications,
   cards,
+  mutes,
   reports,
   contexts,
   compose,
@@ -48,6 +52,8 @@ const reducers = {
   notifications,
   height_cache,
   custom_emojis,
+  lists,
+  listEditor,
   suggested_accounts,
   trend_tags,
   suggestion_tags,

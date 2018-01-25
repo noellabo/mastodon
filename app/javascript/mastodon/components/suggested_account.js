@@ -8,6 +8,7 @@ import Video from '../features/video';
 import Permalink from './permalink';
 import IconButton from './icon_button';
 import { defineMessages, injectIntl } from 'react-intl';
+import { me } from '../initial_state';
 
 const messages = defineMessages({
   follow: { id: 'account.follow', defaultMessage: 'Follow' },
@@ -22,7 +23,6 @@ export default class SuggestedAccount extends React.PureComponent {
 
   static propTypes = {
     account: ImmutablePropTypes.map.isRequired,
-    me: PropTypes.string.isRequired,
     onFollow: PropTypes.func.isRequired,
     onOpenVideo: PropTypes.func.isRequired,
     onOpenMedia: PropTypes.func.isRequired,
@@ -34,7 +34,7 @@ export default class SuggestedAccount extends React.PureComponent {
   }
 
   render () {
-    const { account, me, intl } = this.props;
+    const { account, intl } = this.props;
 
     if (!account) {
       return <div />;

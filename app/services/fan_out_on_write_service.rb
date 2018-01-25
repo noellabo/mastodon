@@ -14,6 +14,7 @@ class FanOutOnWriteService < BaseService
       deliver_to_mentioned_followers(status)
     else
       deliver_to_followers(status)
+      deliver_to_lists(status)
     end
 
     return if status.account.silenced? || !status.public_visibility? || status.reblog?
@@ -30,7 +31,7 @@ class FanOutOnWriteService < BaseService
 
   def deliver_to_self(status)
     Rails.logger.debug "Delivering status #{status.id} to author"
-    FeedManager.instance.push(:home, status.account, status)
+    FeedManager.instance.push_to_home(status.account, status)
   end
 
   def deliver_to_followers(status)
@@ -41,13 +42,36 @@ class FanOutOnWriteService < BaseService
     batch_size = Rails.configuration.x.fan_out_job_batch_size
     if batch_size > 1
       followers.find_in_batches do |group|
-        group.each_slice(batch_size) do |followers|
-          FeedInsertWorker.perform_async(status.id, followers.map(&:id))
+        group.each_slice(batch_size) do |target_followers|
+          FeedInsertWorker.perform_async(status.id, target_followers.map(&:id), :home)
         end
       end
     else
-      followers.find_each do |follower|
-        FeedInsertWorker.perform_async(status.id, follower.id)
+      followers.find_in_batches do |target_followers|
+        FeedInsertWorker.push_bulk(target_followers) do |follower|
+          [status.id, follower.id, :home]
+        end
+      end
+    end
+  end
+
+  def deliver_to_lists(status)
+    Rails.logger.debug "Delivering status #{status.id} to lists"
+
+    lists = status.account.lists.joins(account: :user).where('users.current_sign_in_at > ?', 14.days.ago).select(:id).reorder(nil)
+
+    batch_size = Rails.configuration.x.fan_out_job_batch_size
+    if batch_size > 1
+      lists.find_in_batches do |group|
+        group.each_slice(batch_size) do |target_lists|
+          FeedInsertWorker.perform_async(status.id, target_lists.map(&:id), :list)
+        end
+      end
+    else
+      lists.find_in_batches do |target_lists|
+        FeedInsertWorker.push_bulk(target_lists) do |list|
+          [status.id, list.id, :list]
+        end
       end
     end
   end
@@ -58,7 +82,7 @@ class FanOutOnWriteService < BaseService
     status.mentions.includes(:account).each do |mention|
       mentioned_account = mention.account
       next if !mentioned_account.local? || !mentioned_account.following?(status.account) || FeedManager.instance.filter?(:home, status, mention.account_id)
-      FeedManager.instance.push(:home, mentioned_account, status)
+      FeedManager.instance.push_to_home(mentioned_account, status)
     end
   end
 

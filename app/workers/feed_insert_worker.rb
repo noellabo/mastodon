@@ -3,37 +3,48 @@
 class FeedInsertWorker
   include Sidekiq::Worker
 
-  attr_reader :status, :followers
+  def perform(status_id, ids, type = :home)
+    @type     = type.to_sym
+    @status   = Status.find(status_id)
 
-  def perform(status_id, follower_ids)
-    @status = Status.find_by(id: status_id)
-    @followers = Account.where(id: follower_ids)
+    case @type
+    when :home
+      @followers = Account.where(id: ids)
+    when :list
+      @lists     = List.where(id: ids).preload(:account)
+      @followers = @lists.map(&:account)
+    end
+
+    # 互換性維持のため、対象のidが見つからない場合はtrueを返す
+    return true if @followers.blank?
 
     check_and_insert
+  rescue ActiveRecord::RecordNotFound
+    true
   end
 
   private
 
   def check_and_insert
-    if records_available?
-      # TODO: reduce N+1 queries to filter followers
-      @followers = followers.reject { |follower| feed_filtered?(follower) }
+    # TODO: reduce N+1 queries to filter followers
+    @followers = @followers.reject { |follower| feed_filtered?(follower) }
 
-      perform_push if followers.present?
-    else
-      true
-    end
-  end
-
-  def records_available?
-    status.present? && followers.present?
+    perform_push if @followers.present?
   end
 
   def feed_filtered?(follower)
-    FeedManager.instance.filter?(:home, status, follower.id)
+    # Note: Lists are a variation of home, so the filtering rules
+    # of home apply to both
+    FeedManager.instance.filter?(:home, @status, follower.id)
   end
 
   def perform_push
-    FeedManager.instance.push(:home, followers, status)
+    case @type
+    when :home
+      FeedManager.instance.push_to_home(@followers, @status)
+    when :list
+      @lists = @lists.select { |list| @followers.include? list.account }
+      FeedManager.instance.push_to_list(@lists, @status)
+    end
   end
 end

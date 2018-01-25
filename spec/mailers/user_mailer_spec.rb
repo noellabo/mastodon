@@ -33,6 +33,20 @@ describe UserMailer, type: :mailer do
                      instance: Setting.site_title
   end
 
+  describe 'reconfirmation_instructions' do
+    let(:mail) { UserMailer.confirmation_instructions(receiver, 'spec') }
+
+    it 'renders reconfirmation instructions' do
+      receiver.update!(email: 'new-email@example.com', locale: nil)
+      expect(mail.body.encoded).to include 'new-email@example.com'
+      expect(mail.body.encoded).to include 'spec'
+      expect(mail.body.encoded).to include Setting.site_title
+      expect(mail.subject).to eq I18n.t('devise.mailer.reconfirmation_instructions.subject',
+                                        instance: Setting.site_title,
+                                        locale: I18n.default_locale)
+    end
+  end
+
   describe 'reset_password_instructions' do
     let(:mail) { UserMailer.reset_password_instructions(receiver, 'spec') }
 
@@ -56,5 +70,17 @@ describe UserMailer, type: :mailer do
 
     include_examples 'localized subject',
                      'devise.mailer.password_change.subject'
+  end
+
+  describe 'email_changed' do
+    let(:mail) { UserMailer.email_changed(receiver) }
+
+    it 'renders email change notification' do
+      receiver.update!(locale: nil)
+      expect(mail.body.encoded).to include receiver.email
+    end
+
+    include_examples 'localized subject',
+                     'devise.mailer.email_changed.subject'
   end
 end

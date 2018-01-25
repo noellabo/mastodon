@@ -16,6 +16,7 @@ class Auth::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       if oauth_authentication.persisted?
         if current_user.initial_password_usage
+          current_user.skip_reconfirmation!
           if current_user.update(email: data['info']['email'])
             flash[:notice] = t('oauth_authentications.successfully_synchronization')
           else
