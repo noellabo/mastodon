@@ -9,8 +9,12 @@ import {
   FOLLOW_REQUEST_REJECT_SUCCESS,
 } from '../actions/accounts';
 import {
+  SUGGESTED_ACCOUNTS_FETCH_REQUEST,
   SUGGESTED_ACCOUNTS_FETCH_SUCCESS,
+  SUGGESTED_ACCOUNTS_FETCH_FAIL,
+  SUGGESTED_ACCOUNTS_EXPAND_REQUEST,
   SUGGESTED_ACCOUNTS_EXPAND_SUCCESS,
+  SUGGESTED_ACCOUNTS_EXPAND_FAIL,
 } from '../actions/suggested_accounts';
 import {
   REBLOGS_FETCH_SUCCESS,
@@ -52,6 +56,7 @@ const appendToList = (state, type, id, accounts, next) => {
 
 const normalizeSuggestedAccountsList = (state, type, accounts, next) => {
   return state.setIn([type], ImmutableMap({
+    isLoading: false,
     next,
     items: ImmutableList(accounts.map(item => item.id)),
   }));
@@ -59,7 +64,7 @@ const normalizeSuggestedAccountsList = (state, type, accounts, next) => {
 
 const appendToSuggestedAccountsList = (state, type, accounts, next) => {
   return state.updateIn([type], map => {
-    return map.set('next', next).update('items', list => list.push(...accounts.map(item => item.id)));
+    return map.set('next', next).update('items', list => list.push(...accounts.map(item => item.id))).set('isLoading', false);
   });
 };
 
@@ -96,6 +101,12 @@ export default function userLists(state = initialState, action) {
     return normalizeSuggestedAccountsList(state, 'suggested_accounts', action.accounts, action.next);
   case SUGGESTED_ACCOUNTS_EXPAND_SUCCESS:
     return appendToSuggestedAccountsList(state, 'suggested_accounts', action.accounts, action.next);
+  case SUGGESTED_ACCOUNTS_FETCH_REQUEST:
+  case SUGGESTED_ACCOUNTS_EXPAND_REQUEST:
+    return state.setIn(['suggested_accounts', 'isLoading'], true);
+  case SUGGESTED_ACCOUNTS_FETCH_FAIL:
+  case SUGGESTED_ACCOUNTS_EXPAND_FAIL:
+    return state.setIn(['suggested_accounts', 'isLoading'], false);
   default:
     return state;
   }
