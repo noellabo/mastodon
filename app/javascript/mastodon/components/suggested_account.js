@@ -55,7 +55,6 @@ export default class SuggestedAccount extends React.PureComponent {
             src={video.get('url')}
             height={132}
             onOpenVideo={this.handleOpenVideo}
-            sensitive={status.get('sensitive')}
           />
         );
       } else {
