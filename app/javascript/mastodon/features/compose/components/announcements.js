@@ -2,7 +2,9 @@ import React from 'react';
 import Immutable from 'immutable';
 import Link from 'react-router-dom/Link';
 import IconButton from '../../../components/icon_button';
+import PawooGA from '../../../../pawoo/actions/ga';
 
+const pawooGaCategory = 'Compose';
 const storageKey = 'announcements_dismissed';
 
 // NOTE: id: 15 まで使用した
@@ -84,9 +86,16 @@ class Announcements extends React.PureComponent {
               </div>
               <p>{announcement.get('body')}</p>
               <p>
-                {announcement.get('link').map((link) => {
+                {announcement.get('link').map((link, index) => {
                   const classNames = ['announcements__link'];
-                  const action = link.get('action');
+                  const handleClick = () => {
+                    PawooGA.event({ category: pawooGaCategory, action: 'Click', value: `${announcement.get('id')}-${index}` });
+
+                    const action = link.get('action');
+                    if (action) {
+                      action();
+                    }
+                  };
 
                   if (link.get('inline')) {
                     classNames.push('announcements__link-inline');
@@ -94,13 +103,13 @@ class Announcements extends React.PureComponent {
 
                   if (link.get('reactRouter')) {
                     return (
-                      <Link key={link.get('href')} className={classNames.join(' ')} to={link.get('href')} onClick={action ? action : null}>
+                      <Link key={link.get('href')} className={classNames.join(' ')} to={link.get('href')} onClick={handleClick}>
                         {link.get('body')}
                       </Link>
                     );
                   } else {
                     return (
-                      <a className={classNames.join(' ')} key={link.get('href')} href={link.get('href')} target='_blank' onClick={action ? action : null}>
+                      <a className={classNames.join(' ')} key={link.get('href')} href={link.get('href')} target='_blank' onClick={handleClick}>
                         {link.get('body')}
                       </a>
                     );
