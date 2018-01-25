@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link } from 'react-router-dom';
 import { debounce } from 'lodash';
+import { List as ImmutableList } from 'immutable';
 import {
   fetchSuggestedAccounts,
   expandSuggestedAccounts,
@@ -15,8 +16,9 @@ import Column from '../ui/components/column';
 import ColumnBackButtonSlim from '../../components/column_back_button_slim';
 
 const mapStateToProps = (state) => ({
-  accountIds: state.getIn(['user_lists', 'suggested_accounts', 'items']),
+  accountIds: state.getIn(['user_lists', 'suggested_accounts', 'items'], ImmutableList()),
   hasMore: !!state.getIn(['user_lists', 'suggested_accounts', 'next']),
+  isLoading: state.getIn(['user_lists', 'suggested_accounts', 'isLoading'], true),
 });
 
 const messages = defineMessages({
@@ -38,6 +40,7 @@ class SuggestedAccounts extends React.PureComponent {
     dispatch: PropTypes.func.isRequired,
     accountIds: ImmutablePropTypes.list,
     hasMore: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
   };
 
   componentWillMount () {
@@ -56,20 +59,14 @@ class SuggestedAccounts extends React.PureComponent {
     this.props.dispatch(expandSuggestedAccounts());
   }, 300, { leading: true });
 
-  handleLoadMore = (e) => {
-    e.preventDefault();
-    this.props.dispatch(expandSuggestedAccounts());
-  }
-
   render () {
-    const { accountIds, hasMore, intl } = this.props;
-    const isLoading = !accountIds;
+    const { accountIds, hasMore, isLoading, intl } = this.props;
 
     let scrollableContent = null;
 
     if (isLoading && this.scrollableContent) {
       scrollableContent = this.scrollableContent;
-    } else if ((accountIds && accountIds.size > 0) || hasMore) {
+    } else if (accountIds.size > 0 || hasMore) {
       scrollableContent = accountIds.map((id) => (
         <SuggestedAccountContainer key={id} id={id} />
       ));
