@@ -235,38 +235,24 @@ $button-icon-scale-ration-on-pc: 0.85;
   }
 }
 
-.suggested_accounts__scrollable {
-  $button-height: 36px;
-
-  position: relative;
-
-  .suggested_accounts__local_timeline_button {
-    height: 30px;
-  }
-
-  .account__suggested_accounts_media {
+.account.suggested_account {
+  .suggested_account__media {
     padding-left: 13px;
     $media-height: 90px;
 
-    .media-gallery {
+    .video-player:not(.fullscreen) {
       max-height: $media-height;
     }
 
+    .video-player {
+      margin-top: 8px;
+      border-radius: 0;
+    }
+
+    .media-gallery,
     .media-gallery__item {
       max-height: $media-height;
     }
-  }
-
-  .load-more {
-    margin-bottom: $button-height;
-  }
-
-  .button {
-    position: absolute;
-    bottom: 0;
-    width: 97%;
-    height: $button-height;
-    line-height: $button-height;
   }
 }
 
