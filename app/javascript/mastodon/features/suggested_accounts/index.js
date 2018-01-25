@@ -43,15 +43,11 @@ class SuggestedAccounts extends React.PureComponent {
     isLoading: PropTypes.bool.isRequired,
   };
 
-  componentWillMount () {
-    this.props.dispatch(fetchSuggestedAccounts());
-  }
+  componentDidMount () {
+    const { accountIds, hasMore } = this.props;
 
-  handleScroll = (e) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-
-    if (scrollTop === scrollHeight - clientHeight) {
-      this.props.dispatch(expandSuggestedAccounts());
+    if (accountIds.size === 0 && !hasMore) {
+      this.props.dispatch(fetchSuggestedAccounts());
     }
   }
 
