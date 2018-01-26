@@ -22,7 +22,7 @@ const messages = defineMessages({
   suggested_accounts: { id: 'column.suggested_accounts', defaultMessage: 'Active Users' },
   community: { id: 'navigation_bar.community_timeline', defaultMessage: 'Local timeline' },
   preferences: { id: 'navigation_bar.preferences', defaultMessage: 'Preferences' },
-  help: { id: 'navigation_bar.logout', defaultMessage: 'Logout' },
+  help: { id: 'navigation_bar.help', defaultMessage: 'Help' },
 });
 
 const mapStateToProps = state => ({
@@ -79,7 +79,7 @@ export default class Compose extends React.PureComponent {
           )}
           <Link to='/web/suggested_accounts' className='drawer__tab' title={intl.formatMessage(messages.suggested_accounts)} aria-label={intl.formatMessage(messages.suggested_accounts)}><i role='img' className='fa fa-fw fa-user-plus' /></Link>
           <a href='/settings/preferences' target='_blank' className='drawer__tab' title={intl.formatMessage(messages.preferences)} aria-label={intl.formatMessage(messages.preferences)}><i role='img' className='fa fa-fw fa-cog' /></a>
-          <a href='https://pawoo.pixiv.help' target='_blank' className='drawer__tab' title={intl.formatMessage(messages.help)} aria-label={intl.formatMessage(messages.help)}><i role='img' className='fa fa-fw fa-help-circle' /></a>
+          <a href='https://pawoo.pixiv.help' target='_blank' className='drawer__tab' title={intl.formatMessage(messages.help)} aria-label={intl.formatMessage(messages.help)}><i role='img' className='fa fa-fw fa-question-circle' /></a>
         </nav>
       );
     }
