@@ -1,6 +1,6 @@
 import loadPolyfills from '../mastodon/load_polyfills';
 import ready from '../mastodon/ready';
-import { trackPage, startHeartbeat } from '../mastodon/actions/ga';
+import { trackPage } from '../mastodon/actions/ga';
 
 window.addEventListener('message', e => {
   const data = e.data || {};
@@ -177,7 +177,6 @@ function main() {
 
   // GA
   trackPage(window.location.pathname);
-  startHeartbeat();
 }
 
 loadPolyfills().then(main).catch(error => {
