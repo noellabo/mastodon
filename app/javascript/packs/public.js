@@ -1,6 +1,5 @@
 import loadPolyfills from '../mastodon/load_polyfills';
 import ready from '../mastodon/ready';
-import { trackPage } from '../mastodon/actions/ga';
 
 window.addEventListener('message', e => {
   const data = e.data || {};
@@ -174,9 +173,6 @@ function main() {
 
     header.style.backgroundImage = `url(${url})`;
   });
-
-  // GA
-  trackPage(window.location.pathname);
 }
 
 loadPolyfills().then(main).catch(error => {

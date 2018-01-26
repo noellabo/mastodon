@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { trackPage } from '../actions/ga';
+import PawooGA from '../../pawoo/actions/ga';
 
 const gaTracker = (WrappedComponent, prefix = '') => {
 
@@ -10,17 +10,12 @@ const gaTracker = (WrappedComponent, prefix = '') => {
       location: PropTypes.object,
     };
 
-    componentDidMount() {
-      const page = this.props.location.pathname;
-      trackPage(`${prefix}${page}`);
-    }
-
     componentWillReceiveProps(nextProps) {
       const currentPage = this.props.location.pathname;
       const nextPage = nextProps.location.pathname;
 
       if (currentPage !== nextPage) {
-        trackPage(`${prefix}${nextPage}`);
+        PawooGA.trackPage(`${prefix}${nextPage}`);
       }
     }
 

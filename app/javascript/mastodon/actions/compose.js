@@ -2,6 +2,7 @@ import api from '../api';
 import { throttle } from 'lodash';
 import { search as emojiSearch } from '../features/emoji/emoji_mart_search_light';
 import { useEmoji } from './emojis';
+import PawooGA from '../../pawoo/actions/ga';
 
 import { addScheduledStatuses } from './schedules';
 import {
@@ -10,6 +11,8 @@ import {
   refreshCommunityTimeline,
   refreshPublicTimeline,
 } from './timelines';
+
+const pawooGaCategory = 'Compose';
 
 export const COMPOSE_CHANGE          = 'COMPOSE_CHANGE';
 export const COMPOSE_SUBMIT_REQUEST  = 'COMPOSE_SUBMIT_REQUEST';
@@ -61,6 +64,8 @@ export function replyCompose(status, router) {
       status: status,
     });
 
+    PawooGA.event({ category: pawooGaCategory, action: 'OpenReply' });
+
     if (!getState().getIn(['compose', 'mounted'])) {
       router.push('/statuses/new');
     }
@@ -86,6 +91,8 @@ export function mentionCompose(account, router) {
       account: account,
     });
 
+    PawooGA.event({ category: pawooGaCategory, action: 'OpenMention' });
+
     if (!getState().getIn(['compose', 'mounted'])) {
       router.push('/statuses/new');
     }
@@ -102,6 +109,8 @@ export function submitCompose() {
     }
 
     dispatch(submitComposeRequest());
+
+    PawooGA.event({ category: pawooGaCategory, action: 'Submit' });
 
     api(getState).post('/api/v1/statuses', {
       status,
@@ -205,6 +214,8 @@ export function uploadCompose(files) {
     }
 
     dispatch(uploadComposeRequest());
+
+    PawooGA.event({ category: pawooGaCategory, action: 'Upload' });
 
     let data = new FormData();
     data.append('file', files[0]);

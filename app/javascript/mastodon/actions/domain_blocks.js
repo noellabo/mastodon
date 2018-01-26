@@ -1,4 +1,7 @@
 import api, { getLinks } from '../api';
+import PawooGA from '../../pawoo/actions/ga';
+
+const pawooGaCategory = 'DomainBlock';
 
 export const DOMAIN_BLOCK_REQUEST = 'DOMAIN_BLOCK_REQUEST';
 export const DOMAIN_BLOCK_SUCCESS = 'DOMAIN_BLOCK_SUCCESS';
@@ -15,6 +18,8 @@ export const DOMAIN_BLOCKS_FETCH_FAIL    = 'DOMAIN_BLOCKS_FETCH_FAIL';
 export function blockDomain(domain, accountId) {
   return (dispatch, getState) => {
     dispatch(blockDomainRequest(domain));
+
+    PawooGA.event({ category: pawooGaCategory, action: 'Block' });
 
     api(getState).post('/api/v1/domain_blocks', { domain }).then(() => {
       dispatch(blockDomainSuccess(domain, accountId));
@@ -50,6 +55,8 @@ export function blockDomainFail(domain, error) {
 export function unblockDomain(domain, accountId) {
   return (dispatch, getState) => {
     dispatch(unblockDomainRequest(domain));
+
+    PawooGA.event({ category: pawooGaCategory, action: 'Unblock' });
 
     api(getState).delete('/api/v1/domain_blocks', { params: { domain } }).then(() => {
       dispatch(unblockDomainSuccess(domain, accountId));

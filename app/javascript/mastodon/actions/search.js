@@ -1,4 +1,5 @@
 import api from '../api';
+import PawooGA from '../../pawoo/actions/ga';
 
 import {
   refreshTimelineRequest,
@@ -8,6 +9,8 @@ import {
   expandTimelineSuccess,
   expandTimelineFail,
 } from './timelines';
+
+const pawooGaCategory = 'Search';
 
 export const SEARCH_CHANGE = 'SEARCH_CHANGE';
 export const SEARCH_CLEAR  = 'SEARCH_CLEAR';
@@ -44,6 +47,8 @@ export function submitSearch() {
     }
 
     dispatch(fetchSearchRequest());
+
+    PawooGA.event({ category: pawooGaCategory, action: 'Submit' });
 
     api(getState).get('/api/v1/search', {
       params: {
