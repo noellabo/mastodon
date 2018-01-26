@@ -19,10 +19,10 @@ const messages = defineMessages({
   start: { id: 'getting_started.heading', defaultMessage: 'Getting started' },
   home_timeline: { id: 'tabs_bar.home', defaultMessage: 'Home' },
   notifications: { id: 'tabs_bar.notifications', defaultMessage: 'Notifications' },
-  public: { id: 'navigation_bar.public_timeline', defaultMessage: 'Federated timeline' },
+  suggested_accounts: { id: 'column.suggested_accounts', defaultMessage: 'Active Users' },
   community: { id: 'navigation_bar.community_timeline', defaultMessage: 'Local timeline' },
   preferences: { id: 'navigation_bar.preferences', defaultMessage: 'Preferences' },
-  logout: { id: 'navigation_bar.logout', defaultMessage: 'Logout' },
+  help: { id: 'navigation_bar.help', defaultMessage: 'Help' },
 });
 
 const mapStateToProps = state => ({
@@ -77,11 +77,9 @@ export default class Compose extends React.PureComponent {
           {!columns.some(column => column.get('id') === 'COMMUNITY') && (
             <Link to='/timelines/public/local' className='drawer__tab' title={intl.formatMessage(messages.community)} aria-label={intl.formatMessage(messages.community)}><i role='img' className='fa fa-fw fa-users' /></Link>
           )}
-          {!columns.some(column => column.get('id') === 'PUBLIC') && (
-            <Link to='/timelines/public' className='drawer__tab' title={intl.formatMessage(messages.public)} aria-label={intl.formatMessage(messages.public)}><i role='img' className='fa fa-fw fa-globe' /></Link>
-          )}
-          <a href='/settings/preferences' className='drawer__tab' title={intl.formatMessage(messages.preferences)} aria-label={intl.formatMessage(messages.preferences)}><i role='img' className='fa fa-fw fa-cog' /></a>
-          <a href='/auth/sign_out' className='drawer__tab' data-method='delete' title={intl.formatMessage(messages.logout)} aria-label={intl.formatMessage(messages.logout)}><i role='img' className='fa fa-fw fa-sign-out' /></a>
+          <Link to='/suggested_accounts' className='drawer__tab' title={intl.formatMessage(messages.suggested_accounts)} aria-label={intl.formatMessage(messages.suggested_accounts)}><i role='img' className='fa fa-fw fa-user-plus' /></Link>
+          <a href='/settings/preferences' rel='noopener' className='drawer__tab' title={intl.formatMessage(messages.preferences)} aria-label={intl.formatMessage(messages.preferences)}><i role='img' className='fa fa-fw fa-cog' /></a>
+          <a href='https://pawoo.pixiv.help' target='_blank' rel='noopener' className='drawer__tab' title={intl.formatMessage(messages.help)} aria-label={intl.formatMessage(messages.help)}><i role='img' className='fa fa-fw fa-question-circle' /></a>
         </nav>
       );
     }
