@@ -103,6 +103,7 @@ class Announcements extends React.PureComponent {
                     classNames.push('announcements__link-inline');
                   }
 
+                  /* eslint-disable react/jsx-no-bind */
                   if (link.get('reactRouter')) {
                     return (
                       <Link key={link.get('href')} className={classNames.join(' ')} to={link.get('href')} onClick={handleClick}>
@@ -116,6 +117,7 @@ class Announcements extends React.PureComponent {
                       </a>
                     );
                   }
+                  /* eslint-enable react/jsx-no-bind */
                 })}
               </p>
             </div>

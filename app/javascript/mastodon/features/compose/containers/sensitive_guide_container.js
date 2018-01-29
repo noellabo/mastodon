@@ -24,13 +24,13 @@ class SensitiveGuide extends React.PureComponent {
 
     return (
       <Motion defaultStyle={{ scale: 0.87 }} style={{ scale: spring(visible ? 1 : 0.87, { stiffness: 200, damping: 10 }) }}>
-        {({ scale }) =>
+        {({ scale }) => (
           <div style={{ display: visible ? 'block' : 'none', paddingTop: 10, transform: `translateZ(0) scale(${scale})` }}>
             <div style={{ padding: 10, boxShadow: 'inset 0 0 0 1px white', borderRadius: 4 }}>
               {intl.formatMessage(messages.message)}
             </div>
           </div>
-        }
+        )}
       </Motion>
     );
   }
