@@ -100,6 +100,8 @@ export default class Compose extends React.PureComponent {
             <div className='drawer__block'>
               <TrendTagsContainer />
             </div>
+
+            <div className='mastodon' />
           </div>
 
           <Motion defaultStyle={{ x: -100 }} style={{ x: spring(showSearch ? 0 : -100, { stiffness: 210, damping: 20 }) }}>

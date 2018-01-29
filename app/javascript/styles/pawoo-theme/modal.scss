@@ -1,0 +1,9 @@
+.modal-layout {
+  background: $ui-base-color; // 象の上のギザギザ無効
+}
+
+.modal-layout__mastodon {
+  > * {
+    background: url('../images/pawoo/pawoo-ui.png') no-repeat left bottom / contain;
+  }
+}

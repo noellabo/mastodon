@@ -4,6 +4,8 @@ import Link from 'react-router-dom/Link';
 import IconButton from '../../../components/icon_button';
 import PawooGA from '../../../../pawoo/actions/ga';
 
+import icon from '../../../../images/pawoo/announcement_icon.png';
+
 const pawooGaCategory = 'Compose';
 const storageKey = 'announcements_dismissed';
 
@@ -11,7 +13,7 @@ const storageKey = 'announcements_dismissed';
 const announcements = [
   {
     id: 1,
-    icon: '/announcements/icon_2x_360.png',
+    icon,
     body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
     link: [
       {
@@ -28,7 +30,7 @@ const announcements = [
     ],
   }, {
     id: 7,
-    icon: '/announcements/icon_2x_360.png',
+    icon,
     body: 'Pawooにどんなユーザーさんがいるのか見てみよう！',
     link: [
       {
