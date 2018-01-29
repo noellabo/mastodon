@@ -103,7 +103,7 @@ class Account < ApplicationRecord
   has_many :lists, through: :list_accounts
 
   # Account migrations
-  belongs_to :moved_to_account, class_name: 'Account'
+  belongs_to :moved_to_account, class_name: 'Account', optional: true
 
   scope :remote, -> { where.not(domain: nil) }
   scope :local, -> { where(domain: nil) }
@@ -168,7 +168,7 @@ class Account < ApplicationRecord
 
   def refresh!
     return if local?
-    ResolveRemoteAccountService.new.call(acct)
+    ResolveAccountService.new.call(acct)
   end
 
   def unsuspend!

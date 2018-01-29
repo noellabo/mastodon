@@ -136,34 +136,13 @@
       {
         "defaultMessage": "Not found",
         "id": "missing_indicator.label"
+      },
+      {
+        "defaultMessage": "This resource could not be found",
+        "id": "missing_indicator.sublabel"
       }
     ],
     "path": "app/javascript/mastodon/components/missing_indicator.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "now",
-        "id": "relative_time.just_now"
-      },
-      {
-        "defaultMessage": "{number}s",
-        "id": "relative_time.seconds"
-      },
-      {
-        "defaultMessage": "{number}m",
-        "id": "relative_time.minutes"
-      },
-      {
-        "defaultMessage": "{number}h",
-        "id": "relative_time.hours"
-      },
-      {
-        "defaultMessage": "{number}d",
-        "id": "relative_time.days"
-      }
-    ],
-    "path": "app/javascript/mastodon/components/relative_timestamp.json"
   },
   {
     "descriptors": [
@@ -262,12 +241,25 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "Pinned Toot",
-        "id": "status.pinned"
+        "defaultMessage": "Loading…",
+        "id": "regeneration_indicator.label"
       },
+      {
+        "defaultMessage": "Your home feed is being prepared!",
+        "id": "regeneration_indicator.sublabel"
+      }
+    ],
+    "path": "app/javascript/mastodon/components/status_list.json"
+  },
+  {
+    "descriptors": [
       {
         "defaultMessage": "{name} boosted",
         "id": "status.reblogged_by"
+      },
+      {
+        "defaultMessage": "Pinned Toot",
+        "id": "status.pinned"
       }
     ],
     "path": "app/javascript/mastodon/components/status.json"
@@ -296,6 +288,64 @@
       }
     ],
     "path": "app/javascript/mastodon/components/suggested_account.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "now",
+        "id": "relative_time.just_now"
+      },
+      {
+        "defaultMessage": "{number}s",
+        "id": "relative_time.seconds"
+      },
+      {
+        "defaultMessage": "{number}m",
+        "id": "relative_time.minutes"
+      },
+      {
+        "defaultMessage": "{number}h",
+        "id": "relative_time.hours"
+      },
+      {
+        "defaultMessage": "{number}d",
+        "id": "relative_time.days"
+      }
+    ],
+    "path": "app/javascript/mastodon/components/timestamp.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Toggle sound",
+        "id": "video_player.toggle_sound"
+      },
+      {
+        "defaultMessage": "Toggle visibility",
+        "id": "video_player.toggle_visible"
+      },
+      {
+        "defaultMessage": "Expand video",
+        "id": "video_player.expand"
+      },
+      {
+        "defaultMessage": "Sensitive content",
+        "id": "status.sensitive_warning"
+      },
+      {
+        "defaultMessage": "Click to view",
+        "id": "status.sensitive_toggle"
+      },
+      {
+        "defaultMessage": "Media hidden",
+        "id": "status.media_hidden"
+      },
+      {
+        "defaultMessage": "Video could not be played",
+        "id": "video_player.video_error"
+      }
+    ],
+    "path": "app/javascript/mastodon/components/video_player.json"
   },
   {
     "descriptors": [
@@ -760,6 +810,15 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "Undo",
+        "id": "upload_form.undo"
+      }
+    ],
+    "path": "app/javascript/mastodon/features/compose/components/upload_form.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "Uploading...",
         "id": "upload_progress.label"
       }
@@ -838,8 +897,8 @@
         "id": "tabs_bar.notifications"
       },
       {
-        "defaultMessage": "Federated timeline",
-        "id": "navigation_bar.public_timeline"
+        "defaultMessage": "Active Users",
+        "id": "column.suggested_accounts"
       },
       {
         "defaultMessage": "Local timeline",
@@ -850,8 +909,8 @@
         "id": "navigation_bar.preferences"
       },
       {
-        "defaultMessage": "Logout",
-        "id": "navigation_bar.logout"
+        "defaultMessage": "Help",
+        "id": "navigation_bar.help"
       }
     ],
     "path": "app/javascript/mastodon/features/compose/index.json"
@@ -954,20 +1013,20 @@
         "id": "navigation_bar.pins"
       },
       {
-        "defaultMessage": "Active Accounts",
-        "id": "navigation_bar.suggested_accounts"
-      },
-      {
-        "defaultMessage": "Media timeline",
-        "id": "navigation_bar.media_timeline"
-      },
-      {
         "defaultMessage": "Lists",
         "id": "navigation_bar.lists"
       },
       {
         "defaultMessage": "Keyboard shortcuts",
         "id": "navigation_bar.keyboard_shortcuts"
+      },
+      {
+        "defaultMessage": "Active Accounts",
+        "id": "navigation_bar.suggested_accounts"
+      },
+      {
+        "defaultMessage": "Media timeline",
+        "id": "navigation_bar.media_timeline"
       },
       {
         "defaultMessage": "FAQ",
@@ -1042,19 +1101,6 @@
       }
     ],
     "path": "app/javascript/mastodon/features/home_timeline/index.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "Media timeline",
-        "id": "column.media"
-      },
-      {
-        "defaultMessage": "There is nothing here! Write something publicly, or manually follow users from other instances to fill it up",
-        "id": "empty_column.public"
-      }
-    ],
-    "path": "app/javascript/mastodon/features/media_timeline/index.json"
   },
   {
     "descriptors": [
@@ -1201,6 +1247,19 @@
       }
     ],
     "path": "app/javascript/mastodon/features/lists/index.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Media timeline",
+        "id": "column.media"
+      },
+      {
+        "defaultMessage": "There is nothing here! Write something publicly, or manually follow users from other instances to fill it up",
+        "id": "empty_column.public"
+      }
+    ],
+    "path": "app/javascript/mastodon/features/media_timeline/index.json"
   },
   {
     "descriptors": [
@@ -1598,8 +1657,12 @@
         "id": "onboarding.page_one.federation"
       },
       {
-        "defaultMessage": "You are on {domain}, so your full handle is {handle}",
-        "id": "onboarding.page_one.handle"
+        "defaultMessage": "Your full handle",
+        "id": "onboarding.page_one.full_handle"
+      },
+      {
+        "defaultMessage": "This is what you would tell your friends to search for.",
+        "id": "onboarding.page_one.handle_hint"
       },
       {
         "defaultMessage": "Write posts from the compose column. You can upload images, change privacy settings, and add content warnings with the icons below.",
@@ -1750,6 +1813,15 @@
       }
     ],
     "path": "app/javascript/mastodon/features/ui/components/upload_area.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Close",
+        "id": "lightbox.close"
+      }
+    ],
+    "path": "app/javascript/mastodon/features/ui/components/video_modal.json"
   },
   {
     "descriptors": [
