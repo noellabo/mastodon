@@ -1,37 +1,20 @@
 # frozen_string_literal: true
 
 class Auth::RegistrationsController < Devise::RegistrationsController
+  include Pawoo::Auth::RegistrationsControllerConcern
+
   layout :determine_layout
 
   before_action :check_enabled_registrations, only: [:new, :create]
   before_action :configure_sign_up_params, only: [:create]
   before_action :set_sessions, only: [:edit, :update]
-  before_action :store_current_location, only: [:edit]
   before_action :set_instance_presenter, only: [:new, :create, :update]
-
-  def update
-    if current_user.initial_password_usage
-      send_reset_password_instructions
-    else
-      super
-    end
-  end
 
   def destroy
     not_found
   end
 
   protected
-
-  def send_reset_password_instructions
-    resource = resource_class.send_reset_password_instructions(email: current_user.email)
-
-    if successfully_sent?(resource)
-      redirect_to edit_user_registration_path
-    else
-      render :edit, status: :unprocessable_entity
-    end
-  end
 
   def build_resource(hash = nil)
     super(hash)

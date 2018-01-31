@@ -2,6 +2,7 @@
 
 class Api::V1::StatusesController < Api::BaseController
   include Authorization
+  include Pawoo::Api::V1::StatusesControllerConcern
 
   before_action :authorize_if_got_token, except:            [:create, :destroy]
   before_action -> { doorkeeper_authorize! :write }, only:  [:create, :destroy]
@@ -39,21 +40,11 @@ class Api::V1::StatusesController < Api::BaseController
   end
 
   def create
-    published = status_params[:published]
-    published_parsed = nil
-    unless published.nil?
-      begin
-        published_parsed = DateTime.parse published
-      rescue ArgumentError
-        raise Mastodon::ValidationError
-      end
-    end
-
     @status = PostStatusService.new.call(current_user.account,
                                          status_params[:status],
                                          status_params[:in_reply_to_id].blank? ? nil : Status.find(status_params[:in_reply_to_id]),
                                          media_ids: status_params[:media_ids],
-                                         published: published_parsed,
+                                         published: pawoo_published,
                                          sensitive: status_params[:sensitive],
                                          spoiler_text: status_params[:spoiler_text],
                                          visibility: status_params[:visibility],

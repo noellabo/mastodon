@@ -2,6 +2,7 @@
 
 class Auth::SessionsController < Devise::SessionsController
   include Devise::Controllers::Rememberable
+  include Pawoo::Auth::SessionsControllerConcern
 
   layout 'auth'
 
@@ -18,23 +19,11 @@ class Auth::SessionsController < Devise::SessionsController
   end
 
   def destroy
-    @_current_user_has_oauth_authentication = current_user.oauth_authentications.exists? if current_user
-
     super
     flash.delete(:notice)
   end
 
   protected
-
-  # Overwriting the sign_out redirect path method
-  def after_sign_out_path_for(*)
-    if @_current_user_has_oauth_authentication && Rails.configuration.x.pixiv_endpoints[:www]
-      template = Addressable::Template.new("#{Rails.configuration.x.pixiv_endpoints[:www]}/logout.php?return_to={return_to}")
-      template.expand(return_to: root_url).to_s
-    else
-      super
-    end
-  end
 
   def find_user
     if session[:otp_user_id]
