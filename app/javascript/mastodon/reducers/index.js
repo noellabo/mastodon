@@ -15,7 +15,6 @@ import status_lists from './status_lists';
 import cards from './cards';
 import mutes from './mutes';
 import reports from './reports';
-import suggested_accounts from './suggested_accounts';
 import trend_tags from './trend_tags';
 import suggestion_tags from './suggestion_tags';
 import contexts from './contexts';
@@ -27,6 +26,7 @@ import height_cache from './height_cache';
 import custom_emojis from './custom_emojis';
 import lists from './lists';
 import listEditor from './list_editor';
+import pawoo from '../../pawoo/reducers';
 
 const reducers = {
   timelines,
@@ -54,7 +54,7 @@ const reducers = {
   custom_emojis,
   lists,
   listEditor,
-  suggested_accounts,
+  pawoo,
   trend_tags,
   suggestion_tags,
 };

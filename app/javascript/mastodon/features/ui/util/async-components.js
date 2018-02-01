@@ -91,7 +91,7 @@ export function MediaTimeline () {
 }
 
 export function SuggestedAccounts () {
-  return import(/* webpackChunkName: "features/suggestion_tags" */'../../suggested_accounts');
+  return import(/* webpackChunkName: "features/suggested_accounts" */'../../../../pawoo/containers/suggested_accounts_container');
 }
 
 export function SuggestionTags () {
@@ -99,11 +99,11 @@ export function SuggestionTags () {
 }
 
 export function StatusSearchResults () {
-  return import(/* webpackChunkName: "features/suggestion_tags" */'../../status_search_results');
+  return import(/* webpackChunkName: "features/status_search_results" */'../../status_search_results');
 }
 
 export function AccountMediaTimeline () {
-  return import(/* webpackChunkName: "features/suggestion_tags" */'../../account_media_timeline');
+  return import(/* webpackChunkName: "features/account_media_timeline" */'../../account_media_timeline');
 }
 
 export function Blocks () {

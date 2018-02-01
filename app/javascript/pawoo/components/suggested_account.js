@@ -1,17 +1,13 @@
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
-import Avatar from './avatar';
-import DisplayName from './display_name';
-import Permalink from './permalink';
-import IconButton from './icon_button';
+import Avatar from '../../mastodon/components/avatar';
+import DisplayName from '../../mastodon/components/display_name';
+import Permalink from '../../mastodon/components/permalink';
+import IconButton from '../../mastodon/components/icon_button';
 import { defineMessages, injectIntl } from 'react-intl';
-import { MediaGallery, Video } from '../features/ui/util/async-components';
-import { me } from '../initial_state';
-
-// We use the component (and not the container) since we do not want
-// to use the progress bar to show download progress
-import Bundle from '../features/ui/components/bundle';
+import { me } from '../../mastodon/initial_state';
+import SuggestedAccountMedia from './suggested_account_media';
 
 const messages = defineMessages({
   follow: { id: 'account.follow', defaultMessage: 'Follow' },
@@ -27,7 +23,6 @@ export default class SuggestedAccount extends React.PureComponent {
   static propTypes = {
     account: ImmutablePropTypes.map.isRequired,
     onFollow: PropTypes.func.isRequired,
-    onOpenVideo: PropTypes.func.isRequired,
     onOpenMedia: PropTypes.func.isRequired,
     intl: PropTypes.object.isRequired,
   };
@@ -44,49 +39,14 @@ export default class SuggestedAccount extends React.PureComponent {
     return <div className='media-spoiler-video' style={{ height: 132 }} />;
   }
 
-  handleOpenVideo = startTime => {
-    const { account } = this.props;
-
-    this.props.onOpenVideo(account.getIn(['media_attachments', 0]), startTime);
-  }
-
   render () {
-    const { account, intl } = this.props;
+    const { account, onOpenMedia, intl } = this.props;
 
     if (!account) {
       return <div />;
     }
 
     let buttons;
-    let media = '';
-    let attachments = account.get('media_attachments');
-
-    if (attachments.size > 0) {
-      if (attachments.some(item => item.get('type') === 'unknown')) {
-        // Do nothing
-      } else if (attachments.first().get('type') === 'video') {
-        const video = attachments.first();
-        media = (
-          <Bundle fetchComponent={Video} loading={this.renderLoadingVideoPlayer} >
-            {Component => (
-              <Component
-                preview={video.get('preview_url')}
-                src={video.get('url')}
-                width={274}
-                height={132}
-                onOpenVideo={this.handleOpenVideo}
-              />
-            )}
-          </Bundle>
-        );
-      } else {
-        media = (
-          <Bundle fetchComponent={MediaGallery} loading={this.renderLoadingMediaGallery} >
-            {Component => <Component media={attachments} height={132} onOpenMedia={this.props.onOpenMedia} lineMedia />}
-          </Bundle>
-        );
-      }
-    }
 
     if (account.get('id') !== me && account.get('relationship', null) !== null) {
       const following = account.getIn(['relationship', 'following']);
@@ -96,7 +56,7 @@ export default class SuggestedAccount extends React.PureComponent {
 
       // NOTE: blocking/mutingはそもそもロードされないはず
       if (requested) {
-        buttons = <IconButton disabled icon='hourglass' title={intl.formatMessage(messages.requested)} />;
+        buttons = <IconButton active icon='hourglass' title={intl.formatMessage(messages.requested)} onClick={this.handleFollow} />;
       } else if (blocking) {
         buttons = <IconButton active icon='unlock-alt' title={intl.formatMessage(messages.unblock, { name: account.get('username') })} onClick={this.handleBlock} />;
       } else if (muting) {
@@ -119,7 +79,7 @@ export default class SuggestedAccount extends React.PureComponent {
           </div>
         </div>
 
-        <div className='suggested_account__media'>{media}</div>
+        <SuggestedAccountMedia mediaAttachments={account.get('media_attachments')} onOpenMedia={onOpenMedia} />
       </div>
     );
   }

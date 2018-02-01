@@ -5,15 +5,15 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { List as ImmutableList } from 'immutable';
+import { defineMessages, injectIntl } from 'react-intl';
 import {
   fetchSuggestedAccounts,
   expandSuggestedAccounts,
-} from '../../actions/suggested_accounts';
-import ScrollableList from '../../components/scrollable_list';
-import { defineMessages, injectIntl } from 'react-intl';
-import SuggestedAccountContainer from '../../containers/suggested_account_container';
-import Column from '../ui/components/column';
-import ColumnBackButtonSlim from '../../components/column_back_button_slim';
+} from '../actions/suggested_accounts';
+import ScrollableList from '../../mastodon/components/scrollable_list';
+import SuggestedAccountContainer from './suggested_account_container';
+import Column from '../../mastodon/features/ui/components/column';
+import ColumnBackButtonSlim from '../../mastodon/components/column_back_button_slim';
 
 const mapStateToProps = (state) => ({
   accountIds: state.getIn(['user_lists', 'suggested_accounts', 'items'], ImmutableList()),
@@ -33,7 +33,9 @@ const buttonStyle = {
   fontSize: '16px',
 };
 
-class SuggestedAccounts extends React.PureComponent {
+@connect(mapStateToProps)
+@injectIntl
+export default class SuggestedAccounts extends React.PureComponent {
 
   static propTypes = {
     intl: PropTypes.object.isRequired,
@@ -92,5 +94,3 @@ class SuggestedAccounts extends React.PureComponent {
   }
 
 }
-
-export default connect(mapStateToProps)(injectIntl(SuggestedAccounts));

@@ -235,23 +235,34 @@ $button-icon-scale-ration-on-pc: 0.85;
   }
 }
 
-.account.suggested_account {
-  .suggested_account__media {
-    padding-left: 13px;
-    $media-height: 90px;
+.suggested_account_media {
+  padding-left: 13px;
+  margin-top: 5px;
+  $media-height: 90px;
+  height: $media-height;
 
-    .video-player:not(.fullscreen) {
-      max-height: $media-height;
+  .media-gallery__item {
+    max-height: $media-height;
+  }
+
+  .pawoo-video-thumbnail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    > img {
+      position: absolute;
     }
 
-    .video-player {
-      margin-top: 8px;
-      border-radius: 0;
-    }
-
-    .media-gallery,
-    .media-gallery__item {
-      max-height: $media-height;
+    > .fa {
+      position: absolute;
+      font-size: 50px;
+      color: lighten($ui-base-color, 13%);
+      background-color: $white;
+      border-radius: 50%;
+      height: 50px;
+      width: 50px;
+      opacity: 0.8;
     }
   }
 }
