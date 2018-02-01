@@ -2,14 +2,14 @@ version: 2
 jobs:
   build:
     docker:
-      - image: pawoo/circleci-primary:20180111
+      - image: pawoo/circleci-primary:20180129
       - image: postgres:9.5.4
         environment:
           POSTGRES_USER: root
       - image: redis:3.2.4
       - image: docker.elastic.co/elasticsearch/elasticsearch:5.4.0
         environment:
-          ES_JAVA_OPTS: -Xms1g -Xmx1g
+          ES_JAVA_OPTS: -Xms512m -Xmx512m
         entrypoint:
           - /bin/sh
           - -c

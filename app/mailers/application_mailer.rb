@@ -6,7 +6,9 @@ class ApplicationMailer < ActionMailer::Base
   # Just skip this, we dont want to perform the job again
   rescue_from('ActiveJob::DeserializationError') {}
 
+  helper :application
   helper :instance
+  helper :mailer
 
   protected
 

@@ -68,13 +68,15 @@ export default class SuggestedAccount extends React.PureComponent {
         const video = attachments.first();
         media = (
           <Bundle fetchComponent={Video} loading={this.renderLoadingVideoPlayer} >
-            {Component => <Component
-              preview={video.get('preview_url')}
-              src={video.get('url')}
-              width={274}
-              height={132}
-              onOpenVideo={this.handleOpenVideo}
-            />}
+            {Component => (
+              <Component
+                preview={video.get('preview_url')}
+                src={video.get('url')}
+                width={274}
+                height={132}
+                onOpenVideo={this.handleOpenVideo}
+              />
+            )}
           </Bundle>
         );
       } else {

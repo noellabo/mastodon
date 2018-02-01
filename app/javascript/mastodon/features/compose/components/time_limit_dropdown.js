@@ -92,13 +92,13 @@ class TimeLimitDropdownMenu extends React.PureComponent {
           <div className='time-limit-dropdown__dropdown' style={{ ...style, opacity: opacity, transform: `scale(${scaleX}, ${scaleY})` }} ref={this.setRef}>
             <TimeLimitHeader />
             <div className='time-limit-dropdown__options'>
-              {items.map(item =>
+              {items.map(item => (
                 <div role='button' tabIndex='0' key={item.value} data-value={item.value} onKeyDown={this.handleClick} onClick={this.handleClick} className='time-limit-dropdown__option'>
                   <div className='time-limit-dropdown__option__content'>
                     <strong>{item.text}</strong>
                   </div>
                 </div>
-              )}
+              ))}
             </div>
           </div>
         )}

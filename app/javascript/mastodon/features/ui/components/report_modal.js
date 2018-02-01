@@ -116,7 +116,7 @@ export default class ReportModal extends ImmutablePureComponent {
               <div className='report__select'>
                 <div>
                   <div className='report__select__title'>{intl.formatMessage(messages.reportTitle)}</div>
-                  {this.options.map(option =>
+                  {this.options.map(option => (
                     <div key={option.get('id')} style={{ display: 'flex' }}>
                       <div style={{ flex: '1 1 auto', padding: '10px' }}>
                         {intl.formatMessage(messages[option.get('id')])}
@@ -125,7 +125,7 @@ export default class ReportModal extends ImmutablePureComponent {
                         <Toggle name={option.get('value')} checked={this.props.comment === option.get('value')} onChange={this.onToggle} disabled={isSubmitting} />
                       </div>
                     </div>
-                  )}
+                  ))}
                   <textarea
                     className={`setting-text light ${filled ? 'filled' : ''}`}
                     placeholder={intl.formatMessage(messages.placeholder)}

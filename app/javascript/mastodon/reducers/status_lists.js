@@ -53,10 +53,10 @@ const insertToDateSortedList = (state, listType, statuses, allStatuses) => {
     };
 
     map.set('items', map.get('items')
-                        .map(id => ({ id, created_at: allStatuses.getIn([id, 'created_at']) }))
-                        .concat(statuses)
-                        .sort(compare)
-                        .map(item => item.id));
+      .map(id => ({ id, created_at: allStatuses.getIn([id, 'created_at']) }))
+      .concat(statuses)
+      .sort(compare)
+      .map(item => item.id));
   }));
 };
 

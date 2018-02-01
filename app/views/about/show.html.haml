@@ -9,14 +9,14 @@
 
 .about-cols
   .about-col.left
-    = image_tag asset_pack_path('service_logo.png'), width: 150, style: 'display:block;margin:0 auto 40px'
+    = image_tag asset_pack_path('pawoo/service_logo.png'), width: 150, style: 'display:block;margin:0 auto 40px'
 
     .simple_form
       = render 'registration'
 
   .about-col.main
     .about-col-head
-      = image_tag asset_pack_path('about/header.png'), width: 535
+      = image_tag asset_pack_path('pawoo/about/header.png'), width: 535
       %p
         ピクシブが運営するマストドンインスタンス「Pawoo」は、文章や画像を投稿して楽しむSNSです。
         「創作活動や自由なコミュニケーションを楽しめる場」として、どなたにも幅広く使っていただけます。
@@ -37,11 +37,11 @@
       .about-col-body-apps
         .about-col-body-app
           = link_to 'https://itunes.apple.com/us/app/pawoo/id1229070679' do
-            = image_tag asset_pack_path('about/badge-appstore.png'), width: 190
+            = image_tag asset_pack_path('pawoo/about/badge-appstore.png'), width: 190
 
         .about-col-body-app
           = link_to 'https://play.google.com/store/apps/details?id=jp.pxv.pawoo' do
-            = image_tag asset_pack_path('about/badge-googleplay.png'), width: 190
+            = image_tag asset_pack_path('pawoo/about/badge-googleplay.png'), width: 190
 
     .about-col-body
       = render 'pawoo_features'
@@ -57,7 +57,7 @@
       %p.main= t 'about.what_is_mastodon'
       %p= t 'about.about_mastodon_html'
 
-      %video{autoplay: '', loop: '',  src: asset_pack_path('about/demo.mp4'),  poster: asset_pack_path('about/demo.jpg'),  style: 'width:100%;'}
+      %video{autoplay: '', loop: '',  src: asset_pack_path('pawoo/about/demo.mp4'),  poster: asset_pack_path('pawoo/about/demo.jpg'),  style: 'width:100%;'}
 
     .about-col-body
       %p.main ＼ マストドンの特徴 ／
@@ -85,7 +85,7 @@
         = " (#{@instance_presenter.version_number})"
 
     = link_to 'https://www.pixiv.net/' do
-      = image_tag asset_pack_path('logo_pixiv.png'), alt: 'pixiv', width: 50, style: 'display:block;margin:40px auto'
+      = image_tag asset_pack_path('pawoo/logo_pixiv.png'), alt: 'pixiv', width: 50, style: 'display:block;margin:40px auto'
 
   .about-col.right
     .about-timeline-container
