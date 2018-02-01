@@ -15,7 +15,7 @@ import {
   SUGGESTED_ACCOUNTS_EXPAND_REQUEST,
   SUGGESTED_ACCOUNTS_EXPAND_SUCCESS,
   SUGGESTED_ACCOUNTS_EXPAND_FAIL,
-} from '../actions/suggested_accounts';
+} from '../../pawoo/actions/suggested_accounts';
 import {
   REBLOGS_FETCH_SUCCESS,
   FAVOURITES_FETCH_SUCCESS,

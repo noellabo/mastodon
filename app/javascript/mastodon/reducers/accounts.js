@@ -10,7 +10,7 @@ import {
 import {
   SUGGESTED_ACCOUNTS_FETCH_SUCCESS,
   SUGGESTED_ACCOUNTS_EXPAND_SUCCESS,
-} from '../actions/suggested_accounts';
+} from '../../pawoo/actions/suggested_accounts';
 import {
   BLOCKS_FETCH_SUCCESS,
   BLOCKS_EXPAND_SUCCESS,
