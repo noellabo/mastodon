@@ -9,9 +9,21 @@ import icon from '../../../../images/pawoo/announcement_icon.png';
 const pawooGaCategory = 'Compose';
 const storageKey = 'announcements_dismissed';
 
-// NOTE: id: 15 まで使用した
+// NOTE: id: 16 まで使用した
 const announcements = [
   {
+    id: 16,
+    icon,
+    body: 'Pawooカスタム絵文字募集企画 開催中！',
+    link: [
+      {
+        reactRouter: true,
+        inline: false,
+        href: '/statuses/99447397061304105',
+        body: '詳細はこちら',
+      },
+    ],
+  }, {
     id: 1,
     icon,
     body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
