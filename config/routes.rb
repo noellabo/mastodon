@@ -325,11 +325,6 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
-  match '*unmatched_route',
-        via: :all,
-        to: 'application#raise_not_found',
-        format: false
-
   scope module: :pawoo do
     namespace :settings do
       resources :oauth_authentications, only: [:index, :destroy]
@@ -357,4 +352,9 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  match '*unmatched_route',
+        via: :all,
+        to: 'application#raise_not_found',
+        format: false
 end
