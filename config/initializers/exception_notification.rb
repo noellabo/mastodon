@@ -20,12 +20,18 @@ ExceptionNotification.configure do |config|
     OpenSSL::SSL::SSLError
   ].freeze
 
+  network_workers = %w[
+    LinkCrawlWorker
+    ProcessingWorker
+    ThreadResolveWorker
+  ].freeze
+
   ignore_workers = %w[
   ].freeze
 
   ignore_worker_errors = {
     'ActivityPub::ProcessingWorker' => ['ActiveRecord::RecordInvalid'],
-    'LinkCrawlWorker' => ['ActiveRecord::RecordInvalid'].concat(network_exceptions),
+    'LinkCrawlWorker' => ['ActiveRecord::RecordInvalid'],
   }.freeze
 
   ignore_job_errors = {
@@ -41,8 +47,8 @@ ExceptionNotification.configure do |config|
       ignore_worker = ignore_workers.include?(worker_class)
       ignore_worker ||= ignore_worker_errors[worker_class]&.include?(exception_name)
 
-      # ActivityPub or Pubsubhubbub
-      if worker_class.start_with?('ActivityPub::') || worker_class.start_with?('Pubsubhubbub::')
+      # ActivityPub or Pubsubhubbub or 通信が頻繁に発生するWorkerではネットワーク系の例外を無視
+      if worker_class.start_with?(/(ActivityPub|Pubsubhubbub)::/) || network_workers.include?(worker_class)
         ignore_worker ||= network_exceptions.include?(exception_name)
       end
 
