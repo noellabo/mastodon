@@ -25,7 +25,6 @@ class Item extends React.PureComponent {
     size: PropTypes.number.isRequired,
     onClick: PropTypes.func.isRequired,
     expandMedia: PropTypes.bool.isRequired,
-    lineMedia: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -64,7 +63,7 @@ class Item extends React.PureComponent {
   }
 
   render () {
-    const { attachment, index, size, standalone, expandMedia, lineMedia } = this.props;
+    const { attachment, index, size, standalone, expandMedia } = this.props;
 
     let width  = 50;
     let height = 100;
@@ -75,12 +74,9 @@ class Item extends React.PureComponent {
 
     if (size === 1 || expandMedia) {
       width = 100;
-    } else if (lineMedia) {
-      width = (100 - (size - 1)) / size;
-      left = `${index}%`;
     }
 
-    if (!expandMedia && !lineMedia) {
+    if (!expandMedia) {
       if (size === 4 || (size === 3 && index > 0)) {
         height = 50;
       }
@@ -188,12 +184,10 @@ export default class MediaGallery extends React.PureComponent {
     onOpenMedia: PropTypes.func.isRequired,
     intl: PropTypes.object.isRequired,
     expandMedia: PropTypes.bool,
-    lineMedia: PropTypes.bool,
   };
 
   static defaultProps = {
     expandMedia: false,
-    lineMedia: false,
     standalone: false,
   };
 
@@ -230,7 +224,7 @@ export default class MediaGallery extends React.PureComponent {
   }
 
   render () {
-    const { media, intl, sensitive, height, expandMedia, lineMedia } = this.props;
+    const { media, intl, sensitive, height, expandMedia } = this.props;
     const { width, visible } = this.state;
 
     let children;
@@ -269,9 +263,9 @@ export default class MediaGallery extends React.PureComponent {
       const size = media.take(4).size;
 
       if (this.isStandaloneEligible()) {
-        children = <Item standalone onClick={this.handleClick} attachment={media.get(0)} expandMedia={expandMedia} lineMedia={lineMedia} />;
+        children = <Item standalone onClick={this.handleClick} attachment={media.get(0)} expandMedia={expandMedia} />;
       } else {
-        children = media.take(4).map((attachment, i) => <Item key={attachment.get('id')} onClick={this.handleClick} attachment={attachment} index={i} size={size} expandMedia={expandMedia} lineMedia={lineMedia} />);
+        children = media.take(4).map((attachment, i) => <Item key={attachment.get('id')} onClick={this.handleClick} attachment={attachment} index={i} size={size} expandMedia={expandMedia} />);
       }
     }
 
