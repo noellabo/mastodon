@@ -17,24 +17,26 @@ ExceptionNotification.configure do |config|
   )
 
   ignore_workers = %w[
-    Pubsubhubbub::DeliveryWorker
-    Pubsubhubbub::ConfirmationWorker
-    Pubsubhubbub::DistributionWorker
-    Pubsubhubbub::SubscribeWorker
-    ActivityPub::DeliveryWorker
-    LinkCrawlWorker
   ].freeze
 
   ignore_worker_errors = {
-    'ActiveRecord::RecordInvalid' => ['ActivityPub::ProcessingWorker'],
-  }
+    'ActiveRecord::RecordInvalid' => ['ActivityPub::ProcessingWorker', 'LinkCrawlWorker'],
+  }.freeze
 
-  config.ignore_if do |_exception, options|
+  ignore_job_errors = {
+    'ActiveJob::DeserializationError' => ['ActionMailer::DeliveryJob']
+  }.freeze
+
+  config.ignore_if do |exception, options|
     sidekiq = (options || {})&.dig(:data, :sidekiq)
     if sidekiq
       worker_class = sidekiq.dig(:job, 'class')
       ignore_worker = ignore_workers.include?(worker_class)
-      ignore_worker ||= ignore_worker_errors[sidekiq.dig(:job, 'error_class')]&.include?(worker_class)
+      ignore_worker ||= ignore_worker_errors[exception.class.name]&.include?(worker_class)
+
+      if worker_class == 'ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper'
+        ignore_worker ||= ignore_job_errors[exception.class.name]&.include?(sidekiq.dig(:job, 'wrapped'))
+      end
     end
 
     !Rails.env.production? || ignore_worker
