@@ -11,7 +11,7 @@ module Pawoo::Api::V1::SearchControllerConcern
 
     query = params[:query]
     current_page = params[:page].to_i
-    statuses_limit = limit_param(DEFAULT_STATUSES_LIMIT)
+    statuses_limit = limit_param(Api::BaseController::DEFAULT_STATUSES_LIMIT)
     return not_found if ((current_page - 1) * statuses_limit) >= Pawoo::Api::V1::SearchControllerConcern::MAX_HITS_TOTAL
 
     blocking_account_ids = current_account.blocking.pluck(:target_account_id)
