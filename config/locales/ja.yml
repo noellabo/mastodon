@@ -563,12 +563,13 @@ ja:
     successfully_synchronization: 同期しました
     failed_linking: 連携できませんでした
     initial_password_usage_note_html: pixivアカウント連携を変更する場合は、先に%{link}する必要があります。
-  oauth_registrations:
-    already_registered: すでに登録されています。メールアドレスとパスワードでログイン後、設定ページよりpixivアカウント連携してください。
   pagination:
     next: 次
     prev: 前
     truncate: "&hellip;"
+  pawoo:
+    oauth_registrations:
+      already_registered: すでに登録されています。メールアドレスとパスワードでログイン後、設定ページよりpixivアカウント連携してください。
   preferences:
     languages: 言語
     other: その他

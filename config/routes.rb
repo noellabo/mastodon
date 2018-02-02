@@ -31,12 +31,13 @@ Rails.application.routes.draw do
     registrations:      'auth/registrations',
     passwords:          'auth/passwords',
     confirmations:      'auth/confirmations',
-    omniauth_callbacks: 'auth/omniauth_callbacks',
+    omniauth_callbacks: 'pawoo/auth/omniauth_callbacks',
   }
 
   devise_scope :user do
     with_devise_exclusive_scope('/auth', :user, {}) do
       resource :oauth_registration, only: [:new, :create],
+        controller: 'pawoo/oauth_registrations',
         path: 'oauth/oauth_registrations'
     end
   end
@@ -78,7 +79,6 @@ Rails.application.routes.draw do
   get '/@:account_username/:id/embed', to: 'statuses#embed', as: :embed_short_account_status
 
   namespace :settings do
-    resources :oauth_authentications, only: [:index, :destroy]
     resource :profile, only: [:show, :update]
     resource :preferences, only: [:show, :update]
     resource :notifications, only: [:show, :update]
@@ -115,7 +115,6 @@ Rails.application.routes.draw do
   resources :tags,   only: [:show]
   resources :emojis, only: [:show]
   resources :invites, only: [:index, :create, :destroy]
-  resources :oauth_authentications, only: [:show], param: :uid
 
   get '/intent/statuses/new', to: redirect(path: '/share')
 
@@ -132,10 +131,6 @@ Rails.application.routes.draw do
     resources :action_logs, only: [:index]
     resource :settings, only: [:edit, :update]
     resources :invites, only: [:index, :create, :destroy]
-    resources :suggestion_tags, only: [:index, :new, :create, :edit, :update, :destroy]
-    resources :scheduled_statuses, only: [:index]
-    resources :trend_ng_words, only: [:index, :new, :create, :edit, :update, :destroy]
-    resources :oauth_authentications, only: [:destroy]
 
     resources :instances, only: [:index] do
       collection do
@@ -246,20 +241,12 @@ Rails.application.routes.draw do
       get '/search', to: 'search#index', as: :search
       get '/search/statuses/:query', to: 'search#statuses', as: :status_search_timeline
 
-      resource :push_notification_preferences, only: [:show, :update]
-      resources :trend_tags, only: [:index]
-      resources :suggestion_tags, only: [:index]
       resources :follows,    only: [:create]
       resources :media,      only: [:create, :update]
       resources :blocks,     only: [:index]
       resources :mutes,      only: [:index]
       resources :favourites, only: [:index]
       resources :reports,    only: [:index, :create]
-      resources :schedules,  only: [:index]
-      resources :pixiv_twitter_images, only: [:create]
-      resources :firebase_cloud_messaging_tokens, only: [:create, :destroy], param: :platform
-      resources :suggested_accounts, only: [:index]
-      resources :oauth_authentications, only: [:show], param: :uid
 
       namespace :apps do
         get :verify_credentials, to: 'credentials#show'
@@ -300,7 +287,7 @@ Rails.application.routes.draw do
         resources :followers, only: :index, controller: 'accounts/follower_accounts'
         resources :following, only: :index, controller: 'accounts/following_accounts'
         resources :lists, only: :index, controller: 'accounts/lists'
-        resources :pinned_statuses, only: :index, controller: 'accounts/pinned_statuses'
+        resources :pinned_statuses, only: :index, controller: '/pawoo/api/v1/accounts/pinned_statuses'
 
         member do
           post :follow
@@ -337,6 +324,34 @@ Rails.application.routes.draw do
   get '/app_eula',   to: 'about#app_eula'
 
   root 'home#index'
+
+  scope module: :pawoo do
+    namespace :settings do
+      resources :oauth_authentications, only: [:index, :destroy]
+    end
+
+    resources :oauth_authentications, only: [:show], param: :uid
+
+    namespace :admin do
+      resources :suggestion_tags, only: [:index, :new, :create, :edit, :update, :destroy]
+      resources :scheduled_statuses, only: [:index]
+      resources :trend_ng_words, only: [:index, :new, :create, :edit, :update, :destroy]
+      resources :oauth_authentications, only: [:destroy]
+    end
+
+    namespace :api do
+      namespace :v1 do
+        resource :push_notification_preferences, only: [:show, :update]
+        resources :trend_tags, only: [:index]
+        resources :suggestion_tags, only: [:index]
+        resources :schedules, only: [:index]
+        resources :pixiv_twitter_images, only: [:create]
+        resources :firebase_cloud_messaging_tokens, only: [:create, :destroy], param: :platform
+        resources :suggested_accounts, only: [:index]
+        resources :oauth_authentications, only: [:show], param: :uid
+      end
+    end
+  end
 
   match '*unmatched_route',
         via: :all,

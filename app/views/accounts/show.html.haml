@@ -46,5 +46,5 @@
 
   - if @statuses_collection.present?
     .pagination
-      = link_to safe_join([t('pagination.next'), fa_icon('chevron-right')], ' '), next_url, class: 'next', rel: 'next' unless @statuses.last_page?
-      = link_to safe_join([fa_icon('chevron-left'), t('pagination.prev')], ' '), prev_url, class: 'prev', rel: 'prev' unless @statuses.first_page?
+      = link_to safe_join([t('pagination.next'), fa_icon('chevron-right')], ' '), pawoo_next_url, class: 'next', rel: 'next' unless @statuses.last_page?
+      = link_to safe_join([fa_icon('chevron-left'), t('pagination.prev')], ' '), pawoo_prev_url, class: 'prev', rel: 'prev' unless @statuses.first_page?

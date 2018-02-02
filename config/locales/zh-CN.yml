@@ -553,12 +553,13 @@ zh-CN:
     successfully_synchronization: 同步成功
     failed_linking: 绑定失败
     initial_password_usage_note_html: 更改关联的 pixiv 帐户前请先%{link}。
-  oauth_registrations:
-    already_registered: 此电子邮件地址已经被注册。请使用你的电子邮件地址和密码登录，然后前往设置页面绑定 pixiv 帐户。
   pagination:
     next: 下一页
     prev: 上一页
     truncate: "…"
+  pawoo:
+    oauth_registrations:
+      already_registered: 此电子邮件地址已经被注册。请使用你的电子邮件地址和密码登录，然后前往设置页面绑定 pixiv 帐户。
   preferences:
     languages: 语言
     other: 其他

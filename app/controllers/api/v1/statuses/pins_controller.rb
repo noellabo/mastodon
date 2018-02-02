@@ -2,11 +2,11 @@
 
 class Api::V1::Statuses::PinsController < Api::BaseController
   include Authorization
+  include Pawoo::Api::V1::Statuses::PinsControllerConcern
 
   before_action -> { doorkeeper_authorize! :write }
   before_action :require_user!
   before_action :set_status
-  after_action :clear_cache
 
   respond_to :json
 
@@ -25,10 +25,5 @@ class Api::V1::Statuses::PinsController < Api::BaseController
 
   def set_status
     @status = Status.find(params[:status_id])
-  end
-
-  def clear_cache
-    # キャッシュにstatus_pinsの情報も保存されているためクリアする
-    Rails.cache.delete(@status.cache_key)
   end
 end

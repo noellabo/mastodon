@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::Web::PushSubscriptionsController < Api::Web::BaseController
+class Api::Web::PushSubscriptionsController < Pawoo::Api::Web::BaseController
   respond_to :json
 
   before_action :require_user!

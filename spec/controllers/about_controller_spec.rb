@@ -53,13 +53,6 @@ RSpec.describe AboutController, type: :controller do
     end
   end
 
-  describe 'GET #app_eula' do
-    it 'returns http success' do
-      get :app_eula
-      expect(response).to have_http_status(:success)
-    end
-  end
-
   describe 'helper_method :new_user' do
     it 'returns a new User' do
       user = @controller.view_context.new_user

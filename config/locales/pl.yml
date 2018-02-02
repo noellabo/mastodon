@@ -564,14 +564,15 @@ pl:
     successfully_synchronization: Pomyślnie zsynchronizowano
     successfully_unlinked: Pomyślnie odłączono
     unlink: Odłącz
-  oauth_registrations:
-    already_registered: Jesteś już zarejestrowany. Po zalogowaniu z użyciem adresu e-mail i hasła, połącz się z kontem pixiv z ustawień.
-    create:
-      already_registered: Już zarejestrowano
   pagination:
     next: Następna
     prev: Poprzednia
     truncate: "&hellip;"
+  pawoo:
+    oauth_registrations:
+      already_registered: Jesteś już zarejestrowany. Po zalogowaniu z użyciem adresu e-mail i hasła, połącz się z kontem pixiv z ustawień.
+      create:
+        already_registered: Już zarejestrowano
   preferences:
     languages: Języki
     other: Pozostałe

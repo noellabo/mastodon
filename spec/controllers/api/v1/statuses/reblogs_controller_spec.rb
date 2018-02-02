@@ -40,14 +40,6 @@ describe Api::V1::Statuses::ReblogsController do
         expect(hash_body[:reblog][:reblogs_count]).to eq 1
         expect(hash_body[:reblog][:reblogged]).to be true
       end
-
-      context 'scheduled' do
-        let(:status) { Fabricate(:status, account: user.account, created_at: 1.day.since) }
-
-        it 'returns http not_found' do
-          expect(response).to have_http_status(:not_found)
-        end
-      end
     end
 
     describe 'POST #destroy' do
