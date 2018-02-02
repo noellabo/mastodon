@@ -103,7 +103,7 @@ class Announcements extends React.PureComponent {
                 {announcement.get('link').map((link, index) => {
                   const classNames = ['announcements__link'];
                   const handleClick = () => {
-                    PawooGA.event({ category: pawooGaCategory, action: 'Click', value: `${announcement.get('id')}-${index}` });
+                    PawooGA.event({ category: pawooGaCategory, action: 'Click', label: `${announcement.get('id')}-${index}` });
 
                     const action = link.get('action');
                     if (action) {
