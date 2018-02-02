@@ -8,34 +8,47 @@ ExceptionNotification.configure do |config|
     ActionController::UnknownFormat
     ActionController::ParameterMissing
     ActiveRecord::RecordNotUnique
+    Mastodon::UnexpectedResponseError
+  )
+
+  network_exceptions = %w[
+    HTTP::StateError
     HTTP::TimeoutError
     HTTP::ConnectionError
     HTTP::Redirector::TooManyRedirectsError
     HTTP::Redirector::EndlessRedirectError
     OpenSSL::SSL::SSLError
-    Mastodon::UnexpectedResponseError
-  )
+  ].freeze
 
   ignore_workers = %w[
   ].freeze
 
   ignore_worker_errors = {
-    'ActiveRecord::RecordInvalid' => ['ActivityPub::ProcessingWorker', 'LinkCrawlWorker'],
+    'ActivityPub::ProcessingWorker' => ['ActiveRecord::RecordInvalid'],
+    'LinkCrawlWorker' => ['ActiveRecord::RecordInvalid'].concat(network_exceptions),
   }.freeze
 
   ignore_job_errors = {
-    'ActiveJob::DeserializationError' => ['ActionMailer::DeliveryJob']
+    'ActionMailer::DeliveryJob' => ['ActiveJob::DeserializationError']
   }.freeze
 
   config.ignore_if do |exception, options|
     sidekiq = (options || {})&.dig(:data, :sidekiq)
     if sidekiq
+      exception_name = exception.class.name
       worker_class = sidekiq.dig(:job, 'class')
-      ignore_worker = ignore_workers.include?(worker_class)
-      ignore_worker ||= ignore_worker_errors[exception.class.name]&.include?(worker_class)
 
+      ignore_worker = ignore_workers.include?(worker_class)
+      ignore_worker ||= ignore_worker_errors[worker_class]&.include?(exception_name)
+
+      # ActivityPub or Pubsubhubbub
+      if worker_class.start_with?('ActivityPub::') || worker_class.start_with?('Pubsubhubbub::')
+        ignore_worker ||= network_exceptions.include?(exception_name)
+      end
+
+      # ActiveJob
       if worker_class == 'ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper'
-        ignore_worker ||= ignore_job_errors[exception.class.name]&.include?(sidekiq.dig(:job, 'wrapped'))
+        ignore_worker ||= ignore_job_errors[sidekiq.dig(:job, 'wrapped')]&.include?(exception_name)
       end
     end
 
