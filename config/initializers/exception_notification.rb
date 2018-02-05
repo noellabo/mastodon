@@ -24,6 +24,7 @@ ExceptionNotification.configure do |config|
     LinkCrawlWorker
     ProcessingWorker
     ThreadResolveWorker
+    NotificationWorker
   ].freeze
 
   ignore_workers = %w[
