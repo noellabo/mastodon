@@ -85,7 +85,7 @@
         %td
           - if @pawoo_oauth_authentication
             = t('admin.oauth_authentications.linked')
-            = link_to t('admin.oauth_authentications.unlink_forcibly'), pawoo_admin_oauth_authentication_path(@pawoo_oauth_authentication), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }
+            = link_to t('admin.oauth_authentications.unlink_forcibly'), admin_oauth_authentication_path(@pawoo_oauth_authentication), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }
           - else
             = t('admin.oauth_authentications.not_linked')
 
