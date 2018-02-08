@@ -24,22 +24,36 @@ RSpec.describe Pawoo::Settings::OauthAuthenticationsController, type: :controlle
   end
 
   describe 'DELETE #destroy' do
-    subject do
-      -> { delete :destroy, params: { id: oauth_authentication.id } }
-    end
+    subject { delete :destroy, params: { id: oauth_authentication.id } }
 
     let(:oauth_authentication) do
       Fabricate(:oauth_authentication, user: user, provider: 'pixiv')
     end
 
+    context 'if it was the initial password usage' do
+      let(:user) { Fabricate(:user, initial_password_usage: Fabricate(:initial_password_usage)) }
+      it { is_expected.to redirect_to action: :index }
+    end
+
+    context 'if failed' do
+      before { allow_any_instance_of(OauthAuthentication).to receive(:destroy).and_return(false) }
+
+      it { is_expected.to redirect_to action: :index }
+
+      it 'flashes an alert' do
+        subject
+        expect(flash[:alert]).to eq I18n.t('oauth_authentications.failed_linking')
+      end
+    end
+
     it 'deletes oauth_authentication' do
-      is_expected.to change {
+      expect{ subject }.to change {
         OauthAuthentication.where(id: oauth_authentication.id).exists?
       }.from(true).to(false)
     end
 
     it 'redirects to pixiv page' do
-      subject.call
+      subject
       code = Rails.application.secrets.oauth[:pixiv][:key]
       uid = oauth_authentication.uid
       expect(response).to redirect_to("https://www.pixiv.net/oauth/revoke/?code=#{code}&pixiv_user_id=#{uid}")
