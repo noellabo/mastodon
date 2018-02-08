@@ -20,7 +20,7 @@ class Pawoo::Settings::OauthAuthenticationsController < ApplicationController
 
       redirect_to(url.to_s)
     else
-      flash[:alert] = t('oauth_authentications.failed_linking')
+      redirect_to({ action: :index }, alert: t('oauth_authentications.failed_linking'))
     end
   end
 
