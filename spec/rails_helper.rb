@@ -52,6 +52,7 @@ RSpec.configure do |config|
   end
 
   config.after :each do
+    allow(Rails).to receive(:cache).and_call_original
     Rails.cache.clear
 
     keys = Redis.current.keys
