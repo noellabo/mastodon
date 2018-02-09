@@ -34,7 +34,7 @@ RSpec.describe Pawoo::Api::V1::FirebaseCloudMessagingTokensController, type: :co
         super().merge(token: nil)
       end
 
-      it 'returns http success' do
+      it 'returns http unprocessable_entity' do
         subject.call
         expect(response).to have_http_status(:unprocessable_entity)
       end

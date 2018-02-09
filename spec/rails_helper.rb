@@ -41,6 +41,7 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
 
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Warden::Test::Helpers, type: :feature
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Paperclip::Shoulda::Matchers
   config.include ActiveSupport::Testing::TimeHelpers
@@ -51,6 +52,9 @@ RSpec.configure do |config|
   end
 
   config.after :each do
+    allow(Rails).to receive(:cache).and_call_original
+    Rails.cache.clear
+
     keys = Redis.current.keys
     Redis.current.del(keys) if keys.any?
   end

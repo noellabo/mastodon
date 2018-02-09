@@ -13,8 +13,6 @@ class Pawoo::Settings::OauthAuthenticationsController < ApplicationController
 
   def destroy
     if @oauth_authentication.destroy
-      flash[:notice] = t('oauth_authentications.successfully_unlinked')
-
       url = PIXIV_URL.expand(
         code: Rails.application.secrets.oauth[:pixiv][:key],
         uid: @oauth_authentication.uid
@@ -22,7 +20,7 @@ class Pawoo::Settings::OauthAuthenticationsController < ApplicationController
 
       redirect_to(url.to_s)
     else
-      flash[:alert] = t('oauth_authentications.failed_linking')
+      redirect_to({ action: :index }, alert: t('oauth_authentications.failed_linking'))
     end
   end
 
