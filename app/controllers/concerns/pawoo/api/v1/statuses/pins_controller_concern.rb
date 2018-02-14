@@ -10,7 +10,6 @@ module Pawoo::Api::V1::Statuses::PinsControllerConcern
   private
 
   def pawoo_clear_cache
-    # キャッシュにstatus_pinsの情報も保存されているためクリアする
     Rails.cache.delete(@status.cache_key)
   end
 end
