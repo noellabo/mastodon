@@ -6,24 +6,12 @@ import PawooGA from '../../../../pawoo/actions/ga';
 
 import icon from '../../../../images/pawoo/announcement_icon.png';
 
-const pawooGaCategory = 'Compose';
+const pawooGaCategory = 'Announcement';
 const storageKey = 'announcements_dismissed';
 
 // NOTE: id: 16 まで使用した
 const announcements = [
   {
-    id: 16,
-    icon,
-    body: 'Pawooカスタム絵文字募集企画 開催中！',
-    link: [
-      {
-        reactRouter: true,
-        inline: false,
-        href: '/statuses/99447397061304105',
-        body: '詳細はこちら',
-      },
-    ],
-  }, {
     id: 1,
     icon,
     body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
@@ -83,6 +71,7 @@ class Announcements extends React.PureComponent {
 
     if (Number.isInteger(id)) {
       this.setState({ dismissed: [].concat(this.state.dismissed, id) });
+      PawooGA.event({ category: pawooGaCategory, action: 'Dismiss', label: id });
     }
   }
 
@@ -103,7 +92,7 @@ class Announcements extends React.PureComponent {
                 {announcement.get('link').map((link, index) => {
                   const classNames = ['announcements__link'];
                   const handleClick = () => {
-                    PawooGA.event({ category: pawooGaCategory, action: 'Click', label: `${announcement.get('id')}-${index}` });
+                    PawooGA.event({ category: pawooGaCategory, action: 'ClickButton', label: `${announcement.get('id')}-${index}` });
 
                     const action = link.get('action');
                     if (action) {
