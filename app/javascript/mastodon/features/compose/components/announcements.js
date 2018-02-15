@@ -1,6 +1,8 @@
 import React from 'react';
 import Immutable from 'immutable';
-import Link from 'react-router-dom/Link';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { defineMessages, injectIntl } from 'react-intl';
 import IconButton from '../../../components/icon_button';
 import PawooGA from '../../../../pawoo/actions/ga';
 
@@ -8,6 +10,10 @@ import icon from '../../../../images/pawoo/announcement_icon.png';
 
 const pawooGaCategory = 'Announcement';
 const storageKey = 'announcements_dismissed';
+
+const messages = defineMessages({
+  dismiss: { id: 'pawoo.announcements.dismiss', defaultMessage: 'Dismiss' },
+});
 
 // NOTE: id: 16 まで使用した
 const announcements = [
@@ -43,7 +49,12 @@ const announcements = [
   },
 ];
 
+@injectIntl
 class Announcements extends React.PureComponent {
+
+  static propTypes = {
+    intl: PropTypes.object.isRequired,
+  };
 
   constructor (props, context) {
     super(props, context);
@@ -76,6 +87,8 @@ class Announcements extends React.PureComponent {
   }
 
   render () {
+    const { intl } = this.props;
+
     return (
       <ul className='announcements'>
         {this.announcements.map(announcement => this.state.dismissed.indexOf(announcement.get('id')) === -1 && (
@@ -85,7 +98,7 @@ class Announcements extends React.PureComponent {
             </div>
             <div className='announcements__body'>
               <div className='announcements__body__dismiss'>
-                <IconButton icon='close' title={`${announcement.get('id')}`} onClick={this.handleDismiss} />
+                <IconButton icon='close' title={intl.formatMessage(messages.dismiss)} onClick={this.handleDismiss} />
               </div>
               <p>{announcement.get('body')}</p>
               <p>
