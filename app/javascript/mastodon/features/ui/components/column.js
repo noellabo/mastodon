@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import ColumnHeader from './column_header';
 import PropTypes from 'prop-types';
@@ -13,6 +14,7 @@ export default class Column extends React.PureComponent {
     children: PropTypes.node,
     active: PropTypes.bool,
     hideHeadingOnMobile: PropTypes.bool,
+    pawooClassName: PropTypes.string,
   };
 
   handleHeaderClick = () => {
@@ -47,7 +49,7 @@ export default class Column extends React.PureComponent {
   }
 
   render () {
-    const { heading, icon, children, active, hideHeadingOnMobile } = this.props;
+    const { heading, icon, children, active, hideHeadingOnMobile, pawooClassName } = this.props;
 
     const showHeading = heading && (!hideHeadingOnMobile || (hideHeadingOnMobile && !isMobile(window.innerWidth)));
 
@@ -60,7 +62,7 @@ export default class Column extends React.PureComponent {
         ref={this.setRef}
         role='region'
         aria-labelledby={columnHeaderId}
-        className='column'
+        className={classNames('column', pawooClassName)}
         onScroll={this.handleScroll}
       >
         {header}

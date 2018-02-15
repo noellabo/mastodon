@@ -15,6 +15,8 @@ import { Compose, Notifications, HomeTimeline, CommunityTimeline, PublicTimeline
 
 import detectPassiveEvents from 'detect-passive-events';
 import { scrollRight } from '../../../scroll';
+import PawooSingleColumnOnboardingContainer from '../../../../pawoo/containers/single_column_onboarding_container';
+import * as PawooComponents from '../../../../pawoo/util/async-components';
 
 const componentMap = {
   'COMPOSE': Compose,
@@ -27,6 +29,8 @@ const componentMap = {
   'LIST': ListTimeline,
   'MEDIA': MediaTimeline,
   'SUGGESTION_TAGS': SuggestionTags,
+  'PAWOO_ONBOARDING': PawooComponents.OnboardingPageContainer,
+  'PAWOO_SUGGESTED_ACCOUNTS': PawooComponents.SuggestedAccountsPage,
 };
 
 @component => injectIntl(component, { withRef: true })
@@ -42,6 +46,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
     isModalOpen: PropTypes.bool.isRequired,
     singleColumn: PropTypes.bool,
     children: PropTypes.node,
+    pawooPage: PropTypes.string,
   };
 
   state = {
@@ -147,13 +152,17 @@ export default class ColumnsArea extends ImmutablePureComponent {
   }
 
   render () {
-    const { columns, children, singleColumn, isModalOpen } = this.props;
+    const { columns, children, singleColumn, isModalOpen, pawooPage } = this.props;
     const { shouldAnimate } = this.state;
 
     const columnIndex = getIndex(this.context.router.history.location.pathname);
     this.pendingIndex = null;
 
     if (singleColumn) {
+      if (pawooPage === 'ONBOARDING') {
+        return <PawooSingleColumnOnboardingContainer />;
+      }
+
       return columnIndex !== -1 ? (
         <ReactSwipeableViews index={columnIndex} onChangeIndex={this.handleSwipe} onTransitionEnd={this.handleAnimationEnd} animateTransitions={shouldAnimate} springConfig={{ duration: '400ms', delay: '0s', easeFunction: 'ease' }} style={{ height: '100%' }}>
           {links.map(this.renderView)}
