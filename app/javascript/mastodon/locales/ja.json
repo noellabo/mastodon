@@ -201,6 +201,7 @@
   "onboarding.page_three.search": "検索バーで、{illustration}や{introductions}のように特定のハッシュタグの投稿を見たり、ユーザーを探したりできます。",
   "onboarding.page_two.compose": "フォームから投稿できます。イメージや、公開範囲の設定や、表示時の警告の設定は下部のアイコンから行えます。",
   "onboarding.skip": "スキップ",
+  "pawoo.announcements.dismiss": "閉じる",
   "privacy.change": "投稿のプライバシーを変更",
   "privacy.direct.long": "言及したユーザーだけに公開",
   "privacy.direct.short": "ダイレクト",
