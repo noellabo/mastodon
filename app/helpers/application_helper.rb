@@ -40,7 +40,7 @@ module ApplicationHelper
   end
 
   def title
-    if is_staging?
+    if pawoo_is_staging?
       "#{site_title} (Staging)"
     elsif Rails.env.production?
       site_title
@@ -72,7 +72,7 @@ module ApplicationHelper
 
   private
 
-  def is_staging?
+  def pawoo_is_staging?
     Rails.env.production? && Socket.gethostname == 'ap-staging'
   rescue
     # FIXME: Socket.gethostname あんまり使わないから。。rescueいらないと思うねんけどね。
