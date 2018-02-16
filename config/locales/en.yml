@@ -566,6 +566,8 @@ en:
   pawoo:
     oauth_registrations:
       already_registered: It has already been registered. After logging in with your e-mail address and password, please link with pixiv account from setting page.
+    validations:
+      crashed_unicode: includes invalid characters
   preferences:
     languages: Languages
     other: Other

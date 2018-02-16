@@ -72,6 +72,10 @@ class Account < ApplicationRecord
   validates :display_name, length: { maximum: 30 }, if: -> { local? && will_save_change_to_display_name? }
   validates :note, length: { maximum: 160 }, if: -> { local? && will_save_change_to_note? }
 
+  # Check for invalid characters
+  validates :display_name, pawoo_crashed_unicode: true
+  validates :note, pawoo_crashed_unicode: true
+
   # Timelines
   has_many :stream_entries, inverse_of: :account, dependent: :destroy
   has_many :statuses, inverse_of: :account, dependent: :destroy

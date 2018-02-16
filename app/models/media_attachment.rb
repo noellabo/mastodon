@@ -61,6 +61,9 @@ class MediaAttachment < ApplicationRecord
   validates :account, presence: true
   validates :description, length: { maximum: 420 }, if: :local?
 
+  # Check for invalid characters
+  validates :description, pawoo_crashed_unicode: true
+
   scope :attached,   -> { where.not(status_id: nil) }
   scope :unattached, -> { where(status_id: nil) }
   scope :local,      -> { where(remote_url: '') }
