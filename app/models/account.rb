@@ -242,28 +242,6 @@ class Account < ApplicationRecord
     shared_inbox_url.presence || inbox_url
   end
 
-  def latest_popular_media_attachments
-    limit_id = Rails.cache.fetch('suggested_account:limit_attachment_id', expires_in: 12.hours) do
-      MediaAttachment.where('created_at < ?', 2.weeks.ago).select(:id).reorder(id: :desc).limit(1).first&.id || 0
-    end
-
-    media_attachments_ids = Rails.cache.fetch("suggested_account:published_attachments:#{id}", expires_in: 1.hour) do
-      attachments_limit = 3
-      base_query = media_attachments.joins(:status).where(statuses: { sensitive: false, visibility: [:public, :unlisted] })
-      attachments_ids = base_query.where('media_attachments.id > ?', limit_id).reorder(Status.arel_table[:favourites_count].desc).limit(attachments_limit).pluck(:id)
-
-      # 足りない場合は新しいメディアを取得
-      if attachments_ids.size < attachments_limit
-        rest_limit = attachments_limit - attachments_ids.size
-        attachments_ids += base_query.where.not(id: attachments_ids).reorder(Status.arel_table[:id].desc).limit(rest_limit).pluck(:id)
-      end
-
-      attachments_ids
-    end
-
-    MediaAttachment.where(id: media_attachments_ids)
-  end
-
   class << self
     def readonly_attributes
       super - %w(statuses_count following_count followers_count)

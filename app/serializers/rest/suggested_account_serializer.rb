@@ -4,6 +4,6 @@ class REST::SuggestedAccountSerializer < REST::AccountSerializer
   has_many :media_attachments, serializer: REST::MediaAttachmentSerializer
 
   def media_attachments
-    object.latest_popular_media_attachments
+    instance_options[:media_attachments_of][object.id] || []
   end
 end
