@@ -22,6 +22,7 @@ export default class IconButton extends React.PureComponent {
     animate: PropTypes.bool,
     overlay: PropTypes.bool,
     tabIndex: PropTypes.string,
+    value: PropTypes.string,
   };
 
   static defaultProps = {
@@ -63,6 +64,7 @@ export default class IconButton extends React.PureComponent {
       pressed,
       tabIndex,
       title,
+      value,
     } = this.props;
 
     const classes = classNames(className, 'icon-button', {
@@ -85,6 +87,7 @@ export default class IconButton extends React.PureComponent {
           onClick={this.handleClick}
           style={style}
           tabIndex={tabIndex}
+          value={value}
         >
           <i className={`fa fa-fw fa-${icon}`} aria-hidden='true' />
         </button>
@@ -103,6 +106,7 @@ export default class IconButton extends React.PureComponent {
             onClick={this.handleClick}
             style={style}
             tabIndex={tabIndex}
+            value={value}
           >
             <i style={{ transform: `rotate(${rotate}deg)` }} className={`fa fa-fw fa-${icon}`} aria-hidden='true' />
           </button>
