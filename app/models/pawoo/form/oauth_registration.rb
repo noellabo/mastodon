@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Form::OauthRegistration
+class Pawoo::Form::OauthRegistration
   include ActiveModel::Model
   include TypeAttributes
 
