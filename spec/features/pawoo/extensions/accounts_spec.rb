@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe 'Pawoo extensions of account page', type: :feature do
+  AccountsController # TODO: stub_constを実行する前にクラスにアクセスしておかないとなぜかvisitが動かない。ちゃんと調査する。
+
   describe 'individual account page' do
     let(:account) { Fabricate(:account, domain: nil, username: 'username') }
 
