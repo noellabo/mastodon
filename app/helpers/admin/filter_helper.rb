@@ -6,7 +6,9 @@ module Admin::FilterHelper
   INVITE_FILTER        = %i(available expired).freeze
   CUSTOM_EMOJI_FILTERS = %i(local remote by_domain shortcode).freeze
 
-  FILTERS = ACCOUNT_FILTERS + REPORT_FILTERS + INVITE_FILTER + CUSTOM_EMOJI_FILTERS
+  PAWOO_REPORT_TARGET_FILTERS = %i(pending)
+
+  FILTERS = ACCOUNT_FILTERS + REPORT_FILTERS + INVITE_FILTER + CUSTOM_EMOJI_FILTERS + PAWOO_REPORT_TARGET_FILTERS
 
   def filter_link_to(text, link_to_params, link_class_params = link_to_params)
     new_url = filtered_url_for(link_to_params)

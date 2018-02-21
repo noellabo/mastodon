@@ -158,6 +158,14 @@ ja:
         enable_custom_emoji: "%{name} さんがカスタム絵文字 %{target} を有効化しました"
         enable_user: "%{name} さんが %{target} さんのログインを有効化しました"
         memorialize_account: "%{name} さんが %{target} さんを追悼アカウントページに登録しました"
+        pawoo_report_target_change_to_pending_account: "%{name} さんが %{target} さんを保留中に変更しました"
+        pawoo_report_target_change_to_pending_status: "%{name} さんが %{target} さんの投稿を保留中に変更しました"
+        pawoo_report_target_delete_status: "%{name} さんが %{target} さんの投稿を削除しました"
+        pawoo_report_target_no_problem_account: "%{name} さんが %{target} さんを問題なしと判断しました"
+        pawoo_report_target_no_problem_status: "%{name} さんが %{target} さんの投稿を問題なしと判断しました"
+        pawoo_report_target_set_nsfw_status: "%{name} さんが %{target} さんの投稿をNSFWに設定しました"
+        pawoo_report_target_silence_account: "%{name} さんが %{target} さんをサイレンスにしました"
+        pawoo_report_target_suspend_account: "%{name} さんが %{target} さんを停止しました"
         promote_user: "%{name} さんが %{target} さんを昇格しました"
         reset_password_user: "%{name} さんが %{target} さんのパスワードをリセットしました"
         resolve_report: "%{name} さんがレポート %{target} を解決済みにしました"
@@ -568,6 +576,23 @@ ja:
     prev: 前
     truncate: "&hellip;"
   pawoo:
+    admin:
+      report_targets:
+        failed_msg: レポートの処理に失敗しました
+        pending: 保留中
+        report_type:
+          donotlike: 好みではない
+          nsfw: NSFW設定の不足
+          other: その他
+          prohibited: 禁止行為に該当
+          reproduction: 無断転載
+          spam: スパム・迷惑行為
+          title: 種類
+        state: 状態
+        submit: 送信
+        success_msg: レポートを処理しました
+        title: レポート対象
+        unresolved: 未解決
     oauth_registrations:
       already_registered: すでに登録されています。メールアドレスとパスワードでログイン後、設定ページよりpixivアカウント連携してください。
     validations:
