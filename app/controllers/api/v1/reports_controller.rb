@@ -16,6 +16,9 @@ class Api::V1::ReportsController < Api::BaseController
     @report = current_account.reports.create!(
       target_account: reported_account,
       status_ids: reported_status_ids,
+      pawoo_report_type: report_params[:pawoo_report_type].presence || 'other',
+      action_taken: true,
+      pawoo_report_targets: pawoo_report_targets,
       comment: report_params[:comment]
     )
 
@@ -28,7 +31,7 @@ class Api::V1::ReportsController < Api::BaseController
   private
 
   def reported_status_ids
-    Status.find(status_ids).pluck(:id)
+    @reported_status_ids ||= Status.find(status_ids).pluck(:id)
   end
 
   def status_ids
@@ -36,10 +39,18 @@ class Api::V1::ReportsController < Api::BaseController
   end
 
   def reported_account
-    Account.find(report_params[:account_id])
+    @reported_account ||= Account.find(report_params[:account_id])
+  end
+
+  def pawoo_report_targets
+    if reported_status_ids.present?
+      reported_status_ids.map { |status_id| Pawoo::ReportTarget.new(target_type: 'Status', target_id: status_id) }
+    else
+      [Pawoo::ReportTarget.new(target: reported_account)]
+    end
   end
 
   def report_params
-    params.permit(:account_id, :comment, status_ids: [])
+    params.permit(:account_id, :comment, :pawoo_report_type, status_ids: [])
   end
 end

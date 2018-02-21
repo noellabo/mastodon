@@ -3,7 +3,6 @@
 #
 # Table name: reports
 #
-#  id                         :integer          not null, primary key
 #  status_ids                 :integer          default([]), not null, is an Array
 #  comment                    :text             default(""), not null
 #  action_taken               :boolean          default(FALSE), not null
@@ -11,13 +10,18 @@
 #  updated_at                 :datetime         not null
 #  account_id                 :integer          not null
 #  action_taken_by_account_id :integer
+#  id                         :integer          not null, primary key
 #  target_account_id          :integer          not null
+#  pawoo_report_type          :integer          default("other"), not null
 #
 
 class Report < ApplicationRecord
   belongs_to :account
   belongs_to :target_account, class_name: 'Account'
   belongs_to :action_taken_by_account, class_name: 'Account', optional: true
+  has_many :pawoo_report_targets, class_name: 'Pawoo::ReportTarget', inverse_of: :report
+
+  enum pawoo_report_type: %i(other prohibited reproduction spam nsfw donotlike)
 
   scope :unresolved, -> { where(action_taken: false) }
   scope :resolved,   -> { where(action_taken: true) }
