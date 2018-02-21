@@ -123,7 +123,7 @@ export function MuteModal () {
 }
 
 export function ReportModal () {
-  return import(/* webpackChunkName: "modals/report_modal" */'../components/report_modal');
+  return import(/* webpackChunkName: "modals/report_modal" */'../../../../pawoo/containers/report_modal_container');
 }
 
 export function MediaGallery () {
