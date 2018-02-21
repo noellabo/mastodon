@@ -36,7 +36,7 @@ RSpec.describe Pawoo::OauthRegistrationsController, type: :controller do
   end
 
   describe 'POST #create' do
-    subject { post :create, params: { form_oauth_registration: attributes } }
+    subject { post :create, params: { pawoo_form_oauth_registration: attributes } }
     let(:attributes) { { username: 'username' } }
 
     context 'hit cache of pixiv oauth' do

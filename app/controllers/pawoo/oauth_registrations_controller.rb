@@ -32,7 +32,7 @@ class Pawoo::OauthRegistrationsController < DeviseController
   private
 
   def set_oauth_registration
-    @oauth_registration = Form::OauthRegistration.from_omniauth_auth(omniauth_auth)
+    @oauth_registration = Pawoo::Form::OauthRegistration.from_omniauth_auth(omniauth_auth)
   end
 
   def require_omniauth_auth
@@ -46,7 +46,7 @@ class Pawoo::OauthRegistrationsController < DeviseController
   end
 
   def oauth_registration_params
-    params.require(:form_oauth_registration).permit(
+    params.require(:pawoo_form_oauth_registration).permit(
       :email, :username
     ).merge(locale: I18n.locale)
   end
