@@ -16,7 +16,6 @@ class Item extends React.PureComponent {
     index: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,
     onOpenMedia: PropTypes.func.isRequired,
-    onOpenVideo: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
