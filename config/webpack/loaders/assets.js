@@ -1,7 +1,7 @@
 const path = require('path');
 const { env, publicPath } = require('../configuration.js');
 
-const pawooImagePath = path.join('app', 'javascript', 'images', 'pawoo');
+const pawooImagePath = path.join('app', 'javascript', 'pawoo', 'images');
 const pawooImageFullPath = path.resolve(pawooImagePath);
 const pawooImagePathRegexp = new RegExp(`^${pawooImagePath}/`);
 
