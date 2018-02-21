@@ -8,8 +8,8 @@ import {
   FOLLOW_REQUESTS_EXPAND_SUCCESS,
 } from '../actions/accounts';
 import {
-  SUGGESTED_ACCOUNTS_FETCH_SUCCESS,
-  SUGGESTED_ACCOUNTS_EXPAND_SUCCESS,
+  SUGGESTED_ACCOUNTS_FETCH_SUCCESS as PAWOO_SUGGESTED_ACCOUNTS_FETCH_SUCCESS,
+  SUGGESTED_ACCOUNTS_EXPAND_SUCCESS as PAWOO_SUGGESTED_ACCOUNTS_EXPAND_SUCCESS,
 } from '../../pawoo/actions/suggested_accounts';
 import {
   BLOCKS_FETCH_SUCCESS,
@@ -144,8 +144,8 @@ export default function accounts(state = initialState, action) {
   case TIMELINE_UPDATE:
   case STATUS_FETCH_SUCCESS:
     return normalizeAccountFromStatus(state, action.status);
-  case SUGGESTED_ACCOUNTS_FETCH_SUCCESS:
-  case SUGGESTED_ACCOUNTS_EXPAND_SUCCESS:
+  case PAWOO_SUGGESTED_ACCOUNTS_FETCH_SUCCESS:
+  case PAWOO_SUGGESTED_ACCOUNTS_EXPAND_SUCCESS:
     return normalizeAccounts(state, action.accounts);
   default:
     return state;

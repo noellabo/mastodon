@@ -10,10 +10,10 @@ import {
   PINNED_STATUSES_FETCH_SUCCESS,
 } from '../actions/pin_statuses';
 import {
-  SCHEDULED_STATUSES_FETCH_SUCCESS,
-  SCHEDULED_STATUSES_EXPAND_SUCCESS,
-  SCHEDULED_STATUSES_ADDITION,
-} from '../actions/schedules';
+  SCHEDULED_STATUSES_FETCH_SUCCESS as PAWOO_SCHEDULED_STATUSES_FETCH_SUCCESS,
+  SCHEDULED_STATUSES_EXPAND_SUCCESS as PAWOO_SCHEDULED_STATUSES_EXPAND_SUCCESS,
+  SCHEDULED_STATUSES_ADDITION as PAWOO_SCHEDULED_STATUSES_ADDITION,
+} from '../../pawoo/actions/schedules';
 import { Map as ImmutableMap, List as ImmutableList } from 'immutable';
 import {
   FAVOURITE_SUCCESS,
@@ -33,14 +33,14 @@ const initialState = ImmutableMap({
     loaded: false,
     items: ImmutableList(),
   }),
-  schedules: ImmutableMap({
+  pawooSchedules: ImmutableMap({
     next: null,
     loaded: false,
     items: ImmutableList(),
   }),
 });
 
-const insertToDateSortedList = (state, listType, statuses, allStatuses) => {
+const pawooInsertToDateSortedList = (state, listType, statuses, allStatuses) => {
   return state.update(listType, listMap => listMap.withMutations(map => {
     const compare = (i, j) => {
       if (i.created_at < j.created_at) {
@@ -101,12 +101,12 @@ export default function statusLists(state = initialState, action) {
     return normalizeList(state, 'favourites', action.statuses, action.next);
   case FAVOURITED_STATUSES_EXPAND_SUCCESS:
     return appendToList(state, 'favourites', action.statuses, action.next);
-  case SCHEDULED_STATUSES_FETCH_SUCCESS:
-    return normalizeList(state, 'schedules', action.statuses, action.next);
-  case SCHEDULED_STATUSES_EXPAND_SUCCESS:
-    return appendToList(state, 'schedules', action.statuses, action.next);
-  case SCHEDULED_STATUSES_ADDITION:
-    return insertToDateSortedList(state, 'schedules', action.statuses, action.allStatuses);
+  case PAWOO_SCHEDULED_STATUSES_FETCH_SUCCESS:
+    return normalizeList(state, 'pawooSchedules', action.statuses, action.next);
+  case PAWOO_SCHEDULED_STATUSES_EXPAND_SUCCESS:
+    return appendToList(state, 'pawooSchedules', action.statuses, action.next);
+  case PAWOO_SCHEDULED_STATUSES_ADDITION:
+    return pawooInsertToDateSortedList(state, 'pawooSchedules', action.statuses, action.allStatuses);
   case FAVOURITE_SUCCESS:
     return prependOneToList(state, 'favourites', action.status);
   case UNFAVOURITE_SUCCESS:

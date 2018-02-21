@@ -16,9 +16,9 @@ import Column from '../../mastodon/features/ui/components/column';
 import ColumnBackButtonSlim from '../../mastodon/components/column_back_button_slim';
 
 const mapStateToProps = (state) => ({
-  accountIds: state.getIn(['user_lists', 'suggested_accounts', 'items'], ImmutableList()),
-  hasMore: !!state.getIn(['user_lists', 'suggested_accounts', 'next']),
-  isLoading: state.getIn(['user_lists', 'suggested_accounts', 'isLoading'], true),
+  accountIds: state.getIn(['pawoo', 'suggested_accounts', 'items'], ImmutableList()),
+  hasMore: !!state.getIn(['pawoo', 'suggested_accounts', 'next']),
+  isLoading: state.getIn(['pawoo', 'suggested_accounts', 'isLoading'], true),
 });
 
 const messages = defineMessages({

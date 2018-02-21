@@ -1,14 +1,14 @@
-import api, { getLinks } from '../api';
+import api, { getLinks } from '../../mastodon/api';
 
-export const SCHEDULED_STATUSES_FETCH_REQUEST = 'SCHEDULED_STATUSES_FETCH_REQUEST';
-export const SCHEDULED_STATUSES_FETCH_SUCCESS = 'SCHEDULED_STATUSES_FETCH_SUCCESS';
-export const SCHEDULED_STATUSES_FETCH_FAIL    = 'SCHEDULED_STATUSES_FETCH_FAIL';
+export const SCHEDULED_STATUSES_FETCH_REQUEST = 'PAWOO_SCHEDULED_STATUSES_FETCH_REQUEST';
+export const SCHEDULED_STATUSES_FETCH_SUCCESS = 'PAWOO_SCHEDULED_STATUSES_FETCH_SUCCESS';
+export const SCHEDULED_STATUSES_FETCH_FAIL    = 'PAWOO_SCHEDULED_STATUSES_FETCH_FAIL';
 
-export const SCHEDULED_STATUSES_EXPAND_REQUEST = 'SCHEDULED_STATUSES_EXPAND_REQUEST';
-export const SCHEDULED_STATUSES_EXPAND_SUCCESS = 'SCHEDULED_STATUSES_EXPAND_SUCCESS';
-export const SCHEDULED_STATUSES_EXPAND_FAIL    = 'SCHEDULED_STATUSES_EXPAND_FAIL';
+export const SCHEDULED_STATUSES_EXPAND_REQUEST = 'PAWOO_SCHEDULED_STATUSES_EXPAND_REQUEST';
+export const SCHEDULED_STATUSES_EXPAND_SUCCESS = 'PAWOO_SCHEDULED_STATUSES_EXPAND_SUCCESS';
+export const SCHEDULED_STATUSES_EXPAND_FAIL    = 'PAWOO_SCHEDULED_STATUSES_EXPAND_FAIL';
 
-export const SCHEDULED_STATUSES_ADDITION = 'SCHEDULED_STATUSES_ADDITION';
+export const SCHEDULED_STATUSES_ADDITION = 'PAWOO_SCHEDULED_STATUSES_ADDITION';
 
 export function fetchScheduledStatuses() {
   return (dispatch, getState) => {
@@ -56,7 +56,7 @@ export function addScheduledStatuses(statuses) {
 
 export function expandScheduledStatuses() {
   return (dispatch, getState) => {
-    const url = getState().getIn(['status_lists', 'schedules', 'next'], null);
+    const url = getState().getIn(['status_lists', 'pawooSchedules', 'next'], null);
 
     if (url === null) {
       return;

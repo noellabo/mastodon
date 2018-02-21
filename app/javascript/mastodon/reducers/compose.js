@@ -16,19 +16,22 @@ import {
   COMPOSE_SUGGESTIONS_CLEAR,
   COMPOSE_SUGGESTIONS_READY,
   COMPOSE_SUGGESTION_SELECT,
-  COMPOSE_DATE_TIME_CHANGE,
   COMPOSE_SENSITIVITY_CHANGE,
   COMPOSE_SPOILERNESS_CHANGE,
   COMPOSE_SPOILER_TEXT_CHANGE,
   COMPOSE_VISIBILITY_CHANGE,
   COMPOSE_COMPOSING_CHANGE,
   COMPOSE_EMOJI_INSERT,
-  COMPOSE_TAG_INSERT,
   COMPOSE_UPLOAD_CHANGE_REQUEST,
   COMPOSE_UPLOAD_CHANGE_SUCCESS,
   COMPOSE_UPLOAD_CHANGE_FAIL,
   COMPOSE_RESET,
 } from '../actions/compose';
+import {
+  COMPOSE_DATE_TIME_CHANGE as PAWOO_COMPOSE_DATE_TIME_CHANGE,
+  COMPOSE_SUGGESTIONS_HASH_TAG_FETCH as PAWOO_COMPOSE_SUGGESTIONS_HASH_TAG_FETCH,
+  COMPOSE_TAG_INSERT as PAWOO_COMPOSE_TAG_INSERT,
+} from '../../pawoo/actions/extensions/compose';
 import { TIMELINE_DELETE } from '../actions/timelines';
 import { STORE_HYDRATE } from '../actions/store';
 import { Map as ImmutableMap, List as ImmutableList, OrderedSet as ImmutableOrderedSet, fromJS } from 'immutable';
@@ -41,7 +44,6 @@ const initialState = ImmutableMap({
   spoiler: false,
   spoiler_text: '',
   privacy: null,
-  published: null,
   text: '',
   focusDate: null,
   preselectDate: null,
@@ -57,7 +59,29 @@ const initialState = ImmutableMap({
   default_sensitive: false,
   resetFileKey: Math.floor((Math.random() * 0x10000)),
   idempotencyKey: null,
+  pawoo: fromJS({
+    hashTagHistory: JSON.parse(localStorage.getItem('hash_tag_history')) || [],
+    published: null,
+  }),
 });
+
+const pawooSuggestionMaxSize = 4;
+const pawooHistoryMaxSize = 1000;
+
+function pawooConsumeResult(state, { tags }) {
+  const statusTags = tags.map(it => it.name);
+  let history = state.getIn(['pawoo', 'hashTagHistory']);
+  history = history.filter(it => !statusTags.includes(it)).unshift(...statusTags);
+  return state.setIn(['pawoo', 'hashTagHistory'], history.slice(0, pawooHistoryMaxSize));
+}
+
+const pawooInsertTag = (state, tag) => {
+  return state.withMutations(map => {
+    map.update('text', oldText => `${oldText} ${tag}`);
+    map.set('focusDate', new Date());
+    map.set('idempotencyKey', uuid());
+  });
+};
 
 function statusToTextMentions(state, status) {
   let set = ImmutableOrderedSet([]);
@@ -72,7 +96,7 @@ function statusToTextMentions(state, status) {
 function clearAll(state) {
   return state.withMutations(map => {
     map.set('text', '');
-    map.set('published', null);
+    map.setIn(['pawoo', 'published'], null);
     map.set('spoiler', false);
     map.set('spoiler_text', '');
     map.set('is_submitting', false);
@@ -136,14 +160,6 @@ const insertEmoji = (state, position, emojiData) => {
   });
 };
 
-const insertTag = (state, tag) => {
-  return state.withMutations(map => {
-    map.update('text', oldText => `${oldText} ${tag}`);
-    map.set('focusDate', new Date());
-    map.set('idempotencyKey', uuid());
-  });
-};
-
 const privacyPreference = (a, b) => {
   if (a === 'direct' || b === 'direct') {
     return 'direct';
@@ -176,8 +192,6 @@ export default function compose(state = initialState, action) {
     return state
       .set('mounted', false)
       .set('is_composing', false);
-  case COMPOSE_DATE_TIME_CHANGE:
-    return state.set('published', action.value);
   case COMPOSE_SENSITIVITY_CHANGE:
     return state.withMutations(map => {
       map.set('sensitive', !state.get('sensitive'));
@@ -235,7 +249,7 @@ export default function compose(state = initialState, action) {
   case COMPOSE_UPLOAD_CHANGE_REQUEST:
     return state.set('is_submitting', true);
   case COMPOSE_SUBMIT_SUCCESS:
-    return clearAll(state);
+    return clearAll(pawooConsumeResult(state, action.status));
   case COMPOSE_SUBMIT_FAIL:
   case COMPOSE_UPLOAD_CHANGE_FAIL:
     return state.set('is_submitting', false);
@@ -257,9 +271,6 @@ export default function compose(state = initialState, action) {
   case COMPOSE_SUGGESTIONS_CLEAR:
     return state.update('suggestions', ImmutableList(), list => list.clear()).set('suggestion_token', null);
   case COMPOSE_SUGGESTIONS_READY:
-    if (action.tags) {
-      return state.set('suggestions', ImmutableList(action.tags)).set('suggestion_token', action.token);
-    }
     return state.set('suggestions', ImmutableList(action.accounts ? action.accounts.map(item => item.id) : action.emojis)).set('suggestion_token', action.token);
   case COMPOSE_SUGGESTION_SELECT:
     return insertSuggestion(state, action.position, action.token, action.completion);
@@ -271,8 +282,6 @@ export default function compose(state = initialState, action) {
     }
   case COMPOSE_EMOJI_INSERT:
     return insertEmoji(state, action.position, action.emoji);
-  case COMPOSE_TAG_INSERT:
-    return insertTag(state, action.tag);
   case COMPOSE_UPLOAD_CHANGE_SUCCESS:
     return state
       .set('is_submitting', false)
@@ -283,6 +292,18 @@ export default function compose(state = initialState, action) {
 
         return item;
       }));
+  case PAWOO_COMPOSE_DATE_TIME_CHANGE:
+    return state.setIn(['pawoo', 'published'], action.value);
+  case PAWOO_COMPOSE_SUGGESTIONS_HASH_TAG_FETCH:
+    return state.merge({
+      suggestions: state.getIn(['pawoo', 'hashTagHistory'])
+        .filter(it => it.startsWith(action.token.slice(1)))
+        .slice(0, pawooSuggestionMaxSize)
+        .map(it => `#${it}`),
+      suggestion_token: action.token,
+    });
+  case PAWOO_COMPOSE_TAG_INSERT:
+    return pawooInsertTag(state, action.tag);
   default:
     return state;
   }

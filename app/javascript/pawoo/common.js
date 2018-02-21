@@ -1,3 +1,4 @@
+import GA from './actions/ga';
 import ready from '../mastodon/ready';
 
 require.context('./images/', true);

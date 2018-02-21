@@ -15,8 +15,6 @@ import status_lists from './status_lists';
 import cards from './cards';
 import mutes from './mutes';
 import reports from './reports';
-import trend_tags from './trend_tags';
-import suggestion_tags from './suggestion_tags';
 import contexts from './contexts';
 import compose from './compose';
 import search from './search';
@@ -55,8 +53,6 @@ const reducers = {
   lists,
   listEditor,
   pawoo,
-  trend_tags,
-  suggestion_tags,
 };
 
 export default combineReducers(reducers);
