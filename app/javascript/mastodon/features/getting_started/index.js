@@ -80,13 +80,6 @@ export default class GettingStarted extends ImmutablePureComponent {
     }
   }
 
-  pawooHandleSuggestedAccountsClick = event => {
-    if (this.props.multiColumn) {
-      this.props.pawooOpenSuggestedAccountsPage();
-      event.preventDefault();
-    }
-  }
-
   render () {
     const { intl, myAccount, columns, multiColumn, unreadFollowRequests, unreadNotifications, pawooPage } = this.props;
 
