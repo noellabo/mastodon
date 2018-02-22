@@ -40,6 +40,7 @@ import {
   PinnedStatuses,
   Lists,
   MediaTimeline,
+  SuggestedAccounts,
   SuggestionTags,
   StatusSearchResults,
   AccountMediaTimeline,
@@ -47,7 +48,6 @@ import {
 import { HotKeys } from 'react-hotkeys';
 import { me } from '../../initial_state';
 import { defineMessages, injectIntl } from 'react-intl';
-import { SuggestedAccountsColumn } from '../../../pawoo/util/async-components';
 
 // Dummy import, to make sure that <Status /> ends up in the application bundle.
 // Without this it ends up in ~8 very commonly used bundles.
@@ -413,7 +413,7 @@ export default class UI extends React.Component {
               <WrappedRoute path='/lists' component={Lists} content={children} />
 
               <WrappedRoute path='/timelines/public/media' component={MediaTimeline} content={children} />
-              <WrappedRoute path='/suggested_accounts' component={SuggestedAccountsColumn} content={children} />
+              <WrappedRoute path='/suggested_accounts' component={SuggestedAccounts} content={children} />
               <WrappedRoute path='/suggestion_tags/:type' component={SuggestionTags} content={children} />
               <WrappedRoute path='/statuses/search/:keyword' component={StatusSearchResults} content={children} />
               <WrappedRoute path='/accounts/:accountId/media' component={AccountMediaTimeline} content={children} />
