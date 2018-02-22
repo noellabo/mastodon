@@ -11,7 +11,7 @@ import {
 } from '../../../actions/accounts';
 import { mentionCompose } from '../../../actions/compose';
 import { initMuteModal } from '../../../actions/mutes';
-import { initReport } from '../../../actions/reports';
+import { initReport } from '../../../../pawoo/actions/reports';
 import { openModal } from '../../../actions/modal';
 import { blockDomain, unblockDomain } from '../../../actions/domain_blocks';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';

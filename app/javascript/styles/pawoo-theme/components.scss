@@ -359,3 +359,43 @@ $button-icon-scale-ration-on-pc: 0.85;
     background: url('../images/pawoo/pawoo-ui.png') no-repeat left bottom / contain;
   }
 }
+
+.pawoo__report-modal__select-type {
+  display: flex;
+
+  .pawoo__report-modal__select-type-title {
+    flex: 1 1 auto;
+    padding: 10px;
+  }
+
+  .pawoo__report-modal__select-type-toggle {
+    flex: 0 0 auto;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.pawoo__status-check-box__status {
+  margin: 10px 0 10px 10px;
+  flex: 1;
+
+  .media-gallery {
+    max-width: 250px;
+  }
+
+  .status__content {
+    padding: 0;
+    white-space: normal;
+  }
+
+  .video-player {
+    margin-top: 8px;
+    max-width: 250px;
+  }
+
+  .media-gallery__item-thumbnail {
+    cursor: default;
+  }
+}

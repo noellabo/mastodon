@@ -23,7 +23,7 @@ import {
 import { blockAccount } from '../../actions/accounts';
 import { muteStatus, unmuteStatus, deleteStatus } from '../../actions/statuses';
 import { initMuteModal } from '../../actions/mutes';
-import { initReport } from '../../actions/reports';
+import { initReport } from '../../../pawoo/actions/reports';
 import { makeGetStatus } from '../../selectors';
 import { ScrollContainer } from 'react-router-scroll-4';
 import ColumnBackButton from '../../components/column_back_button';

@@ -1,0 +1,22 @@
+- content_for :page_title do
+  = t('pawoo.admin.report_targets.title')
+
+.filters
+  .filter-subset
+    %strong= t('pawoo.admin.report_targets.state')
+    %ul
+      %li= filter_link_to t('pawoo.admin.report_targets.unresolved'), pending: nil
+      %li= filter_link_to t('pawoo.admin.report_targets.pending'), pending: '1'
+
+%h6= "未処理件数: #{@unresolved_report_target_count}"
+
+= form_tag admin_pawoo_report_targets_path do
+  = hidden_field_tag :pending, 1 if params[:pending] == '1'
+
+  .table-wrapper
+    %table.table
+      = render partial: 'report_target_group', collection: @report_target_groups
+
+  - if @report_target_groups.size > 0
+    %hr/
+    = submit_tag t('pawoo.admin.report_targets.submit'), data: { confirm: t('admin.reports.are_you_sure') }, class: 'button'

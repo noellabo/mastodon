@@ -337,6 +337,10 @@ Rails.application.routes.draw do
       resources :scheduled_statuses, only: [:index]
       resources :trend_ng_words, only: [:index, :new, :create, :edit, :update, :destroy]
       resources :oauth_authentications, only: [:destroy]
+
+      scope :pawoo, as: :pawoo do
+        resources :report_targets, only: [:index, :create]
+      end
     end
 
     namespace :api do
