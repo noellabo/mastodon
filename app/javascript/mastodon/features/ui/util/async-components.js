@@ -90,6 +90,10 @@ export function MediaTimeline () {
   return import(/* webpackChunkName: "features/media_timeline" */'../../media_timeline');
 }
 
+export function SuggestedAccounts () {
+  return import(/* webpackChunkName: "features/suggested_accounts" */'../../../../pawoo/containers/suggested_accounts_container');
+}
+
 export function SuggestionTags () {
   return import(/* webpackChunkName: "features/suggestion_tags" */'../../suggestion_tags');
 }

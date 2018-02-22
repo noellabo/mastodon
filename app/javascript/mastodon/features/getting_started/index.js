@@ -9,7 +9,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { me } from '../../initial_state';
 import { fetchFollowRequests } from '../../actions/accounts';
-import PawooGettingStartedOnOnboardingPage from '../../../pawoo/components/getting_started_on_onboarding_page';
 import { List as ImmutableList } from 'immutable';
 
 const messages = defineMessages({
@@ -40,7 +39,6 @@ const mapStateToProps = state => ({
   columns: state.getIn(['settings', 'columns']),
   unreadFollowRequests: state.getIn(['user_lists', 'follow_requests', 'items'], ImmutableList()).size,
   unreadNotifications: state.getIn(['notifications', 'unread']),
-  pawooPage: state.getIn(['pawoo', 'page']),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -69,7 +67,6 @@ export default class GettingStarted extends ImmutablePureComponent {
     fetchFollowRequests: PropTypes.func.isRequired,
     unreadFollowRequests: PropTypes.number,
     unreadNotifications: PropTypes.number,
-    pawooPage: PropTypes.string,
   };
 
   componentDidMount () {
@@ -80,23 +77,12 @@ export default class GettingStarted extends ImmutablePureComponent {
     }
   }
 
-  pawooHandleSuggestedAccountsClick = event => {
-    if (this.props.multiColumn) {
-      this.props.pawooOpenSuggestedAccountsPage();
-      event.preventDefault();
-    }
-  }
-
   render () {
-    const { intl, myAccount, columns, multiColumn, unreadFollowRequests, unreadNotifications, pawooPage } = this.props;
+    const { intl, myAccount, columns, multiColumn, unreadFollowRequests, unreadNotifications } = this.props;
 
     const navItems = [];
 
     if (multiColumn) {
-      if (pawooPage === 'ONBOARDING') {
-        return <PawooGettingStartedOnOnboardingPage />;
-      }
-
       if (!columns.find(item => item.get('id') === 'HOME')) {
         navItems.push(<ColumnLink key='0' icon='home' text={intl.formatMessage(messages.home_timeline)} to='/timelines/home' />);
       }
