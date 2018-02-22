@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180112192032) do
+ActiveRecord::Schema.define(version: 20180207182027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -329,6 +329,13 @@ ActiveRecord::Schema.define(version: 20180112192032) do
     t.index ["user_id", "provider"], name: "index_oauth_authentications_on_user_id_and_provider", unique: true
   end
 
+  create_table "pawoo_report_targets", force: :cascade do |t|
+    t.bigint "report_id", null: false
+    t.string "target_type", null: false
+    t.bigint "target_id", null: false
+    t.integer "state", default: 0, null: false
+  end
+
   create_table "pixiv_cards", force: :cascade do |t|
     t.string "url", null: false
     t.string "image_url"
@@ -381,6 +388,7 @@ ActiveRecord::Schema.define(version: 20180112192032) do
     t.bigint "account_id", null: false
     t.bigint "action_taken_by_account_id"
     t.bigint "target_account_id", null: false
+    t.integer "pawoo_report_type", default: 0, null: false
     t.index ["account_id"], name: "index_reports_on_account_id"
     t.index ["target_account_id"], name: "index_reports_on_target_account_id"
   end

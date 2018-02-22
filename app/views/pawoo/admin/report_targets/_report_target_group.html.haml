@@ -1,0 +1,70 @@
+%tr.pawoo_report_target
+  %td.report_target_infomations
+    .report_target_info
+      %ul
+        %li= link_to report_target_group.account.acct, admin_account_path(report_target_group.account.id)
+        - if report_target_group.account_pixiv_uid.present?
+          %li
+            = 'pixiv uid: '
+            = link_to report_target_group.account_pixiv_uid, "https://www.pixiv.net/member.php?id=#{report_target_group.account_pixiv_uid}", target: '_blank', rel: 'noopener'
+        %li
+          = '状態: '
+          - if report_target_group.account.silenced? || report_target_group.account.suspended?
+            - if report_target_group.account.silenced?
+              %span.report_target_state= t('admin.accounts.moderation.silenced')
+            - if report_target_group.account.suspended?
+              %span.report_target_state= t('admin.accounts.moderation.suspended')
+          - else
+            %span.report_target_state 正常
+        %li
+          = '通報回数: '
+          = report_target_group.account.targeted_reports.count
+    .report_target_info
+      %strong 通報の詳細
+      %table.report_target_detail
+        %thead
+          %tr
+            %th ID
+            %th 種類
+            %th コメント
+        %tbody
+        - report_target_group.report_targets.each do |report_target|
+          %tr
+            %td= link_to "##{report_target.report.id}", admin_report_path(report_target.report)
+            %td.report_target_type= t("pawoo.admin.report_targets.report_type.#{report_target.report.pawoo_report_type}")
+            %td= report_target.report.comment
+
+    - if report_target_group.status
+      .report_target_info
+        .activity-stream.activity-stream-headless
+          .entry= render 'stream_entries/simple_status', status: report_target_group.status
+  %td.report_target_actions
+    - target_group_key = "#{report_target_group.target_type}_#{report_target_group.target_id}"
+    = hidden_field_tag "report_target_groups[#{target_group_key}][target_type]", report_target_group.target_type
+    = hidden_field_tag "report_target_groups[#{target_group_key}][target_id]", report_target_group.target_id
+    - report_target_group.report_targets.each do |report_target|
+      = hidden_field_tag "report_target_groups[#{target_group_key}][report_targets][]", report_target.id
+
+    %label
+      = radio_button_tag "report_target_groups[#{target_group_key}][action]", :no_problem, false
+      %span 問題なし
+    %label
+      = radio_button_tag "report_target_groups[#{target_group_key}][action]", :change_to_pending, false
+      %span 保留
+    %br/
+
+    - if report_target_group.target_type == 'Status'
+      %label
+        = radio_button_tag "report_target_groups[#{target_group_key}][action]", :set_nsfw, false
+        %span NSFWに設定
+      %label
+        = radio_button_tag "report_target_groups[#{target_group_key}][action]", :delete, false
+        %span トゥートを削除
+      %br/
+
+    %label
+      = radio_button_tag "report_target_groups[#{target_group_key}][action]", :silence, false
+      %span アカウントをサイレンス
+    %label
+      = radio_button_tag "report_target_groups[#{target_group_key}][action]", :suspend, false
+      %span アカウントを停止

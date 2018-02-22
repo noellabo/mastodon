@@ -1,7 +1,2 @@
-- if ios_safari?
-  - query = { return_to: user_pixiv_omniauth_authorize_url }.to_query
-  - link = "#{Rails.configuration.x.accounts_pixiv_url}/login?#{query}"
-  = link_to t("simple_form.labels.omniauth_pixiv.#{auth_type}"), link, class: 'block-button including-brand', style: 'line-height:27px'
-- else
-  .block-button.omniauth-pixiv
-    = t("simple_form.labels.omniauth_pixiv.#{auth_type}")
+.block-button.omniauth-pixiv
+  = t("simple_form.labels.omniauth_pixiv.#{auth_type}")

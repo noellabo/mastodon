@@ -17,7 +17,7 @@ import {
 import { blockAccount } from '../actions/accounts';
 import { muteStatus, unmuteStatus, deleteStatus } from '../actions/statuses';
 import { initMuteModal } from '../actions/mutes';
-import { initReport } from '../actions/reports';
+import { initReport } from '../../pawoo/actions/reports';
 import { openModal } from '../actions/modal';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import { boostModal, deleteModal } from '../initial_state';

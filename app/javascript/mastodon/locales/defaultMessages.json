@@ -1747,27 +1747,27 @@
       },
       {
         "defaultMessage": "Please select the reason for reporting",
-        "id": "report.select.title"
+        "id": "pawoo.report.select.title"
       },
       {
         "defaultMessage": "I do not like it",
-        "id": "report.select.donotlike"
+        "id": "pawoo.report.select.donotlike"
       },
       {
-        "defaultMessage": "Incorrect CW・NSFW setting",
-        "id": "report.select.incorrectage"
+        "defaultMessage": "Incorrect NSFW setting",
+        "id": "pawoo.report.select.nsfw"
       },
       {
         "defaultMessage": "Spam",
-        "id": "report.select.spam"
+        "id": "pawoo.report.select.spam"
       },
       {
         "defaultMessage": "Unauthorized reproduction",
-        "id": "report.select.reproduction"
+        "id": "pawoo.report.select.reproduction"
       },
       {
         "defaultMessage": "Prohibited act",
-        "id": "report.select.prohibited"
+        "id": "pawoo.report.select.prohibited"
       },
       {
         "defaultMessage": "Report {target}",

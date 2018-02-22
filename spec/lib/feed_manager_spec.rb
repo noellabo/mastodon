@@ -396,96 +396,19 @@ RSpec.describe FeedManager do
     let(:base_id) { nil }
 
     context 'no base_id' do
-      context 'when do not exist snowflake status' do
-        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
-        let!(:status2) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 20) }
+      let!(:status1) { Fabricate(:status, account: account, created_at: (2.weeks + 1.day).ago) }
+      let!(:status2) { Fabricate(:status, account: account, created_at: (2.weeks - 1.day).ago) }
 
-        it { is_expected.to eq 20 }
-      end
-
-      context 'when status posted 2 weeks ago was snowflake' do
-        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
-        let!(:status2) { Fabricate(:status, account: account, created_at: (2.weeks + 1.day).ago) }
-        let!(:status3) { Fabricate(:status, account: account, created_at: (2.weeks - 1.day).ago) }
-
-        before do
-          # created_atを同時に設定するとidが日付ベースになってしまう
-          status1.update(created_at: (2.weeks + 3.days).ago)
-        end
-
-        it { is_expected.to be_between(status2.id, status3.id)  }
-      end
-
-      context 'when all statuses is snowflake' do
-        let!(:status1) { Fabricate(:status, account: account, created_at: (2.weeks + 1.day).ago) }
-        let!(:status2) { Fabricate(:status, account: account, created_at: (2.weeks - 1.day).ago) }
-
-        it { is_expected.to be_between(status1.id, status2.id)  }
-      end
-
-      context 'when status posted 2 weeks ago was not snowflake' do
-        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
-        let!(:status2) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 20) }
-        let!(:status3) { Fabricate(:status, account: account, created_at: (1.weeks - 1.day).ago) }
-
-        before do
-          # created_atを同時に設定するとidが日付ベースになってしまう
-          status1.update(created_at: (1.weeks + 3.days).ago)
-          status2.update(created_at: (1.weeks + 2.days).ago)
-        end
-
-        it { is_expected.to be_between(status2.id - FeedManager::MIN_ID_RANGE, status2.id) }
-      end
+      it { is_expected.to be_between(status1.id, status2.id)  }
     end
 
     context 'with base_id' do
-      context 'when status id that is not snowflake' do
-        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
-        let!(:status2) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 20) }
-        let(:base_id) { status1.id }
+      let!(:status1) { Fabricate(:status, account: account, created_at: (2.weeks + 2.day).ago) }
+      let!(:status2) { Fabricate(:status, account: account, created_at: 2.weeks.ago) }
+      let!(:status3) { Fabricate(:status, account: account, created_at: 1.day.ago) }
+      let(:base_id) { status3.id }
 
-        it { is_expected.to eq 10 }
-      end
-
-      context 'when status posted 2 weeks ago was snowflake' do
-        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
-        let!(:status2) { Fabricate(:status, account: account, created_at: (2.weeks + 2.day).ago) }
-        let!(:status3) { Fabricate(:status, account: account, created_at: 2.weeks.ago) }
-        let!(:status4) { Fabricate(:status, account: account, created_at: 1.day.ago) }
-        let(:base_id) { status4.id }
-
-        before do
-          # created_atを同時に設定するとidが日付ベースになってしまう
-          status1.update(created_at: (2.weeks + 3.days).ago)
-        end
-
-        it { is_expected.to be_between(status2.id, status3.id)  }
-      end
-
-      context 'when all statuses is snowflake' do
-        let!(:status1) { Fabricate(:status, account: account, created_at: (2.weeks + 2.day).ago) }
-        let!(:status2) { Fabricate(:status, account: account, created_at: 2.weeks.ago) }
-        let!(:status3) { Fabricate(:status, account: account, created_at: 1.day.ago) }
-        let(:base_id) { status3.id }
-
-        it { is_expected.to be_between(status1.id, status2.id)  }
-      end
-
-      context 'when status posted 2 weeks ago was not snowflake' do
-        let!(:status1) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 10) }
-        let!(:status2) { Fabricate(:status, account: account, id: FeedManager::MIN_ID_RANGE + 20) }
-        let!(:status3) { Fabricate(:status, account: account, created_at: (1.weeks - 1.day).ago) }
-        let!(:status4) { Fabricate(:status, account: account, created_at: 1.day.ago) }
-        let(:base_id) { status4.id }
-
-        before do
-          # created_atを同時に設定するとidが日付ベースになってしまう
-          status1.update(created_at: (1.weeks + 3.days).ago)
-          status2.update(created_at: (1.weeks + 2.days).ago)
-        end
-
-        it { is_expected.to be_between(status2.id - FeedManager::MIN_ID_RANGE, status2.id) }
-      end
+      it { is_expected.to be_between(status1.id, status2.id)  }
     end
   end
 end
