@@ -23,7 +23,7 @@ class TrendTag
   end
 
   def self.update_trend_tags(tag_names)
-    Rails.cache.write(TREND_TAGS_KEY, tag_names)
+    Rails.cache.write(TREND_TAGS_KEY, tag_names, expires_in: 1.hour)
   end
 
   # NOTE: 本来はdescriptionにトゥート件数を表示したいが、現状表示するほどトゥートがないので空を出している

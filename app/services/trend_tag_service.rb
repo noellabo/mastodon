@@ -47,23 +47,24 @@ class TrendTagService < BaseService
   end
 
   def call(time = Time.current)
-    statuses = recent_public_statuses(time)
-    current_tag_scores = build_tag_scores_from_statuses(statuses)
-    lpush_current_tag_scores(current_tag_scores)
+    SwitchPoint.with_readonly(:pawoo_slave) do
+      statuses = recent_public_statuses(time)
+      current_tag_scores = build_tag_scores_from_statuses(statuses)
+      lpush_current_tag_scores(current_tag_scores)
 
-    # 履歴の数がHISTORY_COUNTより少ない場合はトレンドを出すことができないため、空配列を返す
-    return [] if redis.llen(TREND_HISTORIES_KEY) + 1 < HISTORY_COUNT
+      # 履歴の数がHISTORY_COUNTより少ない場合はトレンドを出すことができないため、空配列を返す
+      return [] if redis.llen(TREND_HISTORIES_KEY) + 1 < HISTORY_COUNT
 
-    # historyから過去のcurrent_tag_scoresを取り出す
-    tag_score_histories = redis.lrange(TREND_HISTORIES_KEY, 1, -1).map do |history_tag_score|
-      JSON.parse(history_tag_score).map { |tag_score_attributes| TagScore.new(tag_score_attributes) }
-    end
+      # historyから過去のcurrent_tag_scoresを取り出す
+      tag_score_histories = redis.lrange(TREND_HISTORIES_KEY, 1, -1).map do |history_tag_score|
+        JSON.parse(history_tag_score).map { |tag_score_attributes| TagScore.new(tag_score_attributes) }
+      end
 
-    # 現在のトレンドを計算する
-    tag_scores = current_trend_tag_scores(current_tag_scores, tag_score_histories)
-
-    tag_scores.map(&:tag_name).tap do |tag_names|
-      TrendTag.update_trend_tags(tag_names)
+      # 現在のトレンドを計算する
+      tag_scores = current_trend_tag_scores(current_tag_scores, tag_score_histories)
+      tag_scores.map(&:tag_name).tap do |tag_names|
+        TrendTag.update_trend_tags(tag_names)
+      end
     end
   end
 
@@ -134,11 +135,13 @@ class TrendTagService < BaseService
   end
 
   def recent_public_statuses(time)
+    # 全件探索は重いので雑に間引く
     time_from = time.ago(SPAN)
-    min_id = Mastodon::Snowflake.id_at(1.hour.ago) # 全件探索は重いので雑に間引く
+    min_id = Mastodon::Snowflake.id_at(time_from)
+    max_id = Mastodon::Snowflake.id_at(time)
 
-    recent_tags = Status.with_public_visibility.where(created_at: time_from..time).where(Status.arel_table[:id].gteq(min_id))
-    recent_tags.local.joins(:tags).preload(:tags).distinct
+    recent_tags = Status.where(created_at: time_from..time).where(Status.arel_table[:id].gteq(min_id)).where(Status.arel_table[:id].lteq(max_id))
+    recent_tags.local.with_public_visibility.joins(:tags).preload(:tags).distinct
   end
 
   def redis
