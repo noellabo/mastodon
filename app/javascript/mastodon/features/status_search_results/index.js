@@ -6,7 +6,7 @@ import Immutable from 'immutable';
 import {
   refreshStatusSearchTimeline,
   expandStatusSearchTimeline,
-} from '../../actions/search';
+} from '../../../pawoo/actions/extensions/search';
 import Column from '../../components/column';
 import ColumnHeader from '../../components/column_header';
 import { FormattedMessage } from 'react-intl';

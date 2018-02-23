@@ -11,7 +11,7 @@ import { getLocale } from '../locales';
 
 const { messages } = getLocale();
 
-export function connectTimelineStream (timelineId, path, { shouldUpdateTimeline = null, pollingRefresh = null } = {}) {
+export function connectTimelineStream (timelineId, path, { pawooShouldUpdateTimeline = null, pollingRefresh = null } = {}) {
 
   return connectStream (path, pollingRefresh, (dispatch, getState) => {
     const locale = getState().getIn(['meta', 'locale']);
@@ -28,7 +28,7 @@ export function connectTimelineStream (timelineId, path, { shouldUpdateTimeline 
         switch(data.event) {
         case 'update':
           const status = JSON.parse(data.payload);
-          if (!shouldUpdateTimeline || shouldUpdateTimeline(status)) {
+          if (!pawooShouldUpdateTimeline || pawooShouldUpdateTimeline(status)) {
             dispatch(updateTimeline(timelineId, status));
           }
           break;
@@ -49,13 +49,13 @@ function refreshHomeTimelineAndNotification (dispatch) {
   dispatch(refreshNotifications());
 }
 
-function hasMediaAttachment (status) {
+function pawooHasMediaAttachment (status) {
   return status.media_attachments.length > 0;
 }
 
 export const connectUserStream = () => connectTimelineStream('home', 'user', { pollingRefresh: refreshHomeTimelineAndNotification });
 export const connectCommunityStream = () => connectTimelineStream('community', 'public:local');
-export const connectMediaStream = () => connectTimelineStream('media', 'public:local', { shouldUpdateTimeline: hasMediaAttachment });
+export const connectMediaStream = () => connectTimelineStream('media', 'public:local', { pawooShouldUpdateTimeline: pawooHasMediaAttachment });
 export const connectPublicStream = () => connectTimelineStream('public', 'public');
 export const connectHashtagStream = (tag) => connectTimelineStream(`hashtag:${tag}`, `hashtag&tag=${tag}`);
 export const connectListStream = (id) => connectTimelineStream(`list:${id}`, `list&list=${id}`);

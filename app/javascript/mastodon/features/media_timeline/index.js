@@ -7,7 +7,7 @@ import ColumnHeader from '../../components/column_header';
 import {
   refreshMediaTimeline,
   expandMediaTimeline,
-} from '../../actions/timelines';
+} from '../../../pawoo/actions/extensions/timelines';
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import ColumnSettingsContainer from './containers/column_settings_container';

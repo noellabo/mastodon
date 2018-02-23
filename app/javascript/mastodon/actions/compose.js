@@ -4,7 +4,8 @@ import { search as emojiSearch } from '../features/emoji/emoji_mart_search_light
 import { useEmoji } from './emojis';
 import PawooGA from '../../pawoo/actions/ga';
 
-import { addScheduledStatuses } from './schedules';
+import { fetchComposeSuggestionsHashTag as pawooFetchComposeSuggestionsHashTag } from '../../pawoo/actions/extensions/compose';
+import { addScheduledStatuses as pawooAddScheduledStatuses } from '../../pawoo/actions/schedules';
 import {
   updateTimeline,
   refreshHomeTimeline,
@@ -35,7 +36,6 @@ export const COMPOSE_SUGGESTION_SELECT = 'COMPOSE_SUGGESTION_SELECT';
 export const COMPOSE_MOUNT   = 'COMPOSE_MOUNT';
 export const COMPOSE_UNMOUNT = 'COMPOSE_UNMOUNT';
 
-export const COMPOSE_DATE_TIME_CHANGE = 'COMPOSE_DATE_TIME_CHANGE';
 export const COMPOSE_SENSITIVITY_CHANGE = 'COMPOSE_SENSITIVITY_CHANGE';
 export const COMPOSE_SPOILERNESS_CHANGE = 'COMPOSE_SPOILERNESS_CHANGE';
 export const COMPOSE_SPOILER_TEXT_CHANGE = 'COMPOSE_SPOILER_TEXT_CHANGE';
@@ -44,7 +44,6 @@ export const COMPOSE_LISTABILITY_CHANGE = 'COMPOSE_LISTABILITY_CHANGE';
 export const COMPOSE_COMPOSING_CHANGE = 'COMPOSE_COMPOSING_CHANGE';
 
 export const COMPOSE_EMOJI_INSERT = 'COMPOSE_EMOJI_INSERT';
-export const COMPOSE_TAG_INSERT = 'COMPOSE_TAG_INSERT';
 
 export const COMPOSE_UPLOAD_CHANGE_REQUEST     = 'COMPOSE_UPLOAD_UPDATE_REQUEST';
 export const COMPOSE_UPLOAD_CHANGE_SUCCESS     = 'COMPOSE_UPLOAD_UPDATE_SUCCESS';
@@ -102,7 +101,7 @@ export function mentionCompose(account, router) {
 export function submitCompose() {
   return function (dispatch, getState) {
     const status = getState().getIn(['compose', 'text'], '');
-    const published = getState().getIn(['compose', 'published']);
+    const pawooPublished = getState().getIn(['compose', 'pawoo', 'published']);
 
     if (!status || !status.length) {
       return;
@@ -119,7 +118,7 @@ export function submitCompose() {
       sensitive: getState().getIn(['compose', 'sensitive']),
       spoiler_text: getState().getIn(['compose', 'spoiler_text'], ''),
       visibility: getState().getIn(['compose', 'privacy']),
-      published: published,
+      published: pawooPublished,
     }, {
       headers: {
         'Idempotency-Key': getState().getIn(['compose', 'idempotencyKey']),
@@ -140,31 +139,13 @@ export function submitCompose() {
       insertOrRefresh('home', refreshHomeTimeline);
 
       // Make the schedule list responsive as well
-      if (published) {
-        dispatch(addScheduledStatuses([response.data]));
+      if (pawooPublished) {
+        dispatch(pawooAddScheduledStatuses([response.data]));
       }
 
       if (response.data.in_reply_to_id === null && response.data.visibility === 'public') {
         insertOrRefresh('community', refreshCommunityTimeline);
         insertOrRefresh('public', refreshPublicTimeline);
-      }
-
-      const statusTags = response.data.tags.map(it => it.name);
-      let tags = JSON.parse(localStorage.getItem('hash_tag_history'));
-      if (tags === null) {
-        tags = statusTags;
-      } else {
-        tags = tags.filter(it => !statusTags.includes(it));
-        tags.unshift(...statusTags);
-      }
-      const maxSize = 1000;
-      tags = tags.slice(0, maxSize);
-
-      const data = JSON.stringify(tags);
-      try {
-        localStorage.setItem('hash_tag_history', data);
-      } catch (e) {
-        //ignore
       }
     }).catch(function (error) {
       dispatch(submitComposeFail(error));
@@ -191,21 +172,6 @@ export function submitComposeFail(error) {
     error: error,
   };
 };
-
-const requestedImageCaches = [];
-export function requestImageCache(url) {
-  return function (dispatch, getState) {
-    // pixiv image cache
-    if (requestedImageCaches.indexOf(url) === -1) {
-      requestedImageCaches.push(url);
-      const data = new FormData();
-      data.append('url', url);
-      api(getState).post('/api/v1/pixiv_twitter_images', data).catch(() => {
-        requestedImageCaches.splice(requestedImageCaches.indexOf(url), 1);
-      });
-    }
-  };
-}
 
 export function uploadCompose(files) {
   return function (dispatch, getState) {
@@ -327,20 +293,12 @@ const fetchComposeSuggestionsEmojis = (dispatch, getState, token) => {
   dispatch(readyComposeSuggestionsEmojis(token, results));
 };
 
-const fetchComposeSuggestionsHashTag = (dispatch, getState, token) => {
-  const searchToken = token.slice(1);
-  const tags = JSON.parse(localStorage.getItem('hash_tag_history')) || [];
-  const suggestionMaxSize = 4;
-  const suggestions = tags.filter(it => it.startsWith(searchToken)).slice(0, suggestionMaxSize).map(it => `#${it}`);
-  dispatch(readyComposeSuggestionsHashTags(token, suggestions));
-};
-
 export function fetchComposeSuggestions(token) {
   return (dispatch, getState) => {
     if (token[0] === ':') {
       fetchComposeSuggestionsEmojis(dispatch, getState, token);
     } else if (token[0] === '#') {
-      fetchComposeSuggestionsHashTag(dispatch, getState, token);
+      dispatch(pawooFetchComposeSuggestionsHashTag(token));
     } else {
       fetchComposeSuggestionsAccounts(dispatch, getState, token);
     }
@@ -362,14 +320,6 @@ export function readyComposeSuggestionsAccounts(token, accounts) {
     accounts,
   };
 };
-
-export function readyComposeSuggestionsHashTags(token, tags) {
-  return {
-    type: COMPOSE_SUGGESTIONS_READY,
-    token,
-    tags,
-  };
-}
 
 export function selectComposeSuggestion(position, token, suggestion) {
   return (dispatch, getState) => {
@@ -409,13 +359,6 @@ export function unmountCompose() {
   };
 };
 
-export function changeComposeDateTime(value) {
-  return {
-    type: COMPOSE_DATE_TIME_CHANGE,
-    value,
-  };
-};
-
 export function changeComposeSensitivity() {
   return {
     type: COMPOSE_SENSITIVITY_CHANGE,
@@ -449,13 +392,6 @@ export function insertEmojiCompose(position, emoji) {
     emoji,
   };
 };
-
-export function insertTagCompose(tag) {
-  return {
-    type: COMPOSE_TAG_INSERT,
-    tag,
-  };
-}
 
 export function changeComposing(value) {
   return {

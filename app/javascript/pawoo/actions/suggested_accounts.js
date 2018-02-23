@@ -43,7 +43,7 @@ export function fetchSuggestedAccountsFail(error) {
 
 export function expandSuggestedAccounts() {
   return (dispatch, getState) => {
-    const url = getState().getIn(['user_lists', 'suggested_accounts', 'next']);
+    const url = getState().getIn(['pawoo', 'suggested_accounts', 'next']);
 
     if (url === null) {
       return;

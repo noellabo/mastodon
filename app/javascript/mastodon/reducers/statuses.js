@@ -36,10 +36,10 @@ import {
 } from '../actions/pin_statuses';
 import { SEARCH_FETCH_SUCCESS } from '../actions/search';
 import {
-  SCHEDULED_STATUSES_FETCH_SUCCESS,
-  SCHEDULED_STATUSES_EXPAND_SUCCESS,
-  SCHEDULED_STATUSES_ADDITION,
-} from '../actions/schedules';
+  SCHEDULED_STATUSES_FETCH_SUCCESS as PAWOO_SCHEDULED_STATUSES_FETCH_SUCCESS,
+  SCHEDULED_STATUSES_EXPAND_SUCCESS as PAWOO_SCHEDULED_STATUSES_EXPAND_SUCCESS,
+  SCHEDULED_STATUSES_ADDITION as PAWOO_SCHEDULED_STATUSES_ADDITION,
+} from '../../pawoo/actions/schedules';
 import emojify from '../features/emoji/emoji';
 import { Map as ImmutableMap, fromJS } from 'immutable';
 import escapeTextContentForBrowser from 'escape-html';
@@ -125,9 +125,9 @@ export default function statuses(state = initialState, action) {
   case FAVOURITED_STATUSES_EXPAND_SUCCESS:
   case PINNED_STATUSES_FETCH_SUCCESS:
   case SEARCH_FETCH_SUCCESS:
-  case SCHEDULED_STATUSES_FETCH_SUCCESS:
-  case SCHEDULED_STATUSES_EXPAND_SUCCESS:
-  case SCHEDULED_STATUSES_ADDITION:
+  case PAWOO_SCHEDULED_STATUSES_FETCH_SUCCESS:
+  case PAWOO_SCHEDULED_STATUSES_EXPAND_SUCCESS:
+  case PAWOO_SCHEDULED_STATUSES_ADDITION:
     return normalizeStatuses(state, action.statuses);
   case TIMELINE_DELETE:
     return deleteStatus(state, action.id, action.references);

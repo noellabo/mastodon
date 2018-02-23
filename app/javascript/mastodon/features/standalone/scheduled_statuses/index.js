@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import LoadingIndicator from '../../../components/loading_indicator';
-import { fetchScheduledStatuses, expandScheduledStatuses } from '../../../actions/schedules';
+import { fetchScheduledStatuses, expandScheduledStatuses } from '../../../../pawoo/actions/schedules';
 import StatusList from '../../../components/status_list';
 import ComposeFormContainer from '../../compose/containers/compose_form_container';
 import NotificationsContainer from '../../ui/containers/notifications_container';
@@ -12,9 +12,9 @@ import LoadingBarContainer from '../../ui/containers/loading_bar_container';
 import ModalContainer from '../../ui/containers/modal_container';
 
 const mapStateToProps = state => ({
-  statusIds: state.getIn(['status_lists', 'schedules', 'items']),
-  loaded: state.getIn(['status_lists', 'schedules', 'loaded']),
-  hasMore: !!state.getIn(['status_lists', 'schedules', 'next']),
+  statusIds: state.getIn(['status_lists', 'pawooSchedules', 'items']),
+  loaded: state.getIn(['status_lists', 'pawooSchedules', 'loaded']),
+  hasMore: !!state.getIn(['status_lists', 'pawooSchedules', 'next']),
 });
 
 @connect(mapStateToProps)

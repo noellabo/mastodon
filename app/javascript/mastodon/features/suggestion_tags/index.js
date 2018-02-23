@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Link from 'react-router-dom/Link';
-import { refreshSuggestionTags } from '../../actions/suggestion_tags';
+import { refreshSuggestionTags } from '../../../pawoo/actions/suggestion_tags';
 import { ScrollContainer } from 'react-router-scroll-4';
 import { defineMessages, injectIntl } from 'react-intl';
 import Column from '../../components/column';
@@ -11,11 +11,11 @@ import ColumnHeader from '../../components/column_header';
 import ColumnBackButton from '../../components/column_back_button';
 import MissingIndicator from '../../components/missing_indicator';
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
-import { insertTagCompose } from '../../actions/compose';
+import { insertTagCompose } from '../../../pawoo/actions/extensions/compose';
 
 
 const mapStateToProps = (state, props) => ({
-  tags: state.getIn(['suggestion_tags', props.params.type]),
+  tags: state.getIn(['pawoo', 'suggestion_tags', props.params.type]),
 });
 
 const messages = defineMessages({

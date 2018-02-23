@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export const SUGGESTION_TAGS_SUCCESS = 'SUGGESTION_TAGS_SUCCESS';
-export const SUGGESTION_TAGS_FAIL = 'SUGGESTION_TAGS_FAIL';
+export const SUGGESTION_TAGS_SUCCESS = 'PAWOO_SUGGESTION_TAGS_SUCCESS';
+export const SUGGESTION_TAGS_FAIL = 'PAWOO_SUGGESTION_TAGS_FAIL';
 
 export function refreshSuggestionTags(type) {
   return (dispatch) => {
