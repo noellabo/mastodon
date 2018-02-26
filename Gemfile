@@ -81,7 +81,7 @@ gem 'webpush', '0.3.2' # NOTE: 0.3.3からjwtの2系が必要になり、oauth2�
 gem 'json-ld-preloaded', '~> 2.2.1'
 gem 'rdf-normalize', '~> 0.3.1'
 
-# extra
+# pawoo extra
 gem 'exception_notification'
 gem 'slack-notifier'
 gem 'type_attributes'
@@ -111,6 +111,9 @@ group :test do
   gem 'simplecov', '~> 0.14', require: false
   gem 'webmock', '~> 3.0'
   gem 'parallel_tests', '~> 2.17'
+
+  # pawoo extra
+  gem 'database_rewinder'
 end
 
 group :development do

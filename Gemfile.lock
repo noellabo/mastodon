@@ -135,6 +135,7 @@ GEM
     crass (1.0.3)
     css_parser (1.6.0)
       addressable
+    database_rewinder (0.8.3)
     debug_inspector (0.0.3)
     devise (4.4.0)
       bcrypt (~> 3.0)
@@ -658,6 +659,7 @@ DEPENDENCIES
   charlock_holmes (~> 0.7.5)
   cld3 (~> 3.2.0)
   climate_control (~> 0.2)
+  database_rewinder
   devise (~> 4.4)
   devise-two-factor (~> 3.0)
   doorkeeper (~> 4.2)
