@@ -4,7 +4,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { setPage } from '../actions/page';
-import PawooUI from '../../images/pawoo/pawoo-ui.png';
+import PawooUI from '../../pawoo/images/pawoo-ui.png';
 import Column from '../../mastodon/features/ui/components/column';
 import ColumnBackButton from '../../mastodon/components/column_back_button';
 import ColumnBackButtonSlim from '../../mastodon/components/column_back_button_slim';
