@@ -63,6 +63,12 @@ const normalizeAccount = (state, account) => {
   delete account.following_count;
   delete account.statuses_count;
 
+  // media_attachmentsが設定されていない場合は保持する
+  const pawooMediaAttachments = state.getIn([account.id, 'media_attachments']);
+  if (!account.media_attachments && pawooMediaAttachments) {
+    account.media_attachments = pawooMediaAttachments.toJS();
+  }
+
   const displayName = account.display_name.length === 0 ? account.username : account.display_name;
   account.display_name_html = emojify(escapeTextContentForBrowser(displayName));
   account.note_emojified = emojify(account.note);
