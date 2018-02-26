@@ -2,7 +2,7 @@
 
 class InitialStateSerializer < ActiveModel::Serializer
   attributes :meta, :compose, :accounts,
-             :media_attachments, :settings, :push_subscription
+             :media_attachments, :settings, :push_subscription, :pawoo_title
 
   has_many :custom_emojis, serializer: REST::CustomEmojiSerializer
 
@@ -55,5 +55,9 @@ class InitialStateSerializer < ActiveModel::Serializer
 
   def media_attachments
     { accept_content_types: MediaAttachment::IMAGE_FILE_EXTENSIONS + MediaAttachment::VIDEO_FILE_EXTENSIONS + MediaAttachment::IMAGE_MIME_TYPES + MediaAttachment::VIDEO_MIME_TYPES }
+  end
+
+  def pawoo_title
+    Setting.site_title
   end
 end
