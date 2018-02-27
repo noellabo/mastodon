@@ -38,6 +38,7 @@ production: &production
   prepared_statements: <%= ENV['PREPARED_STATEMENTS'] || 'true' %>
 production_pawoo_slave:
   <<: *production
-  host: <%= ENV['PAWOO_DB_NAME_SLAVE'] || 'localhost' %>
   username: <%= ENV['PAWOO_DB_USER_SLAVE'] %>
   password: <%= ENV['PAWOO_DB_PASS_SLAVE'] %>
+  host: <%= ENV['PAWOO_DB_HOST_SLAVE'] || 'localhost' %>
+  port: <%= ENV['PAWOO_DB_PORT_SLAVE'] || 5432 %>
