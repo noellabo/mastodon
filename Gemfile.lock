@@ -135,6 +135,7 @@ GEM
     crass (1.0.3)
     css_parser (1.6.0)
       addressable
+    database_rewinder (0.8.3)
     debug_inspector (0.0.3)
     devise (4.4.0)
       bcrypt (~> 3.0)
@@ -589,6 +590,8 @@ GEM
     statsd-ruby (1.2.1)
     strong_migrations (0.1.9)
       activerecord (>= 3.2.0)
+    switch_point (0.8.0)
+      activerecord (>= 3.2.0)
     temple (0.8.0)
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
@@ -656,6 +659,7 @@ DEPENDENCIES
   charlock_holmes (~> 0.7.5)
   cld3 (~> 3.2.0)
   climate_control (~> 0.2)
+  database_rewinder
   devise (~> 4.4)
   devise-two-factor (~> 3.0)
   doorkeeper (~> 4.2)
@@ -738,6 +742,7 @@ DEPENDENCIES
   spring-commands-rspec
   sprockets-rails (~> 3.2)
   strong_migrations
+  switch_point
   twitter-text (~> 1.14)
   type_attributes
   tzinfo-data (~> 1.2017)

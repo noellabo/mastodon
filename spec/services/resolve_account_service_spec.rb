@@ -117,7 +117,7 @@ RSpec.describe ResolveAccountService do
     fail_occurred  = false
     return_values  = []
 
-    threads = Array.new(5) do
+    threads = Array.new(3) do # NOTE: コネクションプールを使い切るのでスレッド数を減らした
       Thread.new do
         true while wait_for_start
         begin
