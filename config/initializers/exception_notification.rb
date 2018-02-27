@@ -40,12 +40,16 @@ ExceptionNotification.configure do |config|
   }.freeze
 
   config.ignore_if do |exception, options|
+    exception_name = exception.class.name
+
+    # includes invalid characters
+    ignore_worker ||= exception_name == 'ActiveRecord::RecordInvalid' && exception.message.end_with?('includes invalid characters')
+
     sidekiq = (options || {})&.dig(:data, :sidekiq)
     if sidekiq
-      exception_name = exception.class.name
       worker_class = sidekiq.dig(:job, 'class')
 
-      ignore_worker = ignore_workers.include?(worker_class)
+      ignore_worker ||= ignore_workers.include?(worker_class)
       ignore_worker ||= ignore_worker_errors[worker_class]&.include?(exception_name)
 
       # ActivityPub or Pubsubhubbub or 通信が頻繁に発生するWorkerではネットワーク系の例外を無視
