@@ -8,8 +8,6 @@
       %li= filter_link_to t('pawoo.admin.report_targets.unresolved'), pending: nil
       %li= filter_link_to t('pawoo.admin.report_targets.pending'), pending: '1'
 
-%h6= "未処理件数: #{@unresolved_report_target_count}"
-
 = form_tag admin_pawoo_report_targets_path do
   = hidden_field_tag :pending, 1 if params[:pending] == '1'
 
