@@ -17,7 +17,6 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
       break if target_statuses.size + target_accounts.size == REPORT_TARGETS_LIMIT
     end
 
-    @unresolved_report_target_count = Pawoo::ReportTarget.where(state: state_param).size
     @report_target_groups = load_report_target_groups(target_statuses.to_a, target_accounts.to_a, state_param)
   end
 
