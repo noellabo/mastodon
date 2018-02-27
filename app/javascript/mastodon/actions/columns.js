@@ -1,4 +1,5 @@
 import { saveSettings } from './settings';
+import uuid from '../uuid';
 
 export const COLUMN_ADD    = 'COLUMN_ADD';
 export const COLUMN_REMOVE = 'COLUMN_REMOVE';
@@ -8,6 +9,7 @@ export function addColumn(id, params) {
   return dispatch => {
     dispatch({
       type: COLUMN_ADD,
+      uuid: uuid(),
       id,
       params,
     });
