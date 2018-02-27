@@ -261,9 +261,27 @@ RSpec.describe FeedManager do
         expect(FeedManager.instance.push_to_home(account, reblogs.last)).to be true
       end
     end
+
+    it "does not push when the given status's reblog is already inserted" do
+      account = Fabricate(:account)
+      reblog = Fabricate(:status)
+      status = Fabricate(:status, reblog: reblog)
+      FeedManager.instance.push_to_home(account, status)
+
+      expect(FeedManager.instance.push_to_home(account, reblog)).to eq false
+    end
   end
 
   describe '#push_to_list' do
+    it "does not push when the given status's reblog is already inserted" do
+      list = Fabricate(:list)
+      reblog = Fabricate(:status)
+      status = Fabricate(:status, reblog: reblog)
+      FeedManager.instance.push_to_list(list, status)
+
+      expect(FeedManager.instance.push_to_list(list, reblog)).to eq false
+    end
+
     it 'performs pushing updates into home timelines' do
       lists = [Fabricate(:list, account: Fabricate(:account)), Fabricate(:list, account: Fabricate(:account))]
       status = Fabricate(:status)
@@ -275,6 +293,19 @@ RSpec.describe FeedManager do
       expect(PushUpdateWorker).to receive(:perform_async).with(lists.map(&:id), status.id, :list)
 
       FeedManager.instance.push_to_list(lists, status)
+    end
+  end
+
+  describe '#merge_into_timeline' do
+    it "does not push source account's statuses whose reblogs are already inserted" do
+      account = Fabricate(:account, id: 0)
+      reblog = Fabricate(:status)
+      status = Fabricate(:status, reblog: reblog)
+      FeedManager.instance.push_to_home(account, status)
+
+      FeedManager.instance.merge_into_timeline(account, reblog.account)
+
+      expect(Redis.current.zscore("feed:home:0", reblog.id)).to eq nil
     end
   end
 
