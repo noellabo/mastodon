@@ -183,7 +183,9 @@ export default class ColumnsArea extends ImmutablePureComponent {
           );
         })}
 
-        {React.Children.map(children, child => React.cloneElement(child, { multiColumn: true }))}
+        <div style={{ display: 'flex', flex: pawooPage === 'DEFAULT' ? '1 330px' : null }}>
+          {React.Children.map(children, child => React.cloneElement(child, { multiColumn: true }))}
+        </div>
       </div>
     );
   }
