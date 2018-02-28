@@ -17,7 +17,7 @@ function SuggestedAccountsPage({ intl }) {
       pawooClassName='pawoo-suggested-accounts-page'
     >
       <div className='pawoo-suggested-accounts-page__suggested-accounts'>
-        <SuggestedAccountsContainer scrollKey='suggested_accounts_page' />
+        <SuggestedAccountsContainer scrollKey='suggested_accounts_page' trackScroll={false} />
       </div>
     </Column>
   );
