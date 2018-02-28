@@ -25,6 +25,7 @@ export default class HashtagTimeline extends React.PureComponent {
     dispatch: PropTypes.func.isRequired,
     hasUnread: PropTypes.bool,
     multiColumn: PropTypes.bool,
+    pawooHasPinnedColumn: PropTypes.bool,
   };
 
   handlePin = () => {
@@ -86,7 +87,7 @@ export default class HashtagTimeline extends React.PureComponent {
   }
 
   render () {
-    const { hasUnread, columnId, multiColumn } = this.props;
+    const { hasUnread, columnId, multiColumn, pawooHasPinnedColumn } = this.props;
     const { id } = this.props.params;
     const pinned = !!columnId;
 
@@ -102,6 +103,7 @@ export default class HashtagTimeline extends React.PureComponent {
           pinned={pinned}
           multiColumn={multiColumn}
           showBackButton
+          pawooHasPinnedColumn={pawooHasPinnedColumn}
         />
 
         <StatusListContainer

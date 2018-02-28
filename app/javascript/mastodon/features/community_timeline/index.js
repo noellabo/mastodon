@@ -31,6 +31,7 @@ export default class CommunityTimeline extends React.PureComponent {
     intl: PropTypes.object.isRequired,
     hasUnread: PropTypes.bool,
     multiColumn: PropTypes.bool,
+    pawooHasPinnedColumn: PropTypes.bool,
   };
 
   handlePin = () => {
@@ -75,7 +76,7 @@ export default class CommunityTimeline extends React.PureComponent {
   }
 
   render () {
-    const { intl, hasUnread, columnId, multiColumn } = this.props;
+    const { intl, hasUnread, columnId, multiColumn, pawooHasPinnedColumn } = this.props;
     const pinned = !!columnId;
 
     return (
@@ -89,6 +90,7 @@ export default class CommunityTimeline extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
+          pawooHasPinnedColumn={pawooHasPinnedColumn}
         >
           <ColumnSettingsContainer />
         </ColumnHeader>

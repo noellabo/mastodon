@@ -30,6 +30,7 @@ export default class HomeTimeline extends React.PureComponent {
     isPartial: PropTypes.bool,
     columnId: PropTypes.string,
     multiColumn: PropTypes.bool,
+    pawooHasPinnedColumn: PropTypes.bool,
   };
 
   handlePin = () => {
@@ -93,7 +94,7 @@ export default class HomeTimeline extends React.PureComponent {
   }
 
   render () {
-    const { intl, hasUnread, columnId, multiColumn } = this.props;
+    const { intl, hasUnread, columnId, multiColumn, pawooHasPinnedColumn } = this.props;
     const pinned = !!columnId;
 
     return (
@@ -107,6 +108,7 @@ export default class HomeTimeline extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
+          pawooHasPinnedColumn={pawooHasPinnedColumn}
         >
           <ColumnSettingsContainer />
         </ColumnHeader>

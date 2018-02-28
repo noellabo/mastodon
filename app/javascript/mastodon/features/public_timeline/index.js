@@ -31,6 +31,7 @@ export default class PublicTimeline extends React.PureComponent {
     columnId: PropTypes.string,
     multiColumn: PropTypes.bool,
     hasUnread: PropTypes.bool,
+    pawooHasPinnedColumn: PropTypes.bool,
   };
 
   handlePin = () => {
@@ -75,7 +76,7 @@ export default class PublicTimeline extends React.PureComponent {
   }
 
   render () {
-    const { intl, columnId, hasUnread, multiColumn } = this.props;
+    const { intl, columnId, hasUnread, multiColumn, pawooHasPinnedColumn } = this.props;
     const pinned = !!columnId;
 
     return (
@@ -89,6 +90,7 @@ export default class PublicTimeline extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
+          pawooHasPinnedColumn={pawooHasPinnedColumn}
         >
           <ColumnSettingsContainer />
         </ColumnHeader>
