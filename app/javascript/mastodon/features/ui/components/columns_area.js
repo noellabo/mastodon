@@ -7,7 +7,6 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import ReactSwipeableViews from 'react-swipeable-views';
 import { links, getIndex, getLink } from './tabs_bar';
 
-import BundleContainer from '../containers/bundle_container';
 import ColumnLoading from './column_loading';
 import DrawerLoading from './drawer_loading';
 import BundleColumnError from './bundle_column_error';
@@ -17,6 +16,7 @@ import detectPassiveEvents from 'detect-passive-events';
 import { scrollRight } from '../../../scroll';
 import PawooSingleColumnOnboardingContainer from '../../../../pawoo/containers/single_column_onboarding_container';
 import * as PawooComponents from '../../../../pawoo/util/async-components';
+import ColumnContainer from '../../../../pawoo/containers/column_container';
 
 const componentMap = {
   'COMPOSE': Compose,
@@ -173,12 +173,8 @@ export default class ColumnsArea extends ImmutablePureComponent {
     return (
       <div className={`columns-area ${ isModalOpen ? 'unscrollable' : '' }`} ref={this.setRef}>
         {columns.map(column => {
-          const params = column.get('params', null) === null ? null : column.get('params').toJS();
-
           return (
-            <BundleContainer key={column.get('uuid')} fetchComponent={componentMap[column.get('id')]} loading={this.renderLoading(column.get('id'))} error={this.renderError}>
-              {SpecificComponent => <SpecificComponent columnId={column.get('uuid')} params={params} multiColumn />}
-            </BundleContainer>
+            <ColumnContainer key={column.get('uuid')} column={column} />
           );
         })}
 

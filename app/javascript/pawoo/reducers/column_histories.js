@@ -1,8 +1,9 @@
-import Immutable from 'immutable';
+import Immutable, {fromJS} from 'immutable';
 
 import { COLUMN_ADD, COLUMN_REMOVE } from '../../mastodon/actions/columns';
 import { COLUMN_HISTORY_PUSH, COLUMN_HISTORY_POP } from '../actions/column_histories';
 import { STORE_HYDRATE } from '../../mastodon/actions/store';
+import uuid from "../../mastodon/uuid";
 
 const initialState = Immutable.Map();
 
@@ -22,7 +23,13 @@ const popColumnHistory = (state, column) => {
   return state.update(column.get('uuid'), history => history.pop());
 };
 
-const hydrate = (state, hydratedState) => {
+const defaultColumns = fromJS([
+  { id: 'COMPOSE', uuid: uuid(), params: {} },
+  { id: 'HOME', uuid: uuid(), params: {} },
+  { id: 'NOTIFICATIONS', uuid: uuid(), params: {} },
+]); // FIXME: 重複してるのをまとめる
+
+const hydrate = (state, hydratedState = defaultColumns) => {
   state = hydratedState.reduce(
     function(map, item) {
       return map.set(item.get('uuid'), Immutable.Stack([item]));
