@@ -60,6 +60,7 @@ const messages = defineMessages({
 const mapStateToProps = state => ({
   isComposing: state.getIn(['compose', 'is_composing']),
   hasComposingText: state.getIn(['compose', 'text']) !== '',
+  pawooHomeIsPinned: state.getIn(['settings', 'columns']).some(column => column.get('id') === 'HOME'),
 });
 
 const keyMap = {
@@ -106,6 +107,7 @@ export default class UI extends React.Component {
     hasComposingText: PropTypes.bool,
     location: PropTypes.object,
     intl: PropTypes.object.isRequired,
+    pawooHomeIsPinned: PropTypes.bool,
   };
 
   state = {
@@ -357,7 +359,8 @@ export default class UI extends React.Component {
 
   render () {
     const { width, draggingOver } = this.state;
-    const { children } = this.props;
+    const { children, pawooHomeIsPinned } = this.props;
+    const pawooSingleColumn = isMobile(width);
 
     const handlers = {
       help: this.handleHotkeyToggleHelp,
@@ -383,9 +386,9 @@ export default class UI extends React.Component {
         <div className='ui' ref={this.setRef}>
           <TabsBar />
 
-          <ColumnsAreaContainer ref={this.setColumnsAreaRef} singleColumn={isMobile(width)}>
+          <ColumnsAreaContainer ref={this.setColumnsAreaRef} singleColumn={pawooSingleColumn}>
             <WrappedSwitch>
-              <Redirect from='/' to='/getting-started' exact />
+              <Redirect from='/' to={pawooHomeIsPinned && !pawooSingleColumn ? '/getting-started' : '/timelines/home'} exact />
               <WrappedRoute path='/getting-started' component={GettingStarted} content={children} />
               <WrappedRoute path='/keyboard-shortcuts' component={KeyboardShortcuts} content={children} />
               <WrappedRoute path='/timelines/home' component={HomeTimeline} content={children} />
