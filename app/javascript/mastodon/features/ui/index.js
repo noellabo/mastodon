@@ -47,6 +47,7 @@ import {
 import { HotKeys } from 'react-hotkeys';
 import { me } from '../../initial_state';
 import { defineMessages, injectIntl } from 'react-intl';
+import { resizeColumnMedia as pawooResizeColumnMedia } from '../../../pawoo/actions/column_media';
 import { SuggestedAccountsColumn } from '../../../pawoo/util/async-components';
 
 // Dummy import, to make sure that <Status /> ends up in the application bundle.
@@ -129,6 +130,7 @@ export default class UI extends React.Component {
   handleResize = debounce(() => {
     // The cached heights are no longer accurate, invalidate
     this.props.dispatch(clearHeight());
+    this.props.dispatch(pawooResizeColumnMedia(isMobile(innerWidth)));
 
     this.setState({ width: window.innerWidth });
   }, 500, {
@@ -214,6 +216,7 @@ export default class UI extends React.Component {
 
     this.props.dispatch(refreshHomeTimeline());
     this.props.dispatch(refreshNotifications());
+    this.props.dispatch(pawooResizeColumnMedia(isMobile(this.state.width)));
   }
 
   componentDidMount () {

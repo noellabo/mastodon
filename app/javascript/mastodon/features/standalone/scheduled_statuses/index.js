@@ -46,6 +46,8 @@ export default class ScheduledStatuses extends ImmutablePureComponent {
         hasMore={hasMore}
         schedule
         onScrollToBottom={this.handleScrollToBottom}
+        pawooMediaScale='700px'
+        pawooWideMedia
       />
     ) : (
       <LoadingIndicator />

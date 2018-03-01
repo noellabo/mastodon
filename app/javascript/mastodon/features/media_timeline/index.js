@@ -99,7 +99,6 @@ class MediaTimeline extends React.PureComponent {
           loadMore={this.handleLoadMore}
           scrollKey={`media_timeline-${columnId}`}
           emptyMessage={<FormattedMessage id='empty_column.public' defaultMessage='There is nothing here! Write something publicly, or manually follow users from other instances to fill it up' />}
-          squareMedia
         />
       </Column>
     );

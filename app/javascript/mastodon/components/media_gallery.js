@@ -24,7 +24,7 @@ class Item extends React.PureComponent {
     index: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,
     onClick: PropTypes.func.isRequired,
-    expandMedia: PropTypes.bool.isRequired,
+    pawooMaxWidth: PropTypes.string,
   };
 
   static defaultProps = {
@@ -63,7 +63,7 @@ class Item extends React.PureComponent {
   }
 
   render () {
-    const { attachment, index, size, standalone, expandMedia } = this.props;
+    const { attachment, index, size, standalone, pawooMaxWidth } = this.props;
 
     let width  = 50;
     let height = 100;
@@ -72,47 +72,45 @@ class Item extends React.PureComponent {
     let bottom = 'auto';
     let right  = 'auto';
 
-    if (size === 1 || expandMedia) {
+    if (size === 1) {
       width = 100;
     }
 
-    if (!expandMedia) {
-      if (size === 4 || (size === 3 && index > 0)) {
-        height = 50;
+    if (size === 4 || (size === 3 && index > 0)) {
+      height = 50;
+    }
+
+    if (size === 2) {
+      if (index === 0) {
+        right = '2px';
+      } else {
+        left = '2px';
+      }
+    } else if (size === 3) {
+      if (index === 0) {
+        right = '2px';
+      } else if (index > 0) {
+        left = '2px';
       }
 
-      if (size === 2) {
-        if (index === 0) {
-          right = '2px';
-        } else {
-          left = '2px';
-        }
-      } else if (size === 3) {
-        if (index === 0) {
-          right = '2px';
-        } else if (index > 0) {
-          left = '2px';
-        }
+      if (index === 1) {
+        bottom = '2px';
+      } else if (index > 1) {
+        top = '2px';
+      }
+    } else if (size === 4) {
+      if (index === 0 || index === 2) {
+        right = '2px';
+      }
 
-        if (index === 1) {
-          bottom = '2px';
-        } else if (index > 1) {
-          top = '2px';
-        }
-      } else if (size === 4) {
-        if (index === 0 || index === 2) {
-          right = '2px';
-        }
+      if (index === 1 || index === 3) {
+        left = '2px';
+      }
 
-        if (index === 1 || index === 3) {
-          left = '2px';
-        }
-
-        if (index < 2) {
-          bottom = '2px';
-        } else {
-          top = '2px';
-        }
+      if (index < 2) {
+        bottom = '2px';
+      } else {
+        top = '2px';
       }
     }
 
@@ -132,12 +130,12 @@ class Item extends React.PureComponent {
 
       thumbnail = (
         <a
-          className={expandMedia ? null : 'media-gallery__item-thumbnail'}
+          className='media-gallery__item-thumbnail'
           href={attachment.get('remote_url') || originalUrl}
           onClick={this.handleClick}
           target='_blank'
         >
-          <img src={previewUrl} srcSet={srcSet} sizes={sizes} alt={attachment.get('description')} title={attachment.get('description')} style={expandMedia ? { width: '100%' } : null} />
+          <img src={previewUrl} srcSet={srcSet} sizes={sizes} alt={attachment.get('description')} title={attachment.get('description')} />
         </a>
       );
     } else if (attachment.get('type') === 'gifv') {
@@ -164,7 +162,7 @@ class Item extends React.PureComponent {
     }
 
     return (
-      <div className={classNames('media-gallery__item', { standalone })} key={attachment.get('id')} style={{ left: left, top: top, right: right, bottom: bottom, width: `${width}%`, height: `${height}%` }}>
+      <div className={classNames('media-gallery__item', { standalone })} key={attachment.get('id')} style={{ left: left, top: top, right: right, bottom: bottom, width: `${width}%`, height: `${height}%`, maxWidth: pawooMaxWidth }}>
         {thumbnail}
       </div>
     );
@@ -180,14 +178,14 @@ export default class MediaGallery extends React.PureComponent {
     standalone: PropTypes.bool,
     media: ImmutablePropTypes.list.isRequired,
     size: PropTypes.object,
-    height: PropTypes.number.isRequired,
     onOpenMedia: PropTypes.func.isRequired,
     intl: PropTypes.object.isRequired,
-    expandMedia: PropTypes.bool,
+    pawooOnClick: PropTypes.func,
+    pawooScale: PropTypes.string.isRequired,
+    pawooWide: PropTypes.bool,
   };
 
   static defaultProps = {
-    expandMedia: false,
     standalone: false,
   };
 
@@ -224,9 +222,10 @@ export default class MediaGallery extends React.PureComponent {
   }
 
   render () {
-    const { media, intl, sensitive, height, expandMedia } = this.props;
+    const { media, intl, sensitive, pawooOnClick, pawooScale, pawooWide } = this.props;
     const { width, visible } = this.state;
 
+    let pawooMaxWidth;
     let children;
 
     const style = {};
@@ -239,9 +238,19 @@ export default class MediaGallery extends React.PureComponent {
         // layout automatically, using image's natural aspect ratio
         style.height = '';
       }
-    } else {
+    } else if (media.size === 1) {
       // crop the image
-      style.height = (expandMedia && this.state.visible) ? 'auto' : height;
+      if (!this.state.visible) {
+        style.height = pawooScale;
+      } else if (pawooWide) {
+        pawooMaxWidth = pawooScale;
+        style.height = `calc(${pawooScale}/${Math.max(media.getIn([0, 'meta', 'small', 'aspect']), 1)})`;
+      } else {
+        pawooMaxWidth = `calc(${pawooScale}*${Math.max(media.getIn([0, 'meta', 'small', 'aspect']), 1)})`;
+        style.height = pawooScale;
+      }
+    } else {
+      style.height = pawooWide && media.size < 3 ? `calc(${pawooScale}/2)` : pawooScale;
     }
 
     if (!visible) {
@@ -263,14 +272,15 @@ export default class MediaGallery extends React.PureComponent {
       const size = media.take(4).size;
 
       if (this.isStandaloneEligible()) {
-        children = <Item standalone onClick={this.handleClick} attachment={media.get(0)} expandMedia={expandMedia} />;
+        children = <Item standalone onClick={this.handleClick} attachment={media.get(0)} pawooMaxWidth={pawooMaxWidth} />;
       } else {
-        children = media.take(4).map((attachment, i) => <Item key={attachment.get('id')} onClick={this.handleClick} attachment={attachment} index={i} size={size} expandMedia={expandMedia} />);
+        children = media.take(4).map((attachment, i) => <Item key={attachment.get('id')} onClick={this.handleClick} attachment={attachment} index={i} size={size} pawooMaxWidth={pawooMaxWidth} />);
       }
     }
 
     return (
       <div className='media-gallery' style={style}>
+        {pawooOnClick && !sensitive && <div aria-hidden='true' className='pawoo-extension-media-gallery__background' onClick={pawooOnClick} />}
         <div className={classNames('spoiler-button', { 'spoiler-button--visible': visible })}>
           <IconButton title={intl.formatMessage(messages.toggle_visible)} icon={visible ? 'eye' : 'eye-slash'} overlay onClick={this.handleOpen} />
         </div>

@@ -89,8 +89,8 @@ export default class Video extends React.PureComponent {
     preview: PropTypes.string,
     src: PropTypes.string.isRequired,
     alt: PropTypes.string,
-    width: PropTypes.number,
-    height: PropTypes.number,
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     sensitive: PropTypes.bool,
     startTime: PropTypes.number,
     onOpenVideo: PropTypes.func,
@@ -260,8 +260,6 @@ export default class Video extends React.PureComponent {
           role='button'
           tabIndex='0'
           aria-label={alt}
-          width={width}
-          height={height}
           onClick={this.togglePlay}
           onPlay={this.handlePlay}
           onPause={this.handlePause}

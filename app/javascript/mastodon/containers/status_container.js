@@ -33,6 +33,9 @@ const makeMapStateToProps = () => {
 
   const mapStateToProps = (state, props) => ({
     status: getStatus(state, props.id),
+    pawooMediaScale: props.pawooMediaScale || state.getIn(['pawoo', 'column_media', 'scale']),
+    pawooWideMedia: typeof props.pawooWideMedia === 'boolean' ?
+      props.pawooWideMedia : state.getIn(['pawoo', 'column_media', 'wide']),
   });
 
   return mapStateToProps;

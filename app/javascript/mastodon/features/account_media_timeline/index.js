@@ -66,7 +66,6 @@ class AccountMediaTimeline extends React.PureComponent {
           hasMore={hasMore}
           onScrollToBottom={this.handleScrollToBottom}
           scrollKey={'account_media_timeline'}
-          expandMedia
         />
       </Column>
     );
