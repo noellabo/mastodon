@@ -2,6 +2,12 @@
   flex: 1 0 330px;
 }
 
+.pawoo-extension-drawer__tab--unread,
+.pawoo-extension-tabs-bar__link--unread {
+  border-bottom: 2px solid $gold-star;
+  color: $gold-star;
+}
+
 .pawoo-extension-media-gallery__background {
   cursor: pointer;
   position: absolute;

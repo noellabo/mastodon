@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import ComposeFormContainer from './containers/compose_form_container';
 import NavigationContainer from './containers/navigation_container';
@@ -28,6 +29,7 @@ const messages = defineMessages({
 const mapStateToProps = state => ({
   columns: state.getIn(['settings', 'columns']),
   showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
+  pawooHasUnreadNotifications: state.getIn(['notifications', 'unread']) > 0,
 });
 
 @connect(mapStateToProps)
@@ -40,6 +42,7 @@ export default class Compose extends React.PureComponent {
     multiColumn: PropTypes.bool,
     showSearch: PropTypes.bool,
     intl: PropTypes.object.isRequired,
+    pawooHasUnreadNotifications: PropTypes.bool,
   };
 
   componentDidMount () {
@@ -68,7 +71,7 @@ export default class Compose extends React.PureComponent {
     let header = '';
 
     if (multiColumn) {
-      const { columns } = this.props;
+      const { columns, pawooHasUnreadNotifications } = this.props;
       header = (
         <nav className='drawer__header'>
           <Link to='/getting-started' className='drawer__tab' onClick={this.pawooHandleClick} title={intl.formatMessage(messages.start)} aria-label={intl.formatMessage(messages.start)}><i role='img' className='fa fa-fw fa-asterisk' /></Link>
@@ -76,7 +79,7 @@ export default class Compose extends React.PureComponent {
             <Link to='/timelines/home' className='drawer__tab' onClick={this.pawooHandleClick} title={intl.formatMessage(messages.home_timeline)} aria-label={intl.formatMessage(messages.home_timeline)}><i role='img' className='fa fa-fw fa-home' /></Link>
           )}
           {!columns.some(column => column.get('id') === 'NOTIFICATIONS') && (
-            <Link to='/notifications' className='drawer__tab' onClick={this.pawooHandleClick} title={intl.formatMessage(messages.notifications)} aria-label={intl.formatMessage(messages.notifications)}><i role='img' className='fa fa-fw fa-bell' /></Link>
+            <Link to='/notifications' className={classNames('drawer__tab', { 'pawoo-extension-drawer__tab--unread': pawooHasUnreadNotifications })} onClick={this.pawooHandleClick} title={intl.formatMessage(messages.notifications)} aria-label={intl.formatMessage(messages.notifications)}><i role='img' className='fa fa-fw fa-bell' /></Link>
           )}
           {!columns.some(column => column.get('id') === 'COMMUNITY') && (
             <Link to='/timelines/public/local' className='drawer__tab' onClick={this.pawooHandleClick} title={intl.formatMessage(messages.community)} aria-label={intl.formatMessage(messages.community)}><i role='img' className='fa fa-fw fa-users' /></Link>

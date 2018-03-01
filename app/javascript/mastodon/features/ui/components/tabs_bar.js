@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
@@ -34,6 +35,7 @@ export default class TabsBar extends React.Component {
 
   static propTypes = {
     intl: PropTypes.object.isRequired,
+    pawooHasUnreadNotifications: PropTypes.bool,
   }
 
   setRef = ref => {
@@ -73,11 +75,11 @@ export default class TabsBar extends React.Component {
   }
 
   render () {
-    const { intl: { formatMessage } } = this.props;
+    const { intl: { formatMessage }, pawooHasUnreadNotifications } = this.props;
 
     return (
       <nav className='tabs-bar' ref={this.setRef}>
-        {links.map(link => React.cloneElement(link, { key: link.props.to, onClick: this.handleClick, 'aria-label': formatMessage({ id: link.props['data-preview-title-id'] }) }))}
+        {links.map(link => React.cloneElement(link, { key: link.props.to, onClick: this.handleClick, 'aria-label': formatMessage({ id: link.props['data-preview-title-id'] }), className: classNames(link.props.className, { 'pawoo-extension-tabs-bar__link--unread': pawooHasUnreadNotifications && link.props.to === '/notifications' }) }))}
       </nav>
     );
   }
