@@ -6,10 +6,15 @@ export default class ColumnBackButton extends React.PureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
+    isColumnWithHistory: PropTypes.bool,
+    pushHistory: PropTypes.func,
+    popHistory: PropTypes.func,
   };
 
   handleClick = () => {
-    if (window.history && window.history.length === 1) {
+    if (this.context.isColumnWithHistory) {
+      this.context.popHistory();
+    } else if (window.history && window.history.length === 1) {
       this.context.router.history.push('/');
     } else {
       this.context.router.history.goBack();

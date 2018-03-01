@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { ScrollContainer } from 'react-router-scroll-4';
+import WrappedScrollContainer from '../../pawoo/containers/wrapped_scroll_container';
 import PropTypes from 'prop-types';
 import IntersectionObserverArticleContainer from '../containers/intersection_observer_article_container';
 import LoadMore from './load_more';
@@ -186,9 +186,9 @@ export default class ScrollableList extends PureComponent {
 
     if (trackScroll) {
       return (
-        <ScrollContainer scrollKey={scrollKey} shouldUpdateScroll={shouldUpdateScroll}>
+        <WrappedScrollContainer scrollKey={scrollKey} shouldUpdateScroll={shouldUpdateScroll}>
           {scrollableArea}
-        </ScrollContainer>
+        </WrappedScrollContainer>
       );
     } else {
       return scrollableArea;

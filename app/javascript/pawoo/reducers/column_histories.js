@@ -1,18 +1,18 @@
-import Immutable, {fromJS} from 'immutable';
+import Immutable, { fromJS } from 'immutable';
 
 import { COLUMN_ADD, COLUMN_REMOVE } from '../../mastodon/actions/columns';
 import { COLUMN_HISTORY_PUSH, COLUMN_HISTORY_POP } from '../actions/column_histories';
 import { STORE_HYDRATE } from '../../mastodon/actions/store';
-import uuid from "../../mastodon/uuid";
+import uuid from '../../mastodon/uuid';
 
 const initialState = Immutable.Map();
 
 const addColumnHistory = (state, uuid, location) => {
-  return state.set(uuid, location);
+  return state.set(uuid, Immutable.Stack([location]));
 };
 
 const removeColumnHistory = (state, uuid) => {
-  state.delete(uuid);
+  return state.delete(uuid);
 };
 
 const pushColumnHistory = (state, column, location) => {
@@ -47,7 +47,7 @@ export default function column_histories(state = initialState, action) {
   case COLUMN_REMOVE:
     return removeColumnHistory(state, action.uuid);
   case COLUMN_HISTORY_PUSH:
-    return pushColumnHistory(state, action.column, action.location); // FIXME: 型違い (うわあああ)
+    return pushColumnHistory(state, action.column, action.location);
   case COLUMN_HISTORY_POP:
     return popColumnHistory(state, action.column);
   default:

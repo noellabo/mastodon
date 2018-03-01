@@ -22,6 +22,9 @@ export default class Status extends ImmutablePureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
+    isColumnWithHistory: PropTypes.bool,
+    pushHistory: PropTypes.func,
+    popHistory: PropTypes.func,
   };
 
   static propTypes = {
@@ -74,14 +77,19 @@ export default class Status extends ImmutablePureComponent {
     }
 
     const { status } = this.props;
-    this.context.router.history.push(`/statuses/${status.getIn(['reblog', 'id'], status.get('id'))}`);
+    const statusId = status.getIn(['reblog', 'id'], status.get('id'));
+
+    const path = `/statuses/${statusId}`;
+    this.context.pushHistory(path);
   }
 
   handleAccountClick = (e) => {
     if (this.context.router && e.button === 0) {
       const id = e.currentTarget.getAttribute('data-id');
       e.preventDefault();
-      this.context.router.history.push(`/accounts/${id}`);
+
+      const path = `/accounts/${id}`;
+      this.context.pushHistory(path);
     }
   }
 
@@ -122,11 +130,13 @@ export default class Status extends ImmutablePureComponent {
   }
 
   handleHotkeyOpen = () => {
-    this.context.router.history.push(`/statuses/${this._properStatus().get('id')}`);
+    const statusId = this._properStatus().get('id');
+
+    this.context.pushHistory(`/statuses/${statusId}`);
   }
 
   handleHotkeyOpenProfile = () => {
-    this.context.router.history.push(`/accounts/${this._properStatus().getIn(['account', 'id'])}`);
+    this.context.pushHistory(`/accounts/${this._properStatus().getIn(['account', 'id'])}`);
   }
 
   handleHotkeyMoveUp = () => {

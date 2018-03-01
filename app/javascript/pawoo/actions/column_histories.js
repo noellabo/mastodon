@@ -1,7 +1,13 @@
+import { fromJS } from 'immutable';
+
 export const COLUMN_HISTORY_PUSH = 'PAWOO_COLUMN_HISTORY_PUSH';
 export const COLUMN_HISTORY_POP = 'PAWOO_COLUMN_HISTORY_POP';
 
-export function pushColumnHistory(column, location) {
+export function pushColumnHistory(column, id, params) {
+  const location = fromJS({
+    id,
+    params,
+  });
   return {
     type: COLUMN_HISTORY_PUSH,
     column: column,

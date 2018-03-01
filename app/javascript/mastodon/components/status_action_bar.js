@@ -34,6 +34,7 @@ export default class StatusActionBar extends ImmutablePureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
+    pushHistory: PropTypes.func,
   };
 
   static propTypes = {
@@ -101,7 +102,7 @@ export default class StatusActionBar extends ImmutablePureComponent {
   }
 
   handleOpen = () => {
-    this.context.router.history.push(`/statuses/${this.props.status.get('id')}`);
+    this.context.pushHistory(`/statuses/${this.props.status.get('id')}`);
   }
 
   handleEmbed = () => {

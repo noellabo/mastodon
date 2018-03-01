@@ -2,7 +2,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import DropdownMenuContainer from '../../../containers/dropdown_menu_container';
-import { Link } from 'react-router-dom';
+import Link from '../../../../pawoo/components/wrapped_link';
 import { defineMessages, injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { me } from '../../../initial_state';
 
