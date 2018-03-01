@@ -1,8 +1,6 @@
 import React from 'react';
 import ComposeFormContainer from './containers/compose_form_container';
 import NavigationContainer from './containers/navigation_container';
-import TrendTagsContainer from './containers/trend_tags_container';
-import Announcements from './components/announcements';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
@@ -15,6 +13,8 @@ import spring from 'react-motion/lib/spring';
 import SearchResultsContainer from './containers/search_results_container';
 import { changeComposing } from '../../actions/compose';
 import { setPage as pawooSetPage } from '../../../pawoo/actions/page';
+import Announcements from '../../../pawoo/components/announcements';
+import TrendTagsContainer from '../../../pawoo/containers/trend_tags_container';
 
 const messages = defineMessages({
   start: { id: 'getting_started.heading', defaultMessage: 'Getting started' },
@@ -99,10 +99,15 @@ export default class Compose extends React.PureComponent {
               <NavigationContainer onClose={this.onBlur} />
               <ComposeFormContainer />
             </div>
-            <Announcements />
-            <div className='drawer__block'>
-              <TrendTagsContainer />
-            </div>
+
+            {this.props.columns.every(column => column.get('id') === 'COMPOSE') || (
+              <div>
+                <div style={{ marginBottom: '10px' }}><Announcements /></div>
+                <div className='drawer__block'>
+                  <TrendTagsContainer />
+                </div>
+              </div>
+            )}
 
             <div className='mastodon' />
           </div>

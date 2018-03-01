@@ -13,6 +13,7 @@ import BundleColumnError from './bundle_column_error';
 
 import detectPassiveEvents from 'detect-passive-events';
 import { scrollRight } from '../../../scroll';
+import PawooNavigationColumn from '../../../../pawoo/components/navigation_column';
 import PawooSingleColumnOnboardingContainer from '../../../../pawoo/containers/single_column_onboarding_container';
 import ColumnContainerWithHistory from '../../../../pawoo/containers/column_container_with_history';
 
@@ -188,6 +189,8 @@ export default class ColumnsArea extends ImmutablePureComponent {
         <div style={{ display: 'flex', flex: pawooPage === 'DEFAULT' ? '1 330px' : null }}>
           {React.Children.map(children, child => React.cloneElement(child, { multiColumn: true, pawooHasPinnedColumn }))}
         </div>
+
+        {pawooHasPinnedColumn || pawooPage !== 'DEFAULT' || <PawooNavigationColumn />}
       </div>
     );
   }

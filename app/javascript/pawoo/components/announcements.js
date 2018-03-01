@@ -3,10 +3,10 @@ import Immutable from 'immutable';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { defineMessages, injectIntl } from 'react-intl';
-import IconButton from '../../../components/icon_button';
-import PawooGA from '../../../../pawoo/actions/ga';
+import IconButton from '../../mastodon/components/icon_button';
+import PawooGA from '../actions/ga';
 
-import icon from '../../../../pawoo/images/announcement_icon.png';
+import icon from '../images/announcement_icon.png';
 
 const pawooGaCategory = 'Announcement';
 const storageKey = 'announcements_dismissed';
