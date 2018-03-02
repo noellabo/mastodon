@@ -95,7 +95,6 @@ class MediaTimeline extends React.PureComponent {
         <StatusListContainer
           timelineId='media'
           loadMore={this.handleLoadMore}
-          trackScroll={!pinned}
           scrollKey={`media_timeline-${columnId}`}
           emptyMessage={<FormattedMessage id='empty_column.public' defaultMessage='There is nothing here! Write something publicly, or manually follow users from other instances to fill it up' />}
           squareMedia

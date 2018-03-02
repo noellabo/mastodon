@@ -10,7 +10,7 @@ import BundleContainer from '../../mastodon/features/ui/containers/bundle_contai
 import ColumnLoading from '../../mastodon/features/ui/components/column_loading';
 import DrawerLoading from '../../mastodon/features/ui/components/drawer_loading';
 import BundleColumnError from '../../mastodon/features/ui/components/bundle_column_error';
-import { pushColumnHistory, popColumnHistory, saveScrollToStore } from '../actions/column_histories';
+import { pushColumnHistory, popColumnHistory } from '../actions/column_histories';
 
 import {
   Compose,
@@ -86,17 +86,24 @@ const componentMap = {
 
 class ColumnStateStorage {
 
-  constructor(readFromStore, saveToStore) {
-    this.readFromStore = readFromStore;
-    this.saveToStore = saveToStore;
+  constructor(columnId) {
+    this.columnId = columnId;
   }
 
   read(location) {
-    return this.readFromStore(location.get('uuid'));
+    const stateKey = this.getStateKey(location);
+    const value = sessionStorage.getItem(stateKey);
+    return JSON.parse(value);
   }
 
   save(location, key, value) {
-    this.saveToStore(location.get('uuid'), value);
+    const stateKey = this.getStateKey(location);
+    const storedValue = JSON.stringify(value);
+    sessionStorage.setItem(stateKey, storedValue);
+  }
+
+  getStateKey(location) {
+    return `@@columnScroll|${this.columnId}|${location.get('uuid')}`;
   }
 
 }
@@ -108,7 +115,6 @@ const mapStateToProps = (state, props) => ({
 const mapDispatchToProps = (dispatch, props) => ({
   pushColumnHistory: (id, params) => dispatch(pushColumnHistory(props.column, id, params)),
   popColumnHistory: () => dispatch(popColumnHistory(props.column)),
-  saveScrollToStore: (key, value) => dispatch(saveScrollToStore(props.column, key, value)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -123,7 +129,6 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     columnHistory: ImmutablePropTypes.stack.isRequired,
     pushColumnHistory: PropTypes.func.isRequired,
     popColumnHistory: PropTypes.func.isRequired,
-    saveScrollToStore: PropTypes.func.isRequired,
   };
 
   static childContextTypes = {
@@ -137,14 +142,49 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
   constructor(props, context) {
     super(props, context);
 
+    this.transitionHook = () => {};
+
     this.scrollBehavior = new ScrollBehavior({
       addTransitionHook: this.handleHook,
-      stateStorage: new ColumnStateStorage(this.getScrollPosition, this.props.saveScrollToStore),
+      stateStorage: new ColumnStateStorage(this.props.column.get('uuid')),
       getCurrentLocation: () => this.props.columnHistory.first(),
       shouldUpdateScroll: this.shouldUpdateScroll,
     });
 
     this.scrollBehavior.updateScroll(null, this.props.columnHistory.first());
+  }
+
+  getChildContext() {
+    return ({
+      isColumnWithHistory: true,
+      columnHistory: this.props.columnHistory,
+      pushHistory: this.pushHistory,
+      popHistory: this.props.popColumnHistory,
+      scrollBehavior: this,
+    });
+  }
+
+  componentWillUpdate(nextProps) {
+    if (this.props.columnHistory.first().get('uuid') !== nextProps.columnHistory.first().get('uuid')) {
+      this.transitionHook();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const prevScrollContext = prevProps.columnHistory.first().get('uuid');
+
+    if (prevScrollContext === this.getScrollContext()) return;
+    if (this.props.columnHistory.size < prevProps.columnHistory.size) {
+      const columnId = this.props.column.get('uuid');
+      const locationId = prevProps.columnHistory.first().get('uuid');
+      sessionStorage.removeItem(`@@columnScroll|${columnId}|${locationId}`);
+    }
+
+    this.scrollBehavior.updateScroll(prevScrollContext, this.getScrollContext());
+  }
+
+  componentWillUnmount() {
+    this.scrollBehavior.stop();
   }
 
   pushHistory = (path, newColumn = false) => {
@@ -170,20 +210,11 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     }
   };
 
-  getChildContext() {
-    return ({
-      isColumnWithHistory: true,
-      columnHistory: this.props.columnHistory,
-      pushHistory: this.pushHistory,
-      popHistory: this.props.popColumnHistory,
-      scrollBehavior: this,
-    });
-  }
-
   handleHook = (callback) => {
     this.transitionHook = callback;
     return () => {
-      this.transitionHook = () => {};
+      this.transitionHook = () => {
+      };
     };
   };
 
@@ -205,22 +236,6 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     return this.props.columnHistory.first().get('uuid');
   };
 
-  getScrollPosition = () => {
-    return this.props.columnHistory.first().get('scrollPosition').toJS();
-  };
-
-  componentDidUpdate(prevProps) {
-    const prevScrollContext = prevProps.columnHistory.first().get('uuid');
-
-    if (prevScrollContext === this.getScrollContext()) return;
-
-    this.scrollBehavior.updateScroll(prevScrollContext, this.getScrollContext());
-  }
-
-  componentWillUnmount() {
-    this.scrollBehavior.stop();
-  }
-
   renderLoading = columnId => () => {
     return columnId === 'COMPOSE' ? <DrawerLoading /> : <ColumnLoading />;
   };
@@ -229,12 +244,15 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     return <BundleColumnError {...props} />;
   };
 
-  render () {
+  render() {
     const { column, columnHistory } = this.props;
     const topColumn = columnHistory.first();
     const params = topColumn.get('params', null) === null ? null : topColumn.get('params').toJS();
     return (
-      <BundleContainer fetchComponent={componentMap[topColumn.get('id')].component} loading={this.renderLoading(column.get('id'))} error={this.renderError}>
+      <BundleContainer
+        fetchComponent={componentMap[topColumn.get('id')].component}
+        loading={this.renderLoading(column.get('id'))} error={this.renderError}
+      >
         {SpecificComponent => <SpecificComponent columnId={column.get('uuid')} params={params} multiColumn />}
       </BundleContainer>
     );

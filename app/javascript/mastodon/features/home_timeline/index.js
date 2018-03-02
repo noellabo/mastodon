@@ -112,7 +112,6 @@ export default class HomeTimeline extends React.PureComponent {
         </ColumnHeader>
 
         <StatusListContainer
-          trackScroll={!pinned}
           scrollKey={`home_timeline-${columnId}`}
           loadMore={this.handleLoadMore}
           timelineId='home'

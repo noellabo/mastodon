@@ -94,7 +94,6 @@ export default class CommunityTimeline extends React.PureComponent {
         </ColumnHeader>
 
         <StatusListContainer
-          trackScroll={!pinned}
           scrollKey={`community_timeline-${columnId}`}
           timelineId='community'
           loadMore={this.handleLoadMore}

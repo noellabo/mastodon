@@ -162,7 +162,6 @@ export default class ListTimeline extends React.PureComponent {
         </ColumnHeader>
 
         <StatusListContainer
-          trackScroll={!pinned}
           scrollKey={`list_timeline-${columnId}`}
           timelineId={`list:${id}`}
           loadMore={this.handleLoadMore}
