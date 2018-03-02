@@ -4,12 +4,13 @@ import { matchPath } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import ScrollBehavior from 'scroll-behavior';
 
 import BundleContainer from '../../mastodon/features/ui/containers/bundle_container';
 import ColumnLoading from '../../mastodon/features/ui/components/column_loading';
 import DrawerLoading from '../../mastodon/features/ui/components/drawer_loading';
 import BundleColumnError from '../../mastodon/features/ui/components/bundle_column_error';
-import { pushColumnHistory, popColumnHistory } from '../actions/column_histories';
+import { pushColumnHistory, popColumnHistory, saveScrollToStore } from '../actions/column_histories';
 
 import {
   Compose,
@@ -83,6 +84,23 @@ const componentMap = {
   },
 };
 
+class ColumnStateStorage {
+
+  constructor(readFromStore, saveToStore) {
+    this.readFromStore = readFromStore;
+    this.saveToStore = saveToStore;
+  }
+
+  read(location) {
+    return this.readFromStore(location.get('uuid'));
+  }
+
+  save(location, key, value) {
+    this.saveToStore(location.get('uuid'), value);
+  }
+
+}
+
 const mapStateToProps = (state, props) => ({
   columnHistory: state.getIn(['pawoo', 'column_histories']).get(props.column.get('uuid')),
 });
@@ -90,6 +108,7 @@ const mapStateToProps = (state, props) => ({
 const mapDispatchToProps = (dispatch, props) => ({
   pushColumnHistory: (id, params) => dispatch(pushColumnHistory(props.column, id, params)),
   popColumnHistory: () => dispatch(popColumnHistory(props.column)),
+  saveScrollToStore: (key, value) => dispatch(saveScrollToStore(props.column, key, value)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -104,6 +123,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     columnHistory: ImmutablePropTypes.stack.isRequired,
     pushColumnHistory: PropTypes.func.isRequired,
     popColumnHistory: PropTypes.func.isRequired,
+    saveScrollToStore: PropTypes.func.isRequired,
   };
 
   static childContextTypes = {
@@ -111,7 +131,21 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     columnHistory: ImmutablePropTypes.stack,
     pushHistory: PropTypes.func,
     popHistory: PropTypes.func,
+    scrollBehavior: PropTypes.object,
   };
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.scrollBehavior = new ScrollBehavior({
+      addTransitionHook: this.handleHook,
+      stateStorage: new ColumnStateStorage(this.getScrollPosition, this.props.saveScrollToStore),
+      getCurrentLocation: () => this.props.columnHistory.first(),
+      shouldUpdateScroll: this.shouldUpdateScroll,
+    });
+
+    this.scrollBehavior.updateScroll(null, this.props.columnHistory.first());
+  }
 
   pushHistory = (path, newColumn = false) => {
     if (newColumn) {
@@ -142,7 +176,49 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
       columnHistory: this.props.columnHistory,
       pushHistory: this.pushHistory,
       popHistory: this.props.popColumnHistory,
+      scrollBehavior: this,
     });
+  }
+
+  handleHook = (callback) => {
+    this.transitionHook = callback;
+    return () => {
+      this.transitionHook = () => {};
+    };
+  };
+
+  shouldUpdateScroll = () => {
+    return true;
+  };
+
+  registerElement = (key, element, shouldUpdateScroll) => {
+    this.scrollBehavior.registerElement(
+      key, element, shouldUpdateScroll, this.getScrollContext(),
+    );
+  };
+
+  unregisterElement = (key) => {
+    this.scrollBehavior.unregisterElement(key);
+  };
+
+  getScrollContext = () => {
+    return this.props.columnHistory.first().get('uuid');
+  };
+
+  getScrollPosition = () => {
+    return this.props.columnHistory.first().get('scrollPosition').toJS();
+  };
+
+  componentDidUpdate(prevProps) {
+    const prevScrollContext = prevProps.columnHistory.first().get('uuid');
+
+    if (prevScrollContext === this.getScrollContext()) return;
+
+    this.scrollBehavior.updateScroll(prevScrollContext, this.getScrollContext());
+  }
+
+  componentWillUnmount() {
+    this.scrollBehavior.stop();
   }
 
   renderLoading = columnId => () => {

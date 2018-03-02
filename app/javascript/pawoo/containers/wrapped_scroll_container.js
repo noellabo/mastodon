@@ -12,13 +12,10 @@ export default class WrappedScrollContainer extends React.Component {
 
   static contextTypes = {
     isColumnWithHistory: PropTypes.bool,
+    scrollBehavior: PropTypes.object,
   };
 
   render() {
-    if (this.context.isColumnWithHistory) {
-      return React.Children.only(this.props.children);
-    }
-
     const { scrollKey, shouldUpdateScroll } = this.props;
 
     return(
