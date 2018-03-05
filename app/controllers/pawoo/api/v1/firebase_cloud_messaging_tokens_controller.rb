@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Pawoo::Api::V1::FirebaseCloudMessagingTokensController < Api::BaseController
-  before_action -> { doorkeeper_authorize! :write }, only:  [:create]
+  before_action -> { doorkeeper_authorize! :write }
   before_action :require_user!
 
   def create
@@ -17,7 +17,10 @@ class Pawoo::Api::V1::FirebaseCloudMessagingTokensController < Api::BaseControll
   end
 
   def destroy
-    firebase_cloud_messaging_token = current_user.firebase_cloud_messaging_tokens.find_by!(firebase_cloud_messaging_token)
+    firebase_cloud_messaging_token = current_user.firebase_cloud_messaging_tokens.find_by!(
+      token: firebase_cloud_messaging_token_params[:token],
+      platform: firebase_cloud_messaging_token_params[:platform]
+    )
 
     if firebase_cloud_messaging_token.destroy
       head :ok

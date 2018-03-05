@@ -46,18 +46,15 @@ RSpec.describe Pawoo::Api::V1::FirebaseCloudMessagingTokensController, type: :co
 
   describe 'DELETE #destroy' do
     subject do
-      -> { post :destroy, params: { platform: firebase_cloud_messaging_token_params[:platform], firebase_cloud_messaging_token: firebase_cloud_messaging_token_params } }
+      -> { delete :destroy, params: { platform: firebase_cloud_messaging_token_params[:platform], firebase_cloud_messaging_token: firebase_cloud_messaging_token_params } }
     end
 
-    let(:firebase_cloud_messaging_token_params) do
-      {
-        platform: 'iOS',
-        token: 'XXXX'
-      }
-    end
+    let!(:firebase_cloud_messaging_token) { Fabricate(:firebase_cloud_messaging_token, platform: 'iOS', token: 'XXXX', user: user) }
 
     context 'given valid parameters' do
-      let!(:firebase_cloud_messaging_token) { Fabricate(:firebase_cloud_messaging_token, firebase_cloud_messaging_token_params.merge(user: user)) }
+      let(:firebase_cloud_messaging_token_params) do
+        { platform: 'iOS', token: 'XXXX' }
+      end
 
       it 'returns http success' do
         subject.call
@@ -69,7 +66,7 @@ RSpec.describe Pawoo::Api::V1::FirebaseCloudMessagingTokensController, type: :co
 
     context 'given invalid parameters' do
       let(:firebase_cloud_messaging_token_params) do
-        super().merge(token: 'unknown')
+        { platform: 'iOS', token: 'unknown' }
       end
 
       it 'returns http not_found' do
@@ -77,7 +74,20 @@ RSpec.describe Pawoo::Api::V1::FirebaseCloudMessagingTokensController, type: :co
         expect(response).to have_http_status(:not_found)
       end
 
-      it { is_expected.to_not change(FirebaseCloudMessagingToken, :count).from(0) }
+      it { is_expected.to_not change(FirebaseCloudMessagingToken, :count).from(1) }
+    end
+
+    context 'when parameter is missing' do
+      let(:firebase_cloud_messaging_token_params) do
+        { platform: 'iOS' }
+      end
+
+      it 'returns http not_found' do
+        subject.call
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it { is_expected.to_not change(FirebaseCloudMessagingToken, :count).from(1) }
     end
   end
 end
