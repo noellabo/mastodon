@@ -52,7 +52,11 @@ class Api::V1::Accounts::StatusesController < Api::BaseController
 
   def account_media_status_ids
     # `SELECT DISTINCT id, updated_at` is too slow, so pluck ids at first, and then select id, updated_at with ids.
-    @account.media_attachments.attached.joins(:status).merge(default_statuses).reorder(status_id: :desc).distinct(:status_id).pluck(:status_id)
+    # NOTE: Nested Loop Joinになるように、statuses.account_idで絞り込まないようにする
+    # statuses.account_idで絞り込むとindex_statuses_20180106が使用され、Merge Joinになる
+    Status.joins(:media_attachments).merge(@account.media_attachments).permitted_for(@account, current_account)
+          .paginate_by_max_id(limit_param(DEFAULT_STATUSES_LIMIT), params[:max_id], params[:since_id])
+          .reorder(id: :desc).distinct(:id).pluck(:id)
   end
 
   def pinned_scope
