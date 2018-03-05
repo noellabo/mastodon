@@ -128,7 +128,6 @@ jobs:
               sleep 0.5;
             done
             exit 1
-      - run: "./bin/rails runner 'Status.__elasticsearch__.create_index! force: true'"
 
       # Wait for assets precompilation
       - run:
