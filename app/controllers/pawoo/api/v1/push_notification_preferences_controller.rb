@@ -35,7 +35,8 @@ class Pawoo::Api::V1::PushNotificationPreferencesController < Api::BaseControlle
   def user_settings_params
     params.require(:user).permit(
       notification_firebase_cloud_messagings: %i(follow follow_request reblog favourite mention),
-      interactions: %i(must_be_follower must_be_following)
+      notification_pawoo_expo_pushes: %i(follow follow_request reblog favourite mention),
+      interactions: %i(must_be_follower must_be_following must_be_following_dm)
     )
   end
 end

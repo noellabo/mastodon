@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180207182027) do
+ActiveRecord::Schema.define(version: 20180305105244) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -329,6 +329,13 @@ ActiveRecord::Schema.define(version: 20180207182027) do
     t.index ["user_id", "provider"], name: "index_oauth_authentications_on_user_id_and_provider", unique: true
   end
 
+  create_table "pawoo_expo_push_tokens", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "token", null: false
+    t.index ["user_id", "token"], name: "index_pawoo_expo_push_tokens_on_user_id_and_token", unique: true
+    t.index ["user_id"], name: "index_pawoo_expo_push_tokens_on_user_id"
+  end
+
   create_table "pawoo_report_targets", force: :cascade do |t|
     t.bigint "report_id", null: false
     t.string "target_type", null: false
@@ -610,6 +617,7 @@ ActiveRecord::Schema.define(version: 20180207182027) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id", name: "fk_f5fc4c1ee3", on_delete: :cascade
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id", name: "fk_e84df68546", on_delete: :cascade
   add_foreign_key "oauth_applications", "users", column: "owner_id", name: "fk_b0988c7c0a", on_delete: :cascade
+  add_foreign_key "pawoo_expo_push_tokens", "users", on_delete: :cascade
   add_foreign_key "reports", "accounts", column: "action_taken_by_account_id", name: "fk_bca45b75fd", on_delete: :nullify
   add_foreign_key "reports", "accounts", column: "target_account_id", name: "fk_eb37af34f0", on_delete: :cascade
   add_foreign_key "reports", "accounts", name: "fk_4b81f7522c", on_delete: :cascade

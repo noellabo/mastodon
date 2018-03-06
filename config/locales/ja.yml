@@ -593,6 +593,12 @@ ja:
         success_msg: レポートを処理しました
         title: レポート対象
         unresolved: 未解決
+    expo_push_notifications:
+      favourite: "%{name} さんがお気に入りしました"
+      follow: "%{name} さんにフォローされました"
+      follow_request: "%{name} さんからフォローリクエストが届いています"
+      mention: "%{name} さんからメンションがあります"
+      reblog: "%{name} さんがブーストしました"
     oauth_registrations:
       already_registered: すでに登録されています。メールアドレスとパスワードでログイン後、設定ページよりpixivアカウント連携してください。
     validations:

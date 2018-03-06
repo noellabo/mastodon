@@ -1,3 +1,7 @@
+# See https://github.com/elastic/elasticsearch-rails/issues/481
+require 'typhoeus'
+require 'typhoeus/adapters/faraday'
+
 Elasticsearch::Model.client = Elasticsearch::Client.new(
   hosts: [
     {

@@ -41,6 +41,12 @@ defaults: &defaults
     favourite: true
     mention: true
     follow_request: false
+  notification_pawoo_expo_pushes:
+    follow: true
+    reblog: true
+    favourite: true
+    mention: true
+    follow_request: false
   interactions:
     must_be_follower: false
     must_be_following: false

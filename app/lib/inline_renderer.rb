@@ -15,6 +15,8 @@ class InlineRenderer
       serializer = REST::NotificationSerializer
     when :firebase_cloud_messaging_push_notification
       serializer = FirebaseCloudMessaging::PushNotificationSerializer
+    when :pawoo_expo_push_notification
+      serializer = Pawoo::ExpoPushNotificationSerializer
     else
       return
     end
