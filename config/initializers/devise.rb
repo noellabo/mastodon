@@ -286,7 +286,7 @@ Devise.setup do |config|
       secret[:key],
       secret[:secret],
       scope: 'read-email read-favorite-users',
-      user_agent: 'Pawoo (omniauth-pixiv-public)',
+      user_agent: 'pawoo (omniauth-pixiv-public)',
     ]
 
     client_options = secret.slice(:site, :authorize_url, :token_url).symbolize_keys.compact
