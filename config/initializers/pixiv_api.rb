@@ -7,5 +7,5 @@ PixivApi.configure do |config|
   config[:site] = strategy.client.site
   config[:authorize_url] = strategy.client.authorize_url
   config[:token_url] = strategy.client.token_url
-  config[:user_agent] = 'Pawoo'
+  config[:user_agent] = 'pawoo'
 end
