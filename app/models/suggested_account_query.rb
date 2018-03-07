@@ -85,24 +85,22 @@ class SuggestedAccountQuery
     private
 
     def popular_account_ids
-      ids = all_popular_account_ids - excluded_ids
-
-      active_ids = Account.filter_by_time(ids)
+      active_ids = active_popular_account_ids
+      inactive_ids = all_popular_account_ids - active_ids
 
       #アクティブなアカウントを先に表示する
-      shuffle_ids(active_ids) + shuffle_ids(ids - active_ids)
+      shuffle_ids(active_ids - excluded_ids) + shuffle_ids(inactive_ids - excluded_ids)
     end
 
-    # TODO: 自動的に検出するようにする
-    # - localのみ
-    # - R18を除く
-    # - ファボ・フォロワー数・画像投稿経験の高いユーザーを上位から抜き出す
-    # - フォロー数がフォロワー数より多いユーザーを閾値を設けて除外する
-    # - 絵をよく投稿しているユーザーを優先する
-    # - 社員は抜く(目視チェック)
+    def active_popular_account_ids
+      Rails.cache.fetch('pawoo:PopularAccountQuery:active_popular_account_ids', expires_in: 1.day) do
+        Account.filter_by_time(all_popular_account_ids)
+      end
+    end
+
     def all_popular_account_ids
-      key = 'SuggestedAccountQuery:suggested_account_ids'
-      Redis.current.zrange(key, 0, -1).map(&:to_i)
+      key = Pawoo::RefreshPopularAccountService::REDIS_KEY
+      Redis.current.zrevrange(key, 0, -1).map(&:to_i)
     end
   end
 
