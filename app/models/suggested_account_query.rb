@@ -73,7 +73,7 @@ class SuggestedAccountQuery
                                   .distinct
                                   .pluck(:id)
 
-      Account.filter_by_time(account_ids)
+      shuffle_ids(Account.filter_by_time(account_ids))
     end
 
     def enable_pixiv_follows_query?
