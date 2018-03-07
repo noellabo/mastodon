@@ -25,6 +25,7 @@ ExceptionNotification.configure do |config|
     ProcessingWorker
     ThreadResolveWorker
     NotificationWorker
+    Import::RelationshipWorker
   ].freeze
 
   ignore_workers = %w[
