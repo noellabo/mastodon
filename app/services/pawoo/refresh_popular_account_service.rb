@@ -5,6 +5,7 @@ class Pawoo::RefreshPopularAccountService
   RECENT_MEDIA_DURATION = 1.month
   REDIS_KEY = 'pawoo:popular_account_ids'
   MIN_SCORE = 50
+  MIN_RECENT_STATUS_COUNT = 4
 
   def initialize
     @accounts_infomations = {}
@@ -31,9 +32,10 @@ class Pawoo::RefreshPopularAccountService
     exclude_account_usernames = (Setting.bootstrap_timeline_accounts || '').split(',').map { |str| str.strip.gsub(/\A@/, '') }
     base_account_query = Account.local.where.not(username: exclude_account_usernames).where(suspended: false, silenced: false)
 
-    visibility = [:public, :unlisted]
     min_status_id = Mastodon::Snowflake.id_at(ACTIVE_ACCOUNT_DURATION.ago)
-    active_account_ids = Status.local.where('id > ?', min_status_id).without_reblogs.where(visibility: visibility).reorder(nil).distinct(:account_id).pluck(:account_id)
+    active_account_ids = Status.group(:account_id).local.without_reblogs
+                               .where('id > ?', min_status_id).where(visibility: [:public, :unlisted])
+                               .having('count(id) >= ?', MIN_RECENT_STATUS_COUNT).reorder(nil).pluck(:account_id)
 
     active_account_ids.each_slice(1000) do |account_ids|
       base_account_query.where(id: account_ids).preload(:oauth_authentications).each do |account|
