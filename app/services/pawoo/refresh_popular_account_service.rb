@@ -28,19 +28,22 @@ class Pawoo::RefreshPopularAccountService
   private
 
   def load_active_accounts
+    exclude_account_usernames = (Setting.bootstrap_timeline_accounts || '').split(',').map { |str| str.strip.gsub(/\A@/, '') }
+    base_account_query = Account.local.where.not(username: exclude_account_usernames).where(suspended: false, silenced: false)
+
     visibility = [:public, :unlisted]
     min_status_id = Mastodon::Snowflake.id_at(ACTIVE_ACCOUNT_DURATION.ago)
-    active_account_ids = Status.local.where('id > ?', min_status_id).without_reblogs.where(visibility: visibility).reorder(nil).select(:account_id).distinct(:account_id)
-    exclude_account_usernames = (Setting.bootstrap_timeline_accounts || '').split(',').map { |str| str.strip.gsub(/\A@/, '') }
+    active_account_ids = Status.local.where('id > ?', min_status_id).without_reblogs.where(visibility: visibility).reorder(nil).distinct(:account_id).pluck(:account_id)
 
-    accounts = Account.local.where(id: active_account_ids).where.not(username: exclude_account_usernames).where(suspended: false, silenced: false)
-    accounts.preload(:oauth_authentications).find_each do |account|
-      @accounts_infomations[account.id] = {
-        account: account,
-        pixiv_uid: account.oauth_authentications&.first&.uid&.to_i,
-        media_statuses: [],
-        pixiv_followers_count: 0,
-      }
+    active_account_ids.each_slice(1000) do |account_ids|
+      base_account_query.where(id: account_ids).preload(:oauth_authentications).each do |account|
+        @accounts_infomations[account.id] = {
+          account: account,
+          pixiv_uid: account.oauth_authentications&.first&.uid&.to_i,
+          media_statuses: [],
+          pixiv_followers_count: 0,
+        }
+      end
     end
   end
 
@@ -56,9 +59,11 @@ class Pawoo::RefreshPopularAccountService
     account_ids = @accounts_infomations.map { |_, info| info[:account].id }
     min_status_id = Mastodon::Snowflake.id_at(RECENT_MEDIA_DURATION.ago)
 
-    media_attachments_ids = MediaAttachment.attached.where(account_id: account_ids).where('media_attachments.status_id > ?', min_status_id).reorder(nil).select(:status_id).distinct(:status_id)
-    Status.where(account_id: account_ids, id: media_attachments_ids, visibility: [:public, :unlisted]).find_each do |status|
-      @accounts_infomations[status.account_id][:media_statuses] << status
+    media_attached_status_ids = MediaAttachment.attached.where(account_id: account_ids).where('media_attachments.status_id > ?', min_status_id).reorder(nil).distinct(:status_id).pluck(:status_id)
+    media_attached_status_ids.each_slice(1000) do |status_ids|
+      Status.where(id: status_ids, visibility: [:public, :unlisted]).each do |status|
+        @accounts_infomations[status.account_id][:media_statuses] << status
+      end
     end
   end
 
