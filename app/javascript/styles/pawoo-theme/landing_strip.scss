@@ -1,13 +1,33 @@
-.landing-form {
-  text-align: center;
+.landing {
+  display: flex;
+  flex-wrap: wrap;
   margin-bottom: 20px;
+}
 
-  .button {
-    margin: 0 4px;
-    padding: 0 40px;
+.landing-form {
+  box-sizing: border-box;
+  padding: 0 20px;
+
+  > * {
+    display: block;
   }
 
-  .signin {
-    background-color: lighten($ui-base-color, 26%);
+  > a {
+    color: $classic-primary-color;
+    margin-top: 4px;
   }
+
+  > button {
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    text-transform: none;
+    height: 54px;
+    width: 100%;
+  }
+}
+
+.landing-strip {
+  flex: 1;
+  margin: 0;
 }

@@ -1,12 +1,11 @@
-.landing-strip
-  = image_tag asset_pack_path('logo.svg'), class: 'logo'
+.landing
+  .landing-strip
+    = image_tag asset_pack_path('pawoo/logo_mini.png'), class: 'logo'
 
-  %div
-    = t('landing_strip_html', name: content_tag(:span, display_name(account), class: :emojify), link_to_root_path: link_to(content_tag(:strong, site_hostname), root_path))
+    %div
+      = t('landing_strip_html', name: content_tag(:span, display_name(account), class: :emojify), link_to_root_path: link_to(content_tag(:strong, site_hostname), root_path))
 
-    - if open_registrations?
-      = t('landing_strip_signup_html', sign_up_path: new_user_registration_path)
-
-.landing-form
-  = link_to t('auth.register'), new_user_registration_path, class: 'button'
-  = link_to t('auth.login'), new_user_session_path, class: 'signin button'
+  .landing-form
+    %button.button.omniauth-pixiv Pawooをはじめる
+    = link_to 'メールアドレスで登録', new_user_registration_path
+    = link_to 'メールアドレスでログイン', new_user_session_path
