@@ -6,8 +6,10 @@ class Pawoo::Api::V1::SuggestedAccountsController < Api::BaseController
 
   respond_to :json
 
+  SUGGESTED_ACCOUNTS_LIMIT = 20
+
   def index
-    limit = limit_param(15)
+    limit = limit_param(SUGGESTED_ACCOUNTS_LIMIT)
     page = params[:page].to_i
     seed = params[:seed] ? params[:seed].to_i : Random.new_seed
 
@@ -28,12 +30,6 @@ class Pawoo::Api::V1::SuggestedAccountsController < Api::BaseController
   end
 
   private
-
-  def triadic_closures_accounts
-    limit = 4
-    offset = params[:page].to_i * limit
-    Account.triadic_closures(current_account, offset: offset, limit: limit)
-  end
 
   def suggested_accounts(account)
     following = account.following.ids

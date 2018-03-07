@@ -45,3 +45,6 @@
   pawoo_report_target_cleanup_scheduler:
     cron: '<%= Random.rand(0..59) %> <%= Random.rand(2..4) %> * * *'
     class: Pawoo::Scheduler::ReportTargetCleanupScheduler
+  pawoo_refresh_popular_account_scheduler:
+    cron: '30 18 * * 0'
+    class: Pawoo::Scheduler::RefreshPopularAccountScheduler

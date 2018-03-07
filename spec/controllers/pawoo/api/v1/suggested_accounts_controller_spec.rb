@@ -26,8 +26,8 @@ describe Pawoo::Api::V1::SuggestedAccountsController, type: :controller do
 
         it 'limits the number' do
           suggested_accounts = 2.times.map { Fabricate(:account) }
-          pairs = suggested_accounts.map { |account| [account.id, account.id] }
-          Redis.current.zadd('SuggestedAccountQuery:suggested_account_ids', pairs)
+          pairs = suggested_accounts.map { |account| [100, account.id] }
+          Redis.current.zadd('pawoo:popular_account_ids', pairs)
 
           subject
 
@@ -38,14 +38,14 @@ describe Pawoo::Api::V1::SuggestedAccountsController, type: :controller do
       context 'with page parameter' do
         let(:suggested_accounts) { 2.times.map { Fabricate(:account) } }
         before do
-          pairs = suggested_accounts.map { |account| [account.id, account.id] }
-          Redis.current.zadd('SuggestedAccountQuery:suggested_account_ids', pairs)
+          pairs = suggested_accounts.map { |account| [100, account.id] }
+          Redis.current.zadd('pawoo:popular_account_ids', pairs)
 
           get :index, params: { limit: 1, page: 1, seed: 0 }
         end
 
         it 'uses a certain offset' do
-          expect(body_as_json[0][:id]).to eq suggested_accounts[0].id.to_s
+          expect(body_as_json.size).to eq 1
         end
 
         it 'adds pagination headers if necessary' do
@@ -56,7 +56,7 @@ describe Pawoo::Api::V1::SuggestedAccountsController, type: :controller do
 
       it 'excludes followed accounts' do
         follow = Fabricate(:follow, account: user.account)
-        Redis.current.zadd('SuggestedAccountQuery:suggested_account_ids', [0, follow.target_account_id])
+        Redis.current.zadd('pawoo:popular_account_ids', [0, follow.target_account_id])
 
         get :index
 
@@ -65,7 +65,7 @@ describe Pawoo::Api::V1::SuggestedAccountsController, type: :controller do
 
       it 'excludes muted accounts' do
         mute = Fabricate(:mute, account: user.account)
-        Redis.current.zadd('SuggestedAccountQuery:suggested_account_ids', [0, mute.target_account_id])
+        Redis.current.zadd('pawoo:popular_account_ids', [0, mute.target_account_id])
 
         get :index
 
