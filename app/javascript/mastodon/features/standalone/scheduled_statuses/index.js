@@ -31,7 +31,7 @@ export default class ScheduledStatuses extends ImmutablePureComponent {
     this.props.dispatch(fetchScheduledStatuses());
   }
 
-  handleScrollToBottom = () => {
+  handleLoadMore = () => {
     this.props.dispatch(expandScheduledStatuses());
   }
 
@@ -45,7 +45,7 @@ export default class ScheduledStatuses extends ImmutablePureComponent {
         statusIds={statusIds}
         hasMore={hasMore}
         schedule
-        onScrollToBottom={this.handleScrollToBottom}
+        onLoadMore={this.handleLoadMore}
         pawooMediaScale='700px'
         pawooWideMedia
       />

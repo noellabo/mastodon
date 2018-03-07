@@ -35,7 +35,7 @@ export default class SuggestedAccounts extends React.PureComponent {
     }
   }
 
-  handleScrollToBottom = debounce(() => {
+  handleLoadMore = debounce(() => {
     this.props.dispatch(expandSuggestedAccounts());
   }, 300, { leading: true });
 
@@ -60,7 +60,7 @@ export default class SuggestedAccounts extends React.PureComponent {
           {...props}
           isLoading={isLoading}
           hasMore={hasMore}
-          onScrollToBottom={this.handleScrollToBottom}
+          onLoadMore={this.handleLoadMore}
         >
           {scrollableContent}
         </ScrollableList>

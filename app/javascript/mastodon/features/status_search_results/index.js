@@ -49,7 +49,7 @@ class StatusSearchResults extends React.PureComponent {
     this.column.scrollTop();
   }
 
-  handleScrollToBottom = () => {
+  handleLoadMore = () => {
     if (!this.props.isLoading && this.props.hasMore) {
       this.props.dispatch(expandStatusSearchTimeline(this.props.params.keyword));
     }
@@ -84,7 +84,7 @@ class StatusSearchResults extends React.PureComponent {
           scrollKey='status_search_results'
           statusIds={statusIds}
           isLoading={isLoading}
-          onScrollToBottom={this.handleScrollToBottom}
+          onLoadMore={this.handleLoadMore}
           emptyMessage={<FormattedMessage id='empty_column.search_toots' defaultMessage='No toots found.' />}
         />
       </Column>
