@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { matchPath } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import Immutable from 'immutable';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ScrollBehavior from 'scroll-behavior';
@@ -27,7 +28,7 @@ import {
   Reblogs,
   Favourites,
 } from '../../mastodon/features/ui/util/async-components';
-// import * as PawooComponents from '../util/async-components';
+import * as PawooComponents from '../util/async-components';
 
 const componentMap = {
   'COMPOSE': {
@@ -82,7 +83,17 @@ const componentMap = {
     component: SuggestionTags,
     match: null,
   },
+  'PAWOO_ONBOARDING': {
+    component: PawooComponents.OnboardingPageContainer,
+    match: null,
+  },
+  'PAWOO_SUGGESTED_ACCOUNTS': {
+    component: PawooComponents.SuggestedAccountsPage,
+    match: null,
+  },
 };
+
+const columnStateKey = (columnId, locationId) => `@@columnScroll|${columnId}|${locationId}`;
 
 class ColumnStateStorage {
 
@@ -103,13 +114,14 @@ class ColumnStateStorage {
   }
 
   getStateKey(location) {
-    return `@@columnScroll|${this.columnId}|${location.get('uuid')}`;
+    return columnStateKey(this.columnId, location.get('uuid'));
   }
 
 }
 
 const mapStateToProps = (state, props) => ({
-  columnHistory: state.getIn(['pawoo', 'column_histories']).get(props.column.get('uuid')),
+  columnHistory: state.getIn(['pawoo', 'column_histories', props.column.get('uuid')], Immutable.Stack([props.column.set('scrollPosition', false)])),
+  enableColumnHistory: state.getIn(['pawoo', 'page']) === 'DEFAULT',
 });
 
 const mapDispatchToProps = (dispatch, props) => ({
@@ -129,6 +141,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     columnHistory: ImmutablePropTypes.stack.isRequired,
     pushColumnHistory: PropTypes.func.isRequired,
     popColumnHistory: PropTypes.func.isRequired,
+    enableColumnHistory: PropTypes.bool.isRequired,
   };
 
   static childContextTypes = {
@@ -139,10 +152,10 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     scrollBehavior: PropTypes.object,
   };
 
+  transitionHook = null;
+
   constructor(props, context) {
     super(props, context);
-
-    this.transitionHook = () => {};
 
     this.scrollBehavior = new ScrollBehavior({
       addTransitionHook: this.handleHook,
@@ -156,7 +169,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
 
   getChildContext() {
     return ({
-      isColumnWithHistory: true,
+      isColumnWithHistory: this.props.enableColumnHistory,
       columnHistory: this.props.columnHistory,
       pushHistory: this.pushHistory,
       popHistory: this.props.popColumnHistory,
@@ -165,7 +178,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
   }
 
   componentWillUpdate(nextProps) {
-    if (this.props.columnHistory.first().get('uuid') !== nextProps.columnHistory.first().get('uuid')) {
+    if (this.props.columnHistory.first().get('uuid') !== nextProps.columnHistory.first().get('uuid') && this.transitionHook) {
       this.transitionHook();
     }
   }
@@ -177,7 +190,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     if (this.props.columnHistory.size < prevProps.columnHistory.size) {
       const columnId = this.props.column.get('uuid');
       const locationId = prevProps.columnHistory.first().get('uuid');
-      sessionStorage.removeItem(`@@columnScroll|${columnId}|${locationId}`);
+      sessionStorage.removeItem(columnStateKey(columnId, locationId));
     }
 
     this.scrollBehavior.updateScroll(prevScrollContext, this.getScrollContext());
@@ -188,7 +201,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
   }
 
   pushHistory = (path, newColumn = false) => {
-    if (newColumn) {
+    if (newColumn || !this.props.enableColumnHistory) {
       this.context.router.history.push(path);
       return;
     }
@@ -213,8 +226,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
   handleHook = (callback) => {
     this.transitionHook = callback;
     return () => {
-      this.transitionHook = () => {
-      };
+      this.transitionHook = null;
     };
   };
 

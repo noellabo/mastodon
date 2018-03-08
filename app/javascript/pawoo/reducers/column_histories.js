@@ -24,12 +24,10 @@ const popColumnHistory = (state, column) => {
 };
 
 const hydrate = (state, hydratedState = defaultColumns) => {
-  state = hydratedState.reduce(
-    function(map, item) {
-      item = item.set('scrollPosition', Immutable.fromJS(false));
-      return map.set(item.get('uuid'), Immutable.Stack([item]));
-    }, Immutable.Map()
-  );
+  state = hydratedState.reduce((map, item) => {
+    item = item.set('scrollPosition', Immutable.fromJS(false));
+    return map.set(item.get('uuid'), Immutable.Stack([item]));
+  }, Immutable.Map());
   return state;
 };
 
