@@ -5,6 +5,7 @@ import { EMOJI_USE } from '../actions/emojis';
 import { LIST_DELETE_SUCCESS, LIST_FETCH_FAIL } from '../actions/lists';
 import { Map as ImmutableMap, fromJS } from 'immutable';
 import uuid from '../uuid';
+import globalInitialState from '../initial_state';
 
 const initialState = ImmutableMap({
   saved: true,
@@ -70,7 +71,17 @@ export const defaultColumns = fromJS([
   { id: 'COMPOSE', uuid: uuid(), params: {} },
 ]);
 
-const hydrate = (state, settings) => state.mergeDeep(settings).update('columns', (val = defaultColumns) => val);
+function pawooUpdate(columns) {
+  return columns.count() === 3 &&
+    columns.getIn([0, 'id']) === 'COMPOSE' &&
+    columns.getIn([1, 'id']) === 'HOME' &&
+    columns.getIn([2, 'id']) === 'NOTIFICATIONS' &&
+    globalInitialState.pawoo.last_settings_updated &&
+    globalInitialState.pawoo.last_settings_updated < 1523185200 ?
+    defaultColumns : columns;
+}
+
+const hydrate = (state, settings) => state.mergeDeep(settings).update('columns', (val = defaultColumns) => pawooUpdate(val));
 
 const moveColumn = (state, uuid, direction) => {
   const columns  = state.get('columns');
