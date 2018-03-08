@@ -96,7 +96,6 @@ export default class PublicTimeline extends React.PureComponent {
         <StatusListContainer
           timelineId='public'
           loadMore={this.handleLoadMore}
-          trackScroll={!pinned}
           scrollKey={`public_timeline-${columnId}`}
           emptyMessage={<FormattedMessage id='empty_column.public' defaultMessage='There is nothing here! Write something publicly, or manually follow users from other instances to fill it up' />}
         />

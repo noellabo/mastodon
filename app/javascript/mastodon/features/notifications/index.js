@@ -132,7 +132,6 @@ export default class Notifications extends React.PureComponent {
     const scrollContainer = (
       <ScrollableList
         scrollKey={`notifications-${columnId}`}
-        trackScroll={!pinned}
         isLoading={isLoading}
         hasMore={hasMore}
         emptyMessage={emptyMessage}

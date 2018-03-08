@@ -84,7 +84,6 @@ export default class Favourites extends ImmutablePureComponent {
         />
 
         <StatusList
-          trackScroll={!pinned}
           statusIds={statusIds}
           scrollKey={`favourited_statuses-${columnId}`}
           hasMore={hasMore}

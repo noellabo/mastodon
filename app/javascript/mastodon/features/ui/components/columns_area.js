@@ -7,31 +7,14 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import ReactSwipeableViews from 'react-swipeable-views';
 import { links, getIndex, getLink } from './tabs_bar';
 
-import BundleContainer from '../containers/bundle_container';
 import ColumnLoading from './column_loading';
 import DrawerLoading from './drawer_loading';
 import BundleColumnError from './bundle_column_error';
-import { Compose, Notifications, HomeTimeline, CommunityTimeline, PublicTimeline, HashtagTimeline, FavouritedStatuses, ListTimeline, MediaTimeline, SuggestionTags } from '../../ui/util/async-components';
 
 import detectPassiveEvents from 'detect-passive-events';
 import { scrollRight } from '../../../scroll';
 import PawooSingleColumnOnboardingContainer from '../../../../pawoo/containers/single_column_onboarding_container';
-import * as PawooComponents from '../../../../pawoo/util/async-components';
-
-const componentMap = {
-  'COMPOSE': Compose,
-  'HOME': HomeTimeline,
-  'NOTIFICATIONS': Notifications,
-  'PUBLIC': PublicTimeline,
-  'COMMUNITY': CommunityTimeline,
-  'HASHTAG': HashtagTimeline,
-  'FAVOURITES': FavouritedStatuses,
-  'LIST': ListTimeline,
-  'MEDIA': MediaTimeline,
-  'SUGGESTION_TAGS': SuggestionTags,
-  'PAWOO_ONBOARDING': PawooComponents.OnboardingPageContainer,
-  'PAWOO_SUGGESTED_ACCOUNTS': PawooComponents.SuggestedAccountsPage,
-};
+import ColumnContainerWithHistory from '../../../../pawoo/containers/column_container_with_history';
 
 @component => injectIntl(component, { withRef: true })
 export default class ColumnsArea extends ImmutablePureComponent {
@@ -51,6 +34,26 @@ export default class ColumnsArea extends ImmutablePureComponent {
 
   state = {
     shouldAnimate: false,
+  };
+
+  static childContextTypes = {
+    pawooIsColumnWithHistory: PropTypes.bool,
+    pawooPushHistory: PropTypes.func,
+    pawooPopHistory: PropTypes.func,
+  };
+
+  getChildContext() {
+    return ({
+      pawooIsColumnWithHistory: false,
+      pawooPushHistory: (path) => {this.context.router.history.push(path);},
+      pawooPopHistory: () => {
+        if (window.history && window.history.length === 1) {
+          this.context.router.history.push('/');
+        } else {
+          this.context.router.history.goBack();
+        }
+      },
+    });
   }
 
   componentWillReceiveProps() {
@@ -173,12 +176,8 @@ export default class ColumnsArea extends ImmutablePureComponent {
     return (
       <div className={`columns-area ${ isModalOpen ? 'unscrollable' : '' }`} ref={this.setRef}>
         {columns.map(column => {
-          const params = column.get('params', null) === null ? null : column.get('params').toJS();
-
           return (
-            <BundleContainer key={column.get('uuid')} fetchComponent={componentMap[column.get('id')]} loading={this.renderLoading(column.get('id'))} error={this.renderError}>
-              {SpecificComponent => <SpecificComponent columnId={column.get('uuid')} params={params} multiColumn />}
-            </BundleContainer>
+            <ColumnContainerWithHistory key={column.get('uuid')} column={column} />
           );
         })}
 

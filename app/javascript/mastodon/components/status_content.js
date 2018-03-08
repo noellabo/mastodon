@@ -10,6 +10,7 @@ export default class StatusContent extends React.PureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
+    pawooPushHistory: PropTypes.func,
   };
 
   static propTypes = {
@@ -64,7 +65,7 @@ export default class StatusContent extends React.PureComponent {
   onMentionClick = (mention, e) => {
     if (this.context.router && e.button === 0) {
       e.preventDefault();
-      this.context.router.history.push(`/accounts/${mention.get('id')}`);
+      this.context.pawooPushHistory(`/accounts/${mention.get('id')}`);
     }
   }
 
@@ -73,7 +74,7 @@ export default class StatusContent extends React.PureComponent {
 
     if (this.context.router && e.button === 0) {
       e.preventDefault();
-      this.context.router.history.push(`/timelines/tag/${hashtag}`);
+      this.context.pawooPushHistory(`/timelines/tag/${hashtag}`, true);
     }
   }
 

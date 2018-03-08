@@ -66,7 +66,7 @@ const initialState = ImmutableMap({
   }),
 });
 
-const defaultColumns = fromJS([
+export const defaultColumns = fromJS([
   { id: 'COMPOSE', uuid: uuid(), params: {} },
   { id: 'HOME', uuid: uuid(), params: {} },
   { id: 'NOTIFICATIONS', uuid: uuid(), params: {} },
@@ -103,7 +103,7 @@ export default function settings(state = initialState, action) {
       .set('saved', false);
   case COLUMN_ADD:
     return state
-      .update('columns', list => list.push(fromJS({ id: action.id, uuid: uuid(), params: action.params })))
+      .update('columns', list => list.push(fromJS({ id: action.id, uuid: action.uuid, params: action.params })))
       .set('saved', false);
   case COLUMN_REMOVE:
     return state

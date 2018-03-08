@@ -30,6 +30,7 @@ export default class ListTimeline extends React.PureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
+    pawooPushHistory: PropTypes.func,
   };
 
   static propTypes = {
@@ -49,7 +50,7 @@ export default class ListTimeline extends React.PureComponent {
       dispatch(removeColumn(columnId));
     } else {
       dispatch(addColumn('LIST', { id: this.props.params.id }));
-      this.context.router.history.push('/');
+      this.context.pawooPushHistory('/', true);
     }
   }
 
@@ -105,7 +106,7 @@ export default class ListTimeline extends React.PureComponent {
         if (!!columnId) {
           dispatch(removeColumn(columnId));
         } else {
-          this.context.router.history.push('/lists');
+          this.context.pawooPushHistory('/lists');
         }
       },
     }));
@@ -161,7 +162,6 @@ export default class ListTimeline extends React.PureComponent {
         </ColumnHeader>
 
         <StatusListContainer
-          trackScroll={!pinned}
           scrollKey={`list_timeline-${columnId}`}
           timelineId={`list:${id}`}
           loadMore={this.handleLoadMore}

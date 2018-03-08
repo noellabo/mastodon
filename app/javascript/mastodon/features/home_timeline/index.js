@@ -8,7 +8,7 @@ import ColumnHeader from '../../components/column_header';
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import ColumnSettingsContainer from './containers/column_settings_container';
-import { Link } from 'react-router-dom';
+import Link from '../../../pawoo/components/wrapped_link';
 
 const messages = defineMessages({
   title: { id: 'column.home', defaultMessage: 'Home' },
@@ -112,7 +112,6 @@ export default class HomeTimeline extends React.PureComponent {
         </ColumnHeader>
 
         <StatusListContainer
-          trackScroll={!pinned}
           scrollKey={`home_timeline-${columnId}`}
           loadMore={this.handleLoadMore}
           timelineId='home'

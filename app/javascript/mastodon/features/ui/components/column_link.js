@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import Link from '../../../../pawoo/components/wrapped_link';
 
 const ColumnLink = ({ icon, text, to, href, method, badge, ...other }) => {
   const badgeElement = typeof badge !== 'undefined' ? <span className='column-link__badge'>{badge}</span> : null;
