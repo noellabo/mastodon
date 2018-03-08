@@ -5,15 +5,21 @@
   = render 'shared/error_messages', object: f.object
 
   .omniauth
-    = f.label :username
-    = f.input :username, autofocus: true, placeholder: t('simple_form.labels.defaults.username'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.username') }
-
     = f.label :email
     - if f.object.email_confirmed?
       .label= t('auth.confirmed_email')
       = f.input :email, disabled: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.email') }
     - else
       = f.input :email, autofocus: true, placeholder: t('simple_form.labels.defaults.email'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.email') }
+
+    = f.label :username
+    = f.input :username, autofocus: true, placeholder: t('simple_form.labels.defaults.username'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.username') }
+
+    = f.label :display_name
+    = f.input :display_name, placeholder: t('simple_form.labels.defaults.display_name'), hint: t('simple_form.hints.defaults.display_name', count: 30 - f.object.display_name.size).html_safe, input_html: { class: 'account_display_name' }
+
+    = f.label :note
+    = f.input :note, as: :text, placeholder: t('simple_form.labels.defaults.note'), hint: t('simple_form.hints.defaults.note', count: 160 - f.object.note.size).html_safe, input_html: { class: 'account_note' }
 
   .actions
     = f.button :button, t('auth.register'), type: :submit
