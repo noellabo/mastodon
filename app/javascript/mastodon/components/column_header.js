@@ -15,6 +15,7 @@ export default class ColumnHeader extends React.PureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
+    pawooPopHistory: PropTypes.func,
   };
 
   static propTypes = {
@@ -54,13 +55,7 @@ export default class ColumnHeader extends React.PureComponent {
   }
 
   handleBackClick = () => {
-    if (this.context.isColumnWithHistory) {
-      this.context.popHistory();
-    } else if (window.history && window.history.length === 1) {
-      this.context.router.history.push('/');
-    } else {
-      this.context.router.history.goBack();
-    }
+    this.context.pawooPopHistory();
   }
 
   handleTransitionEnd = () => {

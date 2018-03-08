@@ -145,10 +145,10 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
   };
 
   static childContextTypes = {
-    isColumnWithHistory: PropTypes.bool,
+    pawooIsColumnWithHistory: PropTypes.bool,
     columnHistory: ImmutablePropTypes.stack,
-    pushHistory: PropTypes.func,
-    popHistory: PropTypes.func,
+    pawooPushHistory: PropTypes.func,
+    pawooPopHistory: PropTypes.func,
     scrollBehavior: PropTypes.object,
   };
 
@@ -169,10 +169,10 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
 
   getChildContext() {
     return ({
-      isColumnWithHistory: this.props.enableColumnHistory,
+      pawooIsColumnWithHistory: this.props.enableColumnHistory,
       columnHistory: this.props.columnHistory,
-      pushHistory: this.pushHistory,
-      popHistory: this.props.popColumnHistory,
+      pawooPushHistory: this.pushHistory,
+      pawooPopHistory: this.popHistory,
       scrollBehavior: this,
     });
   }
@@ -222,6 +222,16 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
       this.context.router.history.push(path);
     }
   };
+
+  popHistory = () => {
+    if (this.props.enableColumnHistory) {
+      this.props.popColumnHistory();
+    } else if (window.history && window.history.length === 1) {
+      this.context.router.history.push('/');
+    } else {
+      this.context.router.history.goBack();
+    }
+  }
 
   handleHook = (callback) => {
     this.transitionHook = callback;

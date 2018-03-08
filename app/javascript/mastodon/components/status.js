@@ -22,9 +22,7 @@ export default class Status extends ImmutablePureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
-    isColumnWithHistory: PropTypes.bool,
-    pushHistory: PropTypes.func,
-    popHistory: PropTypes.func,
+    pawooPushHistory: PropTypes.func,
   };
 
   static propTypes = {
@@ -80,7 +78,7 @@ export default class Status extends ImmutablePureComponent {
     const statusId = status.getIn(['reblog', 'id'], status.get('id'));
 
     const path = `/statuses/${statusId}`;
-    this.context.pushHistory(path);
+    this.context.pawooPushHistory(path);
   }
 
   handleAccountClick = (e) => {
@@ -89,7 +87,7 @@ export default class Status extends ImmutablePureComponent {
       e.preventDefault();
 
       const path = `/accounts/${id}`;
-      this.context.pushHistory(path);
+      this.context.pawooPushHistory(path);
     }
   }
 
@@ -132,11 +130,11 @@ export default class Status extends ImmutablePureComponent {
   handleHotkeyOpen = () => {
     const statusId = this._properStatus().get('id');
 
-    this.context.pushHistory(`/statuses/${statusId}`);
+    this.context.pawooPushHistory(`/statuses/${statusId}`);
   }
 
   handleHotkeyOpenProfile = () => {
-    this.context.pushHistory(`/accounts/${this._properStatus().getIn(['account', 'id'])}`);
+    this.context.pawooPushHistory(`/accounts/${this._properStatus().getIn(['account', 'id'])}`);
   }
 
   handleHotkeyMoveUp = () => {

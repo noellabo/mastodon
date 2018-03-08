@@ -59,7 +59,7 @@ export default class Status extends ImmutablePureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
-    pushHistory: PropTypes.func,
+    pawooPushHistory: PropTypes.func,
   };
 
   static propTypes = {
@@ -209,7 +209,7 @@ export default class Status extends ImmutablePureComponent {
   }
 
   handleHotkeyOpenProfile = () => {
-    this.context.pushHistory(`/accounts/${this.props.status.getIn(['account', 'id'])}`);
+    this.context.pawooPushHistory(`/accounts/${this.props.status.getIn(['account', 'id'])}`);
   }
 
   handleMoveUp = id => {

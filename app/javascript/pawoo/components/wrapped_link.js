@@ -18,8 +18,8 @@ export default class WrappedLink extends React.Component {
 
   static contextTypes = {
     router: PropTypes.object,
-    isColumnWithHistory: PropTypes.bool,
-    pushHistory: PropTypes.func,
+    pawooIsColumnWithHistory: PropTypes.bool,
+    pawooPushHistory: PropTypes.func,
   };
 
   handleClick = event => {
@@ -39,7 +39,7 @@ export default class WrappedLink extends React.Component {
       if (replace) {
         history.replace(to);
       } else {
-        this.context.pushHistory(to);
+        this.context.pawooPushHistory(to);
       }
     }
   };
@@ -47,7 +47,7 @@ export default class WrappedLink extends React.Component {
   render() {
     const { replace, to, innerRef, ...props } = this.props; // eslint-disable-line no-unused-vars
 
-    if (this.context.isColumnWithHistory) {
+    if (this.context.pawooIsColumnWithHistory) {
       return (
         <a {...props} onClick={this.handleClick} ref={innerRef} />
       );

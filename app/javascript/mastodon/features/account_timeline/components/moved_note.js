@@ -10,7 +10,7 @@ export default class MovedNote extends ImmutablePureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
-    pushHistory: PropTypes.func,
+    pawooPushHistory: PropTypes.func,
   };
 
   static propTypes = {
@@ -21,7 +21,7 @@ export default class MovedNote extends ImmutablePureComponent {
   handleAccountClick = e => {
     if (e.button === 0) {
       e.preventDefault();
-      this.context.pushHistory(`/accounts/${this.props.to.get('id')}`);
+      this.context.pawooPushHistory(`/accounts/${this.props.to.get('id')}`);
     }
 
     e.stopPropagation();

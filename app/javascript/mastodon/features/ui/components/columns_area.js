@@ -37,16 +37,16 @@ export default class ColumnsArea extends ImmutablePureComponent {
   };
 
   static childContextTypes = {
-    isColumnWithHistory: PropTypes.bool,
-    pushHistory: PropTypes.func,
-    popHistory: PropTypes.func,
+    pawooIsColumnWithHistory: PropTypes.bool,
+    pawooPushHistory: PropTypes.func,
+    pawooPopHistory: PropTypes.func,
   };
 
   getChildContext() {
     return ({
-      isColumnWithHistory: false,
-      pushHistory: (path) => {this.context.router.history.push(path);},
-      popHistory: () => {
+      pawooIsColumnWithHistory: false,
+      pawooPushHistory: (path) => {this.context.router.history.push(path);},
+      pawooPopHistory: () => {
         if (window.history && window.history.length === 1) {
           this.context.router.history.push('/');
         } else {

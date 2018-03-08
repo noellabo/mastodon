@@ -17,7 +17,7 @@ export default class DetailedStatus extends ImmutablePureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
-    pushHistory: PropTypes.func,
+    pawooPushHistory: PropTypes.func,
   };
 
   static propTypes = {
@@ -29,7 +29,7 @@ export default class DetailedStatus extends ImmutablePureComponent {
   handleAccountClick = (e) => {
     if (e.button === 0) {
       e.preventDefault();
-      this.context.pushHistory(`/accounts/${this.props.status.getIn(['account', 'id'])}`);
+      this.context.pawooPushHistory(`/accounts/${this.props.status.getIn(['account', 'id'])}`);
     }
 
     e.stopPropagation();
