@@ -564,6 +564,12 @@ en:
     prev: Prev
     truncate: "&hellip;"
   pawoo:
+    expo_push_notifications:
+      favourite: "%{name} favorited your toot"
+      follow: "%{name} followed you"
+      follow_request: "%{name} requested to follow you"
+      mention: "%{name} followed you"
+      reblog: "%{name} boosted your toot"
     oauth_registrations:
       already_registered: It has already been registered. After logging in with your e-mail address and password, please link with pixiv account from setting page.
     validations:

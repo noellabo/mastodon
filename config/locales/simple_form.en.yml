@@ -65,7 +65,12 @@ en:
         mention: Send e-mail when someone mentions you
         reblog: Send e-mail when someone boosts your status
       notification_firebase_cloud_messagings:
-        digest: Send digest mobile
+        favourite: Send mobile when someone favourites your status
+        follow: Send mobile when someone follows you
+        follow_request: Send mobile when someone requests to follow you
+        mention: Send mobile when someone mentions you
+        reblog: Send mobile when someone boosts your status
+      notification_pawoo_expo_pushes:
         favourite: Send mobile when someone favourites your status
         follow: Send mobile when someone follows you
         follow_request: Send mobile when someone requests to follow you

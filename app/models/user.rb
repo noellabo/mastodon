@@ -54,6 +54,7 @@ class User < ApplicationRecord
   belongs_to :invite, counter_cache: :uses, optional: true
   has_many :oauth_authentications, dependent: :destroy
   has_many :firebase_cloud_messaging_tokens, dependent: :destroy
+  has_many :expo_push_tokens, class_name: 'Pawoo::ExpoPushToken', inverse_of: :user, dependent: :destroy
   has_one :initial_password_usage, dependent: :destroy
   accepts_nested_attributes_for :account
 

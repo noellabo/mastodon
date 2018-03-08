@@ -46,5 +46,21 @@ describe Pawoo::LoadAccountMediaAttachmentsService do
         expect(Pawoo::AccountMediaAttachmentIdsQuery).not_to have_received(:new)
       end
     end
+
+    context 'when having multiple media' do
+      let(:accounts) { [account] }
+      let(:account) { Fabricate(:account) }
+      let(:media_attachment_ids) { Fabricate.times(3, :media_attachment, account: account).map(&:id).shuffle }
+
+      before do
+        query = Pawoo::AccountMediaAttachmentIdsQuery.new(account)
+        allow(Pawoo::AccountMediaAttachmentIdsQuery).to receive(:new).and_return(query)
+        allow(query).to receive(:call).and_return(media_attachment_ids)
+      end
+
+      it 'returns media attachments in the same order' do
+        expect(subject[account.id].map(&:id)).to match media_attachment_ids
+      end
+    end
   end
 end

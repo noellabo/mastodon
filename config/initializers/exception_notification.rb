@@ -25,6 +25,7 @@ ExceptionNotification.configure do |config|
     ProcessingWorker
     ThreadResolveWorker
     NotificationWorker
+    Import::RelationshipWorker
   ].freeze
 
   ignore_workers = %w[
@@ -53,7 +54,7 @@ ExceptionNotification.configure do |config|
       ignore_worker ||= ignore_worker_errors[worker_class]&.include?(exception_name)
 
       # ActivityPub or Pubsubhubbub or 通信が頻繁に発生するWorkerではネットワーク系の例外を無視
-      if worker_class.start_with?(/(ActivityPub|Pubsubhubbub)::/) || network_workers.include?(worker_class)
+      if worker_class.start_with?('ActivityPub::') || worker_class.start_with?('Pubsubhubbub::') || network_workers.include?(worker_class)
         ignore_worker ||= network_exceptions.include?(exception_name)
       end
 

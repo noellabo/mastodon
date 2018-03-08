@@ -35,6 +35,23 @@ describe Pawoo::Api::V1::PushNotificationPreferencesController do
         expect(user.settings['notification_firebase_cloud_messagings']['follow']).to be true
         expect(user.settings['interactions']['must_be_follower']).to be false
       end
+
+      it 'updates pawoo_expo_push_tokens settings' do
+        user.settings['notification_pawoo_expo_pushes'] = user.settings['notification_pawoo_expo_pushes'].merge('follow' => false)
+        user.settings['interactions'] = user.settings['interactions'].merge('must_be_follower' => true)
+
+        put :update, params: {
+          user: {
+            notification_pawoo_expo_pushes: { follow: '1' },
+            interactions: { must_be_follower: '0' },
+          }
+        }
+
+        expect(response).to have_http_status(:success)
+        user.reload
+        expect(user.settings['notification_pawoo_expo_pushes']['follow']).to be true
+        expect(user.settings['interactions']['must_be_follower']).to be false
+      end
     end
 
     context 'when failed' do

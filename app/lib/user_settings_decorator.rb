@@ -29,6 +29,7 @@ class UserSettingsDecorator
     user.settings['theme']               = theme_preference if change?('setting_theme')
 
     user.settings['notification_firebase_cloud_messagings'] = merged_notification_firebase_cloud_messagings if change?('notification_firebase_cloud_messagings')
+    user.settings['notification_pawoo_expo_pushes'] = merged_notification_pawoo_expo_pushes if change?('notification_pawoo_expo_pushes')
   end
 
   def merged_notification_emails
@@ -37,6 +38,10 @@ class UserSettingsDecorator
 
   def merged_notification_firebase_cloud_messagings
     user.settings['notification_firebase_cloud_messagings'].merge coerced_settings('notification_firebase_cloud_messagings').to_h
+  end
+
+  def merged_notification_pawoo_expo_pushes
+    user.settings['notification_pawoo_expo_pushes'].merge coerced_settings('notification_pawoo_expo_pushes').to_h
   end
 
   def merged_interactions
