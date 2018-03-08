@@ -120,7 +120,7 @@ class ColumnStateStorage {
 }
 
 const mapStateToProps = (state, props) => ({
-  columnHistory: state.getIn(['pawoo', 'column_histories', props.column.get('uuid')], Immutable.Stack([props.column.set('scrollPosition', false)])),
+  columnHistory: state.getIn(['pawoo', 'column_histories', props.column.get('uuid')], Immutable.Stack([props.column])),
   enableColumnHistory: state.getIn(['pawoo', 'page']) === 'DEFAULT',
 });
 

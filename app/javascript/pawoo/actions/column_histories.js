@@ -10,7 +10,6 @@ export function pushColumnHistory(column, id, params) {
     id,
     params,
     uuid: uuid(),
-    scrollPosition: false,
   });
   return {
     type: COLUMN_HISTORY_PUSH,
