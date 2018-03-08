@@ -12,7 +12,7 @@ import { getAccountGallery } from '../../selectors';
 import MediaItem from './components/media_item';
 import HeaderContainer from '../account_timeline/containers/header_container';
 import { FormattedMessage } from 'react-intl';
-import WrappedScrollContainer from '../../../pawoo/containers/wrapped_scroll_container';
+import { ScrollContainer } from 'react-router-scroll-4';
 import LoadMore from '../../components/load_more';
 
 const mapStateToProps = (state, props) => ({
@@ -85,7 +85,7 @@ export default class AccountGallery extends ImmutablePureComponent {
       <Column>
         <ColumnBackButton />
 
-        <WrappedScrollContainer scrollKey='account_gallery'>
+        <ScrollContainer scrollKey='account_gallery'>
           <div className='scrollable' onScroll={this.handleScroll}>
             <HeaderContainer accountId={this.props.params.accountId} />
 
@@ -103,7 +103,7 @@ export default class AccountGallery extends ImmutablePureComponent {
               {loadMore}
             </div>
           </div>
-        </WrappedScrollContainer>
+        </ScrollContainer>
       </Column>
     );
   }

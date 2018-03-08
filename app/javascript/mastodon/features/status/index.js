@@ -25,7 +25,7 @@ import { muteStatus, unmuteStatus, deleteStatus } from '../../actions/statuses';
 import { initMuteModal } from '../../actions/mutes';
 import { initReport } from '../../../pawoo/actions/reports';
 import { makeGetStatus } from '../../selectors';
-import WrappedScrollContainer from '../../../pawoo/containers/wrapped_scroll_container';
+import { ScrollContainer } from 'react-router-scroll-4';
 import ColumnBackButton from '../../components/column_back_button';
 import StatusContainer from '../../containers/status_container';
 import { openModal } from '../../actions/modal';
@@ -328,7 +328,7 @@ export default class Status extends ImmutablePureComponent {
       <Column>
         <ColumnBackButton />
 
-        <WrappedScrollContainer scrollKey='thread'>
+        <ScrollContainer scrollKey='thread'>
           <div className={classNames('scrollable', 'detailed-status__wrapper', { fullscreen })} ref={this.setRef}>
             {ancestors}
 
@@ -359,7 +359,7 @@ export default class Status extends ImmutablePureComponent {
 
             {descendants}
           </div>
-        </WrappedScrollContainer>
+        </ScrollContainer>
       </Column>
     );
   }

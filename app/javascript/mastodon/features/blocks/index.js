@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import LoadingIndicator from '../../components/loading_indicator';
-import WrappedScrollContainer from '../../../pawoo/containers/wrapped_scroll_container';
+import { ScrollContainer } from 'react-router-scroll-4';
 import Column from '../ui/components/column';
 import ColumnBackButtonSlim from '../../components/column_back_button_slim';
 import AccountContainer from '../../containers/account_container';
@@ -56,13 +56,13 @@ export default class Blocks extends ImmutablePureComponent {
     return (
       <Column icon='ban' heading={intl.formatMessage(messages.heading)}>
         <ColumnBackButtonSlim />
-        <WrappedScrollContainer scrollKey='blocks'>
+        <ScrollContainer scrollKey='blocks'>
           <div className='scrollable' onScroll={this.handleScroll}>
             {accountIds.map(id =>
               <AccountContainer key={id} id={id} />
             )}
           </div>
-        </WrappedScrollContainer>
+        </ScrollContainer>
       </Column>
     );
   }

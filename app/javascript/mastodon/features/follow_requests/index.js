@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import LoadingIndicator from '../../components/loading_indicator';
-import WrappedScrollContainer from '../../../pawoo/containers/wrapped_scroll_container';
+import { ScrollContainer } from 'react-router-scroll-4';
 import Column from '../ui/components/column';
 import ColumnBackButtonSlim from '../../components/column_back_button_slim';
 import AccountAuthorizeContainer from './containers/account_authorize_container';
@@ -57,13 +57,13 @@ export default class FollowRequests extends ImmutablePureComponent {
       <Column icon='users' heading={intl.formatMessage(messages.heading)}>
         <ColumnBackButtonSlim />
 
-        <WrappedScrollContainer scrollKey='follow_requests'>
+        <ScrollContainer scrollKey='follow_requests'>
           <div className='scrollable' onScroll={this.handleScroll}>
             {accountIds.map(id =>
               <AccountAuthorizeContainer key={id} id={id} />
             )}
           </div>
-        </WrappedScrollContainer>
+        </ScrollContainer>
       </Column>
     );
   }

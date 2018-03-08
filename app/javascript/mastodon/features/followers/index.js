@@ -8,7 +8,7 @@ import {
   fetchFollowers,
   expandFollowers,
 } from '../../actions/accounts';
-import WrappedScrollContainer from '../../../pawoo/containers/wrapped_scroll_container';
+import { ScrollContainer } from 'react-router-scroll-4';
 import AccountContainer from '../../containers/account_container';
 import Column from '../ui/components/column';
 import HeaderContainer from '../account_timeline/containers/header_container';
@@ -77,7 +77,7 @@ export default class Followers extends ImmutablePureComponent {
       <Column>
         <ColumnBackButton />
 
-        <WrappedScrollContainer scrollKey='followers'>
+        <ScrollContainer scrollKey='followers'>
           <div className='scrollable' onScroll={this.handleScroll}>
             <div className='followers'>
               <HeaderContainer accountId={this.props.params.accountId} />
@@ -85,7 +85,7 @@ export default class Followers extends ImmutablePureComponent {
               {loadMore}
             </div>
           </div>
-        </WrappedScrollContainer>
+        </ScrollContainer>
       </Column>
     );
   }

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Link from 'react-router-dom/Link';
 import { refreshSuggestionTags } from '../../../pawoo/actions/suggestion_tags';
-import WrappedScrollContainer from '../../../pawoo/containers/wrapped_scroll_container';
+import { ScrollContainer } from 'react-router-scroll-4';
 import { defineMessages, injectIntl } from 'react-intl';
 import Column from '../../components/column';
 import ColumnHeader from '../../components/column_header';
@@ -118,7 +118,7 @@ class SuggestionTags extends React.PureComponent {
           multiColumn={multiColumn}
         />
 
-        <WrappedScrollContainer scrollKey={`suggestion_tags-${columnId}`}>
+        <ScrollContainer scrollKey={`suggestion_tags-${columnId}`}>
           <div className='scrollable suggestion-tags__body'>
             <ul>
               {tags && tags.map(tag => (
@@ -134,7 +134,7 @@ class SuggestionTags extends React.PureComponent {
               ))}
             </ul>
           </div>
-        </WrappedScrollContainer>
+        </ScrollContainer>
       </Column>
     );
   }
