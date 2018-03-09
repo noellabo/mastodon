@@ -13,6 +13,7 @@ export default class ScrollableList extends PureComponent {
 
   static contextTypes = {
     router: PropTypes.object,
+    pawooColumnLocationKey: PropTypes.string,
   };
 
   static propTypes = {
@@ -166,7 +167,7 @@ export default class ScrollableList extends PureComponent {
                 index={index}
                 listLength={childrenCount}
                 intersectionObserverWrapper={this.intersectionObserverWrapper}
-                saveHeightKey={trackScroll ? `${this.context.router.route.location.key}:${scrollKey}` : null}
+                saveHeightKey={trackScroll ? `${this.context.pawooColumnLocationKey}:${scrollKey}` : null}
               >
                 {child}
               </IntersectionObserverArticleContainer>
