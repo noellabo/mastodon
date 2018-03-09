@@ -20,7 +20,7 @@ const messages = defineMessages({
   cannot_reblog: { id: 'status.cannot_reblog', defaultMessage: 'This post cannot be boosted' },
   favourite: { id: 'status.favourite', defaultMessage: 'Favourite' },
   cannot_favourite: { id: 'status.cannot_favourite', defaultMessage: 'This post cannot be favourited' },
-  open: { id: 'status.open', defaultMessage: 'Expand this status' },
+  open: { id: 'pawoo.status.open_in_another_column', defaultMessage: 'Expand in another column' },
   report: { id: 'status.report', defaultMessage: 'Report @{name}' },
   muteConversation: { id: 'status.mute_conversation', defaultMessage: 'Mute conversation' },
   unmuteConversation: { id: 'status.unmute_conversation', defaultMessage: 'Unmute conversation' },
