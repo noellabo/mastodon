@@ -95,7 +95,7 @@ export default class StatusContent extends React.PureComponent {
     }
 
     if (deltaX + deltaY < 5 && e.button === 0 && this.props.onClick) {
-      this.props.onClick();
+      this.props.onClick(e);
     }
 
     this.startXY = null;

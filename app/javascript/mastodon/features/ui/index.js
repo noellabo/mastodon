@@ -87,6 +87,7 @@ const keyMap = {
   goToProfile: 'g u',
   goToBlocked: 'g b',
   goToMuted: 'g m',
+  pawooOpenOtherColumn: ['mod+enter'],
 };
 
 @connect(mapStateToProps)

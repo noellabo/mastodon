@@ -69,7 +69,7 @@ export default class Status extends ImmutablePureComponent {
 
   updateOnStates = ['isExpanded']
 
-  handleClick = () => {
+  handleClick = (e) => {
     if (!this.context.router) {
       return;
     }
@@ -78,7 +78,9 @@ export default class Status extends ImmutablePureComponent {
     const statusId = status.getIn(['reblog', 'id'], status.get('id'));
 
     const path = `/statuses/${statusId}`;
-    this.context.pawooPushHistory(path);
+    const isApple = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+    const pawooOtherColumn = (!isApple && e.ctrlKey) || (isApple && e.metaKey);
+    this.context.pawooPushHistory(path, pawooOtherColumn);
   }
 
   handleAccountClick = (e) => {
@@ -143,6 +145,12 @@ export default class Status extends ImmutablePureComponent {
 
   handleHotkeyMoveDown = () => {
     this.props.onMoveDown(this.props.status.get('id'));
+  }
+
+  handleHotkeyPawooOpenOtherColumn = () => {
+    const statusId = this._properStatus().get('id');
+
+    this.context.pawooPushHistory(`/statuses/${statusId}`, true);
   }
 
   _properStatus () {
@@ -258,6 +266,7 @@ export default class Status extends ImmutablePureComponent {
       openProfile: this.handleHotkeyOpenProfile,
       moveUp: this.handleHotkeyMoveUp,
       moveDown: this.handleHotkeyMoveDown,
+      pawooOpenOtherColumn: this.handleHotkeyPawooOpenOtherColumn,
     };
 
     return (

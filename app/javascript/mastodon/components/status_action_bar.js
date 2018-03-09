@@ -102,7 +102,7 @@ export default class StatusActionBar extends ImmutablePureComponent {
   }
 
   handleOpen = () => {
-    this.context.pawooPushHistory(`/statuses/${this.props.status.get('id')}`);
+    this.context.pawooPushHistory(`/statuses/${this.props.status.get('id')}`, true);
   }
 
   handleEmbed = () => {
