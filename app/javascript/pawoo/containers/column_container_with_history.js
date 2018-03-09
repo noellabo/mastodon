@@ -146,7 +146,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
 
   static childContextTypes = {
     pawooIsColumnWithHistory: PropTypes.bool,
-    columnHistory: ImmutablePropTypes.stack,
+    pawooColumnLocationKey: PropTypes.string,
     pawooPushHistory: PropTypes.func,
     pawooPopHistory: PropTypes.func,
     scrollBehavior: PropTypes.object,
@@ -170,7 +170,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
   getChildContext() {
     return ({
       pawooIsColumnWithHistory: this.props.enableColumnHistory,
-      columnHistory: this.props.columnHistory,
+      pawooColumnLocationKey: this.props.columnHistory.first().get('uuid'),
       pawooPushHistory: this.pushHistory,
       pawooPopHistory: this.popHistory,
       scrollBehavior: this,

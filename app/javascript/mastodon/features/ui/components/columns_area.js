@@ -38,6 +38,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
 
   static childContextTypes = {
     pawooIsColumnWithHistory: PropTypes.bool,
+    pawooColumnLocationKey: PropTypes.string,
     pawooPushHistory: PropTypes.func,
     pawooPopHistory: PropTypes.func,
   };
@@ -53,6 +54,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
           this.context.router.history.goBack();
         }
       },
+      pawooColumnLocationKey: this.context.router.route.location.key,
     });
   }
 
