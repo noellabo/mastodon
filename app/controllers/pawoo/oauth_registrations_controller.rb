@@ -47,7 +47,7 @@ class Pawoo::OauthRegistrationsController < DeviseController
 
   def oauth_registration_params
     params.require(:pawoo_form_oauth_registration).permit(
-      :email, :username
+      :email, :username, :display_name, :note
     ).merge(locale: I18n.locale)
   end
 end

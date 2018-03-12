@@ -37,7 +37,7 @@ RSpec.describe Pawoo::OauthRegistrationsController, type: :controller do
 
   describe 'POST #create' do
     subject { post :create, params: { pawoo_form_oauth_registration: attributes } }
-    let(:attributes) { { username: 'username' } }
+    let(:attributes) { { username: 'username', display_name: 'testuser_account', note: 'introduction' } }
 
     context 'hit cache of pixiv oauth' do
       before do
@@ -72,6 +72,16 @@ RSpec.describe Pawoo::OauthRegistrationsController, type: :controller do
         let!(:unlinked_user) { Fabricate(:user, email: "other-#{auth.info.email}", account: account) }
 
         it { is_expected.to render_template(:new) }
+      end
+
+      context 'when the profile is different from pixiv' do
+        let(:attributes) { { username: 'custom_username', display_name: 'custom_testuser_account', note: 'custom_introduction' } }
+
+        it 'creates user' do
+          subject
+          expect(Account.joins(:user).where(attributes)).to exist
+        end
+
       end
     end
 
