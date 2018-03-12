@@ -16,10 +16,6 @@ OmniAuth.config.mock_auth[:pixiv] = OmniAuth::AuthHash.new(
     expires_at: 1.hours.since.to_i
   },
   extra: {
-    raw_info: {
-      profile: {
-        introduction: 'introduction',
-      },
-    },
+    raw_info: {}
   }
 )

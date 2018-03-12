@@ -10,8 +10,6 @@ class Pawoo::Form::OauthRegistration
   attr_accessor :provider, :uid
   type_attribute :email, :string
   type_attribute :username, :string
-  type_attribute :display_name, :string
-  type_attribute :note, :string
 
   validate :validate_user
 
@@ -25,8 +23,6 @@ class Pawoo::Form::OauthRegistration
           email_confirmed: omniauth_auth['extra']['raw_info']['is_mail_authorized'],
           email: omniauth_auth['info']['email'],
           username: normalize_username(omniauth_auth['info']['account']),
-          display_name: omniauth_auth['info']['nickname'],
-          note: omniauth_auth['extra']['raw_info']['profile']['introduction'],
           avatar: fetch_pixiv_avatar(omniauth_auth['info']['avatar'])
         )
       else
@@ -100,8 +96,6 @@ class Pawoo::Form::OauthRegistration
       confirmed_at: confirmed_at,
       account_attributes: {
         username: username,
-        display_name: display_name,
-        note: note,
         avatar: avatar
       }
     }
