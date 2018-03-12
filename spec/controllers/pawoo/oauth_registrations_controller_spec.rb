@@ -73,6 +73,16 @@ RSpec.describe Pawoo::OauthRegistrationsController, type: :controller do
 
         it { is_expected.to render_template(:new) }
       end
+
+      context 'when the profile is different from pixiv' do
+        let(:attributes) { { username: 'custom_username', display_name: 'custom_testuser_account', note: 'custom_introduction' } }
+
+        it 'creates user' do
+          subject
+          expect(Account.joins(:user).where(attributes)).to exist
+        end
+
+      end
     end
 
     include_examples 'cache miss'
