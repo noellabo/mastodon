@@ -285,7 +285,7 @@ Devise.setup do |config|
       :pixiv,
       secret[:key],
       secret[:secret],
-      scope: 'read-email read-favorite-users read-profile',
+      scope: 'read-email read-favorite-users',
       user_agent: 'pawoo (omniauth-pixiv-public)',
     ]
 
