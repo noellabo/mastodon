@@ -569,10 +569,18 @@ pl:
     prev: Poprzednia
     truncate: "&hellip;"
   pawoo:
+    expo_push_notifications:
+      favourite: "%{name} dodał Twój wpis do ulubionych"
+      follow: "%{name} zaczął Cię śledzić"
+      follow_request: "%{name} poprosił o możliwość śledzenia Cię"
+      mention: "%{name} wspomniał o Tobie"
+      reblog: "%{name} podbił Twój wpis"
     oauth_registrations:
       already_registered: Jesteś już zarejestrowany. Po zalogowaniu z użyciem adresu e-mail i hasła, połącz się z kontem pixiv z ustawień.
       create:
         already_registered: Już zarejestrowano
+    validations:
+      crashed_unicode: zawiera nieprawidłowe znaki
   preferences:
     languages: Języki
     other: Pozostałe
