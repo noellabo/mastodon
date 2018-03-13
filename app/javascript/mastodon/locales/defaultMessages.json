@@ -195,8 +195,8 @@
         "id": "status.cannot_favourite"
       },
       {
-        "defaultMessage": "Expand this status",
-        "id": "status.open"
+        "defaultMessage": "Expand in another column",
+        "id": "pawoo.status.open_in_another_column"
       },
       {
         "defaultMessage": "Report @{name}",
@@ -267,31 +267,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "Follow",
-        "id": "account.follow"
-      },
-      {
-        "defaultMessage": "Unfollow",
-        "id": "account.unfollow"
-      },
-      {
-        "defaultMessage": "Awaiting approval",
-        "id": "account.requested"
-      },
-      {
-        "defaultMessage": "Unblock @{name}",
-        "id": "account.unblock"
-      },
-      {
-        "defaultMessage": "Unmute @{name}",
-        "id": "account.unmute"
-      }
-    ],
-    "path": "app/javascript/mastodon/components/suggested_account.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "now",
         "id": "relative_time.just_now"
       },
@@ -313,39 +288,6 @@
       }
     ],
     "path": "app/javascript/mastodon/components/timestamp.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "Toggle sound",
-        "id": "video_player.toggle_sound"
-      },
-      {
-        "defaultMessage": "Toggle visibility",
-        "id": "video_player.toggle_visible"
-      },
-      {
-        "defaultMessage": "Expand video",
-        "id": "video_player.expand"
-      },
-      {
-        "defaultMessage": "Sensitive content",
-        "id": "status.sensitive_warning"
-      },
-      {
-        "defaultMessage": "Click to view",
-        "id": "status.sensitive_toggle"
-      },
-      {
-        "defaultMessage": "Media hidden",
-        "id": "status.media_hidden"
-      },
-      {
-        "defaultMessage": "Video could not be played",
-        "id": "video_player.video_error"
-      }
-    ],
-    "path": "app/javascript/mastodon/components/video_player.json"
   },
   {
     "descriptors": [
@@ -572,6 +514,15 @@
       }
     ],
     "path": "app/javascript/mastodon/features/community_timeline/index.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Dismiss",
+        "id": "pawoo.announcements.dismiss"
+      }
+    ],
+    "path": "app/javascript/mastodon/features/compose/components/announcements.json"
   },
   {
     "descriptors": [
@@ -806,15 +757,6 @@
       }
     ],
     "path": "app/javascript/mastodon/features/compose/components/upload_button.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "Undo",
-        "id": "upload_form.undo"
-      }
-    ],
-    "path": "app/javascript/mastodon/features/compose/components/upload_form.json"
   },
   {
     "descriptors": [
@@ -1388,15 +1330,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "A look inside...",
-        "id": "standalone.public_title"
-      }
-    ],
-    "path": "app/javascript/mastodon/features/standalone/public_timeline/index.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "Search: \"{keyword}\"",
         "id": "column.search_toots"
       },
@@ -1492,19 +1425,6 @@
       }
     ],
     "path": "app/javascript/mastodon/features/status/index.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "Active Users",
-        "id": "column.suggested_accounts"
-      },
-      {
-        "defaultMessage": "Go To Local Timeline",
-        "id": "suggested_accounts.go_to_local_timeline"
-      }
-    ],
-    "path": "app/javascript/mastodon/features/suggested_accounts/index.json"
   },
   {
     "descriptors": [
@@ -1738,47 +1658,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "Additional comments",
-        "id": "report.placeholder"
-      },
-      {
-        "defaultMessage": "Submit",
-        "id": "report.submit"
-      },
-      {
-        "defaultMessage": "Please select the reason for reporting",
-        "id": "pawoo.report.select.title"
-      },
-      {
-        "defaultMessage": "I do not like it",
-        "id": "pawoo.report.select.donotlike"
-      },
-      {
-        "defaultMessage": "Incorrect NSFW setting",
-        "id": "pawoo.report.select.nsfw"
-      },
-      {
-        "defaultMessage": "Spam",
-        "id": "pawoo.report.select.spam"
-      },
-      {
-        "defaultMessage": "Unauthorized reproduction",
-        "id": "pawoo.report.select.reproduction"
-      },
-      {
-        "defaultMessage": "Prohibited act",
-        "id": "pawoo.report.select.prohibited"
-      },
-      {
-        "defaultMessage": "Report {target}",
-        "id": "report.target"
-      }
-    ],
-    "path": "app/javascript/mastodon/features/ui/components/report_modal.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "Compose",
         "id": "tabs_bar.compose"
       },
@@ -1795,12 +1674,12 @@
         "id": "tabs_bar.local_timeline"
       },
       {
-        "defaultMessage": "Federated",
-        "id": "tabs_bar.federated_timeline"
-      },
-      {
         "defaultMessage": "Media",
         "id": "tabs_bar.media_timeline"
+      },
+      {
+        "defaultMessage": "Active",
+        "id": "pawoo.tabs_bar.suggested_accounts"
       }
     ],
     "path": "app/javascript/mastodon/features/ui/components/tabs_bar.json"
@@ -1813,15 +1692,6 @@
       }
     ],
     "path": "app/javascript/mastodon/features/ui/components/upload_area.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "Close",
-        "id": "lightbox.close"
-      }
-    ],
-    "path": "app/javascript/mastodon/features/ui/components/video_modal.json"
   },
   {
     "descriptors": [
@@ -1880,5 +1750,164 @@
       }
     ],
     "path": "app/javascript/mastodon/features/video/index.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Follow",
+        "id": "account.follow"
+      },
+      {
+        "defaultMessage": "Unfollow",
+        "id": "account.unfollow"
+      },
+      {
+        "defaultMessage": "Awaiting approval",
+        "id": "account.requested"
+      },
+      {
+        "defaultMessage": "Unblock @{name}",
+        "id": "account.unblock"
+      },
+      {
+        "defaultMessage": "Unmute @{name}",
+        "id": "account.unmute"
+      }
+    ],
+    "path": "app/javascript/pawoo/components/suggested_account.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Active Users",
+        "id": "column.suggested_accounts"
+      },
+      {
+        "defaultMessage": "Go To Local Timeline",
+        "id": "suggested_accounts.go_to_local_timeline"
+      }
+    ],
+    "path": "app/javascript/pawoo/components/suggested_accounts_column.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Active Users",
+        "id": "column.suggested_accounts"
+      }
+    ],
+    "path": "app/javascript/pawoo/components/suggested_accounts_page.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Welcome to {site}!",
+        "id": "pawoo.onboarding.heading"
+      },
+      {
+        "defaultMessage": "Your full handle",
+        "id": "onboarding.page_one.full_handle"
+      },
+      {
+        "defaultMessage": "{site} is connected with other servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.",
+        "id": "pawoo.onboarding.description"
+      },
+      {
+        "defaultMessage": "Find people on {site}",
+        "id": "pawoo.onboarding.suggested_accounts.heading"
+      },
+      {
+        "defaultMessage": "Follow people you like. This list is also available later as \"Active Accounts.\"",
+        "id": "pawoo.onboarding.suggested_accounts.description"
+      },
+      {
+        "defaultMessage": "Ready to get started?",
+        "id": "pawoo.onboarding.start.heading"
+      },
+      {
+        "defaultMessage": "Get started",
+        "id": "pawoo.onboarding.start.description"
+      }
+    ],
+    "path": "app/javascript/pawoo/containers/onboarding_page_container.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Additional comments (required for other cases)",
+        "id": "pawoo.report.placeholder"
+      },
+      {
+        "defaultMessage": "Submit",
+        "id": "report.submit"
+      },
+      {
+        "defaultMessage": "Please select the reason for reporting",
+        "id": "pawoo.report.select.title"
+      },
+      {
+        "defaultMessage": "I do not like it",
+        "id": "pawoo.report.select.donotlike"
+      },
+      {
+        "defaultMessage": "Incorrect NSFW setting",
+        "id": "pawoo.report.select.nsfw"
+      },
+      {
+        "defaultMessage": "Spam",
+        "id": "pawoo.report.select.spam"
+      },
+      {
+        "defaultMessage": "Unauthorized reproduction",
+        "id": "pawoo.report.select.reproduction"
+      },
+      {
+        "defaultMessage": "Prohibited act",
+        "id": "pawoo.report.select.prohibited"
+      },
+      {
+        "defaultMessage": "Other",
+        "id": "pawoo.report.select.other"
+      },
+      {
+        "defaultMessage": "Report {target}",
+        "id": "report.target"
+      }
+    ],
+    "path": "app/javascript/pawoo/containers/report_modal_container.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Welcome to {site}!",
+        "id": "pawoo.onboarding.heading"
+      },
+      {
+        "defaultMessage": "Your full handle",
+        "id": "onboarding.page_one.full_handle"
+      },
+      {
+        "defaultMessage": "{site} is connected with other servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.",
+        "id": "pawoo.onboarding.description"
+      },
+      {
+        "defaultMessage": "Find people on {site}",
+        "id": "pawoo.onboarding.suggested_accounts.heading"
+      }
+    ],
+    "path": "app/javascript/pawoo/containers/single_column_onboarding_container.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Unfollow",
+        "id": "confirmations.unfollow.confirm"
+      },
+      {
+        "defaultMessage": "Are you sure you want to unfollow {name}?",
+        "id": "confirmations.unfollow.message"
+      }
+    ],
+    "path": "app/javascript/pawoo/containers/suggested_account_container.json"
   }
 ]
