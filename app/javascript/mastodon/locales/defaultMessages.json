@@ -1809,7 +1809,7 @@
         "id": "onboarding.page_one.full_handle"
       },
       {
-        "defaultMessage": "{site} is connected other servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.",
+        "defaultMessage": "{site} is connected with other servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.",
         "id": "pawoo.onboarding.description"
       },
       {
@@ -1887,7 +1887,7 @@
         "id": "onboarding.page_one.full_handle"
       },
       {
-        "defaultMessage": "{site} is connected with servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.",
+        "defaultMessage": "{site} is connected with other servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.",
         "id": "pawoo.onboarding.description"
       },
       {

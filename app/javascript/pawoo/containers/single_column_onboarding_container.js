@@ -46,7 +46,7 @@ export default class SingleColumnOnboarding extends React.PureComponent {
           <p>
             <FormattedMessage
               id='pawoo.onboarding.description'
-              defaultMessage='{site} is connected with servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.'
+              defaultMessage='{site} is connected with other servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.'
               values={{
                 site: initialState.pawoo_title,
                 acct: <code>@{this.props.acct}</code>,
