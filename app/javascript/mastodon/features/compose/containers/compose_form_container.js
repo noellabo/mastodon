@@ -75,17 +75,17 @@ const mapDispatchToProps = (dispatch) => ({
   },
 
   onPickEmoji (position, data) {
-    PawooGA.event({ category: pawooGaCategory, action: 'PickEmoji' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'PickEmoji' });
     dispatch(insertEmojiCompose(position, data));
   },
 
   onSelectTimeLimit (tag) {
-    PawooGA.event({ category: pawooGaCategory, action: 'SelectTimeLimit' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'SelectTimeLimit' });
     dispatch(insertTagCompose(tag));
   },
 
   onInsertHashtag (tag) {
-    PawooGA.event({ category: pawooGaCategory, action: 'InsertHashtag' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'InsertHashtag' });
     dispatch(insertTagCompose(tag));
   },
 

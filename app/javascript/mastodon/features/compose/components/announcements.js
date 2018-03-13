@@ -82,7 +82,7 @@ class Announcements extends React.PureComponent {
 
     if (Number.isInteger(id)) {
       this.setState({ dismissed: [].concat(this.state.dismissed, id) });
-      PawooGA.event({ category: pawooGaCategory, action: 'Dismiss', label: id });
+      PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Dismiss', eventLabel: id });
     }
   }
 
@@ -105,7 +105,7 @@ class Announcements extends React.PureComponent {
                 {announcement.get('link').map((link, index) => {
                   const classNames = ['announcements__link'];
                   const handleClick = () => {
-                    PawooGA.event({ category: pawooGaCategory, action: 'ClickButton', label: `${announcement.get('id')}-${index}` });
+                    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'ClickButton', eventLabel: `${announcement.get('id')}-${index}` });
 
                     const action = link.get('action');
                     if (action) {

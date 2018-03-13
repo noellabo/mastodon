@@ -19,7 +19,7 @@ export function blockDomain(domain, accountId) {
   return (dispatch, getState) => {
     dispatch(blockDomainRequest(domain));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Block' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Block' });
 
     api(getState).post('/api/v1/domain_blocks', { domain }).then(() => {
       dispatch(blockDomainSuccess(domain, accountId));
@@ -56,7 +56,7 @@ export function unblockDomain(domain, accountId) {
   return (dispatch, getState) => {
     dispatch(unblockDomainRequest(domain));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Unblock' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unblock' });
 
     api(getState).delete('/api/v1/domain_blocks', { params: { domain } }).then(() => {
       dispatch(unblockDomainSuccess(domain, accountId));

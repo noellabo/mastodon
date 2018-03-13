@@ -113,7 +113,7 @@ export function followAccount(id, reblogs = true) {
     const alreadyFollowing = getState().getIn(['relationships', id, 'following']);
     dispatch(followAccountRequest(id));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Follow' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Follow' });
 
     api(getState).post(`/api/v1/accounts/${id}/follow`, { reblogs }).then(response => {
       dispatch(followAccountSuccess(response.data, alreadyFollowing));
@@ -127,7 +127,7 @@ export function unfollowAccount(id) {
   return (dispatch, getState) => {
     dispatch(unfollowAccountRequest(id));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Unfollow' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unfollow' });
 
     api(getState).post(`/api/v1/accounts/${id}/unfollow`).then(response => {
       dispatch(unfollowAccountSuccess(response.data, getState().get('statuses')));
@@ -185,7 +185,7 @@ export function blockAccount(id) {
   return (dispatch, getState) => {
     dispatch(blockAccountRequest(id));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Block' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Block' });
 
     api(getState).post(`/api/v1/accounts/${id}/block`).then(response => {
       // Pass in entire statuses map so we can use it to filter stuff in different parts of the reducers
@@ -200,7 +200,7 @@ export function unblockAccount(id) {
   return (dispatch, getState) => {
     dispatch(unblockAccountRequest(id));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Unblock' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unblock' });
 
     api(getState).post(`/api/v1/accounts/${id}/unblock`).then(response => {
       dispatch(unblockAccountSuccess(response.data));
@@ -258,7 +258,7 @@ export function muteAccount(id, notifications) {
   return (dispatch, getState) => {
     dispatch(muteAccountRequest(id));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Mute' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Mute' });
 
     api(getState).post(`/api/v1/accounts/${id}/mute`, { notifications }).then(response => {
       // Pass in entire statuses map so we can use it to filter stuff in different parts of the reducers
@@ -273,7 +273,7 @@ export function unmuteAccount(id) {
   return (dispatch, getState) => {
     dispatch(unmuteAccountRequest(id));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Unmute' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unmute' });
 
     api(getState).post(`/api/v1/accounts/${id}/unmute`).then(response => {
       dispatch(unmuteAccountSuccess(response.data));
@@ -612,7 +612,7 @@ export function authorizeFollowRequest(id) {
   return (dispatch, getState) => {
     dispatch(authorizeFollowRequestRequest(id));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'AuthorizeFollowRequest' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'AuthorizeFollowRequest' });
 
     api(getState)
       .post(`/api/v1/follow_requests/${id}/authorize`)
@@ -648,7 +648,7 @@ export function rejectFollowRequest(id) {
   return (dispatch, getState) => {
     dispatch(rejectFollowRequestRequest(id));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'RejectFollowRequest' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'RejectFollowRequest' });
 
     api(getState)
       .post(`/api/v1/follow_requests/${id}/reject`)

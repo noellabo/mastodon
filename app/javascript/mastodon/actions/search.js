@@ -34,7 +34,7 @@ export function submitSearch() {
 
     dispatch(fetchSearchRequest());
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Submit' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Submit' });
 
     api(getState).get('/api/v1/search', {
       params: {

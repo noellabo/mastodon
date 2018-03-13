@@ -1,12 +1,30 @@
-import ReactGA from 'react-ga';
+/* global ga:false */
 
-ReactGA.initialize('UA-1830249-136');
+// Load GA
+/* eslint-disable */
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+/* eslint-enable */
 
 const isProduction = process.env.NODE_ENV === 'production';
+const option = (() => {
+  const userIdElement = document.querySelector('meta[name=pawoo-ga-uid]');
+  if (userIdElement) {
+    const userId = userIdElement.getAttribute('content');
+    if (userId) {
+      return { userId };
+    }
+  }
+  return {};
+})();
 
-export const event = (...args) => {
+ga('create', 'UA-1830249-136', option);
+
+export const event = (params) => {
   if (isProduction) {
-    ReactGA.event(...args);
+    ga('send', { hitType: 'event', ...params });
   }
 };
 
@@ -16,9 +34,9 @@ export const startHeartbeat = () => {
   }
 
   return setInterval(() => {
-    ReactGA.event({
-      category: 'Heartbeat',
-      action: 'Heartbeat',
+    event({
+      eventCategory: 'Heartbeat',
+      eventAction: 'Heartbeat',
     });
   }, 10 * 60 * 1000);
 };
@@ -28,21 +46,8 @@ export const trackPage = (page) => {
     return;
   }
 
-  const options = {};
-
-  const userIdElement = document.querySelector('meta[name=pawoo-ga-uid]');
-  if (userIdElement) {
-    const userId = userIdElement.getAttribute('content');
-    if (userId) {
-      options.userId = userId;
-    }
-  }
-
-  ReactGA.set({
-    page,
-    ...options,
-  });
-  ReactGA.pageview(page);
+  ga('set', 'page', page);
+  ga('send', 'pageview');
 };
 
 export default {
