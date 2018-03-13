@@ -39,7 +39,7 @@ export function reblog(status) {
   return function (dispatch, getState) {
     dispatch(reblogRequest(status));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Reblog' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Reblog' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/reblog`).then(function (response) {
       // The reblog API method returns a new status wrapped around the original. In this case we are only
@@ -55,7 +55,7 @@ export function unreblog(status) {
   return (dispatch, getState) => {
     dispatch(unreblogRequest(status));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Unreblog' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unreblog' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/unreblog`).then(response => {
       dispatch(unreblogSuccess(status, response.data));
@@ -115,7 +115,7 @@ export function favourite(status) {
   return function (dispatch, getState) {
     dispatch(favouriteRequest(status));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Favourite' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Favourite' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/favourite`).then(function (response) {
       dispatch(favouriteSuccess(status, response.data));
@@ -129,7 +129,7 @@ export function unfavourite(status) {
   return (dispatch, getState) => {
     dispatch(unfavouriteRequest(status));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Unfavourite' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unfavourite' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/unfavourite`).then(response => {
       dispatch(unfavouriteSuccess(status, response.data));
@@ -257,7 +257,7 @@ export function pin(status) {
   return (dispatch, getState) => {
     dispatch(pinRequest(status));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Pin' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Pin' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/pin`).then(response => {
       dispatch(pinSuccess(status, response.data));
@@ -294,7 +294,7 @@ export function unpin (status) {
   return (dispatch, getState) => {
     dispatch(unpinRequest(status));
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Unpin' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unpin' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/unpin`).then(response => {
       dispatch(unpinSuccess(status, response.data));

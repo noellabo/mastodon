@@ -63,7 +63,7 @@ export function replyCompose(status, router) {
       status: status,
     });
 
-    PawooGA.event({ category: pawooGaCategory, action: 'OpenReply' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'OpenReply' });
 
     if (!getState().getIn(['compose', 'mounted'])) {
       router.push('/statuses/new');
@@ -90,7 +90,7 @@ export function mentionCompose(account, router) {
       account: account,
     });
 
-    PawooGA.event({ category: pawooGaCategory, action: 'OpenMention' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'OpenMention' });
 
     if (!getState().getIn(['compose', 'mounted'])) {
       router.push('/statuses/new');
@@ -109,7 +109,7 @@ export function submitCompose() {
 
     dispatch(submitComposeRequest());
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Submit' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Submit' });
 
     api(getState).post('/api/v1/statuses', {
       status,
@@ -181,7 +181,7 @@ export function uploadCompose(files) {
 
     dispatch(uploadComposeRequest());
 
-    PawooGA.event({ category: pawooGaCategory, action: 'Upload' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Upload' });
 
     let data = new FormData();
     data.append('file', files[0]);

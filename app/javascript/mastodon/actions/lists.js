@@ -121,7 +121,7 @@ export const changeListEditorTitle = value => ({
 export const createList = (title, shouldReset) => (dispatch, getState) => {
   dispatch(createListRequest());
 
-  PawooGA.event({ category: pawooGaCategory, action: 'Create' });
+  PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Create' });
 
   api(getState).post('/api/v1/lists', { title }).then(({ data }) => {
     dispatch(createListSuccess(data));
@@ -149,7 +149,7 @@ export const createListFail = error => ({
 export const updateList = (id, title, shouldReset) => (dispatch, getState) => {
   dispatch(updateListRequest(id));
 
-  PawooGA.event({ category: pawooGaCategory, action: 'Update' });
+  PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Update' });
 
   api(getState).put(`/api/v1/lists/${id}`, { title }).then(({ data }) => {
     dispatch(updateListSuccess(data));
@@ -183,7 +183,7 @@ export const resetListEditor = () => ({
 export const deleteList = id => (dispatch, getState) => {
   dispatch(deleteListRequest(id));
 
-  PawooGA.event({ category: pawooGaCategory, action: 'Delete' });
+  PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Delete' });
 
   api(getState).delete(`/api/v1/lists/${id}`)
     .then(() => dispatch(deleteListSuccess(id)))
@@ -266,7 +266,7 @@ export const addToListEditor = accountId => (dispatch, getState) => {
 export const addToList = (listId, accountId) => (dispatch, getState) => {
   dispatch(addToListRequest(listId, accountId));
 
-  PawooGA.event({ category: pawooGaCategory, action: 'AddToList' });
+  PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'AddToList' });
 
   api(getState).post(`/api/v1/lists/${listId}/accounts`, { account_ids: [accountId] })
     .then(() => dispatch(addToListSuccess(listId, accountId)))
@@ -299,7 +299,7 @@ export const removeFromListEditor = accountId => (dispatch, getState) => {
 export const removeFromList = (listId, accountId) => (dispatch, getState) => {
   dispatch(removeFromListRequest(listId, accountId));
 
-  PawooGA.event({ category: pawooGaCategory, action: 'RemoveFromList' });
+  PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'RemoveFromList' });
 
   api(getState).delete(`/api/v1/lists/${listId}/accounts`, { params: { account_ids: [accountId] } })
     .then(() => dispatch(removeFromListSuccess(listId, accountId)))

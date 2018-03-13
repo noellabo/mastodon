@@ -17,7 +17,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(refreshTrendTags());
   },
   insertTagCompose (tag) {
-    PawooGA.event({ category: pawooGaCategory, action: 'SelectTrendTags' });
+    PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'SelectTrendTags' });
 
     dispatch(insertTagCompose(tag));
   },

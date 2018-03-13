@@ -6,7 +6,7 @@ export const MODAL_OPEN  = 'MODAL_OPEN';
 export const MODAL_CLOSE = 'MODAL_CLOSE';
 
 export function openModal(type, props) {
-  PawooGA.event({ category: pawooGaCategory, action: type });
+  PawooGA.event({ eventCategory: pawooGaCategory, eventAction: type });
 
   return {
     type: MODAL_OPEN,
