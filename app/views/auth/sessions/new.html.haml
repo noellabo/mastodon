@@ -5,16 +5,16 @@
   = render partial: 'shared/og'
 
 = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
-  .omniauth
-    = render 'oauth/authorizations/pixiv_auth', auth_type: 'signin'
-
-  .separate
-    %span= t('simple_form.labels.omniauth.or')
-
   = f.input :email, autofocus: true, placeholder: t('simple_form.labels.defaults.email'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.email') }
   = f.input :password, placeholder: t('simple_form.labels.defaults.password'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.password'), :autocomplete => 'off' }
 
   .actions
     = f.button :button, t('auth.login'), type: :submit
+
+  .separate
+    %span= t('simple_form.labels.omniauth.or')
+
+  .omniauth
+    = render 'oauth/authorizations/pixiv_auth', auth_type: 'signin'
 
 .form-footer= render 'auth/shared/links'
