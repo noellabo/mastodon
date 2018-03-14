@@ -22,9 +22,10 @@ export default class SuggestedAccount extends React.PureComponent {
 
   static propTypes = {
     account: ImmutablePropTypes.map.isRequired,
-    onFollow: PropTypes.func.isRequired,
-    onOpenMedia: PropTypes.func.isRequired,
+    onFollow: PropTypes.func,
+    onOpenMedia: PropTypes.func,
     intl: PropTypes.object.isRequired,
+    target: PropTypes.string,
   };
 
   handleFollow = () => {
@@ -40,7 +41,7 @@ export default class SuggestedAccount extends React.PureComponent {
   }
 
   render () {
-    const { account, onOpenMedia, intl } = this.props;
+    const { account, onOpenMedia, intl, target } = this.props;
 
     if (!account) {
       return <div />;
@@ -56,20 +57,20 @@ export default class SuggestedAccount extends React.PureComponent {
 
       // NOTE: blocking/mutingはそもそもロードされないはず
       if (requested) {
-        buttons = <IconButton active icon='hourglass' title={intl.formatMessage(messages.requested)} onClick={this.handleFollow} />;
+        buttons = this.onFollow && <IconButton active icon='hourglass' title={intl.formatMessage(messages.requested)} onClick={this.handleFollow} />;
       } else if (blocking) {
         buttons = <IconButton active icon='unlock-alt' title={intl.formatMessage(messages.unblock, { name: account.get('username') })} onClick={this.handleBlock} />;
       } else if (muting) {
         buttons = <IconButton active icon='volume-up' title={intl.formatMessage(messages.unmute, { name: account.get('username') })} onClick={this.handleMute} />;
       } else {
-        buttons = <IconButton icon={following ? 'user-times' : 'user-plus'} title={intl.formatMessage(following ? messages.unfollow : messages.follow)} onClick={this.handleFollow} active={following} />;
+        buttons = this.onFollow && <IconButton icon={following ? 'user-times' : 'user-plus'} title={intl.formatMessage(following ? messages.unfollow : messages.follow)} onClick={this.handleFollow} active={following} />;
       }
     }
 
     return (
       <div className='account suggested_account'>
         <div className='account__wrapper'>
-          <Permalink key={account.get('id')} className='account__display-name' href={account.get('url')} to={`/accounts/${account.get('id')}`}>
+          <Permalink key={account.get('id')} className='account__display-name' href={account.get('url')} to={`/accounts/${account.get('id')}`} target={target}>
             <div className='account__avatar-wrapper'><Avatar account={account} size={36} /></div>
             <DisplayName account={account} />
           </Permalink>

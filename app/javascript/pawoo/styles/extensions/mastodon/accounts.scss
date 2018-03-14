@@ -1,0 +1,24 @@
+.pawoo-extension-account__strip {
+  display: flex;
+  flex-direction: column;
+
+  .pawoo-extension-account__strip__extra {
+    flex: 1;
+
+    .pawoo-extension-account__strip__extra__bottom {
+      margin-top: 10px;
+      position: sticky;
+      top: 10px;
+
+      .card__bio {
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 740px) {
+  .pawoo-extension-account__strip__extra {
+    display: none;
+  }
+}
