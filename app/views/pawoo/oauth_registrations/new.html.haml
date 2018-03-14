@@ -17,3 +17,6 @@
 
   .actions
     = f.button :button, t('auth.register'), type: :submit
+
+  %p.hint.subtle-hint=t('auth.agreement_html', rules_path: about_more_path, terms_path: terms_path)
+.form-footer= render 'auth/shared/links'
