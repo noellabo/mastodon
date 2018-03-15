@@ -15,13 +15,13 @@ class Pawoo::Sitemap::UserIndexesController < ApplicationController
     min_id = (params[:page].to_i - 1) * SITEMAPINDEX_SIZE
     max_id = min_id + SITEMAPINDEX_SIZE
     read_from_slave do
-      @statuses = user_page_statuses(min_id, max_id)
+      @accounts = user_pages(min_id, max_id)
     end
   end
 
   private
 
-  def user_page_statuses(min_id, max_id)
+  def user_pages(min_id, max_id)
     Account.where('accounts.id > ? AND accounts.id <= ?', min_id, max_id)
            .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
            .where('accounts.statuses_count >= ?', ALLOW_STATUS_COUNT)

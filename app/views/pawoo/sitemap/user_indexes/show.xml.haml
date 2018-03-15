@@ -1,15 +1,15 @@
 !!! XML
 %urlset{ xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9' }
-  - @statuses.each do |status|
+  - @accounts.each do |account|
     %url
       %loc
-        = short_account_url(status.username)
+        = short_account_url(account.username)
       %lastmod
-        = status.updated_at.strftime('%Y-%m-%d')
+        = account.updated_at.strftime('%Y-%m-%d')
       %priority
-        - if status.followers_count > 5000
+        - if account.followers_count > 5000
           = '1.0'
-        - elsif status.followers_count > 3000
+        - elsif account.followers_count > 3000
           = '0.6'
         - else
           = '0.3'
