@@ -6,9 +6,9 @@
       %lastmod
         = user.updated_at.strftime('%Y-%m-%d')
       %priority
-        - if 5000 < user.followers_count
+        - if user.followers_count > 5000
           = '1.0'
-        - elsif 3000 < user.followers_count
+        - elsif user.followers_count > 3000
           = '0.6'
         - else
           = '0.3'
