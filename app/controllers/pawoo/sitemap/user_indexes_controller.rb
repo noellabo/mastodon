@@ -5,18 +5,32 @@ class Pawoo::Sitemap::UserIndexesController < ApplicationController
   ALLOW_FOLLOWERS_COUNT = 1000
 
   def index
-    @count = (User.maximum(:id) / SITEMAPINDEX_SIZE) + 1
+    read_from_slave do
+      @count = (User.maximum(:id) / SITEMAPINDEX_SIZE) + 1
+    end
   end
 
   def show
     min_id = (params[:page].to_i - 1) * SITEMAPINDEX_SIZE
     max_id = min_id + SITEMAPINDEX_SIZE
-    @users = User.select('MAX(statuses.id)')
-                 .select('MAX(statuses.updated_at) as updated_at')
-                 .select('accounts.username as username')
-                 .select('followers_count')
-                 .where('users.id > ? AND users.id <= ?', min_id, max_id)
-                 .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
-                 .group('accounts.id').joins(:account).joins(account: :statuses)
+    read_from_slave do
+      @users = user_page_info(min_id, max_id)
+    end
+  end
+
+  private
+
+  def user_page_info(min_id, max_id)
+    User.select('MAX(statuses.id)')
+        .select('MAX(statuses.updated_at) as updated_at')
+        .select('accounts.username as username')
+        .select('followers_count')
+        .where('users.id > ? AND users.id <= ?', min_id, max_id)
+        .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
+        .group('accounts.id').joins(:account).joins(account: :statuses)
+  end
+
+  def read_from_slave
+    SwitchPoint.with_readonly(:pawoo_slave) { yield }
   end
 end
