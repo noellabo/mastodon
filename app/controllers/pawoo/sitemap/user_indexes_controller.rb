@@ -5,7 +5,7 @@ class Pawoo::Sitemap::UserIndexesController < ApplicationController
   ALLOW_FOLLOWERS_COUNT = 1000
 
   def index
-    @count = (User.maximum(:id) / 50_000) + 1
+    @count = (User.maximum(:id) / SITEMAPINDEX_SIZE) + 1
   end
 
   def show
