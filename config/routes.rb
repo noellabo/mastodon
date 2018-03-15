@@ -359,7 +359,12 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    namespace :sitemap do
+      resources :user_indexes, only: [:index, :show], param: :page, format: :xml
+    end
   end
+
 
   match '*unmatched_route',
         via: :all,
