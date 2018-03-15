@@ -19,7 +19,7 @@
     = f.input :display_name, placeholder: t('simple_form.labels.defaults.display_name'), hint: t('simple_form.hints.defaults.display_name', count: 30 - f.object.display_name.size).html_safe, input_html: { class: 'account_display_name' }
 
     = f.label :note
-    = f.input :note, as: :text, placeholder: t('simple_form.labels.defaults.note'), hint: t('simple_form.hints.defaults.note', count: 160 - f.object.note.size).html_safe, input_html: { class: 'account_note' }
+    = f.input :note, as: :text, placeholder: t('simple_form.labels.defaults.note'), hint: t('simple_form.hints.defaults.note', count: 160 - f.object.note.size).html_safe, input_html: { class: 'account_note', rows: 8 }
 
   .actions
     = f.button :button, t('auth.register'), type: :submit
