@@ -3,6 +3,7 @@
 class Pawoo::Sitemap::UserIndexesController < ApplicationController
   SITEMAPINDEX_SIZE     = 50_000
   ALLOW_FOLLOWERS_COUNT = 1_000
+  ALLOW_STATUS_COUNT    = 5
 
   def index
     read_from_slave do
@@ -23,6 +24,7 @@ class Pawoo::Sitemap::UserIndexesController < ApplicationController
   def user_page_statuses(min_id, max_id)
     Account.where('accounts.id > ? AND accounts.id <= ?', min_id, max_id)
            .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
+           .where('statuses_count > ?', ALLOW_STATUS_COUNT)
            .where(domain: nil)
   end
 
