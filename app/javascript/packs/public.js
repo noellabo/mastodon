@@ -20,7 +20,7 @@ window.addEventListener('message', e => {
 function main() {
   const { length } = require('stringz');
   const IntlRelativeFormat = require('intl-relativeformat').default;
-  const { delegate } = require('rails-ujs');
+  const { delegate, csrfParam, csrfToken } = require('rails-ujs');
   const emojify = require('../mastodon/features/emoji/emoji').default;
   const { getLocale } = require('../mastodon/locales');
   const { localeData } = getLocale();
@@ -110,6 +110,32 @@ function main() {
       const props = JSON.parse(content.getAttribute('data-props'));
       ReactDOM.render(<CardContainer locale={locale} {...props} />, content);
     });
+
+    [].forEach.call(document.getElementsByClassName('pawoo-unauthenticated-follow__button__dropdown'), (content) => {
+      const controls = document.getElementById(content.getAttribute('aria-controls'));
+
+      function hide() {
+        controls.setAttribute('aria-expanded', 'false');
+        controls.style.display = '';
+        document.removeEventListener('click', onDocumentClick);
+      }
+
+      function onDocumentClick({ target }) {
+        if (!content.contains(target) && !controls.contains(target)) {
+          hide();
+        }
+      }
+
+      content.addEventListener('click', () => {
+        if (controls.style.display === 'block') {
+          hide();
+        } else {
+          controls.setAttribute('aria-expanded', 'true');
+          controls.style.display = 'block';
+          document.addEventListener('click', onDocumentClick);
+        }
+      });
+    });
   });
 
   delegate(document, '.webapp-btn', 'click', ({ target, button }) => {
@@ -154,7 +180,32 @@ function main() {
     event.preventDefault();
 
     window.pixivSignupSDK.start('index', 'pawoo', () => {
-      location.href = '/auth/oauth/pixiv';
+      const follow = event.target.getAttribute('data-follow');
+
+      if (follow) {
+        const form = document.createElement('form');
+        const button = document.createElement('button');
+        const csrfInput = document.createElement('input');
+        const followInput = document.createElement('input');
+
+        csrfInput.name = csrfParam();
+        csrfInput.value = csrfToken();
+
+        followInput.name = 'follow';
+        followInput.value = follow;
+
+        form.method = 'POST';
+        form.action = '/auth/oauth/pixiv';
+        form.style.display = 'none';
+        form.appendChild(button);
+        form.appendChild(csrfInput);
+        form.appendChild(followInput);
+
+        document.body.appendChild(form);
+        button.click();
+      } else {
+        location.href = '/auth/oauth/pixiv';
+      }
     });
   });
 

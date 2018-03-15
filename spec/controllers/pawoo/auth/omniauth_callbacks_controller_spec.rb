@@ -44,6 +44,10 @@ RSpec.describe Pawoo::Auth::OmniauthCallbacksController, type: :controller do
         sign_in(user)
       end
 
+      let!(:oauth_authentication) do
+        Fabricate(:oauth_authentication, provider: 'pixiv', uid: @request.env['omniauth.auth'].uid)
+      end
+
       let!(:user) { Fabricate(:user) }
 
       context 'the linked user is current_user' do
@@ -96,10 +100,6 @@ RSpec.describe Pawoo::Auth::OmniauthCallbacksController, type: :controller do
       end
 
       context 'the linked user is not current_user' do
-        let!(:oauth_authentication) do
-          Fabricate(:oauth_authentication, provider: 'pixiv', uid: @request.env['omniauth.auth'].uid)
-        end
-
         it 'fails to update' do
           expect { subject }.to_not change {
             [OauthAuthentication.count, oauth_authentication.reload.attributes]
@@ -172,6 +172,12 @@ RSpec.describe Pawoo::Auth::OmniauthCallbacksController, type: :controller do
           is_expected.to redirect_to '/path/after/sign/in'
         end
       end
+
+      it 'follows a local account if queued' do
+        followee = Fabricate(:account, domain: nil, username: 'followee')
+        get :pixiv, session: { 'pawoo.follow': 'followee' }
+        expect(oauth_authentication.user.account.following?(followee)).to eq true
+      end
     end
 
     context 'user is not signed in and oauth is not linked with user' do
@@ -182,6 +188,11 @@ RSpec.describe Pawoo::Auth::OmniauthCallbacksController, type: :controller do
       end
 
       it { is_expected.to redirect_to(new_user_oauth_registration_path) }
+    end
+
+    it 'deletes follow queue' do
+      get :pixiv, session: { 'pawoo.follow': 'followee' }
+      expect(session).not_to have_key 'pawoo.follow'
     end
   end
 end
