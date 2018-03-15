@@ -15,8 +15,8 @@ class Pawoo::Sitemap::UserIndexesController < ApplicationController
                  .select('MAX(statuses.updated_at) as updated_at')
                  .select('accounts.username as username')
                  .select('followers_count')
-                 .where('? < users.id AND users.id <= ?', min_id, max_id)
-                 .where('? <= accounts.followers_count', ALLOW_FOLLOWERS_COUNT)
+                 .where('users.id > ? AND users.id <= ?', min_id, max_id)
+                 .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
                  .group('accounts.id').joins(:account).joins(account: :statuses)
   end
 end
