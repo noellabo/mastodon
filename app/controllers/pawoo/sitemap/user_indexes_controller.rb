@@ -2,7 +2,7 @@
 
 class Pawoo::Sitemap::UserIndexesController < ApplicationController
   SITEMAPINDEX_SIZE     = 50_000
-  ALLOW_FOLLOWERS_COUNT = 1000
+  ALLOW_FOLLOWERS_COUNT = 1_000
 
   def index
     read_from_slave do
