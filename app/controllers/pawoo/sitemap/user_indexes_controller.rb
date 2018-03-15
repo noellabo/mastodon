@@ -2,7 +2,7 @@
 
 class Pawoo::Sitemap::UserIndexesController < ApplicationController
   SITEMAPINDEX_SIZE     = 50_000
-  ALLOW_FOLLOWERS_COUNT = 1_000
+  ALLOW_FOLLOWERS_COUNT = 10
   ALLOW_STATUS_COUNT    = 5
 
   def index
