@@ -11,5 +11,7 @@
           = '1.0'
         - elsif account.followers_count > 3000
           = '0.6'
-        - else
+        - elsif account.followers_count > 1000
           = '0.3'
+        - else
+          = '0.1'
