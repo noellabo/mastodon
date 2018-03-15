@@ -27,7 +27,7 @@ class Pawoo::Form::OauthRegistration
           username: normalize_username(omniauth_auth['info']['account']),
           display_name: omniauth_auth['info']['nickname'],
           note: omniauth_auth['extra']['raw_info']['profile']['introduction'],
-          avatar: fetch_pixiv_avatar(omniauth_auth['info']['avatar'])
+          avatar: omniauth_auth['info']['avatar']
         )
       else
         new
@@ -40,15 +40,6 @@ class Pawoo::Form::OauthRegistration
     def normalize_username(string)
       username = string.to_s.tr('-', '_').remove(/[^a-z0-9_]/i, '')
       username unless username.match?(PRIVATE_USER_NAME)
-    end
-
-    def fetch_pixiv_avatar(url)
-      image = OpenURI.open_uri(url, 'Referer' => "https://#{Rails.configuration.x.local_domain}")
-      account = Account.new(avatar: image)
-      account.valid?
-      account.avatar unless account.errors.key?(:avatar)
-    rescue
-      nil
     end
   end
 
@@ -63,8 +54,11 @@ class Pawoo::Form::OauthRegistration
   def save
     return false if invalid?
 
+    attributes = user_attributes
+    attributes[:account_attributes].merge!(avatar: fetch_pixiv_avatar(avatar))
+    self.user = User.new(attributes)
+
     ApplicationRecord.transaction do
-      self.user = User.new(user_attributes)
       user.skip_confirmation_notification! if email_confirmed?
       self.oauth_authentication = user.oauth_authentications.build(provider: provider, uid: uid)
       user.save! && user.create_initial_password_usage! && oauth_authentication.save!
@@ -76,6 +70,15 @@ class Pawoo::Form::OauthRegistration
   end
 
   private
+
+  def fetch_pixiv_avatar(url)
+    image = OpenURI.open_uri(url, 'Referer' => "https://#{Rails.configuration.x.local_domain}")
+    account = Account.new(avatar: image)
+    account.valid?
+    account.avatar unless account.errors.key?(:avatar)
+  rescue
+    nil
+  end
 
   def validate_user
     user = User.new(user_attributes)
@@ -101,8 +104,7 @@ class Pawoo::Form::OauthRegistration
       account_attributes: {
         username: username,
         display_name: display_name,
-        note: note,
-        avatar: avatar
+        note: note
       }
     }
   end
