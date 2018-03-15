@@ -14,13 +14,13 @@ class Pawoo::Sitemap::UserIndexesController < ApplicationController
     min_id = (params[:page].to_i - 1) * SITEMAPINDEX_SIZE
     max_id = min_id + SITEMAPINDEX_SIZE
     read_from_slave do
-      @users = user_page_info(min_id, max_id)
+      @statuses = user_page_statuses(min_id, max_id)
     end
   end
 
   private
 
-  def user_page_info(min_id, max_id)
+  def user_page_statuses(min_id, max_id)
     User.select('MAX(statuses.id)')
         .select('MAX(statuses.updated_at) as updated_at')
         .select('accounts.username as username')
