@@ -1,8 +1,6 @@
 class Pawoo::OauthRegistrationsController < DeviseController
   include Pawoo::WithRedisSessionStore
 
-  layout 'auth'
-
   before_action :require_omniauth_auth
   before_action :require_no_authentication
   before_action :set_oauth_registration
