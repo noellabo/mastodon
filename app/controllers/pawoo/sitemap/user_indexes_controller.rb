@@ -6,7 +6,7 @@ class Pawoo::Sitemap::UserIndexesController < ApplicationController
 
   def index
     read_from_slave do
-      @count = (User.maximum(:id) / SITEMAPINDEX_SIZE) + 1
+      @count = (Account.maximum(:id) / SITEMAPINDEX_SIZE) + 1
     end
   end
 
@@ -21,13 +21,9 @@ class Pawoo::Sitemap::UserIndexesController < ApplicationController
   private
 
   def user_page_statuses(min_id, max_id)
-    User.select('MAX(statuses.id)')
-        .select('MAX(statuses.updated_at) as updated_at')
-        .select('accounts.username as username')
-        .select('followers_count')
-        .where('users.id > ? AND users.id <= ?', min_id, max_id)
-        .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
-        .group('accounts.id').joins(:account).joins(account: :statuses)
+    Account.where('accounts.id > ? AND accounts.id <= ?', min_id, max_id)
+           .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
+           .where(domain: nil)
   end
 
   def read_from_slave
