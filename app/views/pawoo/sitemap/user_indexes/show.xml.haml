@@ -1,0 +1,14 @@
+%urlset{ xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9' }
+  - @users.each do |user|
+    %url
+      %loc
+        = short_account_url(user.username)
+      %lastmod
+        = user.updated_at.strftime('%Y-%m-%d')
+      %priority
+        - if 5000 < user.followers_count
+          = '1.0'
+        - elsif 3000 < user.followers_count
+          = '0.6'
+        - else
+          = '0.3'

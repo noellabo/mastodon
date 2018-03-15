@@ -1,0 +1,7 @@
+%sitemapindex{ xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9' }
+  - @count.times.each.with_index(1) do |_, page|
+    %sitemap
+      %loc
+        = sitemap_user_index_url(page: page, format: :xml)
+      %lastmod
+        = Date.today.strftime('%Y-%m-%d')
