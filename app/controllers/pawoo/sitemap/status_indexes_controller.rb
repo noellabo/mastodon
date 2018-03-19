@@ -15,11 +15,11 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
 
   def page_details
     read_from_slave do
-      StreamEntry.select('statuses.id')
+      StreamEntry.joins(:status).joins(status: :account)
+                 .select('statuses.id')
                  .select('statuses.updated_at')
                  .select('accounts.username')
                  .select('statuses.reblogs_count')
-                 .joins(:status).joins(status: :account)
                  .where('stream_entries.activity_type = \'Status\'')
                  .where('stream_entries.id > ?', min_id)
                  .where('stream_entries.id <= ?', max_id)
