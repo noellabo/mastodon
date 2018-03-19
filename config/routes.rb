@@ -362,6 +362,7 @@ Rails.application.routes.draw do
 
     namespace :sitemap do
       resources :user_indexes, only: [:index, :show], param: :page, format: :xml
+      resources :status_indexes, only: [:index, :show], param: :page, format: :xml
     end
   end
 

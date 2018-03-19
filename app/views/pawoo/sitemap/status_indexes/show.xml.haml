@@ -1,0 +1,17 @@
+!!! XML
+%urlset{ xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9' }
+  - @status_pages.each do |status_page|
+    %url
+      %loc
+        = short_account_status_url(status_page.username, status_page.id)
+      %lastmod
+        = status_page.updated_at.strftime('%Y-%m-%d')
+      %priority
+        - if status_page.reblogs_count > 100
+          = '1.0'
+        - elsif status_page.reblogs_count > 50
+          = '0.6'
+        - elsif status_page.reblogs_count > 20
+          = '0.3'
+        - else
+          = '0.1'

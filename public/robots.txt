@@ -5,3 +5,4 @@ Disallow: /api
 Disallow: /*?max_id=
 
 Sitemap: https://pawoo.net/sitemap/user_indexes.xml
+Sitemap: https://pawoo.net/sitemap/status_indexes.xml
