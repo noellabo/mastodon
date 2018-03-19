@@ -3,6 +3,6 @@
   - @count.times.each.with_index(1) do |_, page|
     %sitemap
       %loc
-        = sitemap_status_index_url(page: page, format: :xml)
+        = sitemap_user_index_url(page: page, format: :xml)
       %lastmod
         = Date.today.strftime('%Y-%m-%d')
