@@ -19,12 +19,12 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
                  .select('statuses.updated_at')
                  .select('accounts.username')
                  .select('statuses.reblogs_count')
+                 .joins(:status).joins(status: :account)
                  .where('stream_entries.activity_type = \'Status\'')
                  .where('stream_entries.id > ?', min_id)
                  .where('stream_entries.id <= ?', max_id)
                  .where('statuses.reblogs_count >= ?', ALLOW_REBLOGS_COUNT)
                  .where('statuses.local = TRUE')
-                 .joins(:status).joins(status: :account)
     end
   end
 end
