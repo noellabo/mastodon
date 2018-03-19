@@ -1,34 +1,25 @@
 # frozen_string_literal: true
 
-class Pawoo::Sitemap::UserIndexesController < ApplicationController
-  SITEMAPINDEX_SIZE     = 50_000
+class Pawoo::Sitemap::UserIndexesController < Pawoo::Sitemap::ApplicationController
   ALLOW_FOLLOWERS_COUNT = 10
   ALLOW_STATUS_COUNT    = 5
 
   def index
-    read_from_slave do
-      @count = (Account.maximum(:id) / SITEMAPINDEX_SIZE) + 1
-    end
+    @count = page_count(Account)
   end
 
   def show
-    min_id = (params[:page].to_i - 1) * SITEMAPINDEX_SIZE
-    max_id = min_id + SITEMAPINDEX_SIZE
-    read_from_slave do
-      @accounts = user_pages(min_id, max_id)
-    end
+    @accounts = page_details
   end
 
   private
 
-  def user_pages(min_id, max_id)
-    Account.where('accounts.id > ? AND accounts.id <= ?', min_id, max_id)
-           .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
-           .where('accounts.statuses_count >= ?', ALLOW_STATUS_COUNT)
-           .where(domain: nil)
-  end
-
-  def read_from_slave
-    SwitchPoint.with_readonly(:pawoo_slave) { yield }
+  def page_details
+    read_from_slave do
+      Account.where('accounts.id > ? AND accounts.id <= ?', min_id, max_id)
+             .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
+             .where('accounts.statuses_count >= ?', ALLOW_STATUS_COUNT)
+             .where(domain: nil)
+    end
   end
 end
