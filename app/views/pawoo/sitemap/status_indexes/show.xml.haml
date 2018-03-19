@@ -9,9 +9,9 @@
       %priority
         - if status_page.reblogs_count > 100
           = '1.0'
-        - elsif status_page.reblogs_count > 15
+        - elsif status_page.reblogs_count > 50
           = '0.6'
-        - elsif status_page.reblogs_count > 5
+        - elsif status_page.reblogs_count > 20
           = '0.3'
         - else
           = '0.1'
