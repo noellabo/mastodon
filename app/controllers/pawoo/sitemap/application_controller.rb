@@ -20,8 +20,6 @@ class Pawoo::Sitemap::ApplicationController < ApplicationController
   end
 
   def read_from_slave
-    SwitchPoint.with_readonly(:pawoo_slave) do
-      return yield
-    end
+    SwitchPoint.with_readonly(:pawoo_slave) { yield }
   end
 end
