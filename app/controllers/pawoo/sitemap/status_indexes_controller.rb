@@ -25,6 +25,7 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
                  .where('stream_entries.id <= ?', max_id)
                  .where('statuses.reblogs_count >= ?', ALLOW_REBLOGS_COUNT)
                  .where('statuses.local = TRUE')
+                 .load
     end
   end
 end
