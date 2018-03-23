@@ -20,12 +20,15 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
                  .select('statuses.updated_at')
                  .select('accounts.username')
                  .select('statuses.reblogs_count')
-                 .where('stream_entries.activity_type = \'Status\'')
                  .where('stream_entries.id > ?', min_id)
                  .where('stream_entries.id <= ?', max_id)
                  .where('statuses.reblogs_count >= ?', ALLOW_REBLOGS_COUNT)
-                 .where('statuses.local = TRUE')
+                 .merge(status_scope)
                  .load
     end
+  end
+
+  def status_scope
+    Status.local.where(visibility: [:public, :unlisted]).without_reblogs.published.reorder(nil)
   end
 end
