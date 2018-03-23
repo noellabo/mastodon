@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180306184126) do
+ActiveRecord::Schema.define(version: 20180323191323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -487,6 +487,7 @@ ActiveRecord::Schema.define(version: 20180306184126) do
     t.bigint "account_id"
     t.index ["account_id", "activity_type", "id"], name: "index_stream_entries_on_account_id_and_activity_type_and_id"
     t.index ["activity_id", "activity_type"], name: "index_stream_entries_on_activity_id_and_activity_type"
+    t.index ["activity_type", "hidden", "id"], name: "index_stream_entries_on_activity_type_and_hidden_and_id"
   end
 
   create_table "subscriptions", force: :cascade do |t|

@@ -23,6 +23,7 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
                  .where('stream_entries.id > ?', min_id)
                  .where('stream_entries.id <= ?', max_id)
                  .where('statuses.reblogs_count >= ?', ALLOW_REBLOGS_COUNT)
+                 .where(hidden: false)
                  .merge(status_scope).merge(account_scope)
                  .load
     end
