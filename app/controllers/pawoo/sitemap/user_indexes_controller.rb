@@ -20,6 +20,7 @@ class Pawoo::Sitemap::UserIndexesController < Pawoo::Sitemap::ApplicationControl
              .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
              .where('accounts.statuses_count >= ?', ALLOW_STATUS_COUNT)
              .where(domain: nil)
+             .load
     end
   end
 end
