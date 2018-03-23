@@ -1,28 +1,36 @@
 - content_for :page_title do
   = t('auth.oauth_registration')
 
-= simple_form_for(@oauth_registration, url: user_oauth_registration_path, method: 'POST') do |f|
-  = render 'shared/error_messages', object: f.object
+- content_for :content do
+  .container
+    .logo-container
+      %h1
+        = link_to root_path do
+          = image_tag asset_pack_path('pawoo/service_logo.png'), alt: 'Pawoo'
 
-  .omniauth
-    = f.label :email
-    - if f.object.email_confirmed?
-      .label= t('auth.confirmed_email')
-      = f.input :email, disabled: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.email') }
-    - else
-      = f.input :email, autofocus: true, placeholder: t('simple_form.labels.defaults.email'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.email') }
+    = simple_form_for(@oauth_registration, url: user_oauth_registration_path, method: 'POST') do |f|
+      = render 'shared/error_messages', object: f.object
 
-    = f.label :username
-    = f.input :username, autofocus: true, placeholder: t('simple_form.labels.defaults.username'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.username') }
+      .pawoo-oauth-registration__body
+        %img{ referrerpolicy: 'origin', src: f.object.avatar }
+        .omniauth
+          = f.label :email
+          - if f.object.email_confirmed?
+            .label= t('auth.confirmed_email')
+            = f.input :email, disabled: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.email') }
+          - else
+            = f.input :email, autofocus: true, placeholder: t('simple_form.labels.defaults.email'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.email') }
 
-    = f.label :display_name
-    = f.input :display_name, placeholder: t('simple_form.labels.defaults.display_name'), hint: t('simple_form.hints.defaults.display_name', count: 30 - f.object.display_name.size).html_safe, input_html: { class: 'account_display_name' }
+          = f.label :username
+          = f.input :username, autofocus: true, placeholder: t('simple_form.labels.defaults.username'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.username') }
 
-    = f.label :note
-    = f.input :note, as: :text, placeholder: t('simple_form.labels.defaults.note'), hint: t('simple_form.hints.defaults.note', count: 160 - f.object.note.size).html_safe, input_html: { class: 'account_note', rows: 8 }
+          = f.label :display_name
+          = f.input :display_name, placeholder: t('simple_form.labels.defaults.display_name'), hint: t('simple_form.hints.defaults.display_name', count: 30 - f.object.display_name.size).html_safe, input_html: { class: 'account_display_name' }
 
-  .actions
-    = f.button :button, t('auth.register'), type: :submit
+          = f.label :note
+          = f.input :note, as: :text, placeholder: t('simple_form.labels.defaults.note'), hint: t('simple_form.hints.defaults.note', count: 160 - f.object.note.size).html_safe, input_html: { class: 'account_note', rows: 8 }
 
-  %p.hint.subtle-hint=t('auth.agreement_html', rules_path: about_more_path, terms_path: terms_path)
-.form-footer= render 'auth/shared/links'
+      .pawoo-oauth-registration__actions.actions
+        = f.button :button, t('auth.register'), type: :submit
+      %p.hint.subtle-hint=t('auth.agreement_html', rules_path: about_more_path, terms_path: terms_path)
+    .form-footer= render 'auth/shared/links'
