@@ -23,12 +23,16 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
                  .where('stream_entries.id > ?', min_id)
                  .where('stream_entries.id <= ?', max_id)
                  .where('statuses.reblogs_count >= ?', ALLOW_REBLOGS_COUNT)
-                 .merge(status_scope)
+                 .merge(status_scope).merge(account_scope)
                  .load
     end
   end
 
   def status_scope
     Status.local.where(visibility: [:public, :unlisted]).without_reblogs.published.reorder(nil)
+  end
+
+  def account_scope
+    Account.local.where(suspended: false)
   end
 end

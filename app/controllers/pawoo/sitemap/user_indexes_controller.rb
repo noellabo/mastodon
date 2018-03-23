@@ -19,7 +19,7 @@ class Pawoo::Sitemap::UserIndexesController < Pawoo::Sitemap::ApplicationControl
       Account.where('accounts.id > ? AND accounts.id <= ?', min_id, max_id)
              .where('accounts.followers_count >= ?', ALLOW_FOLLOWERS_COUNT)
              .where('accounts.statuses_count >= ?', ALLOW_STATUS_COUNT)
-             .where(domain: nil)
+             .local.where(suspended: false)
              .load
     end
   end
