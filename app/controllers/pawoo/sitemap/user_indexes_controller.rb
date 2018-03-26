@@ -5,7 +5,9 @@ class Pawoo::Sitemap::UserIndexesController < Pawoo::Sitemap::ApplicationControl
   ALLOW_STATUS_COUNT    = 5
 
   def index
-    @count = page_count(Account)
+    read_from_slave do
+      @count = page_count(Account)
+    end
   end
 
   def show

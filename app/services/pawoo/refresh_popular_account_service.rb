@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Pawoo::RefreshPopularAccountService
+  include Pawoo::SlaveReader
+
   ACTIVE_ACCOUNT_DURATION = 2.weeks
   RECENT_MEDIA_DURATION = 1.month
   REDIS_KEY = 'pawoo:popular_account_ids'
@@ -12,7 +14,7 @@ class Pawoo::RefreshPopularAccountService
   end
 
   def call
-    SwitchPoint.with_readonly(:pawoo_slave) do
+    read_from_slave do
       load_active_accounts
       load_pixiv_followers_count
       load_latest_media_statuses

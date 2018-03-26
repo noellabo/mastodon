@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationController
-  ALLOW_REBLOGS_COUNT = 5
-
   def index
-    @count = page_count(StreamEntry)
+    read_from_slave do
+      @count = page_count(StreamEntry)
+    end
   end
 
   def show
@@ -14,18 +14,18 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
   private
 
   def page_details
+    status_ids = Rails.cache.read("pawoo:sitemap:statuses_indexes:#{@page}")
+    return [] if status_ids.blank?
+
     read_from_slave do
-      StreamEntry.joins(:status).joins(status: :account)
-                 .select('statuses.id')
-                 .select('statuses.updated_at')
-                 .select('accounts.username')
-                 .select('statuses.reblogs_count')
-                 .where('stream_entries.id > ?', min_id)
-                 .where('stream_entries.id <= ?', max_id)
-                 .where('statuses.reblogs_count >= ?', ALLOW_REBLOGS_COUNT)
-                 .where(hidden: false)
-                 .merge(status_scope).merge(account_scope)
-                 .load
+      Status.joins(:account)
+            .select('statuses.id')
+            .select('statuses.updated_at')
+            .select('accounts.username')
+            .select('statuses.reblogs_count')
+            .where(id: status_ids)
+            .merge(status_scope).merge(account_scope)
+            .load
     end
   end
 
