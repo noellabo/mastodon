@@ -18,18 +18,16 @@ describe Pawoo::Sitemap::StatusIndexesController, type: :controller do
   end
 
   describe 'GET #show' do
-    before do
-      Rails.cache.write('pawoo:sitemap:statuses_indexes:1', [status.id])
-    end
+    let(:page) { status.stream_entry.id }
 
     it 'renders sitemap' do
-      get :show, params: { page: 1 }, format: 'xml'
+      get :show, params: { page: page }, format: 'xml'
 
       expect(response).to have_http_status(:success)
     end
 
     it 'assigns @status_pages' do
-      get :show, params: { page: 1 }, format: 'xml'
+      get :show, params: { page: page }, format: 'xml'
 
       expect(assigns(:status_pages).first.id).to eq status.id
     end
