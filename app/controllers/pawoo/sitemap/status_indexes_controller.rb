@@ -4,7 +4,9 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
   ALLOW_REBLOGS_COUNT = 5
 
   def index
-    @count = page_count(StreamEntry)
+    read_from_slave do
+      @count = page_count(StreamEntry)
+    end
   end
 
   def show

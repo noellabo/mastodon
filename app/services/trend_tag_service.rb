@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TrendTagService < BaseService
+  include Pawoo::SlaveReader
+
   SPAN = 60.minutes
   TREND_HISTORIES_KEY = 'trend_histories'
   TREND_LENGTH = 3
@@ -47,7 +49,7 @@ class TrendTagService < BaseService
   end
 
   def call(time = Time.current)
-    SwitchPoint.with_readonly(:pawoo_slave) do
+    read_from_slave do
       statuses = recent_public_statuses(time)
       current_tag_scores = build_tag_scores_from_statuses(statuses)
       lpush_current_tag_scores(current_tag_scores)
