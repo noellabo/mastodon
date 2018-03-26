@@ -20,6 +20,19 @@ class Pawoo::Sitemap::Status < Pawoo::Sitemap
             .merge(status_scope).merge(account_scope)
   end
 
+  # TODO: あとで消す
+  def direct_query
+    StreamEntry.joins(:status).joins(status: :account)
+               .select('statuses.id')
+               .select('statuses.updated_at')
+               .select('accounts.username')
+               .select('statuses.reblogs_count')
+               .where('stream_entries.id > ?', min_id)
+               .where('stream_entries.id <= ?', max_id)
+               .where(hidden: false)
+               .merge(status_scope).merge(account_scope)
+  end
+
   def prepare
     status_ids = StreamEntry.joins(:status).joins(status: :account)
                             .where('stream_entries.id > ?', min_id)

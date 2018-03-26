@@ -15,6 +15,14 @@ class Pawoo::Sitemap::User < Pawoo::Sitemap
     Account.where(id: account_ids).merge(account_scope)
   end
 
+  # TODO: あとで消す
+  def direct_query
+    Account.joins(:user)
+          .where('users.id > ?', min_id)
+          .where('users.id <= ?', max_id)
+          .merge(account_scope)
+  end
+
   def prepare
     account_ids = ::User.joins(:account)
                         .where('users.id > ?', min_id)
