@@ -25,11 +25,5 @@ describe Pawoo::Sitemap::StatusIndexesController, type: :controller do
 
       expect(response).to have_http_status(:success)
     end
-
-    it 'assigns @status_pages' do
-      get :show, params: { page: page }, format: 'xml'
-
-      expect(assigns(:status_pages).first.id).to eq status.id
-    end
   end
 end

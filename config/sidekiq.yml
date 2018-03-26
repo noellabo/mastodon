@@ -50,4 +50,4 @@
     class: Pawoo::Scheduler::RefreshPopularAccountScheduler
   pawoo_refresh_sitemap_statuses_scheduler:
     cron: '<%= Random.rand(0..59) %> <%= Random.rand(18..20) %> * * *'
-    class: Pawoo::Scheduler::RefreshSitemapStatusesScheduler
+    class: Pawoo::Scheduler::PrepareSitemapScheduler
