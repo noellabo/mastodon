@@ -32,7 +32,7 @@ class Pawoo::Sitemap
   end
 
   def store_to_cache(ids)
-    Rails.cache.write(redis_key, ids, expired_in: 2.days)
+    Rails.cache.write(redis_key, ids, expires_in: 2.days)
   end
 
 end
