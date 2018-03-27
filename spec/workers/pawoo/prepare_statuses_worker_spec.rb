@@ -9,7 +9,7 @@ describe Pawoo::Sitemap::PrepareStatusesWorker do
     stub_const 'Pawoo::Sitemap::SITEMAPINDEX_SIZE', 1
   end
 
-  describe 'perform' do
+  xdescribe 'perform' do
     let(:status) { Fabricate(:status, reblogs_count: 5) }
 
     context 'page is not the last' do
