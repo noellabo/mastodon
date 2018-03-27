@@ -8,10 +8,16 @@ class Pawoo::Sitemap::UserIndexesController < Pawoo::Sitemap::ApplicationControl
   end
 
   def show
-    read_from_slave do
-      sitemap = Pawoo::Sitemap::User.new(params[:page])
-      sitemap.prepare unless sitemap.cached?
-      @accounts = sitemap.query.load
+    page = params[:page]
+    sitemap = Pawoo::Sitemap::User.new(page)
+
+    if sitemap.cached?
+      read_from_slave do
+        @accounts = sitemap.query.load
+      end
+    else
+      Pawoo::Sitemap::PrepareUsersWorker.perform_async(page)
+      @accounts = []
     end
   end
 end
