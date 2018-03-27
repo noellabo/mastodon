@@ -9,7 +9,9 @@ class Pawoo::Sitemap::UserIndexesController < Pawoo::Sitemap::ApplicationControl
 
   def show
     read_from_slave do
-      @accounts = Pawoo::Sitemap::User.new(params[:page]).direct_query.load
+      sitemap = Pawoo::Sitemap::User.new(params[:page])
+      sitemap.prepare unless sitemap.cached?
+      @accounts = sitemap.query.load
     end
   end
 end
