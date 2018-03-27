@@ -9,7 +9,9 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
 
   def show
     read_from_slave do
-      @status_pages = Pawoo::Sitemap::Status.new(params[:page]).direct_query.load
+      sitemap = Pawoo::Sitemap::Status.new(params[:page])
+      sitemap.prepare unless sitemap.cached?
+      @status_pages = sitemap.query.load
     end
   end
 end

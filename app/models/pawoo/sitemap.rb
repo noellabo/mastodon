@@ -13,6 +13,10 @@ class Pawoo::Sitemap
     @page = page
   end
 
+  def cached?
+    Rails.cache.exist?(redis_key)
+  end
+
   private
 
   def min_id
