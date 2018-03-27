@@ -8,10 +8,16 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
   end
 
   def show
-    read_from_slave do
-      sitemap = Pawoo::Sitemap::Status.new(params[:page])
-      sitemap.prepare unless sitemap.cached?
-      @status_pages = sitemap.query.load
+    page = params[:page]
+    sitemap = Pawoo::Sitemap::Status.new(page)
+
+    if sitemap.cached?
+      read_from_slave do
+        @status_pages = sitemap.query.load
+      end
+    else
+      Pawoo::Sitemap::PrepareStatusesWorker.perform_async(page)
+      @status_pages = []
     end
   end
 end

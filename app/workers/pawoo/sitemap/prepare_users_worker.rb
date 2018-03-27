@@ -4,14 +4,16 @@ class Pawoo::Sitemap::PrepareUsersWorker
   include Sidekiq::Worker
   include Pawoo::SlaveReader
 
-  sidekiq_options queue: 'pull'
+  sidekiq_options queue: 'pull', unique: :until_executed
 
-  def perform(page)
+  def perform(page, load_next_page = false)
     read_from_slave do
       Pawoo::Sitemap::User.new(page).prepare
 
-      next_page = page + 1
-      Pawoo::Sitemap::PrepareUsersWorker.perform_async(next_page) if next_page <= Pawoo::Sitemap::User.page_count
+      if load_next_page
+        next_page = page + 1
+        Pawoo::Sitemap::PrepareUsersWorker.perform_async(next_page, true) if next_page <= Pawoo::Sitemap::User.page_count
+      end
     end
   end
 end
