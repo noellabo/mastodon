@@ -9,7 +9,7 @@ describe Pawoo::Sitemap::PrepareUsersWorker do
     stub_const 'Pawoo::Sitemap::SITEMAPINDEX_SIZE', 1
   end
 
-  describe 'perform' do
+  xdescribe 'perform' do
     let!(:account) { Fabricate(:account, user: Fabricate(:user),followers_count: 10, statuses_count: 5) }
 
     context 'page is not the last' do

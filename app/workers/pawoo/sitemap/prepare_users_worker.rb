@@ -7,6 +7,7 @@ class Pawoo::Sitemap::PrepareUsersWorker
   sidekiq_options queue: 'pull'
 
   def perform(page)
+    return
     read_from_slave do
       Pawoo::Sitemap::User.new(page).prepare
 
