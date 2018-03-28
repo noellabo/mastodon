@@ -7,6 +7,8 @@ class Pawoo::Sitemap::PrepareStatusesWorker
   sidekiq_options queue: 'pull', unique: :until_executed
 
   def perform(page, load_next_page = false)
+    return if load_next_page
+
     read_from_slave do
       Pawoo::Sitemap::Status.new(page).prepare
 
