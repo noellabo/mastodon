@@ -1,0 +1,36 @@
+- content_for :page_title do
+  = t('pawoo.admin.report_summations.title', year: @start.year, month: I18n.t('date.abbr_month_names')[@start.month])
+
+.table-wrapper
+  %table.table
+    %thead
+      %th 日付
+      - @report_types.each do |report_type|
+        %th= t("pawoo.admin.report_targets.report_type.#{report_type}")
+      %th 合計
+    %tbody
+      - @report_summations.each do |report_summation|
+        %tr
+          %td= report_summation.date
+          - @report_types.each do |report_type|
+            %td= report_summation.send("#{report_type}_count")
+          %td= report_summation.total_count
+      %tr
+      %tr
+      %tr
+        %td 合計
+        - @report_types.each do |report_type|
+          %td= @summation_by_month[report_type]
+        %td= @summation_by_month['total']
+
+
+%nav.pagination
+  .prev
+    = link_to url_for(date: @start.prev_month.to_date) do
+      %i.fa.fa-chevron-left
+      前月
+  .next
+    = link_to url_for(date: @start.next_month.to_date) do
+      翌月
+      %i.fa.fa-chevron-right
+
