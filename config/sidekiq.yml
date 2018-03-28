@@ -51,3 +51,6 @@
   pawoo_prepare_sitemap_scheduler:
     cron: '<%= Random.rand(0..59) %> <%= Random.rand(18..20) %> * * *'
     class: Pawoo::Scheduler::PrepareSitemapScheduler
+  pawoo_report_summation_scheduler:
+    cron: '10 16 * * *'
+    class: Pawoo::Scheduler::ReportSummationScheduler

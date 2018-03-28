@@ -577,6 +577,9 @@ ja:
     truncate: "&hellip;"
   pawoo:
     admin:
+      report_summations:
+        nav_title: 日別のレポート件数
+        title: "%{year}年%{month}のレポート件数"
       report_targets:
         failed_msg: レポートの処理に失敗しました
         pending: 保留中

@@ -340,6 +340,7 @@ Rails.application.routes.draw do
 
       scope :pawoo, as: :pawoo do
         resources :report_targets, only: [:index, :create]
+        resources :report_summations, only: [:index]
       end
     end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323191323) do
+ActiveRecord::Schema.define(version: 20180328165631) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -333,6 +333,18 @@ ActiveRecord::Schema.define(version: 20180323191323) do
     t.bigint "user_id", null: false
     t.string "token", null: false
     t.index ["user_id", "token"], name: "index_pawoo_expo_push_tokens_on_user_id_and_token", unique: true
+  end
+
+  create_table "pawoo_report_summations", force: :cascade do |t|
+    t.date "date", null: false
+    t.integer "total_count", default: 0, null: false
+    t.integer "other_count", default: 0, null: false
+    t.integer "prohibited_count", default: 0, null: false
+    t.integer "reproduction_count", default: 0, null: false
+    t.integer "spam_count", default: 0, null: false
+    t.integer "nsfw_count", default: 0, null: false
+    t.integer "donotlike_count", default: 0, null: false
+    t.index ["date"], name: "index_pawoo_report_summations_on_date", unique: true
   end
 
   create_table "pawoo_report_targets", force: :cascade do |t|

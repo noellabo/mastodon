@@ -564,6 +564,9 @@ en:
     prev: Prev
     truncate: "&hellip;"
   pawoo:
+    report_summations:
+      nav_title: Count of reports by day
+      title: "Count of reports in %{month} %{year}"
     expo_push_notifications:
       favourite: "%{name} favorited your toot"
       follow: "%{name} followed you"
