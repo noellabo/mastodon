@@ -18,18 +18,6 @@ const messages = defineMessages({
 // NOTE: id: 17 まで使用した
 const announcements = [
   {
-    id: 17,
-    icon,
-    body: 'Pawooで使いたい絵文字はありませんか？',
-    link: [
-      {
-        reactRouter: true,
-        inline: false,
-        href: '/statuses/99676023877076077',
-        body: '#Pawooカスタム絵文字募集企画',
-      },
-    ],
-  }, {
     id: 1,
     icon,
     body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
