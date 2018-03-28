@@ -62,7 +62,9 @@ const mapStateToProps = state => ({
   isComposing: state.getIn(['compose', 'is_composing']),
   hasComposingText: state.getIn(['compose', 'text']) !== '',
   pawooHasUnreadNotifications: state.getIn(['notifications', 'unread']) > 0,
-  pawooHomeIsPinned: state.getIn(['settings', 'columns']).some(column => column.get('id') === 'HOME'),
+  pawooDefaultGettingStartedOnMultiColumn:
+    state.getIn(['settings', 'columns']).some(column => column.get('id') === 'HOME') ||
+      !state.getIn(['settings', 'onboarded']),
 });
 
 const keyMap = {
@@ -110,7 +112,7 @@ export default class UI extends React.Component {
     location: PropTypes.object,
     intl: PropTypes.object.isRequired,
     pawooHasUnreadNotifications: PropTypes.bool,
-    pawooHomeIsPinned: PropTypes.bool,
+    pawooDefaultGettingStartedOnMultiColumn: PropTypes.bool,
   };
 
   state = {
@@ -364,7 +366,7 @@ export default class UI extends React.Component {
 
   render () {
     const { width, draggingOver } = this.state;
-    const { children, pawooHasUnreadNotifications, pawooHomeIsPinned } = this.props;
+    const { children, pawooHasUnreadNotifications, pawooDefaultGettingStartedOnMultiColumn } = this.props;
     const pawooSingleColumn = isMobile(width);
 
     const handlers = {
@@ -393,7 +395,7 @@ export default class UI extends React.Component {
 
           <ColumnsAreaContainer ref={this.setColumnsAreaRef} singleColumn={pawooSingleColumn}>
             <WrappedSwitch>
-              <Redirect from='/' to={pawooHomeIsPinned && !pawooSingleColumn ? '/getting-started' : '/timelines/home'} exact />
+              <Redirect from='/' to={pawooDefaultGettingStartedOnMultiColumn && !pawooSingleColumn ? '/getting-started' : '/timelines/home'} exact />
               <WrappedRoute path='/getting-started' component={GettingStarted} content={children} />
               <WrappedRoute path='/keyboard-shortcuts' component={KeyboardShortcuts} content={children} />
               <WrappedRoute path='/timelines/home' component={HomeTimeline} content={children} />
