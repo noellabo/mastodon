@@ -110,7 +110,12 @@ class ColumnStateStorage {
   save(location, key, value) {
     const stateKey = this.getStateKey(location);
     const storedValue = JSON.stringify(value);
-    sessionStorage.setItem(stateKey, storedValue);
+    try {
+      sessionStorage.setItem(stateKey, storedValue);
+    } catch (e) {
+      // [webkit-dev] DOM Storage and private browsing
+      // https://lists.webkit.org/pipermail/webkit-dev/2009-May/007788.html
+    }
   }
 
   getStateKey(location) {
