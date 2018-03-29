@@ -8,6 +8,9 @@ import IconButton from '../../mastodon/components/icon_button';
 import { defineMessages, injectIntl } from 'react-intl';
 import { me } from '../../mastodon/initial_state';
 import SuggestedAccountMedia from './suggested_account_media';
+import ga from '../actions/ga';
+
+const gaCategory = 'SuggestedAccount';
 
 const messages = defineMessages({
   follow: { id: 'account.follow', defaultMessage: 'Follow' },
@@ -30,6 +33,16 @@ export default class SuggestedAccount extends React.PureComponent {
 
   handleFollow = () => {
     this.props.onFollow(this.props.account);
+  }
+
+  handleAccountClick = () => {
+    const { account } = this.props;
+
+    ga.event({
+      eventCategory: gaCategory,
+      eventAction: 'ClickAccount',
+      eventValue: account.get('id'),
+    });
   }
 
   renderLoadingMediaGallery = () => {
@@ -70,7 +83,7 @@ export default class SuggestedAccount extends React.PureComponent {
     return (
       <div className='account suggested_account'>
         <div className='account__wrapper'>
-          <Permalink key={account.get('id')} className='account__display-name' href={account.get('url')} to={`/accounts/${account.get('id')}`} target={target}>
+          <Permalink key={account.get('id')} className='account__display-name' href={account.get('url')} to={`/accounts/${account.get('id')}`} target={target} pawooOnClick={this.handleAccountClick}>
             <div className='account__avatar-wrapper'><Avatar account={account} size={36} /></div>
             <DisplayName account={account} />
           </Permalink>
