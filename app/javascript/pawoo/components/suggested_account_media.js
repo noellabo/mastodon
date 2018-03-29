@@ -49,7 +49,7 @@ class Item extends React.PureComponent {
 
     ga.event({
       eventCategory: gaCategory,
-      eventAction: media.get('type') === 'video' ? 'OpenVideo' : 'OpenMedia',
+      eventAction: attachment.get('type') === 'video' ? 'OpenVideo' : 'OpenMedia',
     });
 
     if (onOpenMedia && this.context.router && e.button === 0) {
