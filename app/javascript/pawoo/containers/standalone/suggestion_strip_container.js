@@ -26,7 +26,7 @@ export default function StandaloneSuggestionTagsContainer({ locale, accounts, ta
               defaultMessage='Active Users'
             />
           </h1>
-          <ul className='pawoo-subcolumn--suggested-accounts__body scrollable'>
+          <ul className='pawoo-subcolumn--suggested-accounts__body'>
             {accounts.map(account => (
               <li key={account.id}>
                 <SuggestedAccount

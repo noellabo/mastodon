@@ -7,6 +7,7 @@
   box-sizing: border-box;
   flex: 1;
   padding: 0 20px;
+  text-align: center;
 
   > * {
     display: block;
@@ -14,7 +15,8 @@
 
   > a {
     color: $classic-primary-color;
-    margin-top: 4px;
+    margin: 4px 2px 0;
+    display: inline-block;
 
     @each $lang in $cjk-langs {
       &:lang(#{$lang}) {
@@ -51,10 +53,6 @@
   .pawoo-subcolumn--suggested-accounts__body,
   .suggestion-tags__body {
     background: lighten($ui-base-color, 4%);
-  }
-
-  .pawoo-subcolumn--suggested-accounts__body {
-    height: 700px;
   }
 
   section {

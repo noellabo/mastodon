@@ -4,20 +4,10 @@
 
   .pawoo-extension-account__strip__extra {
     flex: 1;
-
-    .pawoo-extension-account__strip__extra__bottom {
-      margin-top: 10px;
-      position: sticky;
-      top: 10px;
-
-      .card__bio {
-        max-width: 100%;
-      }
-    }
   }
 }
 
-@media screen and (max-width: 740px) {
+@media screen and (max-width: 1024px) {
   .pawoo-extension-account__strip__extra {
     display: none;
   }
