@@ -161,7 +161,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
     const { columns, children, singleColumn, isModalOpen, pawooPage } = this.props;
     const { shouldAnimate } = this.state;
 
-    const pawooHasPinnedColumn = columns.some(column => column.get('id') !== 'COMPOSE');
+    const pawooHasPinnedColumn = columns.some(column => column.get('id') !== 'COMPOSE') || pawooPage !== 'DEFAULT';
 
     const columnIndex = getIndex(this.context.router.history.location.pathname);
     this.pendingIndex = null;
@@ -190,7 +190,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
           {React.Children.map(children, child => React.cloneElement(child, { multiColumn: true, pawooHasPinnedColumn }))}
         </div>
 
-        {pawooHasPinnedColumn || pawooPage !== 'DEFAULT' || <PawooNavigationColumn />}
+        {pawooHasPinnedColumn || <PawooNavigationColumn />}
       </div>
     );
   }
