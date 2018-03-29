@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Link from 'react-router-dom/Link';
@@ -9,9 +10,10 @@ const messages = defineMessages({
 });
 
 @injectIntl
-export default class TrendTags extends React.PureComponent {
+export default class TrendTagsSection extends React.PureComponent {
 
   static propTypes = {
+    scrollable: PropTypes.bool,
     tags: ImmutablePropTypes.list.isRequired,
     refreshTrendTags: PropTypes.func.isRequired,
     insertTagCompose: PropTypes.func.isRequired,
@@ -39,7 +41,7 @@ export default class TrendTags extends React.PureComponent {
       return null;
     }
 
-    const { intl } = this.props;
+    const { intl, scrollable } = this.props;
     return (
       <div className='trend-tags'>
         <div className='trend-tags__header'>
@@ -48,7 +50,7 @@ export default class TrendTags extends React.PureComponent {
             {intl.formatMessage(messages.title)}
           </div>
         </div>
-        <div className='suggestion-tags__body'>
+        <div className={classNames('suggestion-tags__body', { scrollable })} style={{ contain: 'none' }}>
           <ul>
             {this.props.tags.map(tag => (
               <li key={tag.get('name')}>

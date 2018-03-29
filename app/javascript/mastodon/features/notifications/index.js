@@ -44,14 +44,21 @@ export default class Notifications extends React.PureComponent {
     isUnread: PropTypes.bool,
     multiColumn: PropTypes.bool,
     hasMore: PropTypes.bool,
+    pawooHasPinnedColumn: PropTypes.bool,
   };
 
   static defaultProps = {
     trackScroll: true,
   };
 
-  handleScrollToBottom = debounce(() => {
+  componentWillUnmount () {
+    this.handleLoadMore.cancel();
+    this.handleScrollToTop.cancel();
+    this.handleScroll.cancel();
     this.props.dispatch(scrollTopNotifications(false));
+  }
+
+  handleLoadMore = debounce(() => {
     this.props.dispatch(expandNotifications());
   }, 300, { leading: true });
 
@@ -105,7 +112,7 @@ export default class Notifications extends React.PureComponent {
   }
 
   render () {
-    const { intl, notifications, shouldUpdateScroll, isLoading, isUnread, columnId, multiColumn, hasMore } = this.props;
+    const { intl, notifications, shouldUpdateScroll, isLoading, isUnread, columnId, multiColumn, hasMore, pawooHasPinnedColumn } = this.props;
     const pinned = !!columnId;
     const emptyMessage = <FormattedMessage id='empty_column.notifications' defaultMessage="You don't have any notifications yet. Interact with others to start the conversation." />;
 
@@ -135,7 +142,7 @@ export default class Notifications extends React.PureComponent {
         isLoading={isLoading}
         hasMore={hasMore}
         emptyMessage={emptyMessage}
-        onScrollToBottom={this.handleScrollToBottom}
+        onLoadMore={this.handleLoadMore}
         onScrollToTop={this.handleScrollToTop}
         onScroll={this.handleScroll}
         shouldUpdateScroll={shouldUpdateScroll}
@@ -155,6 +162,7 @@ export default class Notifications extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
+          pawooHasPinnedColumn={pawooHasPinnedColumn}
         >
           <ColumnSettingsContainer />
         </ColumnHeader>

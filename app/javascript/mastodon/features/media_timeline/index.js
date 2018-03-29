@@ -31,6 +31,7 @@ class MediaTimeline extends React.PureComponent {
     columnId: PropTypes.string,
     multiColumn: PropTypes.bool,
     hasUnread: PropTypes.bool,
+    pawooHasPinnedColumn: PropTypes.bool,
   };
 
   handlePin = () => {
@@ -75,7 +76,7 @@ class MediaTimeline extends React.PureComponent {
   }
 
   render () {
-    const { intl, columnId, hasUnread, multiColumn } = this.props;
+    const { intl, columnId, hasUnread, multiColumn, pawooHasPinnedColumn } = this.props;
     const pinned = !!columnId;
 
     return (
@@ -89,6 +90,7 @@ class MediaTimeline extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
+          pawooHasPinnedColumn={pawooHasPinnedColumn}
         >
           <ColumnSettingsContainer />
         </ColumnHeader>
@@ -97,7 +99,6 @@ class MediaTimeline extends React.PureComponent {
           loadMore={this.handleLoadMore}
           scrollKey={`media_timeline-${columnId}`}
           emptyMessage={<FormattedMessage id='empty_column.public' defaultMessage='There is nothing here! Write something publicly, or manually follow users from other instances to fill it up' />}
-          squareMedia
         />
       </Column>
     );

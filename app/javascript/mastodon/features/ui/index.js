@@ -47,6 +47,7 @@ import {
 import { HotKeys } from 'react-hotkeys';
 import { me } from '../../initial_state';
 import { defineMessages, injectIntl } from 'react-intl';
+import { resizeColumnMedia as pawooResizeColumnMedia } from '../../../pawoo/actions/column_media';
 import { SuggestedAccountsColumn } from '../../../pawoo/util/async-components';
 
 // Dummy import, to make sure that <Status /> ends up in the application bundle.
@@ -60,6 +61,10 @@ const messages = defineMessages({
 const mapStateToProps = state => ({
   isComposing: state.getIn(['compose', 'is_composing']),
   hasComposingText: state.getIn(['compose', 'text']) !== '',
+  pawooHasUnreadNotifications: state.getIn(['notifications', 'unread']) > 0,
+  pawooDefaultGettingStartedOnMultiColumn:
+    state.getIn(['settings', 'columns']).some(column => column.get('id') === 'HOME') ||
+      !state.getIn(['settings', 'onboarded']),
 });
 
 const keyMap = {
@@ -106,6 +111,8 @@ export default class UI extends React.Component {
     hasComposingText: PropTypes.bool,
     location: PropTypes.object,
     intl: PropTypes.object.isRequired,
+    pawooHasUnreadNotifications: PropTypes.bool,
+    pawooDefaultGettingStartedOnMultiColumn: PropTypes.bool,
   };
 
   state = {
@@ -127,6 +134,7 @@ export default class UI extends React.Component {
   handleResize = debounce(() => {
     // The cached heights are no longer accurate, invalidate
     this.props.dispatch(clearHeight());
+    this.props.dispatch(pawooResizeColumnMedia(isMobile(innerWidth)));
 
     this.setState({ width: window.innerWidth });
   }, 500, {
@@ -212,6 +220,7 @@ export default class UI extends React.Component {
 
     this.props.dispatch(refreshHomeTimeline());
     this.props.dispatch(refreshNotifications());
+    this.props.dispatch(pawooResizeColumnMedia(isMobile(this.state.width)));
   }
 
   componentDidMount () {
@@ -357,7 +366,8 @@ export default class UI extends React.Component {
 
   render () {
     const { width, draggingOver } = this.state;
-    const { children } = this.props;
+    const { children, pawooHasUnreadNotifications, pawooDefaultGettingStartedOnMultiColumn } = this.props;
+    const pawooSingleColumn = isMobile(width);
 
     const handlers = {
       help: this.handleHotkeyToggleHelp,
@@ -381,11 +391,11 @@ export default class UI extends React.Component {
     return (
       <HotKeys keyMap={keyMap} handlers={handlers} ref={this.setHotkeysRef}>
         <div className='ui' ref={this.setRef}>
-          <TabsBar />
+          <TabsBar pawooHasUnreadNotifications={pawooHasUnreadNotifications} />
 
-          <ColumnsAreaContainer ref={this.setColumnsAreaRef} singleColumn={isMobile(width)}>
+          <ColumnsAreaContainer ref={this.setColumnsAreaRef} singleColumn={pawooSingleColumn}>
             <WrappedSwitch>
-              <Redirect from='/' to='/getting-started' exact />
+              <Redirect from='/' to={pawooDefaultGettingStartedOnMultiColumn && !pawooSingleColumn ? '/getting-started' : '/timelines/home'} exact />
               <WrappedRoute path='/getting-started' component={GettingStarted} content={children} />
               <WrappedRoute path='/keyboard-shortcuts' component={KeyboardShortcuts} content={children} />
               <WrappedRoute path='/timelines/home' component={HomeTimeline} content={children} />

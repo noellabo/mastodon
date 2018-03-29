@@ -39,8 +39,6 @@ export default class Status extends ImmutablePureComponent {
     onEmbed: PropTypes.func,
     onHeightChange: PropTypes.func,
     muted: PropTypes.bool,
-    expandMedia: PropTypes.bool,
-    squareMedia: PropTypes.bool,
     schedule: PropTypes.bool,
     onPin: PropTypes.func,
     displayPinned: PropTypes.bool,
@@ -48,10 +46,8 @@ export default class Status extends ImmutablePureComponent {
     hidden: PropTypes.bool,
     onMoveUp: PropTypes.func,
     onMoveDown: PropTypes.func,
-  };
-
-  static defaultProps = {
-    expandMedia: false,
+    pawooMediaScale: PropTypes.string,
+    pawooWideMedia: PropTypes.bool,
   };
 
   state = {
@@ -98,13 +94,11 @@ export default class Status extends ImmutablePureComponent {
   };
 
   renderLoadingMediaGallery = () => {
-    const { squareMedia } = this.props;
-    return <div className='media_gallery' style={{ height: squareMedia ? 229 : 132 }} />;
+    return <div className='media_gallery' style={{ height: 132 }} />;
   }
 
   renderLoadingVideoPlayer = () => {
-    const { squareMedia } = this.props;
-    return <div className='media-spoiler-video' style={{ height: squareMedia ? 229 : 132 }} />;
+    return <div className='media-spoiler-video' style={{ height: 132 }} />;
   }
 
   handleOpenVideo = startTime => {
@@ -170,7 +164,7 @@ export default class Status extends ImmutablePureComponent {
     const { hidden }     = this.props;
     const { isExpanded } = this.state;
 
-    let { status, account, expandMedia, squareMedia, schedule, ...other } = this.props;
+    let { status, account, schedule, pawooMediaScale, pawooWideMedia, ...other } = this.props;
 
     if (status === null) {
       return null;
@@ -234,8 +228,7 @@ export default class Status extends ImmutablePureComponent {
               <Component
                 preview={video.get('preview_url')}
                 src={video.get('url')}
-                width={239}
-                height={squareMedia ? 229 : 132}
+                height={229}
                 sensitive={status.get('sensitive')}
                 onOpenVideo={this.handleOpenVideo}
               />
@@ -245,7 +238,7 @@ export default class Status extends ImmutablePureComponent {
       } else {
         media = (
           <Bundle fetchComponent={MediaGallery} loading={this.renderLoadingMediaGallery} >
-            {Component => <Component media={attachments} sensitive={status.get('sensitive')} height={squareMedia ? 229 : 132} onOpenMedia={this.props.onOpenMedia} expandMedia={expandMedia} />}
+            {Component => <Component media={attachments} sensitive={status.get('sensitive')} onOpenMedia={this.props.onOpenMedia} pawooOnClick={this.handleClick} pawooScale={pawooMediaScale} pawooWide={pawooWideMedia} />}
           </Bundle>
         );
       }

@@ -30,6 +30,7 @@ export default class ColumnHeader extends React.PureComponent {
     onPin: PropTypes.func,
     onMove: PropTypes.func,
     onClick: PropTypes.func,
+    pawooHasPinnedColumn: PropTypes.bool,
   };
 
   state = {
@@ -63,7 +64,7 @@ export default class ColumnHeader extends React.PureComponent {
   }
 
   render () {
-    const { title, icon, active, children, pinned, onPin, multiColumn, showBackButton, intl: { formatMessage } } = this.props;
+    const { title, icon, active, children, pinned, onPin, multiColumn, showBackButton, intl: { formatMessage }, pawooHasPinnedColumn } = this.props;
     const { collapsed, animating } = this.state;
 
     const wrapperClassName = classNames('column-header__wrapper', {
@@ -106,7 +107,7 @@ export default class ColumnHeader extends React.PureComponent {
       pinButton = <button key='pin-button' className='text-btn column-header__setting-btn' onClick={onPin}><i className='fa fa fa-plus' /> <FormattedMessage id='column_header.pin' defaultMessage='Pin' /></button>;
     }
 
-    if (!pinned && (multiColumn || showBackButton)) {
+    if (!pinned && ((multiColumn && pawooHasPinnedColumn) || showBackButton)) {
       backButton = (
         <button onClick={this.handleBackClick} className='column-header__back-button'>
           <i className='fa fa-fw fa-chevron-left column-back-button__icon' />

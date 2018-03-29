@@ -31,7 +31,7 @@ export default class OnboardingPage extends React.PureComponent {
           <FormattedMessage
             id='pawoo.onboarding.heading'
             defaultMessage='Welcome to {site}!'
-            values={{ site: initialState.pawoo_title }}
+            values={{ site: initialState.pawoo.title }}
           />
         </h1>
         <p>
@@ -46,7 +46,7 @@ export default class OnboardingPage extends React.PureComponent {
             id='pawoo.onboarding.description'
             defaultMessage='{site} is connected with other servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.'
             values={{
-              site: initialState.pawoo_title,
+              site: initialState.pawoo.title,
               acct: <code>@{this.props.acct}</code>,
             }}
           />
@@ -55,7 +55,7 @@ export default class OnboardingPage extends React.PureComponent {
           <FormattedMessage
             id='pawoo.onboarding.suggested_accounts.heading'
             defaultMessage='Find people on {site}'
-            values={{ site: initialState.pawoo_title }}
+            values={{ site: initialState.pawoo.title }}
           />
         </h2>
         <p>

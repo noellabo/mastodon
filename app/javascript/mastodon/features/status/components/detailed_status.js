@@ -71,8 +71,7 @@ export default class DetailedStatus extends ImmutablePureComponent {
           <Video
             preview={video.get('preview_url')}
             src={video.get('url')}
-            width={300}
-            height={150}
+            height='50vh'
             onOpenVideo={this.handleOpenVideo}
             sensitive={status.get('sensitive')}
           />
@@ -80,12 +79,10 @@ export default class DetailedStatus extends ImmutablePureComponent {
       } else {
         media = (
           <MediaGallery
-            standalone
             sensitive={status.get('sensitive')}
             media={attachments}
-            height={300}
             onOpenMedia={this.props.onOpenMedia}
-            expandMedia
+            pawooScale='50vh'
           />
         );
       }

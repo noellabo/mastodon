@@ -11,7 +11,7 @@ export default class StatusList extends ImmutablePureComponent {
   static propTypes = {
     scrollKey: PropTypes.string.isRequired,
     statusIds: ImmutablePropTypes.list.isRequired,
-    onScrollToBottom: PropTypes.func,
+    onLoadMore: PropTypes.func,
     onScrollToTop: PropTypes.func,
     onScroll: PropTypes.func,
     trackScroll: PropTypes.bool,
@@ -21,16 +21,14 @@ export default class StatusList extends ImmutablePureComponent {
     hasMore: PropTypes.bool,
     prepend: PropTypes.node,
     emptyMessage: PropTypes.node,
-    expandMedia: PropTypes.bool,
-    squareMedia: PropTypes.bool,
     schedule: PropTypes.bool,
     displayPinned: PropTypes.bool,
+    pawooMediaScale: PropTypes.string,
+    pawooWideMedia: PropTypes.bool,
   };
 
   static defaultProps = {
     trackScroll: true,
-    expandMedia: false,
-    squareMedia: false,
     displayPinned: false,
   };
 
@@ -57,7 +55,7 @@ export default class StatusList extends ImmutablePureComponent {
   }
 
   render () {
-    const { statusIds, squareMedia, expandMedia, schedule, displayPinned, ...other } = this.props;
+    const { statusIds, schedule, displayPinned, pawooMediaScale, pawooWideMedia, ...other } = this.props;
     const { isLoading, isPartial } = other;
 
     if (isPartial) {
@@ -82,10 +80,10 @@ export default class StatusList extends ImmutablePureComponent {
           id={statusId}
           onMoveUp={this.handleMoveUp}
           onMoveDown={this.handleMoveDown}
-          squareMedia={squareMedia}
-          expandMedia={expandMedia}
           schedule={schedule}
           displayPinned={displayPinned}
+          pawooMediaScale={pawooMediaScale}
+          pawooWideMedia={pawooWideMedia}
         />
       ))
     ) : null;

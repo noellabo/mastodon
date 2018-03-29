@@ -1,8 +1,8 @@
 import { connect }   from 'react-redux';
 import TrendTags from '../components/trend_tags';
-import { refreshTrendTags } from '../../../../pawoo/actions/trend_tags';
-import { insertTagCompose } from '../../../../pawoo/actions/extensions/compose';
-import PawooGA from '../../../../pawoo/actions/ga';
+import { refreshTrendTags } from '../actions/trend_tags';
+import { insertTagCompose } from '../actions/extensions/compose';
+import PawooGA from '../actions/ga';
 
 const pawooGaCategory = 'Compose';
 

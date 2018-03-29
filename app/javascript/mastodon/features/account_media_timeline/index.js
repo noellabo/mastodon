@@ -39,7 +39,7 @@ class AccountMediaTimeline extends React.PureComponent {
     }
   }
 
-  handleScrollToBottom = () => {
+  handleLoadMore = () => {
     if (this.props.hasMore) {
       this.props.dispatch(expandAccountMediaTimeline(this.props.params.accountId));
     }
@@ -64,9 +64,8 @@ class AccountMediaTimeline extends React.PureComponent {
           statusIds={statusIds}
           isLoading={isLoading}
           hasMore={hasMore}
-          onScrollToBottom={this.handleScrollToBottom}
+          onLoadMore={this.handleLoadMore}
           scrollKey={'account_media_timeline'}
-          expandMedia
         />
       </Column>
     );

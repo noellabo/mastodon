@@ -13,6 +13,7 @@ import BundleColumnError from './bundle_column_error';
 
 import detectPassiveEvents from 'detect-passive-events';
 import { scrollRight } from '../../../scroll';
+import PawooNavigationColumn from '../../../../pawoo/components/navigation_column';
 import PawooSingleColumnOnboardingContainer from '../../../../pawoo/containers/single_column_onboarding_container';
 import ColumnContainerWithHistory from '../../../../pawoo/containers/column_container_with_history';
 
@@ -160,6 +161,8 @@ export default class ColumnsArea extends ImmutablePureComponent {
     const { columns, children, singleColumn, isModalOpen, pawooPage } = this.props;
     const { shouldAnimate } = this.state;
 
+    const pawooHasPinnedColumn = columns.some(column => column.get('id') !== 'COMPOSE');
+
     const columnIndex = getIndex(this.context.router.history.location.pathname);
     this.pendingIndex = null;
 
@@ -183,7 +186,11 @@ export default class ColumnsArea extends ImmutablePureComponent {
           );
         })}
 
-        {React.Children.map(children, child => React.cloneElement(child, { multiColumn: true }))}
+        <div style={{ display: 'flex', flex: pawooPage === 'DEFAULT' ? '1 330px' : null }}>
+          {React.Children.map(children, child => React.cloneElement(child, { multiColumn: true, pawooHasPinnedColumn }))}
+        </div>
+
+        {pawooHasPinnedColumn || pawooPage !== 'DEFAULT' || <PawooNavigationColumn />}
       </div>
     );
   }

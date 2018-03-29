@@ -46,7 +46,7 @@ export default class AccountTimeline extends ImmutablePureComponent {
     }
   }
 
-  handleScrollToBottom = () => {
+  handleLoadMore = () => {
     if (!this.props.isLoading && this.props.hasMore) {
       this.props.dispatch(expandAccountTimeline(this.props.params.accountId));
     }
@@ -75,7 +75,7 @@ export default class AccountTimeline extends ImmutablePureComponent {
           statusIds={uniqueStatusIds}
           isLoading={isLoading}
           hasMore={hasMore}
-          onScrollToBottom={this.handleScrollToBottom}
+          onLoadMore={this.handleLoadMore}
           displayPinned
         />
       </Column>

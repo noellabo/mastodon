@@ -59,7 +59,6 @@ $button-icon-scale-ration-on-pc: 0.85;
 }
 
 .announcements {
-  margin-bottom: 10px;
   @media screen and (max-width: 1024px) {
     padding: 0 10px;
   }
@@ -120,7 +119,10 @@ $button-icon-scale-ration-on-pc: 0.85;
 }
 
 .trend-tags {
+  display: flex;
   background: $ui-base-color;
+  flex-direction: column;
+  min-height: 0;
   .suggestion-tags__name {
     font-size: 14px;
   }
