@@ -15,7 +15,10 @@ import SearchResultsContainer from './containers/search_results_container';
 import { changeComposing } from '../../actions/compose';
 import { fromJS } from 'immutable';
 import uuid from '../../uuid';
-import { changeSetting } from '../../actions/settings';
+import {
+  rollbackLayout as pawooRollbackLayout,
+  upgradeLayout as pawooUpgradeLayout,
+} from '../../../pawoo/actions/layout';
 import { setPage as pawooSetPage } from '../../../pawoo/actions/page';
 import Announcements from '../../../pawoo/components/announcements';
 import TrendTagsContainer from '../../../pawoo/containers/trend_tags_container';
@@ -39,10 +42,6 @@ const pawooOldLayout = fromJS([
   { id: 'COMPOSE', uuid: uuid(), params: {} },
   { id: 'HOME', uuid: uuid(), params: {} },
   { id: 'NOTIFICATIONS', uuid: uuid(), params: {} },
-]);
-
-const pawooNewLayout = fromJS([
-  { id: 'COMPOSE', uuid: uuid(), params: {} },
 ]);
 
 @connect(mapStateToProps)
@@ -79,11 +78,11 @@ export default class Compose extends React.PureComponent {
   }
 
   pawooHandleRollBack = () => {
-    this.props.dispatch(changeSetting(['columns'], pawooOldLayout));
+    this.props.dispatch(pawooRollbackLayout());
   }
 
   pawooHandleUpgrade = () => {
-    this.props.dispatch(changeSetting(['columns'], pawooNewLayout));
+    this.props.dispatch(pawooUpgradeLayout());
   }
 
   render () {

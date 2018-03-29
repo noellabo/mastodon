@@ -49,6 +49,7 @@ import { me } from '../../initial_state';
 import { defineMessages, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import { resizeColumnMedia as pawooResizeColumnMedia } from '../../../pawoo/actions/column_media';
+import { upgradeLayoutAutomatically as pawooUpgradeLayoutAutomatically } from '../../../pawoo/actions/layout';
 import { SuggestedAccountsColumn } from '../../../pawoo/util/async-components';
 
 // Dummy import, to make sure that <Status /> ends up in the application bundle.
@@ -225,6 +226,10 @@ export default class UI extends React.Component {
     this.props.dispatch(refreshHomeTimeline());
     this.props.dispatch(refreshNotifications());
     this.props.dispatch(pawooResizeColumnMedia(isMobile(this.state.width)));
+
+    if (!isMobile(this.width)) {
+      this.props.dispatch(pawooUpgradeLayoutAutomatically());
+    }
   }
 
   componentDidMount () {
