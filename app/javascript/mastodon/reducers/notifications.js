@@ -19,7 +19,7 @@ import { Map as ImmutableMap, List as ImmutableList } from 'immutable';
 const initialState = ImmutableMap({
   items: ImmutableList(),
   next: null,
-  top: true,
+  top: false,
   unread: 0,
   loaded: false,
   isLoading: true,
