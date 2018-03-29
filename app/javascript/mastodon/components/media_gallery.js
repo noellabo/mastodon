@@ -280,7 +280,7 @@ export default class MediaGallery extends React.PureComponent {
 
     return (
       <div className='media-gallery' style={style}>
-        {pawooOnClick && !sensitive && <div aria-hidden='true' className='pawoo-extension-media-gallery__background' onClick={pawooOnClick} />}
+        {pawooOnClick && visible && <div aria-hidden='true' className='pawoo-extension-media-gallery__background' onClick={pawooOnClick} />}
         <div className={classNames('spoiler-button', { 'spoiler-button--visible': visible })}>
           <IconButton title={intl.formatMessage(messages.toggle_visible)} icon={visible ? 'eye' : 'eye-slash'} overlay onClick={this.handleOpen} />
         </div>
