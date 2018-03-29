@@ -47,6 +47,7 @@ import {
 import { HotKeys } from 'react-hotkeys';
 import { me } from '../../initial_state';
 import { defineMessages, injectIntl } from 'react-intl';
+import classNames from 'classnames';
 import { resizeColumnMedia as pawooResizeColumnMedia } from '../../../pawoo/actions/column_media';
 import { SuggestedAccountsColumn } from '../../../pawoo/util/async-components';
 
@@ -65,6 +66,8 @@ const mapStateToProps = state => ({
   pawooDefaultGettingStartedOnMultiColumn:
     state.getIn(['settings', 'columns']).some(column => column.get('id') === 'HOME') ||
       !state.getIn(['settings', 'onboarded']),
+  pawooWide: state.getIn(['settings', 'columns']).count() <= 1 ||
+    state.getIn(['pawoo', 'page']) !== 'DEFAULT',
 });
 
 const keyMap = {
@@ -113,6 +116,7 @@ export default class UI extends React.Component {
     intl: PropTypes.object.isRequired,
     pawooHasUnreadNotifications: PropTypes.bool,
     pawooDefaultGettingStartedOnMultiColumn: PropTypes.bool,
+    pawooWide: PropTypes.bool,
   };
 
   state = {
@@ -366,7 +370,7 @@ export default class UI extends React.Component {
 
   render () {
     const { width, draggingOver } = this.state;
-    const { children, pawooHasUnreadNotifications, pawooDefaultGettingStartedOnMultiColumn } = this.props;
+    const { children, pawooWide, pawooHasUnreadNotifications, pawooDefaultGettingStartedOnMultiColumn } = this.props;
     const pawooSingleColumn = isMobile(width);
 
     const handlers = {
@@ -390,7 +394,7 @@ export default class UI extends React.Component {
 
     return (
       <HotKeys keyMap={keyMap} handlers={handlers} ref={this.setHotkeysRef}>
-        <div className='ui' ref={this.setRef}>
+        <div className={classNames('ui', { 'pawoo-extension-ui--wide': pawooWide })} ref={this.setRef}>
           <TabsBar pawooHasUnreadNotifications={pawooHasUnreadNotifications} />
 
           <ColumnsAreaContainer ref={this.setColumnsAreaRef} singleColumn={pawooSingleColumn}>
