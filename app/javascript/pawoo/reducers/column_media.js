@@ -15,13 +15,13 @@ function resize(state, { columnCount, defaultPage, single: givenSingle, window: 
   let scale;
 
   if (!defaultPage || (!single && widthCandidate < 330)) {
-    scale = '330px';
+    scale = '230px';
   } else if (!wide) {
     scale = '50vh';
   } else if (single) {
     scale = '100vw';
   } else {
-    scale = `calc((100vw - 300px)/${columnCount})`;
+    scale = `calc((100vw - 300px)/${columnCount} - 100px)`;
   }
 
   return state.merge({ scale, single, wide });
