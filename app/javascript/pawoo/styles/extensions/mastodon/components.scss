@@ -1,5 +1,19 @@
+#mastodon {
+  background: darken($ui-base-color, 7%);
+}
+
 .column {
   flex: 1 0 330px;
+}
+
+.ui {
+  &.pawoo-extension-ui--wide {
+    max-width: 1920px;
+  }
+
+  &:not(.pawoo-extension-ui--wide) .column {
+    max-width: 700px;
+  }
 }
 
 .pawoo-extension-button--inactive {
