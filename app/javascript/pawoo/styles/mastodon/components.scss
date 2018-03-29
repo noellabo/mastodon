@@ -125,3 +125,36 @@
   object-position: bottom left;
   transform: scale(-1, 1);
 }
+
+.card .controls.pawoo-unauthenticated-follow {
+  z-index: 3;
+
+  .pawoo-unauthenticated-follow__button {
+    display: flex;
+
+    .pawoo-unauthenticated-follow__button__link,
+    .pawoo-unauthenticated-follow__button__dropdown {
+      display: block;
+    }
+
+    .pawoo-unauthenticated-follow__button__link {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      padding-right: 8px;
+    }
+
+    .pawoo-unauthenticated-follow__button__dropdown {
+      border-left: 2px solid lighten($ui-highlight-color, 13%);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+
+  .pawoo-unauthenticated-follow__dropdown {
+    display: none;
+    margin-top: 8px;
+    white-space: nowrap;
+  }
+}

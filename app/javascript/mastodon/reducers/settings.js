@@ -76,6 +76,7 @@ function pawooUpdate(columns) {
     columns.getIn([0, 'id']) === 'COMPOSE' &&
     columns.getIn([1, 'id']) === 'HOME' &&
     columns.getIn([2, 'id']) === 'NOTIFICATIONS' &&
+    globalInitialState.pawoo &&
     globalInitialState.pawoo.last_settings_updated &&
     globalInitialState.pawoo.last_settings_updated < 1522290629 ?
     defaultColumns : columns;

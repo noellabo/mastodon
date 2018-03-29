@@ -240,9 +240,7 @@ export default class MediaGallery extends React.PureComponent {
       }
     } else if (media.size === 1) {
       // crop the image
-      if (!this.state.visible) {
-        style.height = pawooScale;
-      } else if (pawooWide) {
+      if (pawooWide) {
         pawooMaxWidth = pawooScale;
         style.height = `calc(${pawooScale}/${Math.max(media.getIn([0, 'meta', 'small', 'aspect']), 1)})`;
       } else {

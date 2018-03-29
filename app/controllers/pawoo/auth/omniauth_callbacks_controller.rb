@@ -5,6 +5,8 @@ class Pawoo::Auth::OmniauthCallbacksController < Devise::OmniauthCallbacksContro
   include Pawoo::WithRedisSessionStore
   include Localized
 
+  after_action :delete_follow_queue
+
   def pixiv
     data = request.env['omniauth.auth']
 
@@ -30,7 +32,7 @@ class Pawoo::Auth::OmniauthCallbacksController < Devise::OmniauthCallbacksContro
         flash[:alert] = oauth_authentication.errors.full_messages.first
       end
 
-      redirect_to after_sign_in_path_for(current_user)
+      after_sign_in_for current_user
     else
       oauth_authentication = OauthAuthentication.find_by(provider: data.provider, uid: data.uid)
 
@@ -45,7 +47,7 @@ class Pawoo::Auth::OmniauthCallbacksController < Devise::OmniauthCallbacksContro
           remember_me(user)
           enqueue_fetch_pixiv_follows_worker(oauth_authentication, data)
 
-          redirect_to after_sign_in_path_for(user)
+          after_sign_in_for user
         end
       else
         store_omniauth_auth
@@ -55,6 +57,18 @@ class Pawoo::Auth::OmniauthCallbacksController < Devise::OmniauthCallbacksContro
   end
 
   private
+
+  def delete_follow_queue
+    session.delete 'pawoo.follow'
+  end
+
+  def after_sign_in_for(user)
+    if session['pawoo.follow']
+      FollowService.new.call(user.account, Account.find_local(session['pawoo.follow']).acct)
+    end
+
+    redirect_to after_sign_in_path_for(user)
+  end
 
   def enqueue_fetch_pixiv_follows_worker(oauth_authentication, data)
     FetchPixivFollowsWorker.perform_async(

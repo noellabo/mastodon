@@ -10,11 +10,11 @@ import BundleContainer from '../containers/bundle_container';
 export class WrappedSwitch extends React.PureComponent {
 
   render () {
-    const { multiColumn, children } = this.props;
+    const { multiColumn, pawooHasPinnedColumn, children } = this.props;
 
     return (
       <Switch>
-        {React.Children.map(children, child => React.cloneElement(child, { multiColumn }))}
+        {React.Children.map(children, child => React.cloneElement(child, { multiColumn, pawooHasPinnedColumn }))}
       </Switch>
     );
   }
@@ -23,6 +23,7 @@ export class WrappedSwitch extends React.PureComponent {
 
 WrappedSwitch.propTypes = {
   multiColumn: PropTypes.bool,
+  pawooHasPinnedColumn: PropTypes.bool,
   children: PropTypes.node,
 };
 
@@ -35,14 +36,15 @@ export class WrappedRoute extends React.Component {
     component: PropTypes.func.isRequired,
     content: PropTypes.node,
     multiColumn: PropTypes.bool,
+    pawooHasPinnedColumn: PropTypes.bool,
   }
 
   renderComponent = ({ match }) => {
-    const { component, content, multiColumn } = this.props;
+    const { component, content, multiColumn, pawooHasPinnedColumn } = this.props;
 
     return (
       <BundleContainer fetchComponent={component} loading={this.renderLoading} error={this.renderError}>
-        {Component => <Component params={match.params} multiColumn={multiColumn}>{content}</Component>}
+        {Component => <Component params={match.params} multiColumn={multiColumn} pawooHasPinnedColumn={pawooHasPinnedColumn}>{content}</Component>}
       </BundleContainer>
     );
   }
