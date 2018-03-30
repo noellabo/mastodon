@@ -29,7 +29,7 @@ if (enableDebug) {
 }
 
 function disableGa(path = window.location.pathname) {
-  return !enableDebug || path.indexOf('/admin/') === 0;
+  return !isProduction || !enableDebug || path.indexOf('/admin/') === 0;
 }
 
 export const event = (params) => {
