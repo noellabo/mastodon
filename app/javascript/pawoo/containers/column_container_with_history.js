@@ -12,6 +12,7 @@ import ColumnLoading from '../../mastodon/features/ui/components/column_loading'
 import DrawerLoading from '../../mastodon/features/ui/components/drawer_loading';
 import BundleColumnError from '../../mastodon/features/ui/components/bundle_column_error';
 import { pushColumnHistory, popColumnHistory } from '../actions/column_histories';
+import PawooGA from '../actions/ga';
 
 import {
   Compose,
@@ -94,6 +95,7 @@ const componentMap = {
 };
 
 const columnStateKey = (columnId, locationId) => `@@columnScroll|${columnId}|${locationId}`;
+const pawooGaCategory = 'ColumnHistory';
 
 class ColumnStateStorage {
 
@@ -195,7 +197,10 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     if (this.props.columnHistory.size < prevProps.columnHistory.size) {
       const columnId = this.props.column.get('uuid');
       const locationId = prevProps.columnHistory.first().get('uuid');
-      sessionStorage.removeItem(columnStateKey(columnId, locationId));
+      try {
+        sessionStorage.removeItem(columnStateKey(columnId, locationId));
+      } catch (e) {
+      }
     }
 
     this.scrollBehavior.updateScroll(prevScrollContext, this.getScrollContext());
@@ -222,6 +227,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     });
 
     if (match) {
+      PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'pushHistory', eventLabel: path });
       this.props.pushColumnHistory(matchedId, match.params);
     } else {
       this.context.router.history.push(path);
@@ -230,6 +236,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
 
   popHistory = () => {
     if (this.props.enableColumnHistory) {
+      PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'popHistory' });
       this.props.popColumnHistory();
     } else if (window.history && window.history.length === 1) {
       this.context.router.history.push('/');

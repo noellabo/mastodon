@@ -41,7 +41,7 @@ export default class SuggestedAccount extends React.PureComponent {
     ga.event({
       eventCategory: gaCategory,
       eventAction: 'ClickAccount',
-      eventValue: account.get('id'),
+      eventLabel: account.get('id'),
     });
   }
 
@@ -93,7 +93,7 @@ export default class SuggestedAccount extends React.PureComponent {
           </div>
         </div>
 
-        <SuggestedAccountMedia mediaAttachments={account.get('media_attachments')} onOpenMedia={onOpenMedia} />
+        <SuggestedAccountMedia account={account} onOpenMedia={onOpenMedia} />
       </div>
     );
   }
