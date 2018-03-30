@@ -51,10 +51,8 @@ const mapDispatchToProps = (dispatch, { intl }) => ({
 
   onOpenMedia (media) {
     if (media.get('type') === 'video') {
-      PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'OpenVideo' });
       dispatch(openModal('VIDEO', { media, time: 0 }));
     } else {
-      PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'OpenMedia' });
       dispatch(openModal('MEDIA', { media: ImmutableList([media]), index: 0 }));
     }
   },

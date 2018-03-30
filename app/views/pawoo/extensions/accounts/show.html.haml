@@ -1,0 +1,57 @@
+- content_for :page_title do
+  - if @current_page > 1
+    = "page #{@current_page} - #{display_name(@account)} - #{@account.acct}"
+  - else
+    = "#{display_name(@account)} - #{@account.acct}"
+
+- content_for :header_tags do
+  - if @account.user&.setting_noindex
+    %meta{ name: 'robots', content: 'noindex' }/
+
+  %link{ rel: 'salmon', href: api_salmon_url(@account.id) }/
+  %link{ rel: 'alternate', type: 'application/atom+xml', href: account_url(@account, format: 'atom') }/
+  %link{ rel: 'alternate', type: 'application/activity+json', href: ActivityPub::TagManager.instance.uri_for(@account) }/
+
+  = opengraph 'og:type', 'profile'
+  = render 'accounts/og', account: @account, url: short_account_url(@account, only_path: false)
+
+  = javascript_pack_tag 'pawoo/suggestion_strip', integrity: true, crossorigin: 'anonymous'
+
+= render 'accounts/service_logo'
+
+.pawoo-extension-two-columns
+  .h-feed
+    %data.p-name{ value: "#{@account.username} on #{site_hostname}" }/
+
+    = render 'accounts/header', account: @account
+
+    .activity-stream-tabs
+      = active_link_to t('accounts.posts'), short_account_url(@account)
+      = active_link_to t('accounts.posts_with_replies'), short_account_with_replies_url(@account)
+      = active_link_to t('accounts.media'), short_account_media_url(@account)
+
+    - if @statuses_collection.empty?
+      .accounts-grid
+        = render 'accounts/nothing_here'
+    - else
+      .activity-stream.with-header
+        - if params[:page].to_i.zero?
+          = render partial: 'stream_entries/status', collection: @pinned_statuses, as: :status, locals: { pinned: true }
+
+        = render partial: 'stream_entries/status', collection: @statuses_collection, as: :status
+
+  .pawoo-extension-account__strip
+    - if @account.memorial?
+      .memoriam-strip= t('in_memoriam_html')
+    - elsif @account.moved?
+      = render partial: 'accounts/moved_strip', locals: { account: @account }
+    - elsif show_landing_strip?
+      = render partial: 'shared/landing_strip', locals: { account: @account }
+    .pawoo-extension-account__strip__extra
+      #pawoo-suggestion-strip{ data: { props: Oj.dump(pawoo_suggestion_strip_props) } }
+
+- if @statuses_collection.present?
+  .pagination
+    = link_to safe_join([t('pagination.next'), fa_icon('chevron-right')], ' '), pawoo_next_url, class: 'next', rel: 'next' unless @statuses.last_page?
+    = link_to safe_join([fa_icon('chevron-left'), t('pagination.prev')], ' '), pawoo_prev_url, class: 'prev', rel: 'prev' unless @statuses.first_page?
+

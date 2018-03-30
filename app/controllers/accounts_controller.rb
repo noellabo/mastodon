@@ -23,6 +23,8 @@ class AccountsController < ApplicationController
         @pinned_statuses     = cache_collection(pawoo_statuses_from_pinned_status, Status) if show_pinned_statuses?
         @statuses            = filtered_statuses.where.not(id: pawoo_statuses_from_pinned_status.map(&:id)).page(params[:page]).per(PAWOO_STATUSES_PER_PAGE).without_count
         @statuses_collection = cache_collection(@statuses, Status)
+
+        render 'pawoo/extensions/accounts/show'
       end
 
       format.atom do
