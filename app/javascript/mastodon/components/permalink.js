@@ -27,7 +27,7 @@ export default class Permalink extends React.PureComponent {
   }
 
   render () {
-    const { href, children, className, ...other } = this.props;
+    const { href, children, className, pawooOnClick, ...other } = this.props;
 
     return (
       <a target='_blank' href={href} onClick={this.handleClick} {...other} className={`permalink${className ? ' ' + className : ''}`}>
