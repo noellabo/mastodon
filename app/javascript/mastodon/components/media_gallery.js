@@ -126,7 +126,7 @@ class Item extends React.PureComponent {
       const hasSize = typeof originalWidth === 'number' && typeof previewWidth === 'number';
 
       const srcSet = hasSize ? `${originalUrl} ${originalWidth}w, ${previewUrl} ${previewWidth}w` : null;
-      const sizes = hasSize ? `(min-width: 1025px) ${320 * (width / 100)}px, ${width}vw` : null;
+      const sizes = hasSize ? `(min-width: 1025px) ${width / 2}vw, ${width}vw` : null;
 
       thumbnail = (
         <a
@@ -240,11 +240,13 @@ export default class MediaGallery extends React.PureComponent {
       }
     } else if (media.size === 1) {
       // crop the image
+      const maxWidth = `${media.getIn([0, 'meta', 'small', 'width'])}px`;
+      style.maxHeight = `${media.getIn([0, 'meta', 'small', 'height'])}px`;
       if (pawooWide) {
-        pawooMaxWidth = pawooScale;
+        pawooMaxWidth = maxWidth;
         style.height = `calc(${pawooScale}/${Math.max(media.getIn([0, 'meta', 'small', 'aspect']), 1)})`;
       } else {
-        pawooMaxWidth = `calc(${pawooScale}*${Math.max(media.getIn([0, 'meta', 'small', 'aspect']), 1)})`;
+        pawooMaxWidth = maxWidth;
         style.height = pawooScale;
       }
     } else {
