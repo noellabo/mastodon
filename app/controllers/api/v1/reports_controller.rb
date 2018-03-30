@@ -44,7 +44,11 @@ class Api::V1::ReportsController < Api::BaseController
 
   def pawoo_report_targets
     if reported_status_ids.present?
-      reported_status_ids.map { |status_id| Pawoo::ReportTarget.new(target_type: 'Status', target_id: status_id) }
+      resolved_target_ids = Pawoo::ReportTarget.where(state: :resolved, target_type: 'Status', target_id: reported_status_ids).distinct(:target_id).pluck(:target_id).to_set
+      reported_status_ids.map do |status_id|
+        state = resolved_target_ids.include?(status_id) ? :resolved : :unresolved
+        Pawoo::ReportTarget.new(target_type: 'Status', target_id: status_id, state: state)
+      end
     else
       [Pawoo::ReportTarget.new(target: reported_account)]
     end

@@ -1,3 +1,3 @@
-Fabricator(:pawoo_report_target) do
+Fabricator('Pawoo::ReportTarget') do
   report
 end
