@@ -54,7 +54,7 @@ export default class SuggestedAccount extends React.PureComponent {
   }
 
   render () {
-    const { account, onOpenMedia, intl, target } = this.props;
+    const { account, onOpenMedia, intl, target ,onFollow } = this.props;
 
     if (!account) {
       return <div />;
@@ -70,13 +70,13 @@ export default class SuggestedAccount extends React.PureComponent {
 
       // NOTE: blocking/mutingはそもそもロードされないはず
       if (requested) {
-        buttons = this.onFollow && <IconButton active icon='hourglass' title={intl.formatMessage(messages.requested)} onClick={this.handleFollow} />;
+        buttons = onFollow && <IconButton active icon='hourglass' title={intl.formatMessage(messages.requested)} onClick={this.handleFollow} />;
       } else if (blocking) {
         buttons = <IconButton active icon='unlock-alt' title={intl.formatMessage(messages.unblock, { name: account.get('username') })} onClick={this.handleBlock} />;
       } else if (muting) {
         buttons = <IconButton active icon='volume-up' title={intl.formatMessage(messages.unmute, { name: account.get('username') })} onClick={this.handleMute} />;
       } else {
-        buttons = this.onFollow && <IconButton icon={following ? 'user-times' : 'user-plus'} title={intl.formatMessage(following ? messages.unfollow : messages.follow)} onClick={this.handleFollow} active={following} />;
+        buttons = onFollow && <IconButton icon={following ? 'user-times' : 'user-plus'} title={intl.formatMessage(following ? messages.unfollow : messages.follow)} onClick={this.handleFollow} active={following} />;
       }
     }
 
