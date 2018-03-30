@@ -126,7 +126,6 @@ class Item extends React.PureComponent {
       const hasSize = typeof originalWidth === 'number' && typeof previewWidth === 'number';
 
       const srcSet = hasSize ? `${originalUrl} ${originalWidth}w, ${previewUrl} ${previewWidth}w` : null;
-      const sizes = hasSize ? `(min-width: 1025px) ${width / 2}vw, ${width}vw` : null;
 
       thumbnail = (
         <a
@@ -135,7 +134,7 @@ class Item extends React.PureComponent {
           onClick={this.handleClick}
           target='_blank'
         >
-          <img src={previewUrl} srcSet={srcSet} sizes={sizes} alt={attachment.get('description')} title={attachment.get('description')} />
+          <img src={previewUrl} srcSet={srcSet} alt={attachment.get('description')} title={attachment.get('description')} />
         </a>
       );
     } else if (attachment.get('type') === 'gifv') {
@@ -240,13 +239,11 @@ export default class MediaGallery extends React.PureComponent {
       }
     } else if (media.size === 1) {
       // crop the image
-      const maxWidth = `${media.getIn([0, 'meta', 'original', 'width'])}px`;
-      style.maxHeight = `${media.getIn([0, 'meta', 'original', 'height'])}px`;
       if (pawooWide) {
-        pawooMaxWidth = maxWidth;
+        pawooMaxWidth = pawooScale;
         style.height = `calc(${pawooScale}/${Math.max(media.getIn([0, 'meta', 'small', 'aspect']), 1)})`;
       } else {
-        pawooMaxWidth = maxWidth;
+        pawooMaxWidth = `calc(${pawooScale}*${Math.max(media.getIn([0, 'meta', 'small', 'aspect']), 1)})`;
         style.height = pawooScale;
       }
     } else {
