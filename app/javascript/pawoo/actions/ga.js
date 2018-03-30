@@ -28,16 +28,15 @@ if (enableDebug) {
   ga('set', 'sendHitTask', null);
 }
 
-function disableGa(path = window.location.pathname) {
-  return !isProduction || !enableDebug || path.indexOf('/admin/') === 0;
+function enableGa(path = window.location.pathname) {
+  return (isProduction || enableDebug) && path.indexOf('/admin/') !== 0;
 }
 
 export const event = (params) => {
-  if (disableGa()) {
-    return;
+  if (enableGa()) {
+    ga('send', { hitType: 'event', ...params });
   }
 
-  ga('send', { hitType: 'event', ...params });
 };
 
 export const startHeartbeat = () => {
@@ -50,12 +49,10 @@ export const startHeartbeat = () => {
 };
 
 export const trackPage = (page) => {
-  if (disableGa(page)) {
-    return;
+  if (enableGa(page)) {
+    ga('set', 'page', page);
+    ga('send', 'pageview');
   }
-
-  ga('set', 'page', page);
-  ga('send', 'pageview');
 };
 
 export default {
