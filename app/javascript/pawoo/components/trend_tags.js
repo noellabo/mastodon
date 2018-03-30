@@ -43,7 +43,7 @@ export default class TrendTagsSection extends React.PureComponent {
       return null;
     }
 
-    const { intl, scrollable } = this.props;
+    const { intl, scrollable, Tag, tags, insertTagCompose } = this.props;
     return (
       <div className='trend-tags'>
         <div className='pawoo-subcolumn__header'>
@@ -54,15 +54,15 @@ export default class TrendTagsSection extends React.PureComponent {
         </div>
         <div className={classNames('suggestion-tags__body', { scrollable })} style={{ contain: 'none' }}>
           <ul>
-            {this.props.tags.map(tag => (
+            {tags.map(tag => (
               <li key={tag.get('name')}>
                 <div className='suggestion-tags__content'>
                   <div className='suggestion-tags__name'>
-                    <this.props.Tag tag={tag} />
+                    <Tag tag={tag} />
                   </div>
                   <div className={`suggestion-tags__description ${tag.get('type') === 'suggestion' ? 'suggestion' : ''}`}>{tag.get('description')}</div>
                 </div>
-                {this.props.insertTagCompose && <button className='suggestion-tags__button' data-tag={tag.get('name')} onClick={this.handleToggleClick}><i className='fa fa-pencil' /></button>}
+                {insertTagCompose && <button className='suggestion-tags__button' data-tag={tag.get('name')} onClick={this.handleToggleClick}><i className='fa fa-pencil' /></button>}
               </li>
             ))}
           </ul>
