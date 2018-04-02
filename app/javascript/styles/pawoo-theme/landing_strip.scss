@@ -5,9 +5,10 @@
 
 .landing-form {
   box-sizing: border-box;
-  flex: 1;
+  flex: 1 0 250px;
   padding: 0 20px;
   text-align: center;
+  min-width: 250px;
 
   > * {
     display: block;
@@ -39,7 +40,7 @@
   display: flex;
   align-items: center;
 
-  flex: 2;
+  flex: 2 0 50%;
   min-width: 50%;
 }
 
