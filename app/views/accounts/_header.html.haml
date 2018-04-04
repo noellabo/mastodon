@@ -4,23 +4,20 @@
       - if user_signed_in? && current_account.id != account.id && !current_account.requested?(account)
         .controls
           - if current_account.following?(account)
-            = link_to account_unfollow_path(account), data: { method: :post }, class: 'button pawoo-extension-button--inactive' do
-              = fa_icon 'user-times'
-              = t('accounts.unfollow')
+            = render 'pawoo/extensions/accounts/follow', account: account, classes: 'pawoo-follow--inactive' do
+              = link_to account_unfollow_path(account), data: { method: :post }, class: 'button pawoo-follow__button__link' do
+                = fa_icon 'user-times'
+                = t('accounts.unfollow')
           - else
-            = link_to account_follow_path(account), data: { method: :post }, class: 'button' do
-              = fa_icon 'user-plus'
-              = t('accounts.follow')
+            = render 'pawoo/extensions/accounts/follow', account: account, classes: '' do
+              = link_to account_follow_path(account), data: { method: :post }, class: 'button pawoo-follow__button__link' do
+                = fa_icon 'user-plus'
+                = t('accounts.follow')
       - elsif !user_signed_in?
-        .controls.pawoo-unauthenticated-follow
-          .pawoo-unauthenticated-follow__button
-            %button.button.omniauth-pixiv.pawoo-unauthenticated-follow__button__link{ data: { follow: account.username } }
-              = fa_icon 'user-plus'
-              = t('accounts.follow')
-            %button.button.pawoo-unauthenticated-follow__button__dropdown{ 'aria-controls': 'pawoo-unauthenticated-follow__dropdown' }
-              = fa_icon 'caret-down'
-          %ul#pawoo-unauthenticated-follow__dropdown.pawoo-unauthenticated-follow__dropdown.dropdown-menu{ 'aria-expanded': 'false' }
-            %li.dropdown-menu__item= link_to t('accounts.remote_follow'), account_remote_follow_path(account)
+        = render 'pawoo/extensions/accounts/follow', account: account, classes: '' do
+          %button.button.omniauth-pixiv.pawoo-follow__button__link{ data: { follow: account.username } }
+            = fa_icon 'user-plus'
+            = t('accounts.follow')
 
     .avatar= image_tag account.avatar.url(:original), class: 'u-photo'
 

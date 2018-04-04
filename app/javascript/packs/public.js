@@ -111,7 +111,7 @@ function main() {
       ReactDOM.render(<CardContainer locale={locale} {...props} />, content);
     });
 
-    [].forEach.call(document.getElementsByClassName('pawoo-unauthenticated-follow__button__dropdown'), (content) => {
+    [].forEach.call(document.getElementsByClassName('pawoo-follow__button__dropdown'), (content) => {
       const controls = document.getElementById(content.getAttribute('aria-controls'));
 
       function hide() {
