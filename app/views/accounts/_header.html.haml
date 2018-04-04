@@ -2,17 +2,16 @@
   .card__illustration
     - unless account.memorial? || account.moved?
       - if user_signed_in? && current_account.id != account.id && !current_account.requested?(account)
-        .controls
-          - if current_account.following?(account)
-            = render 'pawoo/extensions/accounts/follow', account: account, classes: 'pawoo-follow--inactive' do
-              = link_to account_unfollow_path(account), data: { method: :post }, class: 'button pawoo-follow__button__link' do
-                = fa_icon 'user-times'
-                = t('accounts.unfollow')
-          - else
-            = render 'pawoo/extensions/accounts/follow', account: account, classes: '' do
-              = link_to account_follow_path(account), data: { method: :post }, class: 'button pawoo-follow__button__link' do
-                = fa_icon 'user-plus'
-                = t('accounts.follow')
+        - if current_account.following?(account)
+          = render 'pawoo/extensions/accounts/follow', account: account, classes: 'pawoo-follow--inactive' do
+            = link_to account_unfollow_path(account), data: { method: :post }, class: 'button pawoo-follow__button__link' do
+              = fa_icon 'user-times'
+              = t('accounts.unfollow')
+        - else
+          = render 'pawoo/extensions/accounts/follow', account: account, classes: '' do
+            = link_to account_follow_path(account), data: { method: :post }, class: 'button pawoo-follow__button__link' do
+              = fa_icon 'user-plus'
+              = t('accounts.follow')
       - elsif !user_signed_in?
         = render 'pawoo/extensions/accounts/follow', account: account, classes: '' do
           %button.button.omniauth-pixiv.pawoo-follow__button__link{ data: { follow: account.username } }
