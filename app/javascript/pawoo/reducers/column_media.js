@@ -19,7 +19,7 @@ function resize(state, { columnCount, defaultPage, single: givenSingle, window: 
   } else if (!wide) {
     scale = '50vh';
   } else if (single) {
-    scale = '100vw';
+    scale = 'calc(50vw - 100px)';
   } else {
     scale = `calc((100vw - 300px)/${columnCount} - 100px)`;
   }
