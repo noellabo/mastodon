@@ -1,3 +1,4 @@
+import { List as ImmutableList } from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -9,12 +10,19 @@ import {
 import Column from '../../../components/column';
 import ColumnHeader from '../../../components/column_header';
 import { connectCommunityStream } from '../../../actions/streaming';
+import initialState from '../../../initial_state';
+import pawooLogo from '../../../../pawoo/images/logo_elephant.png';
 
-@connect()
+const mapStateToProps = state => ({
+  pawooStatusCount: state.getIn(['timelines', 'community', 'items'], ImmutableList()).count(),
+});
+
+@connect(mapStateToProps)
 export default class CommunityTimeline extends React.PureComponent {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    pawooStatusCount: PropTypes.number.isRequired,
   };
 
   handleHeaderClick = () => {
@@ -48,11 +56,10 @@ export default class CommunityTimeline extends React.PureComponent {
     return (
       <Column ref={this.setRef}>
         <ColumnHeader
-          icon='users'
           title={(
-            <div style={{ display: 'inline-block', verticalAlign: 'top' }}>
-              <div>Pawooのローカルタイムライン</div>
-              <div style={{ fontSize: '12px' }}>投稿をリアルタイムに流しています</div>
+            <div className='pawoo-extension-standalone-community'>
+              <img src={pawooLogo} />
+              \ {initialState.pawoo.user_count}人が、{initialState.pawoo.status_count + this.props.pawooStatusCount}回パウってます /
             </div>
           )}
           onClick={this.handleHeaderClick}
@@ -64,7 +71,6 @@ export default class CommunityTimeline extends React.PureComponent {
           scrollKey='standalone_community_timeline'
           trackScroll={false}
           pawooMediaScale='230px'
-          pawooWideMedia
         />
       </Column>
     );

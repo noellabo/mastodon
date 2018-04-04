@@ -35,6 +35,10 @@ class AboutController < ApplicationController
     {
       settings: {},
       token: current_session&.token,
+      pawoo: {
+        user_count: @instance_presenter.user_count,
+        status_count: @instance_presenter.status_count,
+      },
     }
   end
 end

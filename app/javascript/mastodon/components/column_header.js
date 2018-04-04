@@ -21,7 +21,7 @@ export default class ColumnHeader extends React.PureComponent {
   static propTypes = {
     intl: PropTypes.object.isRequired,
     title: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.node]).isRequired,
-    icon: PropTypes.string.isRequired,
+    icon: PropTypes.string,
     active: PropTypes.bool,
     multiColumn: PropTypes.bool,
     showBackButton: PropTypes.bool,
@@ -133,7 +133,7 @@ export default class ColumnHeader extends React.PureComponent {
       <div className={wrapperClassName}>
         <h1 className={buttonClassName}>
           <button onClick={this.handleTitleClick}>
-            <i className={`fa fa-fw fa-${icon} column-header__icon`} />
+            {icon && <i className={`fa fa-fw fa-${icon} column-header__icon`} />}
             {title}
           </button>
 

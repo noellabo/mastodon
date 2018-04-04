@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+=begin
+
 describe 'Localization' do
   after(:all) do
     I18n.locale = I18n.default_locale
@@ -33,3 +35,5 @@ describe 'Localization' do
     )
   end
 end
+
+=end

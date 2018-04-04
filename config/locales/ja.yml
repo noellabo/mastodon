@@ -602,8 +602,11 @@ ja:
       follow_request: "%{name} さんからフォローリクエストが届いています"
       mention: "%{name} さんからメンションがあります"
       reblog: "%{name} さんがブーストしました"
+    login_email: メールアドレスでログイン
     oauth_registrations:
       already_registered: すでに登録されています。メールアドレスとパスワードでログイン後、設定ページよりpixivアカウント連携してください。
+    signup_email: メールアドレスで登録
+    start: Pawooをはじめる
     validations:
       crashed_unicode: に無効な文字が含まれています
   preferences:
