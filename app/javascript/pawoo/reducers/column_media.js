@@ -11,7 +11,7 @@ function resize(state, { columnCount, defaultPage, single: givenSingle, window: 
   const single = state.get('single') || givenSingle;
   const widthCandidate = (givenWindow.innerWidth - 300) / columnCount;
   const width = single ? givenWindow.innerWidth : Math.max(widthCandidate, 330);
-  const wide = !defaultPage || width < givenWindow.innerHeight;
+  const wide = !defaultPage || Math.min(width, 400) < givenWindow.innerHeight;
   let scale;
 
   if (!defaultPage || (!single && widthCandidate < 330)) {
@@ -20,6 +20,8 @@ function resize(state, { columnCount, defaultPage, single: givenSingle, window: 
     scale = '50vh';
   } else if (single) {
     scale = '100vw';
+  } else if (width > 500) {
+    scale = '400px';
   } else {
     scale = `calc((100vw - 300px)/${columnCount} - 100px)`;
   }
