@@ -1,7 +1,9 @@
+import escapeTextContentForBrowser from 'escape-html';
 import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, IntlProvider, addLocaleData } from 'react-intl';
+import emojify from '../../../mastodon/features/emoji/emoji';
 import { getLocale } from '../../../mastodon/locales';
 import PublicTagLink from '../../components/public_tag_link';
 import SuggestedAccount from '../../components/suggested_account';
@@ -12,6 +14,10 @@ const { localeData, messages } = getLocale();
 addLocaleData(localeData);
 
 export default function StandaloneSuggestionTagsContainer({ locale, accounts, tags }) {
+  accounts.forEach(account => {
+    account.display_name_html = emojify(escapeTextContentForBrowser(account.display_name));
+  });
+
   return (
     <IntlProvider locale={locale} messages={messages}>
       <React.Fragment>
