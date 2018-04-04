@@ -9,21 +9,31 @@ const initialState = Immutable.Map({
 
 function resize(state, { columnCount, defaultPage, single: givenSingle, window: givenWindow }) {
   const single = state.get('single') || givenSingle;
-  const widthCandidate = (givenWindow.innerWidth - 300) / columnCount;
-  const width = single ? givenWindow.innerWidth : Math.max(widthCandidate, 330);
-  const wide = !defaultPage || Math.min(width, 400) < givenWindow.innerHeight;
   let scale;
+  let wide;
 
-  if (!defaultPage || (!single && widthCandidate < 330)) {
-    scale = '230px';
-  } else if (!wide) {
-    scale = '50vh';
-  } else if (single) {
-    scale = 'calc(50vw - 100px)';
-  } else if (width > 500) {
-    scale = '400px';
+  if (single) {
+    wide = givenWindow.innerWidth - 30 < givenWindow.innerHeight / 2;
+
+    if (wide) {
+      scale = 'calc(100vw - 100px)';
+    } else {
+      scale = 'calc(50vh - 70px)';
+    }
   } else {
-    scale = `calc((100vw - 300px)/${columnCount} - 100px)`;
+    const widthCandidate = (givenWindow.innerWidth - 300) / columnCount;
+    const width = Math.max(widthCandidate, 330);
+    wide = !defaultPage || Math.min(width, 400) < givenWindow.innerHeight;
+
+    if (!defaultPage || widthCandidate < 330) {
+      scale = '230px';
+    } else if (!wide) {
+      scale = '50vh';
+    } else if (width > 500) {
+      scale = '400px';
+    } else {
+      scale = `calc((100vw - 300px)/${columnCount} - 100px)`;
+    }
   }
 
   return state.merge({ scale, single, wide });
