@@ -60,6 +60,8 @@ export default class HashtagTimeline extends React.PureComponent {
           scrollKey='standalone_hashtag_timeline'
           timelineId={`hashtag:${hashtag}`}
           loadMore={this.handleLoadMore}
+          pawooMediaScale='230px'
+          pawooWideMedia
         />
       </Column>
     );
