@@ -35,26 +35,24 @@ const mapDispatchToProps = (dispatch, { intl }) => ({
           message: <FormattedMessage id='confirmations.unfollow.message' defaultMessage='Are you sure you want to unfollow {name}?' values={{ name: <strong>@{account.get('acct')}</strong> }} />,
           confirm: intl.formatMessage(messages.unfollowConfirm),
           onConfirm: () => {
-            PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unollow' });
+            PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unollow', eventLabel: account.get('id') });
             dispatch(unfollowAccount(account.get('id')));
           },
         }));
       } else {
-        PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unollow' });
+        PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unollow', eventLabel: account.get('id') });
         dispatch(unfollowAccount(account.get('id')));
       }
     } else {
-      PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Follow' });
+      PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Follow', eventLabel: account.get('id') });
       dispatch(followAccount(account.get('id')));
     }
   },
 
   onOpenMedia (media) {
     if (media.get('type') === 'video') {
-      PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'OpenVideo' });
       dispatch(openModal('VIDEO', { media, time: 0 }));
     } else {
-      PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'OpenMedia' });
       dispatch(openModal('MEDIA', { media: ImmutableList([media]), index: 0 }));
     }
   },

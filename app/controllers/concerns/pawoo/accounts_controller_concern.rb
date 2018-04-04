@@ -4,7 +4,8 @@ module Pawoo::AccountsControllerConcern
   extend ActiveSupport::Concern
 
   included do
-    helper_method :pawoo_next_url, :pawoo_prev_url
+    before_action :pawoo_set_container_classes
+    helper_method :pawoo_next_url, :pawoo_prev_url, :pawoo_suggestion_strip_props
   end
 
   private
@@ -36,5 +37,20 @@ module Pawoo::AccountsControllerConcern
     else
       short_account_url(@account, page: prev_page)
     end
+  end
+
+  def pawoo_suggestion_strip_props
+    accounts = Account.where(id: Redis.current.smembers('pawoo:publicly_suggested_accounts')).shuffle
+    media_attachments_of = Pawoo::LoadAccountMediaAttachmentsService.new.call(accounts, 3)
+
+    {
+      locale: I18n.locale,
+      accounts: ActiveModelSerializers::SerializableResource.new(accounts, each_serializer: REST::SuggestedAccountSerializer, media_attachments_of: media_attachments_of).as_json,
+      tags: ActiveModelSerializers::SerializableResource.new(TrendTag.find_tags(5), each_serializer: REST::TrendTagSerializer).as_json,
+    }
+  end
+
+  def pawoo_set_container_classes
+    @pawoo_container_classes = 'container pawoo-wide'
   end
 end

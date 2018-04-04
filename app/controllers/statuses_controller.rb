@@ -2,6 +2,7 @@
 
 class StatusesController < ApplicationController
   include Authorization
+  include Pawoo::StatusesControllerConcern
 
   layout 'public'
 

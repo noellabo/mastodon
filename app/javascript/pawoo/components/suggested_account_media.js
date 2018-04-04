@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { autoPlayGif } from '../../mastodon/initial_state';
 import { isIOS } from '../../mastodon/is_mobile';
+import ga from '../actions/ga';
+
+const gaCategory = 'SuggestedAccount';
 
 class Item extends React.PureComponent {
 
@@ -12,10 +15,11 @@ class Item extends React.PureComponent {
   };
 
   static propTypes = {
+    account: ImmutablePropTypes.map.isRequired,
     attachment: ImmutablePropTypes.map.isRequired,
     index: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,
-    onOpenMedia: PropTypes.func.isRequired,
+    onOpenMedia: PropTypes.func,
   };
 
   static defaultProps = {
@@ -42,9 +46,15 @@ class Item extends React.PureComponent {
   }
 
   handleOpenMedia = (e) => {
-    const { attachment, onOpenMedia } = this.props;
+    const { account, attachment, onOpenMedia } = this.props;
 
-    if (this.context.router && e.button === 0) {
+    ga.event({
+      eventCategory: gaCategory,
+      eventAction: attachment.get('type') === 'video' ? 'OpenVideo' : 'OpenMedia',
+      eventLabel: account.get('id'),
+    });
+
+    if (onOpenMedia && this.context.router && e.button === 0) {
       e.preventDefault();
       onOpenMedia(attachment);
     }
@@ -139,17 +149,18 @@ class Item extends React.PureComponent {
 export default class SuggestedAccountMedia extends React.PureComponent {
 
   static propTypes = {
-    mediaAttachments: ImmutablePropTypes.list.isRequired,
-    onOpenMedia: PropTypes.func.isRequired,
+    account: ImmutablePropTypes.map.isRequired,
+    onOpenMedia: PropTypes.func,
   };
 
   render () {
-    const { mediaAttachments, onOpenMedia } = this.props;
+    const { account, onOpenMedia } = this.props;
+    const mediaAttachments = account.get('media_attachments');
 
     return (
       <div className='suggested_account_media'>
         {mediaAttachments.map((attachment, i) => (
-          <Item attachment={attachment} key={attachment.get('id')} index={i} size={mediaAttachments.size} onOpenMedia={onOpenMedia} />
+          <Item account={account} attachment={attachment} key={attachment.get('id')} index={i} size={mediaAttachments.size} onOpenMedia={onOpenMedia} />
         ))}
       </div>
     );

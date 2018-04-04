@@ -1,12 +1,14 @@
-.landing {
-  display: flex;
+.landing-strip {
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
 
 .landing-form {
   box-sizing: border-box;
+  flex: 1 0 250px;
   padding: 0 20px;
+  text-align: center;
+  min-width: 250px;
 
   > * {
     display: block;
@@ -14,7 +16,14 @@
 
   > a {
     color: $classic-primary-color;
-    margin-top: 4px;
+    margin: 4px 2px 0;
+    display: inline-block;
+
+    @each $lang in $cjk-langs {
+      &:lang(#{$lang}) {
+        font-weight: 500;
+      }
+    }
   }
 
   > button {
@@ -27,7 +36,27 @@
   }
 }
 
-.landing-strip {
-  flex: 1;
-  margin: 0;
+.landing-description {
+  display: flex;
+  align-items: center;
+
+  flex: 2 0 50%;
+  min-width: 50%;
+}
+
+#pawoo-suggestion-strip {
+  min-width: 200px;
+
+  .pawoo-subcolumn__header {
+    background: lighten($ui-base-color, 13%);
+  }
+
+  .pawoo-subcolumn--suggested-accounts__body,
+  .suggestion-tags__body {
+    background: lighten($ui-base-color, 4%);
+  }
+
+  section {
+    margin-bottom: 10px;
+  }
 }

@@ -30,11 +30,13 @@
 
 = render 'accounts/service_logo'
 
-- if show_landing_strip?
-  = render partial: 'shared/landing_strip', locals: { account: @stream_entry.account }
+.pawoo-extension-two-columns
+  .activity-stream.activity-stream-headless.h-entry
+    = render partial: "stream_entries/#{@type}", locals: { @type.to_sym => @stream_entry.activity, include_threads: true }
 
-.activity-stream.activity-stream-headless.h-entry
-  = render partial: "stream_entries/#{@type}", locals: { @type.to_sym => @stream_entry.activity, include_threads: true }
+  - if show_landing_strip?
+    .pawoo-extension-account__strip
+      = render partial: 'shared/landing_strip', locals: { account: @stream_entry.account }
 
 .pagination
   - if @status_pagination&.next

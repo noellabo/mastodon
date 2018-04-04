@@ -131,28 +131,6 @@ $button-icon-scale-ration-on-pc: 0.85;
   }
 }
 
-.trend-tags__header {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  background: lighten($ui-base-color, 4%);
-  font-size: 16px;
-}
-
-.trend-tags__header__icon {
-  width: 20px;
-  margin-right: 7px;
-}
-
-.trend-tags__header__name{
-  flex: 1;
-}
-
-.trend-tags__header__description{
-  color: rgba(#FFF, 0.6);
-  font-size: 12px;
-}
-
 .suggestion-tags__body li {
   padding: 10px;
   display: flex;
@@ -164,7 +142,7 @@ $button-icon-scale-ration-on-pc: 0.85;
   flex: 1;
 }
 
-.suggestion-tags__name {
+.suggestion-tags__name * {
   font-size: 15px;
   color: #FFF;
   text-decoration: none;

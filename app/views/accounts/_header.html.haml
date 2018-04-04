@@ -20,8 +20,6 @@
             %button.button.pawoo-unauthenticated-follow__button__dropdown{ 'aria-controls': 'pawoo-unauthenticated-follow__dropdown' }
               = fa_icon 'caret-down'
           %ul#pawoo-unauthenticated-follow__dropdown.pawoo-unauthenticated-follow__dropdown.dropdown-menu{ 'aria-expanded': 'false' }
-            %li.dropdown-menu__item= link_to 'メールアドレスで登録', new_user_registration_path
-            %li.dropdown-menu__item= link_to 'メールアドレスでサインイン', new_user_session_path
             %li.dropdown-menu__item= link_to t('accounts.remote_follow'), account_remote_follow_path(account)
 
     .avatar= image_tag account.avatar.url(:original), class: 'u-photo'

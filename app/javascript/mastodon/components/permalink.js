@@ -12,9 +12,14 @@ export default class Permalink extends React.PureComponent {
     href: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
     children: PropTypes.node,
+    pawooOnClick: PropTypes.func,
   };
 
   handleClick = (e) => {
+    if (this.props.pawooOnClick) {
+      this.props.pawooOnClick(e);
+    }
+
     if (this.context.router && e.button === 0 && !(e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       this.context.router.history.push(this.props.to);
@@ -22,7 +27,7 @@ export default class Permalink extends React.PureComponent {
   }
 
   render () {
-    const { href, children, className, ...other } = this.props;
+    const { href, children, className, pawooOnClick, ...other } = this.props;
 
     return (
       <a target='_blank' href={href} onClick={this.handleClick} {...other} className={`permalink${className ? ' ' + className : ''}`}>

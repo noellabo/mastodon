@@ -24,16 +24,28 @@ RSpec.describe Api::V1::ReportsController, type: :controller do
 
     subject { Report.find_by(comment: 'reasons') }
 
-    context 'when pawoo_report_type is null' do
-      it 'creates a report' do
-        expect(Report.find_by(comment: 'reasons').pawoo_report_type).to eq 'other'
-        expect(Report.find_by(comment: 'reasons').action_taken).to be true
-      end
-
+    context 'when the target status has not been dealt with yet' do
       it 'creates pawoo_report_targets' do
         expect(subject.pawoo_report_targets.count).to eq 2
         expect(subject.pawoo_report_targets.map(&:target)).to match_array [status1, status2]
         expect(subject.pawoo_report_targets.map(&:state)).to match ['unresolved', 'unresolved']
+      end
+    end
+
+    context 'when the target status has been dealt with' do
+      let(:status1) { Fabricate('Pawoo::ReportTarget', target: Fabricate(:status), state: :resolved).target }
+
+      it 'creates pawoo_report_targets' do
+        expect(subject.pawoo_report_targets.count).to eq 2
+        expect(subject.pawoo_report_targets.find_by(target: status1).state).to eq 'resolved'
+        expect(subject.pawoo_report_targets.find_by(target: status2).state).to eq 'unresolved'
+      end
+    end
+
+    context 'when pawoo_report_type is null' do
+      it 'creates a report' do
+        expect(Report.find_by(comment: 'reasons').pawoo_report_type).to eq 'other'
+        expect(Report.find_by(comment: 'reasons').action_taken).to be true
       end
     end
 

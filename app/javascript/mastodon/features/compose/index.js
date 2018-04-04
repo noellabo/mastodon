@@ -21,6 +21,7 @@ import {
 } from '../../../pawoo/actions/layout';
 import { setPage as pawooSetPage } from '../../../pawoo/actions/page';
 import Announcements from '../../../pawoo/components/announcements';
+import PawooWebTagLink from '../../../pawoo/components/web_tag_link';
 import TrendTagsContainer from '../../../pawoo/containers/trend_tags_container';
 
 const messages = defineMessages({
@@ -142,7 +143,7 @@ export default class Compose extends React.PureComponent {
                 )}
                 <div style={{ marginBottom: '10px' }}><Announcements /></div>
                 <div className='drawer__block'>
-                  <TrendTagsContainer />
+                  <TrendTagsContainer Tag={PawooWebTagLink} />
                 </div>
               </div>
             )}
