@@ -63,7 +63,7 @@ export default class CommunityTimeline extends React.PureComponent {
           loadMore={this.handleLoadMore}
           scrollKey='standalone_community_timeline'
           trackScroll={false}
-          pawooMediaScale='330px'
+          pawooMediaScale='230px'
           pawooWideMedia
         />
       </Column>
