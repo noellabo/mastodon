@@ -77,7 +77,7 @@ export default class StatusCheckBox extends React.PureComponent {
       } else {
         media = (
           <Bundle fetchComponent={MediaGallery} loading={this.renderLoadingMediaGallery} >
-            {Component => <Component media={attachments} sensitive={status.get('sensitive')} height={200} onOpenMedia={noop} />}
+            {Component => <Component media={attachments} sensitive={status.get('sensitive')} pawooScale='200px' onOpenMedia={noop} />}
           </Bundle>
         );
       }
