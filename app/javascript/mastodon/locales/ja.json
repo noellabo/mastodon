@@ -62,7 +62,7 @@
   "compose_form.publish_loud": "{publish}！",
   "compose_form.schedule_placeholder": "投稿する時間",
   "compose_form.sensitive": "メディアを不適切なコンテンツとしてマークする",
-  "compose_form.sensitive_message": "投稿する画像がエッチなコンテンツの場合、必ず目のアイコンをクリックしてNSFWを設定してください",
+  "compose_form.sensitive_message": "R-18に限らず、エッチな画像のトゥート時は、👁マークを押して閲覧制限をつけてください",
   "compose_form.spoiler": "テキストを隠す",
   "compose_form.spoiler_placeholder": "ここに警告を書いてください",
   "confirmation_modal.cancel": "キャンセル",
