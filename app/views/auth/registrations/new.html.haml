@@ -7,12 +7,6 @@
 = simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
   = render 'shared/error_messages', object: resource
 
-  .omniauth
-    = render 'oauth/authorizations/pixiv_auth', auth_type: 'signup'
-
-  .separate
-    %span= t('simple_form.labels.omniauth.or')
-
   = f.simple_fields_for :account do |ff|
     .input-with-append
       = ff.input :username, autofocus: true, placeholder: t('simple_form.labels.defaults.username'), required: true, input_html: { 'aria-label' => t('simple_form.labels.defaults.username'), :autocomplete => 'off' }
@@ -26,6 +20,12 @@
 
   .actions
     = f.button :button, t('auth.register'), type: :submit
+
+  .separate
+    %span= t('simple_form.labels.omniauth.or')
+
+  .omniauth
+    = render 'oauth/authorizations/pixiv_auth', auth_type: 'signup'
 
   %p.hint.subtle-hint=t('auth.agreement_html', rules_path: about_more_path, terms_path: terms_path)
 .form-footer= render 'auth/shared/links'
