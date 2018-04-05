@@ -9,7 +9,6 @@ describe 'about/show.html.haml', without_verify_partial_doubles: true do
   end
 
   it 'has valid open graph tags' do
-    pending('about画面は変更したのでテストできない')
     instance_presenter = double(:instance_presenter,
                                 site_title: 'something',
                                 site_description: 'something',

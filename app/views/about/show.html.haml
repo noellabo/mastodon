@@ -8,85 +8,56 @@
   = render partial: 'shared/og'
 
 .about-cols
-  .about-col.left
-    = image_tag asset_pack_path('pawoo/service_logo.png'), width: 150, style: 'display:block;margin:0 auto 40px'
+  %section.main
+    %h1= image_tag asset_pack_path('pawoo/about/header.png'), alt: 'Pawoo', width: 535
 
-    .simple_form
-      = render 'registration'
+    .about-col-body
+      .about-col-body-spacer.top
+      %div
+        .simple_form
+          %button.omniauth-pixiv= t('pawoo.start')
 
-  .about-col.main
-    .about-col-head
-      = image_tag asset_pack_path('pawoo/about/header.png'), width: 535
-      %p
+        .form-footer
+          %ul.no-list
+            %li= link_to t('pawoo.login_email'), new_user_session_path
+            %li= link_to t('pawoo.signup_email'), new_user_registration_path
+
+      .about-col-body-spacer
+
+      %p.hide_on_short_display
         ピクシブが運営するマストドンインスタンス「Pawoo」は、文章や画像を投稿して楽しむSNSです。
         「創作活動や自由なコミュニケーションを楽しめる場」として、どなたにも幅広く使っていただけます。
 
-    .about-col-body.first
-      %p.main ＼ #{number_with_delimiter @instance_presenter.user_count}人が、#{number_with_delimiter @instance_presenter.status_count}回パウってます／
-
-      .simple_form.show_on_wide_display.signup
-        = link_to new_user_registration_path do
-          %button.including-brand Pawooをはじめる
-
-      .simple_form.hide_on_wide_display
-        = render 'registration'
-
-      .separate
-        %span アプリもあります
+      .about-col-body-spacer.hide_on_short_display
 
       .about-col-body-apps
-        .about-col-body-app
-          = link_to 'https://itunes.apple.com/us/app/pawoo/id1229070679' do
-            = image_tag asset_pack_path('pawoo/about/badge-appstore.png'), width: 190
+        %h2
+          %span アプリもあります
 
-        .about-col-body-app
-          = link_to 'https://play.google.com/store/apps/details?id=jp.pxv.pawoo' do
-            = image_tag asset_pack_path('pawoo/about/badge-googleplay.png'), width: 190
+        %ul.no-list
+          %li
+            = link_to 'https://itunes.apple.com/us/app/pawoo/id1229070679' do
+              = image_tag asset_pack_path('pawoo/about/badge-appstore.png'), width: 190
 
-    .about-col-body
-      = render 'pawoo_features'
+          %li
+            = link_to 'https://play.google.com/store/apps/details?id=jp.pxv.pawoo' do
+              = image_tag asset_pack_path('pawoo/about/badge-googleplay.png'), width: 190
 
-      .simple_form.signup
-        = link_to new_user_registration_path do
-          %button.including-brand Pawooをはじめる
+      .about-col-body-spacer.bottom
 
-      %p.main{ style: 'margin-top:40px;' }
-        = link_to t('about.about_this'), about_more_path, style: 'color:white'
+  %section.timeline#mastodon-timeline{ data: { props: Oj.dump(default_props) } }
 
-    .about-col-body
-      %p.main= t 'about.what_is_mastodon'
-      %p= t 'about.about_mastodon_html'
-
-      %video{autoplay: '', loop: '',  src: asset_pack_path('pawoo/about/demo.mp4'),  poster: asset_pack_path('pawoo/about/demo.jpg'),  style: 'width:100%;'}
-
-    .about-col-body
-      %p.main ＼ マストドンの特徴 ／
-
-      %p.title= t 'about.features.real_conversation_title'
-      %p= t 'about.features.real_conversation_body'
-
-      /%p.title= t 'about.features.not_a_product_title'
-      /%p= t 'about.features.not_a_product_body'
-
-      %p.title= t 'about.features.within_reach_title'
-      %p= t 'about.features.within_reach_body'
-
-      %p.title= t 'about.features.humane_approach_title'
-      %p= t 'about.features.humane_approach_body'
-
-      %p.learn-more
-        %a.button.button-alternative{ href: 'https://joinmastodon.org/' }= t 'about.learn_more'
-
-      %p まずはローカルタイムラインを眺めて、気になるユーザーをフォローしてみましょう！
-
-    .actions
-      .info
-        = link_to t('about.source_code'), @instance_presenter.source_url
-        = " (#{@instance_presenter.version_number})"
-
-    = link_to 'https://www.pixiv.net/' do
-      = image_tag asset_pack_path('pawoo/logo_pixiv.png'), alt: 'pixiv', width: 50, style: 'display:block;margin:40px auto'
-
-  .about-col.right
-    .about-timeline-container
-      #mastodon-timeline{ data: { props: Oj.dump(default_props) } }
+.info
+  %ul.no-list
+    %li
+      = link_to 'https://www.pixiv.net/' do
+        = image_tag asset_pack_path('pawoo/logo_pixiv.png'), alt: 'pixiv', height: '20'
+    %li
+      = link_to 'https://joinmastodon.org/' do
+        = image_tag asset_pack_path('logo_full.svg'), alt: 'Mastodon', class: 'mastodon', height: '24'
+  %ul.no-list
+    %li
+      = link_to t('about.source_code'), @instance_presenter.source_url
+      = " (#{@instance_presenter.version_number})"
+    %li
+      = link_to t('about.about_this'), about_more_path

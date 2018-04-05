@@ -573,8 +573,11 @@ en:
       follow_request: "%{name} requested to follow you"
       mention: "%{name} mentioned you"
       reblog: "%{name} boosted your toot"
+    login_email: Log in with email address
     oauth_registrations:
       already_registered: It has already been registered. After logging in with your e-mail address and password, please link with pixiv account from setting page.
+    signup_email: Sign up with email address
+    start: Start now!
     validations:
       crashed_unicode: includes invalid characters
   preferences:
