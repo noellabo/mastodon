@@ -62,7 +62,7 @@
   "compose_form.publish_loud": "{publish}!",
   "compose_form.schedule_placeholder": "Time to post",
   "compose_form.sensitive": "Mark media as sensitive",
-  "compose_form.sensitive_message": "Please be sure to click on the eye icon and set NSFW if the image you are trying to post is erotic content",
+  "compose_form.sensitive_message": "When tooting adult images (not limited to R-18), please set a browsing warning by pressing 👁 icon",
   "compose_form.spoiler": "Hide text behind warning",
   "compose_form.spoiler_placeholder": "Write your warning here",
   "confirmation_modal.cancel": "Cancel",
