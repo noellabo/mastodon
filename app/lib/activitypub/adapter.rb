@@ -21,6 +21,7 @@ class ActivityPub::Adapter < ActiveModelSerializers::Adapter::Base
     identity_proof: { 'toot' => 'http://joinmastodon.org/ns#', 'IdentityProof' => 'toot:IdentityProof' },
     blurhash: { 'toot' => 'http://joinmastodon.org/ns#', 'blurhash' => 'toot:blurhash' },
     discoverable: { 'toot' => 'http://joinmastodon.org/ns#', 'discoverable' => 'toot:discoverable' },
+    quoteUrl: { 'quoteUrl' => 'as:quoteUrl' },
   }.freeze
 
   def self.default_key_transform
