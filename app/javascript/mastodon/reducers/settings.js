@@ -64,10 +64,16 @@ const initialState = ImmutableMap({
       body: '',
     }),
   }),
+
+  pawoo: ImmutableMap({
+    multiColumn: false,
+    window: 'TREND_TAGS',
+  }),
 });
 
 export const defaultColumns = fromJS([
   { id: 'COMPOSE', uuid: uuid(), params: {} },
+  { id: 'NOTIFICATIONS', uuid: uuid(), params: {} },
 ]);
 
 const hydrate = (state, settings) => state.mergeDeep(settings).update('columns', (val = defaultColumns) => val);

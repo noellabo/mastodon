@@ -13,8 +13,6 @@ import Motion from '../ui/util/optional_motion';
 import spring from 'react-motion/lib/spring';
 import SearchResultsContainer from './containers/search_results_container';
 import { changeComposing } from '../../actions/compose';
-import { fromJS } from 'immutable';
-import uuid from '../../uuid';
 import {
   rollbackLayout as pawooRollbackLayout,
   upgradeLayout as pawooUpgradeLayout,
@@ -37,13 +35,8 @@ const mapStateToProps = state => ({
   columns: state.getIn(['settings', 'columns']),
   showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
   pawooHasUnreadNotifications: state.getIn(['notifications', 'unread']) > 0,
+  pawooMultiColumn: state.getIn(['settings', 'pawoo', 'multiColumn']),
 });
-
-const pawooOldLayout = fromJS([
-  { id: 'COMPOSE', uuid: uuid(), params: {} },
-  { id: 'HOME', uuid: uuid(), params: {} },
-  { id: 'NOTIFICATIONS', uuid: uuid(), params: {} },
-]);
 
 @connect(mapStateToProps)
 @injectIntl
@@ -56,6 +49,7 @@ export default class Compose extends React.PureComponent {
     showSearch: PropTypes.bool,
     intl: PropTypes.object.isRequired,
     pawooHasUnreadNotifications: PropTypes.bool,
+    pawooMultiColumn: PropTypes.bool,
   };
 
   componentDidMount () {
@@ -124,7 +118,15 @@ export default class Compose extends React.PureComponent {
               <ComposeFormContainer />
             </div>
 
-            {multiColumn && (this.props.columns.every(column => column.get('id') === 'COMPOSE') ? (
+            {(!multiColumn || this.props.pawooMultiColumn) && (
+              <React.Fragment>
+                <div style={{ marginBottom: '10px' }}><Announcements /></div>
+                <div className='drawer__block'>
+                  <TrendTagsContainer Tag={PawooWebTagLink} />
+                </div>
+              </React.Fragment>
+            )}
+            {multiColumn && !this.props.pawooMultiColumn && (
               <div className='landing-strip pawoo-extension-landing-strip--embedded'>
                 <p>
                   Pawooが新しいレイアウトになりました！もちろん、元のレイアウトに戻したり、
@@ -132,24 +134,6 @@ export default class Compose extends React.PureComponent {
                 </p>
                 <button className='button' onClick={this.pawooHandleRollBack}>元に戻すにはこちら</button>
               </div>
-            ) : (
-              <div>
-                {this.props.columns.count() === 3 &&
-                  this.props.columns.every((column, index) => column.get('id') === pawooOldLayout.getIn([index, 'id'])) && (
-                    <div className='landing-strip pawoo-extension-landing-strip--embedded'>
-                      <p>Pawooの新しいレイアウトができました！ぜひ試してみてください。</p>
-                      <button className='button' onClick={this.pawooHandleUpgrade}>新しいレイアウトを試す</button>
-                    </div>
-                  )}
-              </div>
-            ))}
-            {(multiColumn && this.props.columns.every(column => column.get('id') === 'COMPOSE')) || (
-              <React.Fragment>
-                <div style={{ marginBottom: '10px' }}><Announcements /></div>
-                <div className='drawer__block'>
-                  <TrendTagsContainer Tag={PawooWebTagLink} />
-                </div>
-              </React.Fragment>
             )}
 
             <div className='mastodon' />

@@ -29,6 +29,7 @@ class StatusSearchResults extends React.PureComponent {
     statusIds: ImmutablePropTypes.list,
     isLoading: PropTypes.bool,
     hasMore: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map.isRequired,
   };
 
   componentWillMount (){
@@ -56,7 +57,7 @@ class StatusSearchResults extends React.PureComponent {
   }
 
   render () {
-    const { statusIds, isLoading, params } = this.props;
+    const { statusIds, isLoading, params, pawoo } = this.props;
     const keyword = params.keyword;
     const column_header = <FormattedMessage id='column.search_toots' defaultMessage='Search: "{keyword}"' values={{ keyword }} />;
 
@@ -78,6 +79,8 @@ class StatusSearchResults extends React.PureComponent {
           pinned={false}
           multiColumn={false}
           showBackButton
+          pawoo={pawoo}
+          pawooUrl={`/statuses/search/${keyword}`}
         />
 
         <StatusList

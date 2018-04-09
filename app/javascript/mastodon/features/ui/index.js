@@ -49,7 +49,7 @@ import { me } from '../../initial_state';
 import { defineMessages, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import { resizeColumnMedia as pawooResizeColumnMedia } from '../../../pawoo/actions/column_media';
-import { upgradeLayoutAutomatically as pawooUpgradeLayoutAutomatically } from '../../../pawoo/actions/layout';
+import { changeLayoutAutomatically as pawooChangeLayoutAutomatically } from '../../../pawoo/actions/layout';
 import { SuggestedAccountsColumn } from '../../../pawoo/util/async-components';
 
 // Dummy import, to make sure that <Status /> ends up in the application bundle.
@@ -67,7 +67,7 @@ const mapStateToProps = state => ({
   pawooDefaultGettingStartedOnMultiColumn:
     state.getIn(['settings', 'columns']).some(column => column.get('id') === 'HOME') ||
       !state.getIn(['settings', 'onboarded']),
-  pawooWide: state.getIn(['settings', 'columns']).count() <= 1 ||
+  pawooMultiColumn: !state.getIn(['settings', 'pawoo', 'multiColumn']) ||
     state.getIn(['pawoo', 'page']) !== 'DEFAULT',
 });
 
@@ -117,7 +117,7 @@ export default class UI extends React.Component {
     intl: PropTypes.object.isRequired,
     pawooHasUnreadNotifications: PropTypes.bool,
     pawooDefaultGettingStartedOnMultiColumn: PropTypes.bool,
-    pawooWide: PropTypes.bool,
+    pawooMultiColumn: PropTypes.bool,
   };
 
   state = {
@@ -228,7 +228,7 @@ export default class UI extends React.Component {
     this.props.dispatch(pawooResizeColumnMedia(isMobile(this.state.width)));
 
     if (!isMobile(this.width)) {
-      this.props.dispatch(pawooUpgradeLayoutAutomatically());
+      this.props.dispatch(pawooChangeLayoutAutomatically());
     }
   }
 
@@ -375,7 +375,7 @@ export default class UI extends React.Component {
 
   render () {
     const { width, draggingOver } = this.state;
-    const { children, pawooWide, pawooHasUnreadNotifications, pawooDefaultGettingStartedOnMultiColumn } = this.props;
+    const { children, pawooMultiColumn, pawooHasUnreadNotifications, pawooDefaultGettingStartedOnMultiColumn } = this.props;
     const pawooSingleColumn = isMobile(width);
 
     const handlers = {
@@ -399,7 +399,7 @@ export default class UI extends React.Component {
 
     return (
       <HotKeys keyMap={keyMap} handlers={handlers} ref={this.setHotkeysRef}>
-        <div className={classNames('ui', { 'pawoo-extension-ui--wide': pawooWide })} ref={this.setRef}>
+        <div className={classNames('ui', { 'pawoo-extension-ui--multi-column': pawooMultiColumn })} ref={this.setRef}>
           <TabsBar pawooHasUnreadNotifications={pawooHasUnreadNotifications} />
 
           <ColumnsAreaContainer ref={this.setColumnsAreaRef} singleColumn={pawooSingleColumn}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 
@@ -10,11 +11,11 @@ import BundleContainer from '../containers/bundle_container';
 export class WrappedSwitch extends React.PureComponent {
 
   render () {
-    const { multiColumn, pawooHasPinnedColumn, children } = this.props;
+    const { multiColumn, pawoo, children } = this.props;
 
     return (
       <Switch>
-        {React.Children.map(children, child => React.cloneElement(child, { multiColumn, pawooHasPinnedColumn }))}
+        {React.Children.map(children, child => React.cloneElement(child, { multiColumn, pawoo }))}
       </Switch>
     );
   }
@@ -23,7 +24,7 @@ export class WrappedSwitch extends React.PureComponent {
 
 WrappedSwitch.propTypes = {
   multiColumn: PropTypes.bool,
-  pawooHasPinnedColumn: PropTypes.bool,
+  pawoo: ImmutablePropTypes.map,
   children: PropTypes.node,
 };
 
@@ -36,21 +37,21 @@ export class WrappedRoute extends React.Component {
     component: PropTypes.func.isRequired,
     content: PropTypes.node,
     multiColumn: PropTypes.bool,
-    pawooHasPinnedColumn: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map,
   }
 
   renderComponent = ({ match }) => {
-    const { component, content, multiColumn, pawooHasPinnedColumn } = this.props;
+    const { component, content, multiColumn, pawoo } = this.props;
 
     return (
       <BundleContainer fetchComponent={component} loading={this.renderLoading} error={this.renderError}>
-        {Component => <Component params={match.params} multiColumn={multiColumn} pawooHasPinnedColumn={pawooHasPinnedColumn}>{content}</Component>}
+        {Component => <Component params={match.params} multiColumn={multiColumn} pawoo={pawoo}>{content}</Component>}
       </BundleContainer>
     );
   }
 
   renderLoading = () => {
-    return <ColumnLoading />;
+    return <ColumnLoading pawoo={this.props.pawoo} />;
   }
 
   renderError = (props) => {

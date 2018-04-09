@@ -11,37 +11,46 @@ const pawooOldLayout = fromJS([
 ]);
 
 export function upgradeLayout() {
-  return (dispatch, getState) => {
-    try {
-      sessionStorage.setItem('pawoo:columns', JSON.stringify(getState().getIn(['settings', 'columns']).toJS()));
-    } catch (e) {
-      // [webkit-dev] DOM Storage and private browsing
-      // https://lists.webkit.org/pipermail/webkit-dev/2009-May/007788.html
-    }
-
-    dispatch(changeSetting(['columns'], defaultColumns));
+  return dispatch => {
+    sessionStorage.removeItem('pawoo:columns');
+    dispatch(changeSetting(['pawoo', 'multiColumn'], false));
   };
 }
 
-export function upgradeLayoutAutomatically() {
+export function changeLayoutAutomatically() {
   return (dispatch, getState) => {
     const columns = getState().getIn(['settings', 'columns']);
 
-    if (columns.count() === 3 &&
-        columns.every((column, index) => column.get('id') === pawooOldLayout.getIn([index, 'id'])) &&
-        initialState.pawoo &&
-        initialState.pawoo.last_settings_updated &&
-        initialState.pawoo.last_settings_updated < 1522290629) {
-      dispatch(upgradeLayout());
+    if (initialState.pawoo) {
+      if ((initialState.pawoo.last_settings_updated < 1522290629 &&
+            columns.count() === 3 &&
+            columns.every((column, index) => column.get('id') === pawooOldLayout.getIn([index, 'id']))) ||
+          (initialState.pawoo.last_settings_updated < 1524000000 &&
+            columns.count() === 1)) {
+        try {
+          sessionStorage.setItem('pawoo:columns', JSON.stringify(getState().getIn(['settings', 'columns']).toJS()));
+        } catch (e) {
+          // [webkit-dev] DOM Storage and private browsing
+          // https://lists.webkit.org/pipermail/webkit-dev/2009-May/007788.html
+        }
+
+        dispatch(changeSetting(['columns'], defaultColumns));
+      } else if (initialState.pawoo.last_settings_updated > 1522290629 &&
+                 initialState.pawoo.last_settings_updated < 1524000000) {
+        dispatch(changeSetting(['pawoo', 'multiColumn'], true));
+      }
     }
   };
 }
 
 export function rollbackLayout() {
-  const item = sessionStorage.getItem('pawoo:columns');
+  return dispatch => {
+    const item = sessionStorage.getItem('pawoo:columns');
 
-  return changeSetting(
-    ['columns'],
-    item === null ? pawooOldLayout : fromJS(JSON.parse(item))
-  );
+    if (item !== null) {
+      dispatch(changeSetting(['columns'], fromJS(JSON.parse(item))));
+    }
+
+    dispatch(changeSetting(['pawoo', 'multiColumn'], true));
+  };
 }

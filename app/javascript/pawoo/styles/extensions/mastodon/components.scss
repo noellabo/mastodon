@@ -7,11 +7,11 @@
 }
 
 .ui {
-  &.pawoo-extension-ui--wide {
+  &.pawoo-extension-ui--multi-column {
     max-width: 1920px;
   }
 
-  &:not(.pawoo-extension-ui--wide) .column {
+  &:not(.pawoo-extension-ui--multi-column) .column {
     max-width: 700px;
   }
 }

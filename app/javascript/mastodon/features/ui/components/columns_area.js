@@ -12,10 +12,13 @@ import DrawerLoading from './drawer_loading';
 import BundleColumnError from './bundle_column_error';
 
 import detectPassiveEvents from 'detect-passive-events';
+import Immutable from 'immutable';
 import { scrollRight } from '../../../scroll';
-import PawooNavigationColumn from '../../../../pawoo/components/navigation_column';
+import PawooNavigationColumnContainer from '../../../../pawoo/containers/navigation_column_container';
 import PawooSingleColumnOnboardingContainer from '../../../../pawoo/containers/single_column_onboarding_container';
 import ColumnContainerWithHistory from '../../../../pawoo/containers/column_container_with_history';
+
+const pawooCompose = Immutable.fromJS({ id: 'COMPOSE' });
 
 @component => injectIntl(component, { withRef: true })
 export default class ColumnsArea extends ImmutablePureComponent {
@@ -30,6 +33,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
     isModalOpen: PropTypes.bool.isRequired,
     singleColumn: PropTypes.bool,
     children: PropTypes.node,
+    pawooMultiColumn: PropTypes.bool,
     pawooPage: PropTypes.string,
   };
 
@@ -158,10 +162,11 @@ export default class ColumnsArea extends ImmutablePureComponent {
   }
 
   render () {
-    const { columns, children, singleColumn, isModalOpen, pawooPage } = this.props;
+    const { columns, children, singleColumn, isModalOpen, pawooMultiColumn, pawooPage } = this.props;
     const { shouldAnimate } = this.state;
 
-    const pawooHasPinnedColumn = columns.some(column => column.get('id') !== 'COMPOSE') || pawooPage !== 'DEFAULT';
+    const pawooCurrentlyMultiColumn = pawooMultiColumn || pawooPage !== 'DEFAULT';
+    const pawoo = Immutable.fromJS({ multiColumn: pawooCurrentlyMultiColumn });
 
     const columnIndex = getIndex(this.context.router.history.location.pathname);
     this.pendingIndex = null;
@@ -180,17 +185,19 @@ export default class ColumnsArea extends ImmutablePureComponent {
 
     return (
       <div className={`columns-area ${ isModalOpen ? 'unscrollable' : '' }`} ref={this.setRef}>
-        {columns.map(column => {
+        {pawooCurrentlyMultiColumn ? columns.map(column => {
           return (
             <ColumnContainerWithHistory key={column.get('uuid')} column={column} />
           );
-        })}
+        }) : (
+          <ColumnContainerWithHistory column={pawooCompose} />
+        )}
 
         <div style={{ display: 'flex', flex: pawooPage === 'DEFAULT' ? '1 330px' : null }}>
-          {React.Children.map(children, child => React.cloneElement(child, { multiColumn: true, pawooHasPinnedColumn }))}
+          {React.Children.map(children, child => React.cloneElement(child, { multiColumn: true, pawoo }))}
         </div>
 
-        {pawooHasPinnedColumn || <PawooNavigationColumn />}
+        {pawooCurrentlyMultiColumn || <PawooNavigationColumnContainer />}
       </div>
     );
   }

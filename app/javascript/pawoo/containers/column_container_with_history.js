@@ -13,86 +13,7 @@ import DrawerLoading from '../../mastodon/features/ui/components/drawer_loading'
 import BundleColumnError from '../../mastodon/features/ui/components/bundle_column_error';
 import { pushColumnHistory, popColumnHistory } from '../actions/column_histories';
 import PawooGA from '../actions/ga';
-
-import {
-  Compose,
-  Notifications,
-  HomeTimeline,
-  CommunityTimeline,
-  PublicTimeline,
-  HashtagTimeline,
-  FavouritedStatuses,
-  ListTimeline,
-  MediaTimeline,
-  SuggestionTags,
-  Status,
-  Reblogs,
-  Favourites,
-} from '../../mastodon/features/ui/util/async-components';
-import * as PawooComponents from '../util/async-components';
-
-const componentMap = {
-  'COMPOSE': {
-    component: Compose,
-    match: null,
-  },
-  'HOME': {
-    component: HomeTimeline,
-    match: { path: '/timelines/home' },
-  },
-  'PUBLIC': {
-    component: PublicTimeline,
-    match: { path: '/timelines/public' },
-  },
-  'COMMUNITY': {
-    component: CommunityTimeline,
-    match: { path: '/timelines/public/local' },
-  },
-  'HASHTAG': {
-    component: HashtagTimeline,
-    match: { path: '/timelines/tag/:id' },
-  },
-  'LIST': {
-    component: ListTimeline,
-    match: { path: '/timelines/list/:id' },
-  },
-  'NOTIFICATIONS': {
-    component: Notifications,
-    match: { path: '/notifications' },
-  },
-  'FAVOURITES': {
-    component: FavouritedStatuses,
-    match: { path: '/favourites' },
-  },
-  'STATUS': {
-    component: Status,
-    match: { path: '/statuses/:statusId', exact: true },
-  },
-  'STATUS_REBLOGS': {
-    component: Reblogs,
-    match: { path: '/statuses/:statusId/reblogs' },
-  },
-  'STATUS_FAVOURITES': {
-    component: Favourites,
-    match: { path: '/statuses/:statusId/favourites' },
-  },
-  'MEDIA': {
-    component: MediaTimeline,
-    match: { path: '/timelines/public/media' },
-  },
-  'SUGGESTION_TAGS': {
-    component: SuggestionTags,
-    match: null,
-  },
-  'PAWOO_ONBOARDING': {
-    component: PawooComponents.OnboardingPageContainer,
-    match: null,
-  },
-  'PAWOO_SUGGESTED_ACCOUNTS': {
-    component: PawooComponents.SuggestedAccountsPage,
-    match: null,
-  },
-};
+import columnComponentMap from '../column_component_map';
 
 const columnStateKey = (columnId, locationId) => `@@columnScroll|${columnId}|${locationId}`;
 const pawooGaCategory = 'ColumnHistory';
@@ -129,6 +50,7 @@ class ColumnStateStorage {
 const mapStateToProps = (state, props) => ({
   columnHistory: state.getIn(['pawoo', 'column_histories', props.column.get('uuid')], Immutable.Stack([props.column])),
   enableColumnHistory: state.getIn(['pawoo', 'page']) === 'DEFAULT',
+  multiColumn: state.getIn(['settings', 'pawoo', 'multiColumn']),
 });
 
 const mapDispatchToProps = (dispatch, props) => ({
@@ -149,6 +71,7 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     pushColumnHistory: PropTypes.func.isRequired,
     popColumnHistory: PropTypes.func.isRequired,
     enableColumnHistory: PropTypes.bool.isRequired,
+    multiColumn: PropTypes.bool,
   };
 
   static childContextTypes = {
@@ -217,9 +140,9 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     }
 
     let match = null;
-    const matchedId = Object.keys(componentMap).find((key) => {
-      if (componentMap[key].match) {
-        match = matchPath(path, componentMap[key].match);
+    const matchedId = Object.keys(columnComponentMap).find((key) => {
+      if (columnComponentMap[key].match) {
+        match = matchPath(path, columnComponentMap[key].match);
         return match;
       } else {
         return null;
@@ -266,12 +189,21 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     this.scrollBehavior.unregisterElement(key);
   };
 
+  getPawooProps = () => {
+    return Immutable.Map({
+      collapsed: false,
+      multiColumn: this.props.multiColumn,
+      onCollapse: null,
+      onExpand: null,
+    });
+  };
+
   getScrollContext = () => {
     return this.props.columnHistory.first().get('uuid');
   };
 
   renderLoading = columnId => () => {
-    return columnId === 'COMPOSE' ? <DrawerLoading /> : <ColumnLoading />;
+    return columnId === 'COMPOSE' ? <DrawerLoading /> : <ColumnLoading pawoo={this.getPawooProps()} />;
   };
 
   renderError = (props) => {
@@ -284,10 +216,10 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     const params = topColumn.get('params', null) === null ? null : topColumn.get('params').toJS();
     return (
       <BundleContainer
-        fetchComponent={componentMap[topColumn.get('id')].component}
+        fetchComponent={columnComponentMap[topColumn.get('id')].component}
         loading={this.renderLoading(column.get('id'))} error={this.renderError}
       >
-        {SpecificComponent => <SpecificComponent columnId={column.get('uuid')} params={params} multiColumn />}
+        {SpecificComponent => <SpecificComponent columnId={column.get('uuid')} params={params} multiColumn pawoo={this.getPawooProps()} />}
       </BundleContainer>
     );
   }
