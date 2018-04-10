@@ -12,6 +12,7 @@ import { IntlProvider, addLocaleData } from 'react-intl';
 import { getLocale } from '../locales';
 import initialState from '../initial_state';
 import pawooGaTracker from '../../pawoo/components/ga_tracker';
+import { setPage } from '../../pawoo/actions/page';
 
 const { localeData, messages } = getLocale();
 addLocaleData(localeData);
@@ -43,6 +44,9 @@ export default class Mastodon extends React.PureComponent {
     }
 
     store.dispatch(showOnboardingOnce());
+    if (location.hash === '#first_anniversary') {
+      store.dispatch(setPage('PAWOO_FIRST_ANNIVERSARY'));
+    }
   }
 
   componentWillUnmount () {

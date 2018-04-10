@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import Immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
@@ -16,6 +17,11 @@ import { scrollRight } from '../../../scroll';
 import PawooNavigationColumn from '../../../../pawoo/components/navigation_column';
 import PawooSingleColumnOnboardingContainer from '../../../../pawoo/containers/single_column_onboarding_container';
 import ColumnContainerWithHistory from '../../../../pawoo/containers/column_container_with_history';
+import uuid from '../../../uuid';
+
+import PawooFirstAnniversaryContainer from '../../../../pawoo/containers/first_anniversary';
+
+const pawooComposeColumn = Immutable.fromJS({ id: 'COMPOSE', uuid: uuid(), params: {} });
 
 @component => injectIntl(component, { withRef: true })
 export default class ColumnsArea extends ImmutablePureComponent {
@@ -171,11 +177,28 @@ export default class ColumnsArea extends ImmutablePureComponent {
         return <PawooSingleColumnOnboardingContainer />;
       }
 
+      if (pawooPage === 'PAWOO_FIRST_ANNIVERSARY') {
+        return (
+          <div className='columns-area'>
+            <PawooFirstAnniversaryContainer />
+          </div>
+        );
+      }
+
       return columnIndex !== -1 ? (
         <ReactSwipeableViews index={columnIndex} onChangeIndex={this.handleSwipe} onTransitionEnd={this.handleAnimationEnd} animateTransitions={shouldAnimate} springConfig={{ duration: '400ms', delay: '0s', easeFunction: 'ease' }} style={{ height: '100%' }}>
           {links.map(this.renderView)}
         </ReactSwipeableViews>
       ) : <div className='columns-area'>{children}</div>;
+    }
+
+    if (pawooPage === 'PAWOO_FIRST_ANNIVERSARY') {
+      return (
+        <div className={`columns-area ${ isModalOpen ? 'unscrollable' : '' }`} ref={this.setRef}>
+          <ColumnContainerWithHistory key={pawooComposeColumn.get('uuid')} column={pawooComposeColumn} />
+          <PawooFirstAnniversaryContainer />
+        </div>
+      );
     }
 
     return (
