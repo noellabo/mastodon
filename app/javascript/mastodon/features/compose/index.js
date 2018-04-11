@@ -127,7 +127,7 @@ export default class Compose extends React.PureComponent {
 
             <FirstAnniversaryBanner />
 
-            {this.props.columns.every(column => column.get('id') === 'COMPOSE') ? (
+            {multiColumn && (this.props.columns.every(column => column.get('id') === 'COMPOSE') ? (
               <div className='landing-strip pawoo-extension-landing-strip--embedded'>
                 <p>
                   Pawooが新しいレイアウトになりました！もちろん、元のレイアウトに戻したり、
@@ -143,12 +143,16 @@ export default class Compose extends React.PureComponent {
                       <p>Pawooの新しいレイアウトができました！ぜひ試してみてください。</p>
                       <button className='button' onClick={this.pawooHandleUpgrade}>新しいレイアウトを試す</button>
                     </div>
-                )}
+                  )}
+              </div>
+            ))}
+            {(multiColumn && this.props.columns.every(column => column.get('id') === 'COMPOSE')) || (
+              <React.Fragment>
                 <div style={{ marginBottom: '10px' }}><Announcements /></div>
                 <div className='drawer__block'>
                   <TrendTagsContainer Tag={PawooWebTagLink} />
                 </div>
-              </div>
+              </React.Fragment>
             )}
 
             <div className='mastodon' />
