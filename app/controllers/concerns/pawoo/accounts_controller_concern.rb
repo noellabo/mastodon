@@ -5,7 +5,7 @@ module Pawoo::AccountsControllerConcern
 
   included do
     before_action :pawoo_set_container_classes
-    helper_method :pawoo_next_url, :pawoo_prev_url, :pawoo_suggestion_strip_props
+    helper_method :pawoo_next_url, :pawoo_prev_url, :pawoo_suggestion_strip_props, :pawoo_schema
   end
 
   private
@@ -48,6 +48,25 @@ module Pawoo::AccountsControllerConcern
       accounts: ActiveModelSerializers::SerializableResource.new(accounts, each_serializer: REST::SuggestedAccountSerializer, media_attachments_of: media_attachments_of).as_json,
       tags: ActiveModelSerializers::SerializableResource.new(TrendTag.find_tags(5), each_serializer: REST::TrendTagSerializer).as_json,
     }
+  end
+
+  def pawoo_schema
+    presenter = Pawoo::Schema::AccountPagePresenter.new(
+      account: @account,
+      statuses: params[:page].to_i.zero? ? @pinned_statuses + @statuses_collection : @statuses_collection
+    )
+
+    [
+      ActiveModelSerializers::SerializableResource.new(
+        presenter,
+        serializer: Pawoo::Schema::AccountBreadcrumbListSerializer
+      ),
+
+      ActiveModelSerializers::SerializableResource.new(
+        presenter,
+        serializer: Pawoo::Schema::AccountItemListSerializer
+      )
+    ]
   end
 
   def pawoo_set_container_classes

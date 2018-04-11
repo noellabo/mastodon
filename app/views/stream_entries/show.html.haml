@@ -28,6 +28,8 @@
   - if (@stream_entry.status.present? && @stream_entry.status.text.length < 100 && @stream_entry.status.media_attachments.empty? && @stream_entry.status.pixiv_cards.empty?) || @account.silenced
     %meta{ name: 'robots', content: 'noindex,follow' }/
 
+  %script{ type: 'application/ld+json' }= Oj.dump(pawoo_schema)
+
 = render 'accounts/service_logo'
 
 .pawoo-extension-two-columns
