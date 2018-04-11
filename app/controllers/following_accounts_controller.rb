@@ -2,7 +2,6 @@
 
 class FollowingAccountsController < ApplicationController
   include AccountControllerConcern
-  include Pawoo::FollowingAccountsControllerConcern
 
   def index
     @follows = Follow.where(account: @account).recent.page(params[:page]).per(FOLLOW_PER_PAGE).preload(:target_account)
