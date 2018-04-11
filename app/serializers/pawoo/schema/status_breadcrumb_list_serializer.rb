@@ -5,7 +5,7 @@ class Pawoo::Schema::StatusBreadcrumbListSerializer < Pawoo::Schema::AccountBrea
 
   def item_list_element
     images = object.status.media_attachments.where(type: :image).map do |media_attachment|
-      full_asset_url media_attachment.file
+      full_asset_url media_attachment.file.url(:original)
     end
 
     super << {
