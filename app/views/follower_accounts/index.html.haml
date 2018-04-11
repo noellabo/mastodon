@@ -7,7 +7,7 @@
 
   = render 'accounts/og', account: @account, url: account_followers_url(@account, only_path: false)
 
-  %script{ type: 'application/ld+json' }!= json_escape(Oj.dump(pawoo_schema))
+  %script{ type: 'application/ld+json' }= Oj.dump(pawoo_schema)
 
 = render 'accounts/service_logo'
 
