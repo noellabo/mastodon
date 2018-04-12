@@ -198,14 +198,15 @@
   overflow: hidden;
 
   @keyframes pawoo-first-anniversary-intro {
-    0% { opacity: 1; z-index: 1; }
-    90% { opacity: 1; z-index: 1; }
+    0% { opacity: 0; z-index: 1; }
+    30% { opacity: 1; z-index: 1; }
+    70% { opacity: 1; z-index: 1; }
     100% { opacity: 0; z-index: 1; }
   }
 
   @keyframes pawoo-first-anniversary-logo {
-    0% { transform: scale(1); opacity: 1; z-index: 1; }
-    50% { opacity: 1; z-index: 1; }
+    0% { transform: scale(7); opacity: 1; z-index: 1; }
+    70% { opacity: 1; z-index: 1; }
     100% { transform: scale(0.1); opacity: 0; z-index: 1; }
   }
 
@@ -222,24 +223,25 @@
     margin: 20% auto;
     color: #4ee;
     opacity: 0;
-    animation: pawoo-first-anniversary-intro 2s ease-out;
+    animation: pawoo-first-anniversary-intro 5s ease-in-out;
   }
 
   &__logo {
     position: absolute;
-    height: 150px;
-    top: 40%;
+    height: 130px;
+    top: 50%;
     bottom: 0;
     left: 0;
     right: 0;
-    font-size: 10em;
+    font-size: 8em;
     text-align: center;
     line-height: 0.8em;
     letter-spacing: -0.05em;
     color: #000;
     text-shadow: -2px -2px 0 #ffd966, 2px -2px 0 #ffd966, -2px 2px 0 #ffd966, 2px 2px 0 #ffd966;
     opacity: 0;
-    animation: pawoo-first-anniversary-logo 5s ease-out 2.5s;
+    animation: pawoo-first-anniversary-logo 7s;
+    animation-delay: 7s;
 
     &__sub {
       display: block;
@@ -276,7 +278,8 @@
     position: absolute;
     top: 100%;
     width: 100%;
-    animation: pawoo-first-anniversary-scroll 1000000s linear 4s;
+    animation: pawoo-first-anniversary-scroll 750000s linear 4s;
+    animation-delay: 12s;
 
     p {
       line-height: normal;
@@ -304,14 +307,15 @@
     margin-top: 10px;
     margin-left: 10px;
   }
+
+  &__gbm_toggle {
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+  }
 }
 
-.pawoo-first-anniversary-toggle {
-  display: inline-block;
-  float: right;
-  margin: -3px 0 -7px;
-
-  + marquee {
-    margin-right: 80px;
-  }
+.pawoo-first-anniversary-header {
+  display: inline-flex;
+  width: calc(100% - 26px);
 }

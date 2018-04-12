@@ -102,8 +102,9 @@ export default class FirstAnniversary extends React.PureComponent {
     dispatch(scrollTopTimeline('community', true));
     dispatch(initializeTimeline());
     this.disconnect = dispatch(connectCommunityStream());
-    this.timer = setInterval(this.checkVisibleStatuses, 5000);
+    this.timer = setInterval(this.checkVisibleStatuses, 2000);
     this.props.dispatch(resizeColumnMedia());
+    this.startAudio();
   }
 
   componentWillUnmount () {
@@ -135,6 +136,39 @@ export default class FirstAnniversary extends React.PureComponent {
     this.titles = ele;
   }
 
+  setBgmRef = (ele) => {
+    this.bgm = ele;
+  }
+
+  setZouRef = (ele) => {
+    this.zou = ele;
+  }
+
+  startAudio () {
+    setTimeout(() => {
+      const promise = this.bgm.play();
+      if (promise instanceof Promise) {
+        promise.catch(() => {
+          this.bgm.muted = true;
+          this.bgm.play();
+          this.setState({ mute: true });
+        });
+      }
+    }, 5000);
+
+    setTimeout(() => {
+      const promise = this.zou.play();
+      if (promise instanceof Promise) {
+        promise.catch(() => {
+          this.zou.muted = true;
+          this.zou.play();
+          this.setState({ mute: true });
+        });
+      }
+    }, 5000);
+  }
+
+
   checkVisibleStatuses = () => {
     if (!this.titles) {
       return;
@@ -149,7 +183,7 @@ export default class FirstAnniversary extends React.PureComponent {
     }
 
     const lastChildTop = lastChild.getBoundingClientRect().top;
-    if (lastChildTop > 0 && lastChildTop < titlesBottom) {
+    if (lastChildTop > titlesTop && lastChildTop < titlesBottom) {
       this.props.dispatch(pushMargin());
     }
 
@@ -160,7 +194,6 @@ export default class FirstAnniversary extends React.PureComponent {
       const height = firstChild.offsetHeight;
       this.props.dispatch(shiftFromTimeline(height));
     }
-
   }
 
   render () {
@@ -168,14 +201,9 @@ export default class FirstAnniversary extends React.PureComponent {
     const { playBgm, mute } = this.state;
 
     const heading = (
-      <React.Fragment>
-        <div className='pawoo-first-anniversary-toggle'>
-          <Toggle checked={playBgm} onChange={this.handleToggle} />
-        </div>
-        <marquee>
-          裏ページへようこそ
-        </marquee>
-      </React.Fragment>
+      <marquee className='pawoo-first-anniversary-header'>
+        裏ページへようこそ
+      </marquee>
     );
 
     return (
@@ -183,9 +211,12 @@ export default class FirstAnniversary extends React.PureComponent {
         <ColumnHeader icon='users' title={heading} showBackButton />
 
         <div className='pawoo-first-anniversary-column'>
-          <audio src='https://img.pawoo.net/pawoo_first_anniversary/first_anniversary_bgm.mp3' autoPlay loop muted={mute || !playBgm} />
-          <audio src='https://img.pawoo.net/pawoo_first_anniversary/zou.mp3' autoPlay loop muted={mute} />
+          <audio src='https://img.pawoo.net/pawoo_first_anniversary/first_anniversary_bgm.mp3' loop muted={mute || !playBgm} ref={this.setBgmRef} />
+          <audio src='https://img.pawoo.net/pawoo_first_anniversary/zou.mp3' loop muted={mute} ref={this.setZouRef} />
 
+          <div className='pawoo-first-anniversary-column__gbm_toggle'>
+            <Toggle checked={playBgm} onChange={this.handleToggle} />
+          </div>
           <IconButton className='pawoo-first-anniversary-column__mute-button' title='mute' icon={mute ? 'volume-off' : 'volume-up'} onClick={this.handleClickVolume} size={24} />
 
           <div className='pawoo-first-anniversary-column__start'>

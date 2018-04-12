@@ -8,9 +8,14 @@ export const FIRST_ANNIVERSARY_INITIALIZE_TIMELINE = 'FIRST_ANNIVERSARY_INITIALI
 
 const pawooGaCategory = 'FirstAnniversary';
 const domParser = new DOMParser();
+const april14 = 1523631600000;
 
 export function startFirstAnniversary(status) {
   return (dispatch) => {
+    if (Math.floor((new Date()).getTime()) < april14) {
+      return;
+    }
+
     const command = domParser.parseFromString(status.content, 'text/html').documentElement.textContent.trim()
       .replace('・', '')
       .replace(' ', '')
@@ -38,7 +43,7 @@ export function startFirstAnniversary(status) {
 
 export function initializeTimeline() {
   return function (dispatch, getState) {
-    api(getState).get('/api/v1/timelines/public', { local: true }).then(response => {
+    api(getState).get('/api/v1/timelines/public', { params: { local: true } }).then(response => {
       dispatch({
         type: FIRST_ANNIVERSARY_INITIALIZE_TIMELINE,
         statuses: response.status === 206 ? [] : response.data,
