@@ -31,9 +31,33 @@ const mapStateToProps = state => {
   };
 };
 
-// NOTE: id: 18 まで使用した
+// NOTE: id: 20 まで使用した
 const announcements = [
   {
+    id: 19,
+    icon,
+    body: '1周年記念イラストを募集中！応募は5/7まで！',
+    link: [
+      {
+        reactRouter: true,
+        inline: false,
+        href: '/statuses/99851078664516397',
+        body: '詳細はこちら',
+      },
+    ],
+  }, {
+    id: 20,
+    icon,
+    body: 'トゥートすると抽選で1周年記念品が当たります！応募は5/7まで！',
+    link: [
+      {
+        reactRouter: true,
+        inline: false,
+        href: '/statuses/99851091445887348',
+        body: '詳細はこちら',
+      },
+    ],
+  }, {
     id: 1,
     icon,
     body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
