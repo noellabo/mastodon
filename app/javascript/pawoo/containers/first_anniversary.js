@@ -182,15 +182,18 @@ export default class FirstAnniversary extends React.PureComponent {
       return;
     }
 
-    const lastChildTop = lastChild.getBoundingClientRect().top;
+    const marginClass = 'pawoo-first-anniversary-column__margin';
+    const lastChildTop = (lastChild.classList.contains(marginClass) ? lastChild : lastChild.querySelector('.status__info')).getBoundingClientRect().top;
     if (lastChildTop > titlesTop && lastChildTop < titlesBottom) {
       this.props.dispatch(pushMargin());
     }
 
     // 最初の要素が見えなくなったら消す
     const firstChild = this.titles.querySelector('.pawoo-first-anniversary-column__titlecontent > div:first-child');
-    const firstChildBottom = firstChild.getBoundingClientRect().bottom;
-    if (firstChildBottom < titlesTop) {
+    const firstChildTop = (firstChild.classList.contains(marginClass) ? firstChild : firstChild.querySelector('.status__info')).getBoundingClientRect().top;
+    const firstChildBpttom = (firstChild.classList.contains(marginClass) ? firstChild : firstChild.querySelector('.status__action-bar')).getBoundingClientRect().bottom;
+    // NOTE: 下にあるはずの要素が上に存在していることがあるので位置関係をちゃんと確認している
+    if (firstChildTop < firstChildBpttom && firstChildBpttom < titlesTop) {
       const height = firstChild.offsetHeight;
       this.props.dispatch(shiftFromTimeline(height));
     }
