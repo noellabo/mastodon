@@ -281,6 +281,13 @@
     animation: pawoo-first-anniversary-scroll 750000s linear 4s;
     animation-delay: 12s;
 
+    @media screen and (max-height: 750px) {
+      & {
+        animation: pawoo-first-anniversary-scroll 500000s linear 4s;
+        animation-delay: 12s;
+      }
+    }
+
     p {
       line-height: normal;
     }
