@@ -297,6 +297,17 @@
         height: 90px;
       }
     }
+
+    @media screen and (max-width: 900px) {
+      .status__content {
+        font-size: 40px;
+
+        .emojione {
+          width: 60px;
+          height: 60px;
+        }
+      }
+    }
   }
 
   &__margin {
