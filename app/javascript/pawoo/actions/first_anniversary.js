@@ -5,6 +5,7 @@ import PawooGA from './ga';
 export const FIRST_ANNIVERSARY_PUSH_MARGIN = 'FIRST_ANNIVERSARY_PUSH_MARGIN';
 export const FIRST_ANNIVERSARY_SHIFT_FROM_TIMELINE = 'FIRST_ANNIVERSARY_SHIFT_FROM_TIMELINE';
 export const FIRST_ANNIVERSARY_INITIALIZE_TIMELINE = 'FIRST_ANNIVERSARY_INITIALIZE_TIMELINE';
+export const FIRST_ANNIVERSARY_INSERT_TIMELINE = 'FIRST_ANNIVERSARY_INSERT_TIMELINE';
 
 const pawooGaCategory = 'FirstAnniversary';
 const domParser = new DOMParser();
@@ -38,6 +39,30 @@ export function startFirstAnniversary(status) {
 
     PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Start' });
     dispatch(setPage('PAWOO_FIRST_ANNIVERSARY'));
+  };
+}
+
+export function insertOwnStatus(status) {
+  return (dispatch) => {
+    const titles = document.querySelector('.pawoo-first-anniversary-column__titles');
+
+    if (!titles) {
+      return;
+    }
+
+    const titlesHeight = document.querySelector('.pawoo-first-anniversary-column__titles').offsetHeight;
+    let contentHeight = 0;
+
+    const index = [].findIndex.call(document.querySelectorAll('.pawoo-first-anniversary-column__titlecontent > div'), (content) => {
+      contentHeight += content.offsetHeight;
+      return contentHeight > titlesHeight;
+    });
+
+    dispatch({
+      type: FIRST_ANNIVERSARY_INSERT_TIMELINE,
+      index: index < 0 ? 15 : index + 3, // 対象の2つ下
+      status,
+    });
   };
 }
 
