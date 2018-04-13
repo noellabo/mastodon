@@ -5,6 +5,7 @@ import {
   FIRST_ANNIVERSARY_PUSH_MARGIN,
   FIRST_ANNIVERSARY_SHIFT_FROM_TIMELINE,
 } from '../actions/first_anniversary';
+import { me } from '../../mastodon/initial_state';
 
 const initialState = ImmutableMap({
   statusIds: ImmutableList(),
@@ -24,7 +25,13 @@ export default function firstAnniversary(state = initialState, action) {
     if (action.timeline !== 'community') {
       return state;
     }
-    return state.update('statusIds', list => list.includes(action.status.id) ? list : list.push(action.status.id));
+
+    const statusId = action.status.id;
+    if (action.status.account.id === me) {
+      return state.update('statusIds', list => list.includes(statusId) ? list : list.insert(15, statusId));
+    }
+
+    return state.update('statusIds', list => list.includes(statusId) ? list : list.push(statusId));
   case FIRST_ANNIVERSARY_PUSH_MARGIN:
     return state.update('statusIds', list => list.push(`margin-${marginCounter++}`));
   case FIRST_ANNIVERSARY_SHIFT_FROM_TIMELINE:
