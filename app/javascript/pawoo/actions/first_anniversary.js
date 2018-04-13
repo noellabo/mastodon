@@ -18,20 +18,13 @@ export function startFirstAnniversary(status) {
     }
 
     const command = domParser.parseFromString(status.content, 'text/html').documentElement.textContent.trim()
-      .replace('・', '')
-      .replace(' ', '')
-      .replace(' ', '')
-      .replace('　', '')
-      .replace('↑', '上')
-      .replace('↓', '下')
-      .replace('←', '左')
-      .replace('→', '右')
-      .replace('a', 'A')
-      .replace('ａ', 'A')
-      .replace('Ａ', 'A')
-      .replace('b', 'B')
-      .replace('ｂ', 'B')
-      .replace('Ｂ', 'B');
+      .replace(/[・ ]/g, '')
+      .replace(/↑/g, '上')
+      .replace(/↓/g, '下')
+      .replace(/←/g, '左')
+      .replace(/→/g, '右')
+      .replace(/[aａＡ]/g, 'A')
+      .replace(/[bｂＢ]/g, 'B');
 
     if (command !== '上上下下左右左右BA') {
       return;
