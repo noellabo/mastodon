@@ -3,7 +3,10 @@ import { throttle } from 'lodash';
 import { search as emojiSearch } from '../features/emoji/emoji_mart_search_light';
 import { useEmoji } from './emojis';
 import PawooGA from '../../pawoo/actions/ga';
-import { startFirstAnniversary as pawooStartFirstAnniversary } from '../../pawoo/actions/first_anniversary';
+import {
+  startFirstAnniversary as pawooStartFirstAnniversary,
+  insertOwnStatus as pawooInsertOwnStatus,
+} from '../../pawoo/actions/first_anniversary';
 
 import { fetchComposeSuggestionsHashTag as pawooFetchComposeSuggestionsHashTag } from '../../pawoo/actions/extensions/compose';
 import { addScheduledStatuses as pawooAddScheduledStatuses } from '../../pawoo/actions/schedules';
@@ -150,6 +153,7 @@ export function submitCompose() {
       }
 
       dispatch(pawooStartFirstAnniversary(response.data));
+      dispatch(pawooInsertOwnStatus(response.data));
     }).catch(function (error) {
       dispatch(submitComposeFail(error));
     });
