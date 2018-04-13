@@ -28,7 +28,7 @@ export default function firstAnniversary(state = initialState, action) {
 
     const statusId = action.status.id;
     if (action.status.account.id === me) {
-      return state.update('statusIds', list => list.includes(statusId) ? list : list.insert(10, statusId));
+      return state.update('statusIds', list => list.includes(statusId) ? list : list.insert(15, statusId));
     }
 
     return state.update('statusIds', list => list.includes(statusId) ? list : list.push(statusId));
