@@ -6,7 +6,6 @@ import reports from './reports';
 import suggested_accounts from './suggested_accounts';
 import suggestion_tags from './suggestion_tags';
 import trend_tags from './trend_tags';
-import first_anniversary from './first_anniversary';
 
 const reducers = {
   column_histories,
@@ -16,7 +15,6 @@ const reducers = {
   suggested_accounts,
   suggestion_tags,
   trend_tags,
-  first_anniversary,
 };
 
 export default combineReducers(reducers);

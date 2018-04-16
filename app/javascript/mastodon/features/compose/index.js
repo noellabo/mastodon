@@ -23,7 +23,6 @@ import { setPage as pawooSetPage } from '../../../pawoo/actions/page';
 import Announcements from '../../../pawoo/components/announcements';
 import PawooWebTagLink from '../../../pawoo/components/web_tag_link';
 import TrendTagsContainer from '../../../pawoo/containers/trend_tags_container';
-import FirstAnniversaryBanner from '../../../pawoo/components/first_anniversary_banner';
 
 const messages = defineMessages({
   start: { id: 'getting_started.heading', defaultMessage: 'Getting started' },
@@ -124,8 +123,6 @@ export default class Compose extends React.PureComponent {
               <NavigationContainer onClose={this.onBlur} />
               <ComposeFormContainer />
             </div>
-
-            <FirstAnniversaryBanner />
 
             {multiColumn && (this.props.columns.every(column => column.get('id') === 'COMPOSE') ? (
               <div className='landing-strip pawoo-extension-landing-strip--embedded'>

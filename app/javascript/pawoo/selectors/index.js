@@ -10,7 +10,6 @@ const pages = fromJS({
     { id: 'COMPOSE', uuid: uuid(), params: {} },
     { id: 'PAWOO_SUGGESTED_ACCOUNTS', uuid: uuid(), params: {} },
   ],
-  PAWOO_FIRST_ANNIVERSARY: [],
 });
 
 const getAccountRelationship = (state, id) => state.getIn(['relationships', id], null);

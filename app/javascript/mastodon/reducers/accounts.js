@@ -55,9 +55,6 @@ import { STORE_HYDRATE } from '../actions/store';
 import emojify from '../features/emoji/emoji';
 import { Map as ImmutableMap, fromJS } from 'immutable';
 import escapeTextContentForBrowser from 'escape-html';
-import {
-  FIRST_ANNIVERSARY_INITIALIZE_TIMELINE as PAWOO_FIRST_ANNIVERSARY_INITIALIZE_TIMELINE,
-} from '../../pawoo/actions/first_anniversary';
 
 const normalizeAccount = (state, account) => {
   account = { ...account };
@@ -144,7 +141,6 @@ export default function accounts(state = initialState, action) {
   case CONTEXT_FETCH_SUCCESS:
   case FAVOURITED_STATUSES_FETCH_SUCCESS:
   case FAVOURITED_STATUSES_EXPAND_SUCCESS:
-  case PAWOO_FIRST_ANNIVERSARY_INITIALIZE_TIMELINE:
     return normalizeAccountsFromStatuses(state, action.statuses);
   case REBLOG_SUCCESS:
   case FAVOURITE_SUCCESS:

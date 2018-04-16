@@ -43,9 +43,6 @@ import {
 import emojify from '../features/emoji/emoji';
 import { Map as ImmutableMap, fromJS } from 'immutable';
 import escapeTextContentForBrowser from 'escape-html';
-import {
-  FIRST_ANNIVERSARY_INITIALIZE_TIMELINE as PAWOO_FIRST_ANNIVERSARY_INITIALIZE_TIMELINE,
-} from '../../pawoo/actions/first_anniversary';
 
 const domParser = new DOMParser();
 
@@ -131,7 +128,6 @@ export default function statuses(state = initialState, action) {
   case PAWOO_SCHEDULED_STATUSES_FETCH_SUCCESS:
   case PAWOO_SCHEDULED_STATUSES_EXPAND_SUCCESS:
   case PAWOO_SCHEDULED_STATUSES_ADDITION:
-  case PAWOO_FIRST_ANNIVERSARY_INITIALIZE_TIMELINE:
     return normalizeStatuses(state, action.statuses);
   case TIMELINE_DELETE:
     return deleteStatus(state, action.id, action.references);
