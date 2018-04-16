@@ -9,8 +9,11 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { me } from '../../initial_state';
 import { fetchFollowRequests } from '../../actions/accounts';
-import PawooGettingStartedOnOnboardingPage from '../../../pawoo/components/getting_started_on_onboarding_page';
 import { List as ImmutableList } from 'immutable';
+
+import Toggle from 'react-toggle';
+import { changeSetting } from '../../actions/settings';
+import PawooGettingStartedOnOnboardingPage from '../../../pawoo/components/getting_started_on_onboarding_page';
 
 const messages = defineMessages({
   heading: { id: 'getting_started.heading', defaultMessage: 'Getting started' },
@@ -40,11 +43,13 @@ const mapStateToProps = state => ({
   columns: state.getIn(['settings', 'columns']),
   unreadFollowRequests: state.getIn(['user_lists', 'follow_requests', 'items'], ImmutableList()).size,
   unreadNotifications: state.getIn(['notifications', 'unread']),
+  pawooMultiColumn: state.getIn(['settings', 'pawoo', 'multiColumn']),
   pawooPage: state.getIn(['pawoo', 'page']),
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchFollowRequests: () => dispatch(fetchFollowRequests()),
+  pawooToggleMultiColumn: checked => dispatch(changeSetting(['pawoo', 'multiColumn'], checked)),
 });
 
 const badgeDisplay = (number, limit) => {
@@ -69,7 +74,9 @@ export default class GettingStarted extends ImmutablePureComponent {
     fetchFollowRequests: PropTypes.func.isRequired,
     unreadFollowRequests: PropTypes.number,
     unreadNotifications: PropTypes.number,
+    pawooMultiColumn: PropTypes.bool,
     pawooPage: PropTypes.string,
+    pawooToggleMultiColumn: PropTypes.func.isRequired,
   };
 
   componentDidMount () {
@@ -80,8 +87,12 @@ export default class GettingStarted extends ImmutablePureComponent {
     }
   }
 
+  pawooHandleColumnToggle = ({ target }) => {
+    this.props.pawooToggleMultiColumn(target.checked);
+  }
+
   render () {
-    const { intl, myAccount, columns, multiColumn, unreadFollowRequests, unreadNotifications, pawooPage } = this.props;
+    const { intl, myAccount, columns, multiColumn, unreadFollowRequests, unreadNotifications, pawooMultiColumn, pawooPage } = this.props;
 
     const navItems = [];
 
@@ -152,6 +163,20 @@ export default class GettingStarted extends ImmutablePureComponent {
               values={{ github: <a href='https://github.com/pixiv/mastodon' rel='noopener' target='_blank'>pixiv/mastodon (pawoo)</a> }}
             />
           </p>
+          {multiColumn && (
+            <div className='pawoo-extension-getting-started__column-toggle'>
+              <div className='setting-toggle'>
+                <Toggle
+                  checked={pawooMultiColumn}
+                  id='pawoo-extension-getting-started__column-toggle'
+                  onChange={this.pawooHandleColumnToggle}
+                />
+                <label htmlFor='pawoo-extension-getting-started__column-toggle' className='setting-toggle__label'>
+                  <FormattedMessage defaultMessage='Multicolumn' id='pawoo.multicolumn' />
+                </label>
+              </div>
+            </div>
+          )}
         </div>
       </Column>
     );

@@ -203,6 +203,7 @@
   "pawoo.announcements.dismiss": "Dismiss",
   "pawoo.expand": "Expand",
   "pawoo.maximize": "Maximize",
+  "pawoo.multicolumn": "Multicolumn",
   "pawoo.onboarding.description": "{site} is connected with other servers called Mastodon instances to be part of a larger social network. This handle will be used by those on such instances. Simply {acct} may be used by others on {site}.",
   "pawoo.onboarding.heading": "Welcome to {site}!",
   "pawoo.onboarding.start.description": "Get started",
