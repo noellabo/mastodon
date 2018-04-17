@@ -74,9 +74,9 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(uploadCompose(files));
   },
 
-  onPickEmoji (position, data) {
+  onPickEmoji (position, data, needsSpace) {
     PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'PickEmoji' });
-    dispatch(insertEmojiCompose(position, data));
+    dispatch(insertEmojiCompose(position, data, needsSpace));
   },
 
   onSelectTimeLimit (tag) {
