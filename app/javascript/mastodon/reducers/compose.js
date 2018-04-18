@@ -150,13 +150,14 @@ const insertSuggestion = (state, position, token, completion) => {
   });
 };
 
-const insertEmoji = (state, position, emojiData) => {
-  const emoji = emojiData.native;
+const insertEmoji = (state, position, emojiData, needsSpace) => {
+  const oldText = state.get('text');
+  const emoji = needsSpace ? ' ' + emojiData.native : emojiData.native;
 
-  return state.withMutations(map => {
-    map.update('text', oldText => `${oldText.slice(0, position)}${emoji} ${oldText.slice(position)}`);
-    map.set('focusDate', new Date());
-    map.set('idempotencyKey', uuid());
+  return state.merge({
+    text: `${oldText.slice(0, position)}${emoji} ${oldText.slice(position)}`,
+    focusDate: new Date(),
+    idempotencyKey: uuid(),
   });
 };
 
@@ -281,7 +282,7 @@ export default function compose(state = initialState, action) {
       return state;
     }
   case COMPOSE_EMOJI_INSERT:
-    return insertEmoji(state, action.position, action.emoji);
+    return insertEmoji(state, action.position, action.emoji, action.needsSpace);
   case COMPOSE_UPLOAD_CHANGE_SUCCESS:
     return state
       .set('is_submitting', false)
