@@ -131,7 +131,7 @@ class TrendTagsSubcolumn extends ImmutablePureComponent {
   render () {
     return (
       <div className={this.props.expanded ? 'pawoo-navigation-column__subcolumns__expanded' : null}>
-        <div className='pawoo-navigation-column__subcolumns__body pawoo-navigation-column__subcolumns__body--trend-tags'>
+        <div className='column pawoo-navigation-column__subcolumns__body'>
           <TrendTagsContainer Tag={WebTagLink} scrollable />
         </div>
         <ExpandButton expanded={this.props.expanded} onExpand={this.handleExpand} />
