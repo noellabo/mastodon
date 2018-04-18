@@ -1,13 +1,12 @@
 import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { debounce } from 'lodash';
 import { isUserTouching } from '../../../is_mobile';
 
 export const links = [
-  <NavLink className='tabs-bar__link primary' to='/statuses/new' data-preview-title-id='tabs_bar.compose' data-preview-icon='pencil' ><i className='fa fa-fw fa-pencil' /><FormattedMessage id='tabs_bar.compose' defaultMessage='Compose' /></NavLink>,
   <NavLink className='tabs-bar__link primary' to='/timelines/home' data-preview-title-id='column.home' data-preview-icon='home' ><i className='fa fa-fw fa-home' /><FormattedMessage id='tabs_bar.home' defaultMessage='Home' /></NavLink>,
   <NavLink className='tabs-bar__link primary' to='/notifications' data-preview-title-id='column.notifications' data-preview-icon='bell' ><i className='fa fa-fw fa-bell' /><FormattedMessage id='tabs_bar.notifications' defaultMessage='Notifications' /></NavLink>,
 
@@ -15,7 +14,7 @@ export const links = [
   <NavLink className='tabs-bar__link secondary' to='/timelines/public/media' data-preview-title-id='column.media' data-preview-icon='image' ><i className='fa fa-fw fa-image' /><FormattedMessage id='tabs_bar.media_timeline' defaultMessage='Media' /></NavLink>,
   <NavLink className='tabs-bar__link secondary' to='/suggested_accounts' data-preview-title-id='column.suggested_accounts' data-preview-icon='user-plus' ><i className='fa fa-fw fa-user-plus' /><FormattedMessage id='pawoo.tabs_bar.suggested_accounts' defaultMessage='Active' /></NavLink>,
 
-  <NavLink className='tabs-bar__link primary' style={{ flexGrow: '0', flexBasis: '30px' }} to='/getting-started' data-preview-title-id='getting_started.heading' data-preview-icon='asterisk' ><i className='fa fa-fw fa-asterisk' /></NavLink>,
+  <NavLink className='tabs-bar__link primary' style={{ flexGrow: '0', flexBasis: '30px' }} to='/getting-started' data-preview-title-id='getting_started.heading' data-preview-icon='bars' ><i className='fa fa-fw fa-bars' /></NavLink>,
 ];
 
 export function getIndex (path) {
@@ -27,14 +26,12 @@ export function getLink (index) {
 }
 
 @injectIntl
-export default class TabsBar extends React.Component {
-
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
+@withRouter
+export default class TabsBar extends React.PureComponent {
 
   static propTypes = {
     intl: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     pawooHasUnreadNotifications: PropTypes.bool,
   }
 
@@ -63,7 +60,7 @@ export default class TabsBar extends React.Component {
 
           const listener = debounce(() => {
             nextTab.removeEventListener('transitionend', listener);
-            this.context.router.history.push(to);
+            this.props.history.push(to);
           }, 50);
 
           nextTab.addEventListener('transitionend', listener);

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import { fetchAccount } from '../../actions/accounts';
-import { refreshAccountTimeline, expandAccountTimeline } from '../../actions/timelines';
+import { refreshAccountTimeline, refreshAccountFeaturedTimeline, expandAccountTimeline } from '../../actions/timelines';
 import { refreshPinnedStatusTimeline } from '../../../pawoo/actions/extensions/timelines';
 import StatusList from '../../components/status_list';
 import LoadingIndicator from '../../components/loading_indicator';
@@ -13,12 +13,17 @@ import ColumnBackButton from '../../components/column_back_button';
 import { List as ImmutableList } from 'immutable';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
-const mapStateToProps = (state, props) => ({
-  statusIds: state.getIn(['timelines', `account:${props.params.accountId}`, 'items'], ImmutableList()),
-  isLoading: state.getIn(['timelines', `account:${props.params.accountId}`, 'isLoading']),
-  hasMore: !!state.getIn(['timelines', `account:${props.params.accountId}`, 'next']),
-  pinnedStatusIds: state.getIn(['timelines', `account:${props.params.accountId}:pinned_status`, 'items'], ImmutableList()),
-});
+const mapStateToProps = (state, { params: { accountId }, withReplies = false }) => {
+  const path = withReplies ? `${accountId}:with_replies` : accountId;
+
+  return {
+    statusIds: state.getIn(['timelines', `account:${path}`, 'items'], ImmutableList()),
+    featuredStatusIds: withReplies ? ImmutableList() : state.getIn(['timelines', `account:${accountId}:pinned`, 'items'], ImmutableList()),
+    isLoading: state.getIn(['timelines', `account:${path}`, 'isLoading']),
+    hasMore: !!state.getIn(['timelines', `account:${path}`, 'next']),
+    pinnedStatusIds: withReplies ? ImmutableList() : state.getIn(['timelines', `account:${accountId}:pinned_status`, 'items'], ImmutableList()),
+  };
+};
 
 @connect(mapStateToProps)
 export default class AccountTimeline extends ImmutablePureComponent {
@@ -27,33 +32,43 @@ export default class AccountTimeline extends ImmutablePureComponent {
     params: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     statusIds: ImmutablePropTypes.list,
+    featuredStatusIds: ImmutablePropTypes.list,
     isLoading: PropTypes.bool,
     hasMore: PropTypes.bool,
     pinnedStatusIds: ImmutablePropTypes.list,
+    withReplies: PropTypes.bool,
   };
 
   componentWillMount () {
-    this.props.dispatch(fetchAccount(this.props.params.accountId));
-    this.props.dispatch(refreshPinnedStatusTimeline(this.props.params.accountId));
-    this.props.dispatch(refreshAccountTimeline(this.props.params.accountId));
+    const { params: { accountId }, withReplies } = this.props;
+
+    this.props.dispatch(fetchAccount(accountId));
+    if (!withReplies) {
+      this.props.dispatch(refreshAccountFeaturedTimeline(accountId));
+      this.props.dispatch(refreshPinnedStatusTimeline(accountId));
+    }
+    this.props.dispatch(refreshAccountTimeline(accountId, withReplies));
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.params.accountId !== this.props.params.accountId && nextProps.params.accountId) {
+    if ((nextProps.params.accountId !== this.props.params.accountId && nextProps.params.accountId) || nextProps.withReplies !== this.props.withReplies) {
       this.props.dispatch(fetchAccount(nextProps.params.accountId));
-      this.props.dispatch(refreshPinnedStatusTimeline(nextProps.params.accountId));
-      this.props.dispatch(refreshAccountTimeline(nextProps.params.accountId));
+      if (!nextProps.withReplies) {
+        this.props.dispatch(refreshAccountFeaturedTimeline(nextProps.params.accountId));
+        this.props.dispatch(refreshPinnedStatusTimeline(nextProps.params.accountId));
+      }
+      this.props.dispatch(refreshAccountTimeline(nextProps.params.accountId, nextProps.params.withReplies));
     }
   }
 
   handleLoadMore = () => {
     if (!this.props.isLoading && this.props.hasMore) {
-      this.props.dispatch(expandAccountTimeline(this.props.params.accountId));
+      this.props.dispatch(expandAccountTimeline(this.props.params.accountId, this.props.withReplies));
     }
   }
 
   render () {
-    const { statusIds, isLoading, hasMore, pinnedStatusIds } = this.props;
+    const { statusIds, featuredStatusIds, isLoading, hasMore, pinnedStatusIds } = this.props;
 
     if (!statusIds && isLoading) {
       return (
@@ -73,6 +88,7 @@ export default class AccountTimeline extends ImmutablePureComponent {
           prepend={<HeaderContainer accountId={this.props.params.accountId} />}
           scrollKey='account_timeline'
           statusIds={uniqueStatusIds}
+          featuredStatusIds={featuredStatusIds}
           isLoading={isLoading}
           hasMore={hasMore}
           onLoadMore={this.handleLoadMore}

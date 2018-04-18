@@ -6,25 +6,28 @@
   = javascript_pack_tag 'about', integrity: true, crossorigin: 'anonymous'
   = render 'og'
 
-.landing-page.tag-page
+.landing-page.tag-page.alternative
   .features
     .container
-      #mastodon-timeline{ data: { props: Oj.dump(default_props.merge(hashtag: @tag.name)) } }
+      .grid
+        .column-1
+          #mastodon-timeline{ data: { props: Oj.dump(default_props.merge(hashtag: @tag.name)) } }
 
-      .about-mastodon
-        .about-hashtag
-          .brand
-            = link_to root_url do
-              = image_tag asset_pack_path('pawoo/service_logo.png'), alt: 'Pawoo'
+        .column-2
+          .about-mastodon
+            .about-hashtag.landing-page__information
+              .brand
+                = link_to root_url do
+                  = image_tag asset_pack_path('pawoo/service_logo.png'), alt: 'Pawoo'
 
-          %p= t 'about.about_hashtag_html', hashtag: @tag.name
+              %p= t 'about.about_hashtag_html', hashtag: @tag.name
 
-          .cta
-            - if user_signed_in?
-              = link_to t('settings.back'), root_path, class: 'button button-secondary'
-            - else
-              = link_to t('auth.login'), new_user_session_path, class: 'button button-secondary'
-            = link_to t('about.learn_more'), about_path, class: 'button button-alternative'
+              .cta
+                - if user_signed_in?
+                  = link_to t('settings.back'), root_path, class: 'button button-secondary'
+                - else
+                  = link_to t('auth.login'), new_user_session_path, class: 'button button-secondary'
+                = link_to t('about.learn_more'), about_path, class: 'button button-alternative'
 
-        .features-list.pawoo-features
-          = render 'about/pawoo_features'
+            .landing-page__features.landing-page__information
+              = render 'about/pawoo_features'

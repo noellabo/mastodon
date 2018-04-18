@@ -83,7 +83,7 @@ export default class SuggestedAccount extends React.PureComponent {
     return (
       <div className='account suggested_account'>
         <div className='account__wrapper'>
-          <Permalink key={account.get('id')} className='account__display-name' href={account.get('url')} to={`/accounts/${account.get('id')}`} target={target} pawooOnClick={this.handleAccountClick}>
+          <Permalink key={account.get('id')} className='account__display-name' href={account.get('url')} to={`/accounts/${account.get('id')}`} target={target} onInterceptClick={this.handleAccountClick}>
             <div className='account__avatar-wrapper'><Avatar account={account} size={36} /></div>
             <DisplayName account={account} />
           </Permalink>

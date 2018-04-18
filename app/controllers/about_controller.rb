@@ -33,7 +33,7 @@ class AboutController < ApplicationController
 
   def initial_state_params
     {
-      settings: {},
+      settings: { known_fediverse: Setting.show_known_fediverse_at_about_page },
       token: current_session&.token,
       pawoo: {
         user_count: @instance_presenter.user_count,

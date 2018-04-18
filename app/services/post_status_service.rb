@@ -25,9 +25,12 @@ class PostStatusService < BaseService
     published = options[:published]
 
     status = nil
+    text   = options.delete(:spoiler_text) if text.blank? && options[:spoiler_text].present?
+    text   = '.' if text.blank? && !media.empty?
 
     ApplicationRecord.transaction do
       status = account.statuses.create!(text: text,
+                                        media_attachments: media || [],
                                         thread: in_reply_to,
                                         created_at: published,
                                         sensitive: options[:sensitive],
@@ -36,7 +39,6 @@ class PostStatusService < BaseService
                                         language: LanguageDetector.instance.detect(text, account),
                                         application: options[:application])
 
-      attach_media(status, media)
       attach_pixiv_cards(status)
     end
 
@@ -86,11 +88,6 @@ class PostStatusService < BaseService
         image_url: image_url
       )
     end
-  end
-
-  def attach_media(status, media)
-    return if media.nil?
-    media.update(status_id: status.id)
   end
 
   def process_mentions_service

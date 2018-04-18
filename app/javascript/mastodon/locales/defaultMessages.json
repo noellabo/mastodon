@@ -78,6 +78,10 @@
         "id": "column_header.moveRight_settings"
       },
       {
+        "defaultMessage": "Maximize",
+        "id": "pawoo.maximize"
+      },
+      {
         "defaultMessage": "Unpin",
         "id": "column_header.unpin"
       },
@@ -143,6 +147,31 @@
       }
     ],
     "path": "app/javascript/mastodon/components/missing_indicator.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "now",
+        "id": "relative_time.just_now"
+      },
+      {
+        "defaultMessage": "{number}s",
+        "id": "relative_time.seconds"
+      },
+      {
+        "defaultMessage": "{number}m",
+        "id": "relative_time.minutes"
+      },
+      {
+        "defaultMessage": "{number}h",
+        "id": "relative_time.hours"
+      },
+      {
+        "defaultMessage": "{number}d",
+        "id": "relative_time.days"
+      }
+    ],
+    "path": "app/javascript/mastodon/components/relative_timestamp.json"
   },
   {
     "descriptors": [
@@ -254,12 +283,12 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "{name} boosted",
-        "id": "status.reblogged_by"
+        "defaultMessage": "Pinned toot",
+        "id": "status.pinned"
       },
       {
-        "defaultMessage": "Pinned Toot",
-        "id": "status.pinned"
+        "defaultMessage": "{name} boosted",
+        "id": "status.reblogged_by"
       }
     ],
     "path": "app/javascript/mastodon/components/status.json"
@@ -326,11 +355,19 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "Toots",
+        "id": "account.posts"
+      },
+      {
+        "defaultMessage": "Toots with replies",
+        "id": "account.posts_with_replies"
+      },
+      {
         "defaultMessage": "Media",
         "id": "account.media"
       }
     ],
-    "path": "app/javascript/mastodon/features/account_gallery/index.json"
+    "path": "app/javascript/mastodon/features/account_timeline/components/header.json"
   },
   {
     "descriptors": [
@@ -441,7 +478,7 @@
         "id": "account.view_full_profile"
       },
       {
-        "defaultMessage": "Posts",
+        "defaultMessage": "Toots",
         "id": "account.posts"
       },
       {
@@ -470,8 +507,24 @@
         "id": "account.requested"
       },
       {
+        "defaultMessage": "Unblock @{name}",
+        "id": "account.unblock"
+      },
+      {
         "defaultMessage": "Follows you",
         "id": "account.follows_you"
+      },
+      {
+        "defaultMessage": "Blocked",
+        "id": "account.blocked"
+      },
+      {
+        "defaultMessage": "Muted",
+        "id": "account.muted"
+      },
+      {
+        "defaultMessage": "Domain hidden",
+        "id": "account.domain_blocked"
       }
     ],
     "path": "app/javascript/mastodon/features/account/components/header.json"
@@ -514,15 +567,6 @@
       }
     ],
     "path": "app/javascript/mastodon/features/community_timeline/index.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "Dismiss",
-        "id": "pawoo.announcements.dismiss"
-      }
-    ],
-    "path": "app/javascript/mastodon/features/compose/components/announcements.json"
   },
   {
     "descriptors": [
@@ -676,6 +720,18 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "People",
+        "id": "search_results.accounts"
+      },
+      {
+        "defaultMessage": "Toots",
+        "id": "search_results.statuses"
+      },
+      {
+        "defaultMessage": "Hashtags",
+        "id": "search_results.hashtags"
+      },
+      {
         "defaultMessage": "Search toots with \"{keyword}\"",
         "id": "search_results.search_toots"
       },
@@ -693,6 +749,14 @@
         "id": "search.placeholder"
       },
       {
+        "defaultMessage": "Simple text returns statuses you have written, favourited, boosted, or have been mentioned in, as well as matching usernames, display names, and hashtags.",
+        "id": "search_popout.tips.full_text"
+      },
+      {
+        "defaultMessage": "Simple text returns matching display names, usernames and hashtags",
+        "id": "search_popout.tips.text"
+      },
+      {
         "defaultMessage": "Advanced search format",
         "id": "search_popout.search_format"
       },
@@ -707,10 +771,6 @@
       {
         "defaultMessage": "status",
         "id": "search_popout.tips.status"
-      },
-      {
-        "defaultMessage": "Simple text returns matching display names, usernames and hashtags",
-        "id": "search_popout.tips.text"
       }
     ],
     "path": "app/javascript/mastodon/features/compose/components/search.json"
@@ -743,15 +803,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "Suggested tag",
-        "id": "trend_tags.title"
-      }
-    ],
-    "path": "app/javascript/mastodon/features/compose/components/trend_tags.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "Add media",
         "id": "upload_button.label"
       }
@@ -770,12 +821,16 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "Describe for the visually impaired",
+        "id": "upload_form.description"
+      },
+      {
         "defaultMessage": "Undo",
         "id": "upload_form.undo"
       },
       {
-        "defaultMessage": "Describe for the visually impaired",
-        "id": "upload_form.description"
+        "defaultMessage": "Crop",
+        "id": "upload_form.focus"
       }
     ],
     "path": "app/javascript/mastodon/features/compose/components/upload.json"
@@ -783,8 +838,12 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "Mark media as sensitive",
-        "id": "compose_form.sensitive"
+        "defaultMessage": "Media is marked as sensitive",
+        "id": "compose_form.sensitive.marked"
+      },
+      {
+        "defaultMessage": "Media is not marked as sensitive",
+        "id": "compose_form.sensitive.unmarked"
       }
     ],
     "path": "app/javascript/mastodon/features/compose/containers/sensitive_button_container.json"
@@ -801,8 +860,12 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "Hide text behind warning",
-        "id": "compose_form.spoiler"
+        "defaultMessage": "Text is hidden behind warning",
+        "id": "compose_form.spoiler.marked"
+      },
+      {
+        "defaultMessage": "Text is not hidden",
+        "id": "compose_form.spoiler.unmarked"
       }
     ],
     "path": "app/javascript/mastodon/features/compose/containers/spoiler_button_container.json"
@@ -845,10 +908,6 @@
       {
         "defaultMessage": "Local timeline",
         "id": "navigation_bar.community_timeline"
-      },
-      {
-        "defaultMessage": "Preferences",
-        "id": "navigation_bar.preferences"
       },
       {
         "defaultMessage": "Help",
@@ -985,6 +1044,10 @@
       {
         "defaultMessage": "Mastodon is open source software. You can contribute or report issues on GitHub at {github}.",
         "id": "getting_started.open_source_notice"
+      },
+      {
+        "defaultMessage": "Multicolumn",
+        "id": "pawoo.multicolumn"
       }
     ],
     "path": "app/javascript/mastodon/features/getting_started/index.json"
@@ -1330,6 +1393,24 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "A look inside...",
+        "id": "standalone.public_title"
+      }
+    ],
+    "path": "app/javascript/mastodon/features/standalone/community_timeline/index.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "A look inside...",
+        "id": "standalone.public_title"
+      }
+    ],
+    "path": "app/javascript/mastodon/features/standalone/public_timeline/index.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "Search: \"{keyword}\"",
         "id": "column.search_toots"
       },
@@ -1418,6 +1499,14 @@
       {
         "defaultMessage": "Block",
         "id": "confirmations.block.confirm"
+      },
+      {
+        "defaultMessage": "Show more for all",
+        "id": "status.show_more_all"
+      },
+      {
+        "defaultMessage": "Show less for all",
+        "id": "status.show_less_all"
       },
       {
         "defaultMessage": "Are you sure you want to block {name}?",
@@ -1658,9 +1747,38 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "Compose",
-        "id": "tabs_bar.compose"
+        "defaultMessage": "Close",
+        "id": "lightbox.close"
       },
+      {
+        "defaultMessage": "Additional comments",
+        "id": "report.placeholder"
+      },
+      {
+        "defaultMessage": "Submit",
+        "id": "report.submit"
+      },
+      {
+        "defaultMessage": "Report {target}",
+        "id": "report.target"
+      },
+      {
+        "defaultMessage": "The report will be sent to your instance moderators. You can provide an explanation of why you are reporting this account below:",
+        "id": "report.hint"
+      },
+      {
+        "defaultMessage": "The account is from another server. Send an anonymized copy of the report there as well?",
+        "id": "report.forward_hint"
+      },
+      {
+        "defaultMessage": "Forward to {target}",
+        "id": "report.forward"
+      }
+    ],
+    "path": "app/javascript/mastodon/features/ui/components/report_modal.json"
+  },
+  {
+    "descriptors": [
       {
         "defaultMessage": "Home",
         "id": "tabs_bar.home"
@@ -1754,6 +1872,15 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "Dismiss",
+        "id": "pawoo.announcements.dismiss"
+      }
+    ],
+    "path": "app/javascript/pawoo/components/announcements.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "Follow",
         "id": "account.follow"
       },
@@ -1801,6 +1928,24 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "Suggested tag",
+        "id": "trend_tags.title"
+      }
+    ],
+    "path": "app/javascript/pawoo/components/trend_tags.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Expand",
+        "id": "pawoo.expand"
+      }
+    ],
+    "path": "app/javascript/pawoo/containers/navigation_column_container.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "Welcome to {site}!",
         "id": "pawoo.onboarding.heading"
       },
@@ -1833,6 +1978,10 @@
   },
   {
     "descriptors": [
+      {
+        "defaultMessage": "Close",
+        "id": "lightbox.close"
+      },
       {
         "defaultMessage": "Additional comments (required for other cases)",
         "id": "pawoo.report.placeholder"
@@ -1872,6 +2021,18 @@
       {
         "defaultMessage": "Report {target}",
         "id": "report.target"
+      },
+      {
+        "defaultMessage": "The report will be sent to your instance moderators. You can provide an explanation of why you are reporting this account below:",
+        "id": "report.hint"
+      },
+      {
+        "defaultMessage": "The account is from another server. Send an anonymized copy of the report there as well?",
+        "id": "report.forward_hint"
+      },
+      {
+        "defaultMessage": "Forward to {target}",
+        "id": "report.forward"
       }
     ],
     "path": "app/javascript/pawoo/containers/report_modal_container.json"
@@ -1896,6 +2057,15 @@
       }
     ],
     "path": "app/javascript/pawoo/containers/single_column_onboarding_container.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "Active Users",
+        "id": "column.suggested_accounts"
+      }
+    ],
+    "path": "app/javascript/pawoo/containers/standalone/suggestion_strip_container.json"
   },
   {
     "descriptors": [

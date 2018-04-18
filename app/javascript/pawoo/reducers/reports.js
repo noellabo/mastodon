@@ -6,6 +6,7 @@ import {
   PAWOO_REPORT_CANCEL,
   PAWOO_REPORT_STATUS_TOGGLE,
   PAWOO_REPORT_COMMENT_CHANGE,
+  PAWOO_REPORT_FORWARD_CHANGE,
   PAWOO_REPORT_TYPE_CHANGE,
 } from '../actions/reports';
 import { Map as ImmutableMap, Set as ImmutableSet } from 'immutable';
@@ -16,6 +17,7 @@ const initialState = ImmutableMap({
     account_id: null,
     status_ids: ImmutableSet(),
     comment: '',
+    forward: false,
     report_type: null,
   }),
 });
@@ -45,6 +47,8 @@ export default function reports(state = initialState, action) {
     });
   case PAWOO_REPORT_COMMENT_CHANGE:
     return state.setIn(['new', 'comment'], action.comment);
+  case PAWOO_REPORT_FORWARD_CHANGE:
+    return state.setIn(['new', 'forward'], action.forward);
   case PAWOO_REPORT_TYPE_CHANGE:
     return state.setIn(['new', 'report_type'], action.reportType);
   case PAWOO_REPORT_SUBMIT_REQUEST:

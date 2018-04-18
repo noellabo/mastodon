@@ -1,4 +1,5 @@
 import api from '../api';
+import { fetchRelationships } from './accounts';
 import PawooGA from '../../pawoo/actions/ga';
 
 const pawooGaCategory = 'Search';
@@ -43,6 +44,7 @@ export function submitSearch() {
       },
     }).then(response => {
       dispatch(fetchSearchSuccess(response.data));
+      dispatch(fetchRelationships(response.data.accounts.map(item => item.id)));
     }).catch(error => {
       dispatch(fetchSearchFail(error));
     });

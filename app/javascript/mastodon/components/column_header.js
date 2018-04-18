@@ -23,10 +23,11 @@ export default class ColumnHeader extends React.PureComponent {
 
   static propTypes = {
     intl: PropTypes.object.isRequired,
-    title: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.node]).isRequired,
+    title: PropTypes.node,
     icon: PropTypes.string,
     active: PropTypes.bool,
     multiColumn: PropTypes.bool,
+    extraButton: PropTypes.node,
     showBackButton: PropTypes.bool,
     children: PropTypes.node,
     pinned: PropTypes.bool,
@@ -82,7 +83,7 @@ export default class ColumnHeader extends React.PureComponent {
   }
 
   render () {
-    const { title, icon, active, children, pinned, onPin, multiColumn, showBackButton, intl: { formatMessage }, pawoo, pawooUrl } = this.props;
+    const { title, icon, active, children, pinned, onPin, multiColumn, extraButton, showBackButton, intl: { formatMessage }, pawoo, pawooUrl } = this.props;
     const { collapsed, animating } = this.state;
 
     const wrapperClassName = classNames('column-header__wrapper', {
@@ -157,20 +158,27 @@ export default class ColumnHeader extends React.PureComponent {
     }
 
     if (children || multiColumn) {
-      collapseButton = <button className={collapsibleButtonClassName} aria-label={formatMessage(collapsed ? messages.show : messages.hide)} aria-pressed={collapsed ? 'false' : 'true'} onClick={this.handleToggleClick}><i className='fa fa-sliders' /></button>;
+      collapseButton = <button className={collapsibleButtonClassName} title={formatMessage(collapsed ? messages.show : messages.hide)} aria-label={formatMessage(collapsed ? messages.show : messages.hide)} aria-pressed={collapsed ? 'false' : 'true'} onClick={this.handleToggleClick}><i className='fa fa-sliders' /></button>;
     }
+
+    const hasTitle = title;
 
     return (
       <div className={wrapperClassName}>
         <h1 className={buttonClassName}>
-          <button onClick={this.handleTitleClick}>
-            {icon && <i className={`fa fa-fw fa-${icon} column-header__icon`} />}
-            {title}
-          </button>
+          {hasTitle && (
+            <button onClick={this.handleTitleClick}>
+              {icon && <i className={`fa fa-fw fa-${icon} column-header__icon`} />}
+              {title}
+            </button>
+          )}
+
+          {!hasTitle && backButton}
 
           <div className='column-header__buttons'>
-            {backButton}
+            {hasTitle && backButton}
             {pawooMaximizeButton}
+            {extraButton}
             {collapseButton}
           </div>
         </h1>

@@ -27,7 +27,7 @@ class Api::V1::Timelines::PublicController < Api::BaseController
       params[:since_id]
     )
 
-    if params[:media]
+    if params[:media] || truthy_param?(:only_media)
       # `SELECT DISTINCT id, updated_at` is too slow, so pluck ids at first, and then select id, updated_at with ids.
       status_ids = statuses.joins(:media_attachments).distinct(:id).pluck(:id)
       statuses.where(id: status_ids)
@@ -37,7 +37,7 @@ class Api::V1::Timelines::PublicController < Api::BaseController
   end
 
   def public_timeline_statuses
-    Status.as_public_timeline(current_account, params[:local])
+    Status.as_public_timeline(current_account, truthy_param?(:local))
   end
 
   def insert_pagination_headers
@@ -45,7 +45,7 @@ class Api::V1::Timelines::PublicController < Api::BaseController
   end
 
   def pagination_params(core_params)
-    params.permit(:local, :limit).merge(core_params)
+    params.permit(:local, :limit, :only_media).merge(core_params)
   end
 
   def next_path

@@ -6,6 +6,7 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 
 import ReactSwipeableViews from 'react-swipeable-views';
 import { links, getIndex, getLink } from './tabs_bar';
+import { Link } from 'react-router-dom';
 
 import ColumnLoading from './column_loading';
 import DrawerLoading from './drawer_loading';
@@ -19,6 +20,8 @@ import PawooSingleColumnOnboardingContainer from '../../../../pawoo/containers/s
 import ColumnContainerWithHistory from '../../../../pawoo/containers/column_container_with_history';
 
 const pawooCompose = Immutable.fromJS({ id: 'COMPOSE' });
+
+const shouldHideFAB = path => path.match(/^\/statuses\//);
 
 @component => injectIntl(component, { withRef: true })
 export default class ColumnsArea extends ImmutablePureComponent {
@@ -176,11 +179,19 @@ export default class ColumnsArea extends ImmutablePureComponent {
         return <PawooSingleColumnOnboardingContainer />;
       }
 
-      return columnIndex !== -1 ? (
-        <ReactSwipeableViews index={columnIndex} onChangeIndex={this.handleSwipe} onTransitionEnd={this.handleAnimationEnd} animateTransitions={shouldAnimate} springConfig={{ duration: '400ms', delay: '0s', easeFunction: 'ease' }} style={{ height: '100%' }}>
+      const floatingActionButton = shouldHideFAB(this.context.router.history.location.pathname) ? null : <Link key='floating-action-button' to='/statuses/new' className='floating-action-button'><i className='fa fa-pencil' /></Link>;
+
+      return columnIndex !== -1 ? [
+        <ReactSwipeableViews key='content' index={columnIndex} onChangeIndex={this.handleSwipe} onTransitionEnd={this.handleAnimationEnd} animateTransitions={shouldAnimate} springConfig={{ duration: '400ms', delay: '0s', easeFunction: 'ease' }} style={{ height: '100%' }}>
           {links.map(this.renderView)}
-        </ReactSwipeableViews>
-      ) : <div className='columns-area'>{children}</div>;
+        </ReactSwipeableViews>,
+
+        floatingActionButton,
+      ] : [
+        <div className='columns-area'>{children}</div>,
+
+        floatingActionButton,
+      ];
     }
 
     return (

@@ -6,18 +6,18 @@ en:
         keyword: Keyword
         search_type: Type
       form/account_filter/search_type:
-        ip: IP
         email: Email
+        ip: IP
         name: Name
   activerecord:
     attributes:
-      oauth_authentication:
-        provider: Provider
-        uid: User ID
       media_attachment:
         file: File
         file_content_type: Content-Type
         file_file_size: File size
+      oauth_authentication:
+        provider: Provider
+        uid: User ID
     errors:
       models:
         account:

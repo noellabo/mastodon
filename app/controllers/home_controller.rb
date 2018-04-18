@@ -35,12 +35,7 @@ class HomeController < ApplicationController
     end
 
     matches = request.path.match(%r{\A/web/timelines/tag/(?<tag>.+)\z})
-    if matches
-      redirect_to(tag_path(URI.decode(matches[:tag])))
-      return
-    end
-
-    redirect_to(about_path)
+    redirect_to(matches ? tag_path(CGI.unescape(matches[:tag])) : about_path)
   end
 
   def set_initial_state_json

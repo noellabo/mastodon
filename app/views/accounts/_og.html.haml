@@ -1,6 +1,6 @@
 = opengraph 'og:url', url
 = opengraph 'og:site_name', site_title
-= opengraph 'og:title', [yield(:page_title).delete("\n").strip.presence, site_title].compact.join(' - ')
+= opengraph 'og:title', yield(:page_title).delete("\n").strip.presence
 = opengraph 'og:description', account.note
 = opengraph 'og:image', full_asset_url(account.avatar.url(:original))
 = opengraph 'og:image:width', '120'
