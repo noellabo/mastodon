@@ -17,19 +17,9 @@ const messages = defineMessages({
   dismiss: { id: 'pawoo.announcements.dismiss', defaultMessage: 'Dismiss' },
 });
 
-const mapStateToProps = state => {
-  const columns = state.getIn(['settings', 'columns']);
-  const count = columns.count();
-
-  return {
-    hasCustomizedPinnedColumn: count > 1 && (
-      count !== 3 ||
-      columns.getIn([0, 'id']) !== 'COMPOSE' ||
-      columns.getIn([1, 'id']) !== 'HOME' ||
-      columns.getIn([2, 'id']) !== 'NOTIFICATIONS'
-    ),
-  };
-};
+const mapStateToProps = state => ({
+  multiColumn: state.getIn(['settings', 'pawoo', 'multiColumn']),
+});
 
 // NOTE: id: 20 まで使用した
 const announcements = [
@@ -96,7 +86,7 @@ class Announcements extends React.PureComponent {
   static propTypes = {
     intl: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    hasCustomizedPinnedColumn: PropTypes.bool.isRequired,
+    multiColumn: PropTypes.bool.isRequired,
   };
 
   constructor (props, context) {
@@ -135,8 +125,8 @@ class Announcements extends React.PureComponent {
   }
 
   render () {
-    const { hasCustomizedPinnedColumn, intl } = this.props;
-    const announcements = hasCustomizedPinnedColumn ? this.announcements.unshift(Immutable.fromJS({
+    const { multiColumn, intl } = this.props;
+    const announcements = multiColumn ? this.announcements.unshift(Immutable.fromJS({
       id: 18,
       icon,
       body: 'Pawooの新しいレイアウトができました！',

@@ -33,7 +33,7 @@ export default class Favourites extends ImmutablePureComponent {
     multiColumn: PropTypes.bool,
     hasMore: PropTypes.bool,
     isLoading: PropTypes.bool,
-    pawooHasPinnedColumn: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map.isRequired,
   };
 
   componentWillMount () {
@@ -68,7 +68,7 @@ export default class Favourites extends ImmutablePureComponent {
   }, 300, { leading: true })
 
   render () {
-    const { intl, statusIds, columnId, multiColumn, hasMore, isLoading, pawooHasPinnedColumn } = this.props;
+    const { intl, statusIds, columnId, multiColumn, hasMore, isLoading, pawoo } = this.props;
     const pinned = !!columnId;
 
     return (
@@ -82,7 +82,8 @@ export default class Favourites extends ImmutablePureComponent {
           pinned={pinned}
           multiColumn={multiColumn}
           showBackButton
-          pawooHasPinnedColumn={pawooHasPinnedColumn}
+          pawoo={pawoo}
+          pawooUrl='/favourites'
         />
 
         <StatusList

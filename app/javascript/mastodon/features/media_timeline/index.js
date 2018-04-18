@@ -1,4 +1,5 @@
 import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
@@ -31,7 +32,7 @@ class MediaTimeline extends React.PureComponent {
     columnId: PropTypes.string,
     multiColumn: PropTypes.bool,
     hasUnread: PropTypes.bool,
-    pawooHasPinnedColumn: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map.isRequired,
   };
 
   handlePin = () => {
@@ -76,7 +77,7 @@ class MediaTimeline extends React.PureComponent {
   }
 
   render () {
-    const { intl, columnId, hasUnread, multiColumn, pawooHasPinnedColumn } = this.props;
+    const { intl, columnId, hasUnread, multiColumn, pawoo } = this.props;
     const pinned = !!columnId;
 
     return (
@@ -90,7 +91,7 @@ class MediaTimeline extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
-          pawooHasPinnedColumn={pawooHasPinnedColumn}
+          pawoo={pawoo}
         >
           <ColumnSettingsContainer />
         </ColumnHeader>

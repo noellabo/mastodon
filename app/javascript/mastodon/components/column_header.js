@@ -1,4 +1,6 @@
 import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
@@ -8,6 +10,7 @@ const messages = defineMessages({
   hide: { id: 'column_header.hide_settings', defaultMessage: 'Hide settings' },
   moveLeft: { id: 'column_header.moveLeft_settings', defaultMessage: 'Move column to the left' },
   moveRight: { id: 'column_header.moveRight_settings', defaultMessage: 'Move column to the right' },
+  pawooMaximize: { id: 'pawoo.maximize', defaultMessage: 'Maximize' },
 });
 
 @injectIntl
@@ -30,7 +33,8 @@ export default class ColumnHeader extends React.PureComponent {
     onPin: PropTypes.func,
     onMove: PropTypes.func,
     onClick: PropTypes.func,
-    pawooHasPinnedColumn: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map,
+    pawooUrl: PropTypes.string,
   };
 
   state = {
@@ -38,9 +42,23 @@ export default class ColumnHeader extends React.PureComponent {
     animating: false,
   };
 
+  componentWillUpdate({ pawoo }) {
+    if (pawoo && pawoo.get('collapsed')) {
+      this.setState({ collapsed: true });
+    }
+  }
+
   handleToggleClick = (e) => {
     e.stopPropagation();
     this.setState({ collapsed: !this.state.collapsed, animating: true });
+
+    if (this.state.collapsed && this.props.pawoo) {
+      const onExpand = this.props.pawoo.get('onExpand');
+
+      if (onExpand) {
+        onExpand();
+      }
+    }
   }
 
   handleTitleClick = () => {
@@ -64,7 +82,7 @@ export default class ColumnHeader extends React.PureComponent {
   }
 
   render () {
-    const { title, icon, active, children, pinned, onPin, multiColumn, showBackButton, intl: { formatMessage }, pawooHasPinnedColumn } = this.props;
+    const { title, icon, active, children, pinned, onPin, multiColumn, showBackButton, intl: { formatMessage }, pawoo, pawooUrl } = this.props;
     const { collapsed, animating } = this.state;
 
     const wrapperClassName = classNames('column-header__wrapper', {
@@ -107,12 +125,25 @@ export default class ColumnHeader extends React.PureComponent {
       pinButton = <button key='pin-button' className='text-btn column-header__setting-btn' onClick={onPin}><i className='fa fa fa-plus' /> <FormattedMessage id='column_header.pin' defaultMessage='Pin' /></button>;
     }
 
-    if (!pinned && ((multiColumn && pawooHasPinnedColumn) || showBackButton)) {
+    if (!pinned && ((multiColumn && pawoo && pawoo.get('multiColumn')) || showBackButton)) {
       backButton = (
         <button onClick={this.handleBackClick} className='column-header__back-button'>
           <i className='fa fa-fw fa-chevron-left column-back-button__icon' />
           <FormattedMessage id='column_back_button.label' defaultMessage='Back' />
         </button>
+      );
+    }
+
+    let pawooMaximizeButton;
+
+    if (pinned && pawooUrl && pawoo && !pawoo.get('multiColumn')) {
+      pawooMaximizeButton = (
+        <Link
+          className='column-header__button'
+          onClick={pawoo.get('onCollapse')}
+          style={{ margin: 'auto' }}
+          to={pawooUrl}
+        ><i aria-label={formatMessage(messages.pawooMaximize)} className='fa fa-window-maximize' /></Link>
       );
     }
 
@@ -139,6 +170,7 @@ export default class ColumnHeader extends React.PureComponent {
 
           <div className='column-header__buttons'>
             {backButton}
+            {pawooMaximizeButton}
             {collapseButton}
           </div>
         </h1>

@@ -32,7 +32,7 @@ class SuggestionTags extends React.PureComponent {
     columnId: PropTypes.string,
     multiColumn: PropTypes.bool,
     params: PropTypes.object.isRequired,
-    pawooHasPinnedColumn: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map.isRequired,
   };
 
   componentDidMount () {
@@ -93,7 +93,7 @@ class SuggestionTags extends React.PureComponent {
   }
 
   render () {
-    const { intl, columnId, multiColumn, params, tags, pawooHasPinnedColumn } = this.props;
+    const { intl, columnId, multiColumn, params, tags, pawoo } = this.props;
     const pinned = !!columnId;
     const message = messages[params.type];
 
@@ -117,7 +117,7 @@ class SuggestionTags extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
-          pawooHasPinnedColumn={pawooHasPinnedColumn}
+          pawoo={pawoo}
         />
 
         <ScrollContainer scrollKey={`suggestion_tags-${columnId}`}>

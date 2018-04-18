@@ -41,7 +41,7 @@ export default class ListTimeline extends React.PureComponent {
     multiColumn: PropTypes.bool,
     list: PropTypes.oneOfType([ImmutablePropTypes.map, PropTypes.bool]),
     intl: PropTypes.object.isRequired,
-    pawooHasPinnedColumn: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map.isRequired,
   };
 
   handlePin = () => {
@@ -114,7 +114,7 @@ export default class ListTimeline extends React.PureComponent {
   }
 
   render () {
-    const { hasUnread, columnId, multiColumn, list, pawooHasPinnedColumn } = this.props;
+    const { hasUnread, columnId, multiColumn, list, pawoo } = this.props;
     const { id } = this.props.params;
     const pinned = !!columnId;
     const title  = list ? list.get('title') : id;
@@ -148,7 +148,8 @@ export default class ListTimeline extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
-          pawooHasPinnedColumn={pawooHasPinnedColumn}
+          pawoo={pawoo}
+          pawooUrl={`/timelines/list/${id}`}
         >
           <div className='column-header__links'>
             <button className='text-btn column-header__setting-btn' tabIndex='0' onClick={this.handleEditClick}>

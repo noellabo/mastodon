@@ -1,4 +1,5 @@
 import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
@@ -31,7 +32,7 @@ export default class CommunityTimeline extends React.PureComponent {
     intl: PropTypes.object.isRequired,
     hasUnread: PropTypes.bool,
     multiColumn: PropTypes.bool,
-    pawooHasPinnedColumn: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map.isRequired,
   };
 
   handlePin = () => {
@@ -76,7 +77,7 @@ export default class CommunityTimeline extends React.PureComponent {
   }
 
   render () {
-    const { intl, hasUnread, columnId, multiColumn, pawooHasPinnedColumn } = this.props;
+    const { intl, hasUnread, columnId, multiColumn, pawoo } = this.props;
     const pinned = !!columnId;
 
     return (
@@ -90,7 +91,8 @@ export default class CommunityTimeline extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
-          pawooHasPinnedColumn={pawooHasPinnedColumn}
+          pawoo={pawoo}
+          pawooUrl='/timelines/public/local'
         >
           <ColumnSettingsContainer />
         </ColumnHeader>

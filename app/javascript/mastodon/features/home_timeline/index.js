@@ -1,4 +1,5 @@
 import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { expandHomeTimeline, refreshHomeTimeline } from '../../actions/timelines';
 import PropTypes from 'prop-types';
@@ -30,7 +31,7 @@ export default class HomeTimeline extends React.PureComponent {
     isPartial: PropTypes.bool,
     columnId: PropTypes.string,
     multiColumn: PropTypes.bool,
-    pawooHasPinnedColumn: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map,
   };
 
   handlePin = () => {
@@ -94,7 +95,7 @@ export default class HomeTimeline extends React.PureComponent {
   }
 
   render () {
-    const { intl, hasUnread, columnId, multiColumn, pawooHasPinnedColumn } = this.props;
+    const { intl, hasUnread, columnId, multiColumn, pawoo } = this.props;
     const pinned = !!columnId;
 
     return (
@@ -108,7 +109,8 @@ export default class HomeTimeline extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
-          pawooHasPinnedColumn={pawooHasPinnedColumn}
+          pawoo={pawoo}
+          pawooUrl='/timelines/home'
         >
           <ColumnSettingsContainer />
         </ColumnHeader>
