@@ -25,7 +25,7 @@ export function changeLayoutAutomatically() {
       if ((initialState.pawoo.last_settings_updated < 1522290629 &&
             columns.count() === 3 &&
             columns.every((column, index) => column.get('id') === pawooOldLayout.getIn([index, 'id']))) ||
-          (initialState.pawoo.last_settings_updated < 1524038370 &&
+          (initialState.pawoo.last_settings_updated < 1524040170 &&
             columns.count() === 1)) {
         try {
           sessionStorage.setItem('pawoo:columns', JSON.stringify(getState().getIn(['settings', 'columns']).toJS()));
@@ -36,7 +36,7 @@ export function changeLayoutAutomatically() {
 
         dispatch(changeSetting(['columns'], defaultColumns));
       } else if (initialState.pawoo.last_settings_updated > 1522290629 &&
-                 initialState.pawoo.last_settings_updated < 1524038370) {
+                 initialState.pawoo.last_settings_updated < 1524040170) {
         dispatch(changeSetting(['pawoo', 'multiColumn'], true));
       }
     }
