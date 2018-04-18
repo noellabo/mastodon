@@ -62,8 +62,8 @@ class Subcolumn extends ImmutablePureComponent {
     return Immutable.Map({
       collapsed: !this.props.expanded,
       multiColumn: this.props.multiColumn,
-      onCollapse: this.props.handleCollapse,
-      onExpand: this.props.handleExpand,
+      onCollapse: this.handleCollapse,
+      onExpand: this.handleExpand,
     });
   }
 
