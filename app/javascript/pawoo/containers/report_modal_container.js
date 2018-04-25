@@ -153,7 +153,7 @@ export default class ReportModal extends ImmutablePureComponent {
               )}
             </div>
 
-            <Button disabled={isSubmitting} text={intl.formatMessage(messages.submit)} onClick={this.handleSubmit} />
+            <Button disabled={isSubmitting || !this.isSendable()} text={intl.formatMessage(messages.submit)} onClick={this.handleSubmit} />
           </div>
 
           <div className='report-modal__statuses'>
