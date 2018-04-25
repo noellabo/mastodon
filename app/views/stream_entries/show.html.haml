@@ -42,6 +42,6 @@
 
 .pagination
   - if @status_pagination&.next
-    = link_to safe_join([fa_icon('chevron-left'), t('pagination.older')], ' '), short_account_status_path(@account, @status_pagination.next), class: 'older', rel: 'next'
+    = link_to safe_join([fa_icon('chevron-left'), t('pagination.newer')], ' '), short_account_status_path(@account, @status_pagination.next), class: 'older', rel: 'next'
   - if @status_pagination&.previous
-    = link_to safe_join([t('pagination.newer'), fa_icon('chevron-right')], ' '), short_account_status_path(@account, @status_pagination.previous), class: 'newer', rel: 'prev'
+    = link_to safe_join([t('pagination.older'), fa_icon('chevron-right')], ' '), short_account_status_path(@account, @status_pagination.previous), class: 'newer', rel: 'prev'
