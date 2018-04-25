@@ -18,6 +18,6 @@
           = t('accounts.follow')
   - elsif !user_signed_in?
     = render 'pawoo/extensions/accounts/follow', id: pawoo_id, account: account, classes: '' do
-      %button.button.omniauth-pixiv.pawoo-follow__button__link{ data: { follow: account.username } }
+      %button.button.omniauth-pixiv.pawoo-follow__button__link{ data: { follow: account.acct } }
         = fa_icon 'user-plus'
         = t('accounts.follow')
