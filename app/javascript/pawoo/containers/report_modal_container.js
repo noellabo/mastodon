@@ -41,7 +41,7 @@ const makeMapStateToProps = () => {
       isSubmitting: state.getIn(['pawoo', 'reports', 'new', 'isSubmitting']),
       account: getAccount(state, accountId),
       comment: state.getIn(['pawoo', 'reports', 'new', 'comment']),
-      forward: state.getIn(['reports', 'new', 'forward']),
+      forward: state.getIn(['pawoo', 'reports', 'new', 'forward']),
       reportType: state.getIn(['pawoo', 'reports', 'new', 'report_type']),
       statusIds: OrderedSet(state.getIn(['timelines', `account:${accountId}`, 'items'])).union(state.getIn(['pawoo', 'reports', 'new', 'status_ids'])),
     };
