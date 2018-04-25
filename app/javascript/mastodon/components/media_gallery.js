@@ -128,7 +128,7 @@ class Item extends React.PureComponent {
       const srcSet = hasSize ? `${originalUrl} ${originalWidth}w, ${previewUrl} ${previewWidth}w` : null;
 
       const focusX = attachment.getIn(['meta', 'focus', 'x']) || 0;
-      const focusY = attachment.getIn(['meta', 'focus', 'y']) || 0;
+      const focusY = attachment.getIn(['meta', 'focus', 'y']) || 0.6;
       const x      = ((focusX /  2) + .5) * 100;
       const y      = ((focusY / -2) + .5) * 100;
 
