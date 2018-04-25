@@ -152,10 +152,10 @@ export default function timelines(state = initialState, action) {
   case TIMELINE_DISCONNECT:
     return state.update(action.timeline, initialTimeline, map => map.set('online', false));
   case PIN_SUCCESS:
-    return state.updateIn([`account:${action.status.getIn(['account', 'id'])}:pinned_status`], initialTimeline, map => map
+    return state.updateIn([`account:${action.status.getIn(['account', 'id'])}:pinned`], initialTimeline, map => map
       .update('items', ImmutableList(), list => list.unshift(action.status.get('id')).toOrderedSet().toList()));
   case UNPIN_SUCCESS:
-    return state.updateIn([`account:${action.status.getIn(['account', 'id'])}:pinned_status`], initialTimeline, map => map
+    return state.updateIn([`account:${action.status.getIn(['account', 'id'])}:pinned`], initialTimeline, map => map
       .update('items', ImmutableList(), list => list.filter((id) => id !== action.status.get('id'))));
   case PAWOO_STATUS_SEARCH_TIMELINE_REFRESH_SUCCESS:
     return state.update(action.timeline, initialTimeline, map => map

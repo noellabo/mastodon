@@ -43,7 +43,6 @@ export default class Status extends ImmutablePureComponent {
     muted: PropTypes.bool,
     schedule: PropTypes.bool,
     onPin: PropTypes.func,
-    displayPinned: PropTypes.bool,
     intersectionObserverWrapper: PropTypes.object,
     hidden: PropTypes.bool,
     onMoveUp: PropTypes.func,
@@ -157,7 +156,7 @@ export default class Status extends ImmutablePureComponent {
     let media = null;
     let statusAvatar, prepend;
 
-    const { hidden } = this.props;
+    const { hidden, featured } = this.props;
 
     let { status, account, schedule, pawooMediaScale, pawooWideMedia, ...other } = this.props;
 
@@ -174,9 +173,7 @@ export default class Status extends ImmutablePureComponent {
       );
     }
 
-    const pinned = this.props.displayPinned && status.get('pinned');
-
-    if (pinned) {
+    if (featured) {
       prepend = (
         <div className='status__prepend'>
           <div className='status__prepend-icon-wrapper'><i className='fa fa-fw fa-thumb-tack status__prepend-icon' /></div>
@@ -265,7 +262,7 @@ export default class Status extends ImmutablePureComponent {
 
     return (
       <HotKeys handlers={handlers}>
-        <div className={classNames('status__wrapper', `status__wrapper-${status.get('visibility')}`, { focusable: !this.props.muted, pinned })} tabIndex={this.props.muted ? null : 0}>
+        <div className={classNames('status__wrapper', `status__wrapper-${status.get('visibility')}`, { focusable: !this.props.muted, featured })} tabIndex={this.props.muted ? null : 0}>
           {prepend}
 
           <div className={classNames('status', `status-${status.get('visibility')}`, { muted: this.props.muted })} data-id={status.get('id')}>

@@ -23,14 +23,12 @@ export default class StatusList extends ImmutablePureComponent {
     prepend: PropTypes.node,
     emptyMessage: PropTypes.node,
     schedule: PropTypes.bool,
-    displayPinned: PropTypes.bool,
     pawooMediaScale: PropTypes.string,
     pawooWideMedia: PropTypes.bool,
   };
 
   static defaultProps = {
     trackScroll: true,
-    displayPinned: false,
   };
 
   handleMoveUp = id => {
@@ -56,7 +54,7 @@ export default class StatusList extends ImmutablePureComponent {
   }
 
   render () {
-    const { statusIds, featuredStatusIds, schedule, displayPinned, pawooMediaScale, pawooWideMedia, ...other } = this.props;
+    const { statusIds, featuredStatusIds, schedule, pawooMediaScale, pawooWideMedia, ...other } = this.props;
     const { isLoading, isPartial } = other;
 
     if (isPartial) {
@@ -82,7 +80,6 @@ export default class StatusList extends ImmutablePureComponent {
           onMoveUp={this.handleMoveUp}
           onMoveDown={this.handleMoveDown}
           schedule={schedule}
-          displayPinned={displayPinned}
           pawooMediaScale={pawooMediaScale}
           pawooWideMedia={pawooWideMedia}
         />
