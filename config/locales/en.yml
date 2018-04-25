@@ -592,6 +592,10 @@ en:
       follow_request: "%{name} requested to follow you"
       mention: "%{name} mentioned you"
       reblog: "%{name} boosted your toot"
+    extensions:
+      statuses:
+        pin_errors:
+          time_limit: Toot with automatic disapperance setting cannot be pinned
     login_email: Log in with email address
     oauth_registrations:
       already_registered: It has already been registered. After logging in with your e-mail address and password, please link with pixiv account from setting page.

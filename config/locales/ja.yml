@@ -624,6 +624,10 @@ ja:
       follow_request: "%{name} さんからフォローリクエストが届いています"
       mention: "%{name} さんからメンションがあります"
       reblog: "%{name} さんがブーストしました"
+    extensions:
+      statuses:
+        pin_errors:
+          time_limit: 自動消滅するトゥートを固定することはできません
     login_email: メールアドレスでログイン
     oauth_registrations:
       already_registered: すでに登録されています。メールアドレスとパスワードでログイン後、設定ページよりpixivアカウント連携してください。
