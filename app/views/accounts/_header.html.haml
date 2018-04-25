@@ -1,6 +1,6 @@
 .card.h-card.p-author{ style: "background-image: url(#{account.header.url(:original)})" }
   .card__illustration
-    = render 'accounts/follow_button', account: account
+    = render 'accounts/follow_button', account: account, pawoo_id: 'pawoo-extension-card__follow'
     .avatar= image_tag account.avatar.url(:original), class: 'u-photo'
 
     .oauth-authentications
