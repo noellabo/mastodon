@@ -74,7 +74,7 @@ const normalizeStatus = (state, status) => {
     normalStatus.search_index = domParser.parseFromString(searchContent, 'text/html').documentElement.textContent;
     normalStatus.contentHtml  = emojify(normalStatus.content, emojiMap);
     normalStatus.spoilerHtml  = emojify(escapeTextContentForBrowser(normalStatus.spoiler_text || ''), emojiMap);
-    normalStatus.hidden       = normalStatus.sensitive;
+    normalStatus.hidden       = normalStatus.sensitive || normalStatus.spoiler_text !== '';
   }
 
   return state.update(status.id, ImmutableMap(), map => map.mergeDeep(fromJS(normalStatus)));
