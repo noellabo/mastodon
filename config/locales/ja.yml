@@ -28,7 +28,6 @@ ja:
       real_conversation_title: 本当のコミュニケーションのために
       within_reach_body: デベロッパーフレンドリーな API により実現された、iOS や Android、その他様々なプラットフォームのためのアプリでどこでも友人とやりとりできます。
       within_reach_title: いつでも身近に
-    find_another_instance: 他のインスタンスを探す
     generic_description: "%{domain} は、Mastodon インスタンスの一つです"
     hosted_on: Mastodon hosted on %{domain}
     learn_more: もっと詳しく
@@ -39,7 +38,7 @@ ja:
     status_count_before: トゥート数
     user_count_after: 人
     user_count_before: ユーザー数
-    what_is_mastodon: ＼ マストドン（Mastodon）とは？ ／
+    what_is_mastodon: "＼ マストドン（Mastodon）とは？ ／"
   accounts:
     follow: フォロー
     followers: フォロワー
@@ -296,6 +295,9 @@ ja:
       contact_information:
         email: ビジネスメールアドレス
         username: 連絡先のユーザー名
+      hero:
+        desc_html: フロントページに表示されます。サイズは600x100px以上推奨です。未設定の場合、インスタンスのサムネイルが使用されます
+        title: ヒーローイメージ
       peers_api_enabled:
         desc_html: 連合内でこのインスタンスが遭遇したドメインの名前
         title: 接続しているインスタンスのリストを公開する
@@ -312,6 +314,9 @@ ja:
         open:
           desc_html: 誰でも自由にアカウントを作成できるようにします
           title: 新規登録を受け付ける
+      show_known_fediverse_at_about_page:
+        desc_html: チェックを入れるとプレビュー欄に既知の連合先全てのトゥートを表示します。外すとローカルのトゥートだけ表示します。
+        title: タイムラインプレビューに連合タイムラインを表示する
       show_staff_badge:
         desc_html: ユーザーページにスタッフのバッジを表示します
         title: スタッフバッジを表示する
@@ -380,7 +385,9 @@ ja:
     your_token: アクセストークン
   auth:
     agreement_html: 登録すると <a href="%{rules_path}">インスタンスのルール</a> と <a href="%{terms_path}">利用規約</a> に従うことに同意したことになります。
-    change_password: セキュリティ
+    change_password: パスワード
+    confirm_email: メールアドレスの確認
+    confirmed_email: "(認証済み)"
     delete_account: アカウントの削除
     delete_account_html: アカウントを削除したい場合、<a href="%{path}">こちら</a> から手続きが行えます。削除する前に、確認画面があります。
     didnt_get_confirmation: 確認メールを受信できませんか？
@@ -390,13 +397,19 @@ ja:
     logout: ログアウト
     migrate_account: 別のアカウントに引っ越す
     migrate_account_html: 引っ越し先を明記したい場合は<a href="%{path}">こちら</a>で設定できます。
+    oauth_registration: 登録を続ける
+    or: または
+    or_log_in_with: または次のサービスでログイン
+    providers:
+      cas: CAS
+      saml: SAML
     register: 登録する
+    register_elsewhere: 他のインスタンスで新規登録
     resend_confirmation: 確認メールを再送する
     reset_password: パスワードを再発行
-    send_password_setting_url: 'パスワードの設定URLを登録されたメールアドレス（%{email}）に送る'
-    set_new_password: 新しいパスワードを設定
-    oauth_registration: 登録を続ける
-    confirmed_email: '(認証済み)'
+    security: セキュリティ
+    send_password_setting_url: パスワードの設定URLを登録されたメールアドレス（%{email}）に送る
+    set_new_password: 新しいパスワード
     synchronize_email_address: pixivアカウントのメールアドレスと同期する
   authorize_follow:
     error: 残念ながら、リモートアカウント情報の取得中にエラーが発生しました
@@ -426,14 +439,13 @@ ja:
     bad_password_msg: パスワードが違います
     confirm_password: 本人確認のため、現在のパスワードを入力してください
     description_html: あなたのアカウントに含まれるコンテンツは全て削除され、アカウントは無効化されます。これは恒久的なもので、<strong>取り消すことはできません</strong>。なりすましを防ぐために、同じユーザー名で再度登録することはできなくなります。
+    exists_initial_password_usage: セキュリティ上の理由により、パスワードが設定されていないアカウントを削除することができません。
+    exists_oauth_authentications_html: アカウント削除の前に、<a href="%{path}">pixivアカウント連携</a>を解除してください。
     proceed: アカウントを削除する
     success_msg: アカウントは正常に削除されました
     warning_html: 削除が保証されるのはこのインスタンス上のコンテンツのみです。他のインスタンス等、外部に広く共有されたコンテンツについては痕跡が残ることがあります。また、現在接続できないサーバーや、あなたの更新を受け取らなくなったサーバーに対しては、削除は反映されません。
     warning_title: 共有されたコンテンツについて
-    exists_initial_password_usage: セキュリティ上の理由により、パスワードが設定されていないアカウントを削除することができません。
-    exists_oauth_authentications_html: アカウント削除の前に、<a href="%{path}">pixivアカウント連携</a>を解除してください。
   errors:
-    top: トップに戻る
     '403': このページを表示する権限がありません。
     '404': お探しのページは見つかりませんでした。
     '410': お探しのページはもう存在しません。
@@ -446,7 +458,15 @@ ja:
       title: このページは正しくありません
     '503': ただいまメンテナンスを行なっております。
     noscript_html: Pawooのウェブアプリケーションを利用する場合はJavaScriptを有効にしてください。またはあなたのプラットフォーム向けの<a href="https://github.com/tootsuite/documentation/blob/master/Using-Mastodon/Apps.md">Mastodonネイティブアプリ</a>を探すことができます。
+    top: トップに戻る
   exports:
+    archive_takeout:
+      date: 日時
+      download: ダウンロード
+      hint_html: "<strong>トゥートとメディア</strong>のアーカイブをリクエストできます。 データはActivityPub形式で、対応しているソフトウェアで読み込むことができます。"
+      in_progress: 準備中...
+      request: アーカイブをリクエスト
+      size: 容量
     blocks: ブロック
     csv: CSV
     follows: フォロー
@@ -501,8 +521,8 @@ ja:
       uses: 使用
     title: 新規ユーザーの招待
   landing_strip_html: "<strong>%{name}</strong> さんはインスタンス %{link_to_root_path} のユーザーです。アカウントさえ持っていればフォローしたり会話したりできます。"
-  landing_strip_tag_html: ハッシュタグ <strong>%{name}</strong> がついているトゥート一覧です。アカウントさえ持っていれば会話に参加できます。もしお持ちでないなら <a href="%{sign_up_path}">こちら</a> からサインアップできます。
   landing_strip_signup_html: もしお持ちでないなら <a href="%{sign_up_path}">こちら</a> からサインアップできます。
+  landing_strip_tag_html: ハッシュタグ <strong>%{name}</strong> がついているトゥート一覧です。アカウントさえ持っていれば会話に参加できます。もしお持ちでないなら <a href="%{sign_up_path}">こちら</a> からサインアップできます。
   lists:
     errors:
       limit: リストの上限に達しました
@@ -563,16 +583,18 @@ ja:
           trillion: T
           unit: ''
   oauth_authentications:
-    link: 連携する
-    unlink: 解除する
     confirm: 本当によろしいですか？
-    successfully_unlinked: 解除しました
-    successfully_linked: 連携しました
-    successfully_synchronization: 同期しました
     failed_linking: 連携できませんでした
     initial_password_usage_note_html: pixivアカウント連携を変更する場合は、先に%{link}する必要があります。
+    link: 連携する
+    successfully_linked: 連携しました
+    successfully_synchronization: 同期しました
+    successfully_unlinked: 解除しました
+    unlink: 解除する
   pagination:
+    newer: 新しいトゥート
     next: 次
+    older: 以前のトゥート
     prev: 前
     truncate: "&hellip;"
   pawoo:
@@ -602,6 +624,10 @@ ja:
       follow_request: "%{name} さんからフォローリクエストが届いています"
       mention: "%{name} さんからメンションがあります"
       reblog: "%{name} さんがブーストしました"
+    extensions:
+      statuses:
+        pin_errors:
+          time_limit: 自動消滅するトゥートを固定することはできません
     login_email: メールアドレスでログイン
     oauth_registrations:
       already_registered: すでに登録されています。メールアドレスとパスワードでログイン後、設定ページよりpixivアカウント連携してください。
@@ -711,7 +737,7 @@ ja:
   stream_entries:
     click_to_show: クリックして表示
     pinned: 固定されたトゥート
-    reblogged: さんにブーストされました
+    reblogged: さんがブースト
     sensitive_content: 閲覧注意
   terms:
     body_html: |
@@ -805,12 +831,16 @@ ja:
     setup: 初期設定
     wrong_code: コードが間違っています。サーバー上の時間とデバイス上の時間が一致していることを確認してください。
   user_mailer:
+    backup_ready:
+      explanation: Mastodonアカウントのアーカイブを受け付けました。今すぐダウンロードできます！
+      subject: アーカイブの準備ができました
+      title: アーカイブの取り出し
     welcome:
       edit_profile_action: プロフィールを設定
       edit_profile_step: アバター画像やヘッダー画像をアップロードしたり、表示名やその他プロフィールを変更しカスタマイズすることができます。新しいフォロワーからのフォローを許可する前に検討したい場合、アカウントを非公開にすることができます。
       explanation: 始めるにあたってのアドバイスです
       final_action: 始めましょう
-      final_step: 'さあ始めましょう！たとえフォロワーがいなくても、あなたの公開した投稿はローカルタイムラインやハッシュタグなどで誰かの目に止まるかもしれません。自己紹介をしたい時は #introductions ハッシュタグを使うといいかもしれません。'
+      final_step: 'さあ始めましょう！ たとえフォロワーがいなくても、あなたの公開した投稿はローカルタイムラインやハッシュタグなどで誰かの目に止まるかもしれません。自己紹介をしたい時は #introductions ハッシュタグを使うといいかもしれません。'
       full_handle: あなたの正式なユーザー名
       full_handle_hint: これは別のインスタンスからフォローしてもらったりメッセージのやり取りをする際に、友達に伝えるといいでしょう。
       review_preferences_action: 設定の変更
@@ -822,8 +852,9 @@ ja:
       tip_local_timeline: ローカルタイムラインは %{instance} にいる人々の流れを見られるものです。彼らはあなたと同じインスタンスにいる隣人のようなものです！
       tip_mobile_webapp: もしモバイル端末のブラウザで Mastodon をホーム画面に追加できる場合、プッシュ通知を受け取ることができます。それはまるでネイティブアプリのように動作します！
       tips: 豆知識
-      title: ようこそ、 %{name}!
+      title: ようこそ、%{name} ！
   users:
     invalid_email: メールアドレスが無効です
     invalid_otp_token: 二段階認証コードが間違っています
+    seamless_external_login: あなたは外部サービスを介してログインしているため、パスワードとメールアドレスの設定は利用できません。
     signed_in_as: '下記でログイン中:'

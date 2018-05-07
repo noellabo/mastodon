@@ -25,7 +25,7 @@ Rails.application.configure do
   end
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = Uglifier.new(mangle: false)
+  # config.assets.js_compressor = Uglifier.new(mangle: false)
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -55,8 +55,10 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
-  # the I18n.default_locale when a translation cannot be found).
-  config.i18n.fallbacks = true
+  # English when a translation cannot be found).
+  # And, on Pawoo, fall back to Japanese if even an English translation cannot
+  # be found.
+  config.i18n.fallbacks = [:en, :ja]
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
@@ -98,4 +100,5 @@ Rails.application.configure do
   }
 
   config.x.activerecord_dowsing.enabled = false
+  config.x.otp_secret = ENV.fetch('OTP_SECRET')
 end

@@ -37,15 +37,20 @@ export class WrappedRoute extends React.Component {
     component: PropTypes.func.isRequired,
     content: PropTypes.node,
     multiColumn: PropTypes.bool,
+    componentParams: PropTypes.object,
     pawoo: ImmutablePropTypes.map,
-  }
+  };
+
+  static defaultProps = {
+    componentParams: {},
+  };
 
   renderComponent = ({ match }) => {
-    const { component, content, multiColumn, pawoo } = this.props;
+    const { component, content, multiColumn, componentParams, pawoo } = this.props;
 
     return (
       <BundleContainer fetchComponent={component} loading={this.renderLoading} error={this.renderError}>
-        {Component => <Component params={match.params} multiColumn={multiColumn} pawoo={pawoo}>{content}</Component>}
+        {Component => <Component params={match.params} multiColumn={multiColumn} pawoo={pawoo} {...componentParams}>{content}</Component>}
       </BundleContainer>
     );
   }

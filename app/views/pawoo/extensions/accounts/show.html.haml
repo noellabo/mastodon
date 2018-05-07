@@ -1,12 +1,20 @@
 - content_for :page_title do
   - if @current_page > 1
-    = "page #{@current_page} - #{display_name(@account)} - #{@account.acct}"
+    = "page #{@current_page} - #{display_name(@account)} - #{@account.local_username_and_domain}"
   - else
-    = "#{display_name(@account)} - #{@account.acct}"
+    = "#{display_name(@account)} - #{@account.local_username_and_domain}"
 
 - content_for :header_tags do
+  %meta{ name: 'description', content: account_description(@account) }/
+
   - if @account.user&.setting_noindex
     %meta{ name: 'robots', content: 'noindex' }/
+
+  - if @statuses_collection.present?
+    - unless @statuses.last_page?
+      %link{ rel: 'next', href: pawoo_next_url }/
+    - unless @statuses.first_page?
+      %link{ rel: 'prev', href: pawoo_prev_url }/
 
   %link{ rel: 'salmon', href: api_salmon_url(@account.id) }/
   %link{ rel: 'alternate', type: 'application/atom+xml', href: account_url(@account, format: 'atom') }/
@@ -54,6 +62,6 @@
 
 - if @statuses_collection.present?
   .pagination
-    = link_to safe_join([t('pagination.next'), fa_icon('chevron-right')], ' '), pawoo_next_url, class: 'next', rel: 'next' unless @statuses.last_page?
-    = link_to safe_join([fa_icon('chevron-left'), t('pagination.prev')], ' '), pawoo_prev_url, class: 'prev', rel: 'prev' unless @statuses.first_page?
+    = link_to safe_join([t('pagination.older'), fa_icon('chevron-right')], ' '), pawoo_next_url, class: 'newer', rel: 'next' unless @statuses.last_page?
+    = link_to safe_join([fa_icon('chevron-left'), t('pagination.newer')], ' '), pawoo_prev_url, class: 'older', rel: 'prev' unless @statuses.first_page?
 

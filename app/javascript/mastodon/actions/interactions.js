@@ -69,6 +69,7 @@ export function reblogRequest(status) {
   return {
     type: REBLOG_REQUEST,
     status: status,
+    skipLoading: true,
   };
 };
 
@@ -77,6 +78,7 @@ export function reblogSuccess(status, response) {
     type: REBLOG_SUCCESS,
     status: status,
     response: response,
+    skipLoading: true,
   };
 };
 
@@ -85,6 +87,7 @@ export function reblogFail(status, error) {
     type: REBLOG_FAIL,
     status: status,
     error: error,
+    skipLoading: true,
   };
 };
 
@@ -92,6 +95,7 @@ export function unreblogRequest(status) {
   return {
     type: UNREBLOG_REQUEST,
     status: status,
+    skipLoading: true,
   };
 };
 
@@ -100,6 +104,7 @@ export function unreblogSuccess(status, response) {
     type: UNREBLOG_SUCCESS,
     status: status,
     response: response,
+    skipLoading: true,
   };
 };
 
@@ -108,6 +113,7 @@ export function unreblogFail(status, error) {
     type: UNREBLOG_FAIL,
     status: status,
     error: error,
+    skipLoading: true,
   };
 };
 
@@ -143,6 +149,7 @@ export function favouriteRequest(status) {
   return {
     type: FAVOURITE_REQUEST,
     status: status,
+    skipLoading: true,
   };
 };
 
@@ -151,6 +158,7 @@ export function favouriteSuccess(status, response) {
     type: FAVOURITE_SUCCESS,
     status: status,
     response: response,
+    skipLoading: true,
   };
 };
 
@@ -159,6 +167,7 @@ export function favouriteFail(status, error) {
     type: FAVOURITE_FAIL,
     status: status,
     error: error,
+    skipLoading: true,
   };
 };
 
@@ -166,6 +175,7 @@ export function unfavouriteRequest(status) {
   return {
     type: UNFAVOURITE_REQUEST,
     status: status,
+    skipLoading: true,
   };
 };
 
@@ -174,6 +184,7 @@ export function unfavouriteSuccess(status, response) {
     type: UNFAVOURITE_SUCCESS,
     status: status,
     response: response,
+    skipLoading: true,
   };
 };
 
@@ -182,6 +193,7 @@ export function unfavouriteFail(status, error) {
     type: UNFAVOURITE_FAIL,
     status: status,
     error: error,
+    skipLoading: true,
   };
 };
 
@@ -271,6 +283,7 @@ export function pinRequest(status) {
   return {
     type: PIN_REQUEST,
     status,
+    skipLoading: true,
   };
 };
 
@@ -279,6 +292,7 @@ export function pinSuccess(status, response) {
     type: PIN_SUCCESS,
     status,
     response,
+    skipLoading: true,
   };
 };
 
@@ -287,6 +301,7 @@ export function pinFail(status, error) {
     type: PIN_FAIL,
     status,
     error,
+    skipLoading: true,
   };
 };
 
@@ -308,6 +323,7 @@ export function unpinRequest(status) {
   return {
     type: UNPIN_REQUEST,
     status,
+    skipLoading: true,
   };
 };
 
@@ -316,6 +332,7 @@ export function unpinSuccess(status, response) {
     type: UNPIN_SUCCESS,
     status,
     response,
+    skipLoading: true,
   };
 };
 
@@ -324,5 +341,6 @@ export function unpinFail(status, error) {
     type: UNPIN_FAIL,
     status,
     error,
+    skipLoading: true,
   };
 };

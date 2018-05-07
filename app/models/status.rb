@@ -32,6 +32,8 @@ class Status < ApplicationRecord
   include StatusThreadingConcern
   include StatusSearchable
 
+  update_index('statuses#status', :proper) if Chewy.enabled?
+
   enum visibility: [:public, :unlisted, :private, :direct], _suffix: :visibility
 
   belongs_to :application, class_name: 'Doorkeeper::Application', optional: true
@@ -58,7 +60,7 @@ class Status < ApplicationRecord
   has_one :stream_entry, as: :activity, inverse_of: :status
 
   validates :uri, uniqueness: true, presence: true, unless: :local?
-  validates :text, presence: true, unless: :reblog?
+  validates :text, presence: true, unless: -> { with_media? || reblog? }
   validates_with StatusLengthValidator
   validates :reblog, uniqueness: { scope: :account }, if: :reblog?
 
@@ -84,10 +86,10 @@ class Status < ApplicationRecord
   scope :not_excluded_by_account, ->(account) { where.not(account_id: account.excluded_from_timeline_account_ids) }
   scope :not_domain_blocked_by_account, ->(account) { account.excluded_from_timeline_domains.blank? ? left_outer_joins(:account) : left_outer_joins(:account).where('accounts.domain IS NULL OR accounts.domain NOT IN (?)', account.excluded_from_timeline_domains) }
 
-  cache_associated :application, :media_attachments, :tags, :stream_entry, :pixiv_cards, :status_pin,
+  cache_associated :application, :media_attachments, :conversation, :tags, :stream_entry, :pixiv_cards, :status_pin,
     account: :oauth_authentications,
     mentions: { account: :oauth_authentications },
-    reblog: [{ account: :oauth_authentications }, :application, :media_attachments, :tags, :stream_entry, :pixiv_cards, :status_pin, mentions: { account: :oauth_authentications }],
+    reblog: [{ account: :oauth_authentications }, :application, :media_attachments, :conversation, :tags, :stream_entry, :pixiv_cards, :status_pin, mentions: { account: :oauth_authentications }],
     thread: { account: :oauth_authentications }
 
   def postable_to_es?
@@ -95,6 +97,24 @@ class Status < ApplicationRecord
   end
 
   delegate :domain, to: :account, prefix: true
+
+  REAL_TIME_WINDOW = 6.hours
+
+  def searchable_by(preloaded = nil)
+    ids = [account_id]
+
+    if preloaded.nil?
+      ids += mentions.pluck(:account_id)
+      ids += favourites.pluck(:account_id)
+      ids += reblogs.pluck(:account_id)
+    else
+      ids += preloaded.mentions[id] || []
+      ids += preloaded.favourites[id] || []
+      ids += preloaded.reblogs[id] || []
+    end
+
+    ids.uniq
+  end
 
   def reply?
     !in_reply_to_id.nil? || attributes['reply']
@@ -106,6 +126,10 @@ class Status < ApplicationRecord
 
   def reblog?
     !reblog_of_id.nil?
+  end
+
+  def within_realtime_window?
+    created_at >= REAL_TIME_WINDOW.ago
   end
 
   def verb
@@ -144,8 +168,12 @@ class Status < ApplicationRecord
     private_visibility? || direct_visibility? || created_at.future?
   end
 
+  def with_media?
+    media_attachments.any?
+  end
+
   def non_sensitive_with_media?
-    !sensitive? && media_attachments.any?
+    !sensitive? && with_media?
   end
 
   def emojis

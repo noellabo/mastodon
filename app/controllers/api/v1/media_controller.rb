@@ -10,7 +10,7 @@ class Api::V1::MediaController < Api::BaseController
   respond_to :json
 
   def create
-    @media = current_account.media_attachments.create!(media_params)
+    @media = current_account.media_attachments.create!({ focus: '0.01,0.6' }.merge!(media_params))
     render json: @media, serializer: REST::MediaAttachmentSerializer
   rescue Paperclip::Errors::NotIdentifiedByImageMagickError
     render json: file_type_error, status: 422
@@ -27,7 +27,7 @@ class Api::V1::MediaController < Api::BaseController
   private
 
   def media_params
-    params.permit(:file, :description)
+    params.permit(:file, :description, :focus)
   end
 
   def file_type_error

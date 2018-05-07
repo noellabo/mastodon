@@ -70,6 +70,7 @@ export default class ComposeForm extends ImmutablePureComponent {
     showSearch: PropTypes.bool,
     onSelectTimeLimit: PropTypes.func.isRequired,
     onInsertHashtag: PropTypes.func.isRequired,
+    anyMedia: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -187,11 +188,11 @@ export default class ComposeForm extends ImmutablePureComponent {
   }
 
   render () {
-    const { scheduling, intl, onPaste, showSearch } = this.props;
+    const { scheduling, intl, onPaste, showSearch, anyMedia } = this.props;
     const { tagSuggestionFrom } = this.state;
     const disabled = this.props.is_submitting;
     const text     = [this.props.spoiler_text, countableText(this.props.text)].join('');
-
+    const disabledButton = disabled || this.props.is_uploading || typeof this.props.published === 'string' || length(text) > 500 || (text.length !== 0 && text.trim().length === 0 && !anyMedia);
     let publishText = '';
 
     if (this.props.privacy === 'private' || this.props.privacy === 'direct') {
@@ -270,7 +271,7 @@ export default class ComposeForm extends ImmutablePureComponent {
             />
           )}
 
-          <div className='compose-form__publish-button-wrapper'><Button text={publishText} onClick={this.handleSubmit} disabled={disabled || this.props.is_uploading || typeof this.props.published === 'string' || length(text) > 500 || (text.length !== 0 && text.trim().length === 0)} block /></div>
+          <div className='compose-form__publish-button-wrapper'><Button text={publishText} onClick={this.handleSubmit} disabled={disabledButton} block /></div>
         </div>
 
         <SensitiveGuideContainer />

@@ -16,6 +16,8 @@ import {
   COMPOSE_SUGGESTIONS_CLEAR,
   COMPOSE_SUGGESTIONS_READY,
   COMPOSE_SUGGESTION_SELECT,
+  COMPOSE_SUGGESTION_TAGS_UPDATE,
+  COMPOSE_TAG_HISTORY_UPDATE,
   COMPOSE_SENSITIVITY_CHANGE,
   COMPOSE_SPOILERNESS_CHANGE,
   COMPOSE_SPOILER_TEXT_CHANGE,
@@ -29,7 +31,6 @@ import {
 } from '../actions/compose';
 import {
   COMPOSE_DATE_TIME_CHANGE as PAWOO_COMPOSE_DATE_TIME_CHANGE,
-  COMPOSE_SUGGESTIONS_HASH_TAG_FETCH as PAWOO_COMPOSE_SUGGESTIONS_HASH_TAG_FETCH,
   COMPOSE_TAG_INSERT as PAWOO_COMPOSE_TAG_INSERT,
 } from '../../pawoo/actions/extensions/compose';
 import { TIMELINE_DELETE } from '../actions/timelines';
@@ -39,7 +40,7 @@ import uuid from '../uuid';
 import { me } from '../initial_state';
 
 const initialState = ImmutableMap({
-  mounted: false,
+  mounted: 0,
   sensitive: false,
   spoiler: false,
   spoiler_text: '',
@@ -59,21 +60,9 @@ const initialState = ImmutableMap({
   default_sensitive: false,
   resetFileKey: Math.floor((Math.random() * 0x10000)),
   idempotencyKey: null,
-  pawoo: fromJS({
-    hashTagHistory: JSON.parse(localStorage.getItem('hash_tag_history')) || [],
-    published: null,
-  }),
+  pawooPublished: null,
+  tagHistory: ImmutableList(),
 });
-
-const pawooSuggestionMaxSize = 4;
-const pawooHistoryMaxSize = 1000;
-
-function pawooConsumeResult(state, { tags }) {
-  const statusTags = tags.map(it => it.name);
-  let history = state.getIn(['pawoo', 'hashTagHistory']);
-  history = history.filter(it => !statusTags.includes(it)).unshift(...statusTags);
-  return state.setIn(['pawoo', 'hashTagHistory'], history.slice(0, pawooHistoryMaxSize));
-}
 
 const pawooInsertTag = (state, tag) => {
   return state.withMutations(map => {
@@ -96,7 +85,7 @@ function statusToTextMentions(state, status) {
 function clearAll(state) {
   return state.withMutations(map => {
     map.set('text', '');
-    map.setIn(['pawoo', 'published'], null);
+    map.set('pawooPublished', null);
     map.set('spoiler', false);
     map.set('spoiler_text', '');
     map.set('is_submitting', false);
@@ -115,7 +104,6 @@ function appendMedia(state, media) {
     map.update('media_attachments', list => list.push(media));
     map.set('is_uploading', false);
     map.set('resetFileKey', Math.floor((Math.random() * 0x10000)));
-    map.update('text', oldText => `${oldText.trim()} ${media.get('text_url')}`);
     map.set('focusDate', new Date());
     map.set('idempotencyKey', uuid());
 
@@ -126,12 +114,10 @@ function appendMedia(state, media) {
 };
 
 function removeMedia(state, mediaId) {
-  const media    = state.get('media_attachments').find(item => item.get('id') === mediaId);
   const prevSize = state.get('media_attachments').size;
 
   return state.withMutations(map => {
     map.update('media_attachments', list => list.filterNot(item => item.get('id') === mediaId));
-    map.update('text', text => text.replace(media.get('text_url'), '').trim());
     map.set('idempotencyKey', uuid());
 
     if (prevSize === 1) {
@@ -147,6 +133,18 @@ const insertSuggestion = (state, position, token, completion) => {
     map.update('suggestions', ImmutableList(), list => list.clear());
     map.set('focusDate', new Date());
     map.set('idempotencyKey', uuid());
+  });
+};
+
+const updateSuggestionTags = (state, token) => {
+  const prefix = token.slice(1);
+
+  return state.merge({
+    suggestions: state.get('tagHistory')
+      .filter(tag => tag.startsWith(prefix))
+      .slice(0, 4)
+      .map(tag => '#' + tag),
+    suggestion_token: token,
   });
 };
 
@@ -188,10 +186,10 @@ export default function compose(state = initialState, action) {
   case STORE_HYDRATE:
     return hydrate(state, action.state.get('compose'));
   case COMPOSE_MOUNT:
-    return state.set('mounted', true);
+    return state.set('mounted', state.get('mounted') + 1);
   case COMPOSE_UNMOUNT:
     return state
-      .set('mounted', false)
+      .set('mounted', Math.max(state.get('mounted') - 1, 0))
       .set('is_composing', false);
   case COMPOSE_SENSITIVITY_CHANGE:
     return state.withMutations(map => {
@@ -250,7 +248,7 @@ export default function compose(state = initialState, action) {
   case COMPOSE_UPLOAD_CHANGE_REQUEST:
     return state.set('is_submitting', true);
   case COMPOSE_SUBMIT_SUCCESS:
-    return clearAll(pawooConsumeResult(state, action.status));
+    return clearAll(state);
   case COMPOSE_SUBMIT_FAIL:
   case COMPOSE_UPLOAD_CHANGE_FAIL:
     return state.set('is_submitting', false);
@@ -275,6 +273,10 @@ export default function compose(state = initialState, action) {
     return state.set('suggestions', ImmutableList(action.accounts ? action.accounts.map(item => item.id) : action.emojis)).set('suggestion_token', action.token);
   case COMPOSE_SUGGESTION_SELECT:
     return insertSuggestion(state, action.position, action.token, action.completion);
+  case COMPOSE_SUGGESTION_TAGS_UPDATE:
+    return updateSuggestionTags(state, action.token);
+  case COMPOSE_TAG_HISTORY_UPDATE:
+    return state.set('tagHistory', fromJS(action.tags));
   case TIMELINE_DELETE:
     if (action.id === state.get('in_reply_to')) {
       return state.set('in_reply_to', null);
@@ -288,21 +290,13 @@ export default function compose(state = initialState, action) {
       .set('is_submitting', false)
       .update('media_attachments', list => list.map(item => {
         if (item.get('id') === action.media.id) {
-          return item.set('description', action.media.description);
+          return fromJS(action.media);
         }
 
         return item;
       }));
   case PAWOO_COMPOSE_DATE_TIME_CHANGE:
-    return state.setIn(['pawoo', 'published'], action.value);
-  case PAWOO_COMPOSE_SUGGESTIONS_HASH_TAG_FETCH:
-    return state.merge({
-      suggestions: state.getIn(['pawoo', 'hashTagHistory'])
-        .filter(it => it.startsWith(action.token.slice(1)))
-        .slice(0, pawooSuggestionMaxSize)
-        .map(it => `#${it}`),
-      suggestion_token: action.token,
-    });
+    return state.set('pawooPublished', action.value);
   case PAWOO_COMPOSE_TAG_INSERT:
     return pawooInsertTag(state, action.tag);
   default:

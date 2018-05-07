@@ -17,6 +17,9 @@ hr:
     mailer:
       confirmation_instructions:
         subject: 'Pawoo: Upute za potvrđivanje'
+      email_changed:
+        subject: 'Pawoo: Email adresa je promijenjena'
+        title: Nova email adresa
       password_change:
         subject: 'Pawoo: Lozinka je promijenjena'
       reset_password_instructions:

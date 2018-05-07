@@ -64,7 +64,7 @@ class Pawoo::Auth::OmniauthCallbacksController < Devise::OmniauthCallbacksContro
 
   def after_sign_in_for(user)
     if session['pawoo.follow']
-      FollowService.new.call(user.account, Account.find_local(session['pawoo.follow']).acct)
+      FollowService.new.call(user.account, session['pawoo.follow'])
     end
 
     redirect_to after_sign_in_path_for(user)

@@ -2,6 +2,7 @@
   Mastodon (マストドン) hosted by pixiv
 
 - content_for :header_tags do
+  %link{ rel: 'canonical', href: about_url }/
   %script#initial-state{ type: 'application/json' }!= json_escape(@initial_state_json)
   = javascript_pack_tag 'about', integrity: true, crossorigin: 'anonymous'
   = javascript_pack_tag 'public', integrity: true, crossorigin: 'anonymous'
@@ -45,7 +46,8 @@
 
       .about-col-body-spacer.bottom
 
-  %section.timeline#mastodon-timeline{ data: { props: Oj.dump(default_props) } }
+  - if Setting.timeline_preview
+    %section.timeline#mastodon-timeline{ data: { props: Oj.dump(default_props) } }
 
 .info
   %ul.no-list

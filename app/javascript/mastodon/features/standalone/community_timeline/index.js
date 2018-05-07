@@ -9,8 +9,10 @@ import {
 } from '../../../actions/timelines';
 import Column from '../../../components/column';
 import ColumnHeader from '../../../components/column_header';
+import { injectIntl } from 'react-intl';
 import { connectCommunityStream } from '../../../actions/streaming';
 import initialState from '../../../initial_state';
+
 import pawooLogo from '../../../../pawoo/images/logo_elephant.png';
 
 const mapStateToProps = state => ({
@@ -18,10 +20,12 @@ const mapStateToProps = state => ({
 });
 
 @connect(mapStateToProps)
+@injectIntl
 export default class CommunityTimeline extends React.PureComponent {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    intl: PropTypes.object.isRequired,
     pawooStatusCount: PropTypes.number.isRequired,
   };
 
@@ -47,7 +51,6 @@ export default class CommunityTimeline extends React.PureComponent {
     }
   }
 
-
   handleLoadMore = () => {
     this.props.dispatch(expandCommunityTimeline());
   }
@@ -68,7 +71,7 @@ export default class CommunityTimeline extends React.PureComponent {
         <StatusListContainer
           timelineId='community'
           loadMore={this.handleLoadMore}
-          scrollKey='standalone_community_timeline'
+          scrollKey='standalone_public_timeline'
           trackScroll={false}
           pawooMediaScale='230px'
         />

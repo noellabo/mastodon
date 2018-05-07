@@ -32,16 +32,6 @@ RSpec.describe Api::V1::ReportsController, type: :controller do
       end
     end
 
-    context 'when the target status has been dealt with' do
-      let(:status1) { Fabricate('Pawoo::ReportTarget', target: Fabricate(:status), state: :resolved).target }
-
-      it 'creates pawoo_report_targets' do
-        expect(subject.pawoo_report_targets.count).to eq 2
-        expect(subject.pawoo_report_targets.find_by(target: status1).state).to eq 'resolved'
-        expect(subject.pawoo_report_targets.find_by(target: status2).state).to eq 'unresolved'
-      end
-    end
-
     context 'when pawoo_report_type is null' do
       it 'creates a report' do
         expect(Report.find_by(comment: 'reasons').pawoo_report_type).to eq 'other'
@@ -54,20 +44,6 @@ RSpec.describe Api::V1::ReportsController, type: :controller do
 
       it 'creates a report' do
         expect(subject.pawoo_report_type).to eq pawoo_report_type
-      end
-    end
-
-    context 'when status_ids empty' do
-      let(:status_ids) { [] }
-
-      it 'creates a report' do
-        expect(subject.action_taken).to be true
-      end
-
-      it 'creates pawoo_report_targets' do
-        expect(subject.pawoo_report_targets.count).to eq 1
-        expect(subject.pawoo_report_targets.first.target).to eq user.account
-        expect(subject.pawoo_report_targets.first.state).to eq 'unresolved'
       end
     end
   end

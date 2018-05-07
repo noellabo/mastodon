@@ -10,6 +10,7 @@ export const PAWOO_REPORT_SUBMIT_FAIL    = 'PAWOO_REPORT_SUBMIT_FAIL';
 
 export const PAWOO_REPORT_STATUS_TOGGLE  = 'PAWOO_REPORT_STATUS_TOGGLE';
 export const PAWOO_REPORT_COMMENT_CHANGE = 'PAWOO_REPORT_COMMENT_CHANGE';
+export const PAWOO_REPORT_FORWARD_CHANGE = 'PAWOO_REPORT_FORWARD_CHANGE';
 export const PAWOO_REPORT_TYPE_CHANGE    = 'PAWOO_REPORT_TYPE_CHANGE';
 
 export function initReport(account, status) {
@@ -53,6 +54,7 @@ export function submitReport() {
       account_id: getState().getIn(['pawoo', 'reports', 'new', 'account_id']),
       status_ids: getState().getIn(['pawoo', 'reports', 'new', 'status_ids']),
       comment: getState().getIn(['pawoo', 'reports', 'new', 'comment']),
+      forward: getState().getIn(['pawoo', 'reports', 'new', 'forward']),
       pawoo_report_type: getState().getIn(['pawoo', 'reports', 'new', 'report_type']),
     }).then(response => {
       dispatch(closeModal());
@@ -85,5 +87,12 @@ export function changeReportComment(comment) {
   return {
     type: PAWOO_REPORT_COMMENT_CHANGE,
     comment,
+  };
+};
+
+export function changeReportForward(forward) {
+  return {
+    type: PAWOO_REPORT_FORWARD_CHANGE,
+    forward,
   };
 };

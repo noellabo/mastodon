@@ -21,6 +21,7 @@ import { setPage as pawooSetPage } from '../../../pawoo/actions/page';
 import Announcements from '../../../pawoo/components/announcements';
 import PawooWebTagLink from '../../../pawoo/components/web_tag_link';
 import TrendTagsContainer from '../../../pawoo/containers/trend_tags_container';
+import elephantUIPlane from '../../../pawoo/images/pawoo-ui.png';
 
 const messages = defineMessages({
   start: { id: 'getting_started.heading', defaultMessage: 'Getting started' },
@@ -113,10 +114,8 @@ export default class Compose extends React.PureComponent {
 
         <div className='drawer__pager'>
           <div className='drawer__inner' onFocus={this.onFocus}>
-            <div className='drawer__block'>
-              <NavigationContainer onClose={this.onBlur} />
-              <ComposeFormContainer />
-            </div>
+            <NavigationContainer onClose={this.onBlur} />
+            <ComposeFormContainer />
 
             {(!multiColumn || this.props.pawooMultiColumn) && (
               <React.Fragment>
@@ -136,7 +135,11 @@ export default class Compose extends React.PureComponent {
               </div>
             )}
 
-            <div className='mastodon' />
+            {multiColumn && (
+              <div className='drawer__inner__mastodon'>
+                <img alt='' draggable='false' src={elephantUIPlane} />
+              </div>
+            )}
           </div>
 
           <Motion defaultStyle={{ x: -100 }} style={{ x: spring(showSearch ? 0 : -100, { stiffness: 210, damping: 20 }) }}>

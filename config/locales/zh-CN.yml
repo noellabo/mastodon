@@ -28,7 +28,6 @@ zh-CN:
       real_conversation_title: 为真正的交流而生
       within_reach_body: 通过一个面向开发者友好的 API 生态系统，Mastodon 让你可以随时随地通过众多 iOS、Android 以及其他平台的应用与朋友们保持联系。
       within_reach_title: 始终触手可及
-    find_another_instance: 寻找另一个实例
     generic_description: "%{domain} 是这个庞大网络中的一台服务器"
     hosted_on: 一个在 %{domain} 上运行的 Mastodon 实例
     learn_more: 详细了解
@@ -38,7 +37,7 @@ zh-CN:
     status_count_before: 他们共嘟出了
     user_count_after: 位用户
     user_count_before: 这里共注册有
-    what_is_mastodon: ＼ Mastodon 是什么？ ／
+    what_is_mastodon: "＼ Mastodon 是什么？ ／"
   accounts:
     follow: 关注
     followers: 关注者
@@ -369,7 +368,7 @@ zh-CN:
     your_token: 你的访问令牌
   auth:
     agreement_html: 注册即表示你同意遵守<a href="%{rules_path}">本实例的相关规定</a>和<a href="%{terms_path}">我们的使用条款</a>。
-    change_password: 帐户安全
+    confirmed_email: "（已确认）"
     delete_account: 删除帐户
     delete_account_html: 如果你想删除你的帐户，请<a href="%{path}">点击这里继续</a>。你需要确认你的操作。
     didnt_get_confirmation: 没有收到确认邮件？
@@ -379,13 +378,13 @@ zh-CN:
     logout: 登出
     migrate_account: 迁移到另一个帐户
     migrate_account_html: 如果你希望引导他人关注另一个帐户，请<a href="%{path}">点击这里进行设置</a>。
+    oauth_registration: 完成注册
     register: 注册
     resend_confirmation: 重新发送确认邮件
     reset_password: 重置密码
-    send_password_setting_url: '发送密码设置链接至你关联的电子邮件地址（%{email}）'
+    security: 帐户安全
+    send_password_setting_url: 发送密码设置链接至你关联的电子邮件地址（%{email}）
     set_new_password: 设置新密码
-    oauth_registration: 完成注册
-    confirmed_email: '（已确认）'
     synchronize_email_address: 同步 pixiv 帐户中的电子邮件地址设置
   authorize_follow:
     error: 对不起，寻找这个跨站用户时出错
@@ -415,12 +414,12 @@ zh-CN:
     bad_password_msg: 想得美，黑客！密码输入错误
     confirm_password: 输入你当前的密码来验证身份
     description_html: 继续操作将会<strong>永久地、不可撤销地</strong>删除帐户中的所有内容，然后冻结帐户。你的用户名将会被保留，以防有人冒用你的身份。
+    exists_initial_password_usage: 出于安全考虑，你必须先设置密码才能够删除帐户。
+    exists_oauth_authentications_html: 删除帐户前请先解除绑定<a href="%{path}">关联的 pixiv 帐户</a>。
     proceed: 删除帐户
     success_msg: 你的帐户已经成功删除
     warning_html: 我们只能保证本实例上的内容将会被彻底删除。对于已经被广泛传播的内容，它们在本实例以外的某些地方可能仍然可见。此外，失去连接的服务器以及停止接收订阅的服务器所存储的数据亦无法删除。
     warning_title: 关于已传播的内容的警告
-    exists_initial_password_usage: 出于安全考虑，你必须先设置密码才能够删除帐户。
-    exists_oauth_authentications_html: 删除帐户前请先解除绑定<a href="%{path}">关联的 pixiv 帐户</a>。
   errors:
     '403': 你没有访问这个页面的权限。
     '404': 无法找到你所要访问的页面。
@@ -485,8 +484,8 @@ zh-CN:
       uses: 已使用次数
     title: 邀请用户
   landing_strip_html: "<strong>%{name}</strong> 是一位来自 %{link_to_root_path} 的用户。如果你想关注他们或者与他们互动，你需要在任意一个 Mastodon 实例或与其兼容的网站上拥有一个帐户。"
-  landing_strip_tag_html: 这里展示的是带有话题标签 <strong>#%{name}</strong> 的公开嘟文。如果你想与他们互动，你需要在任意一个 Mastodon 实例或与其兼容的网站上拥有一个帐户。还没有这种帐户？你可以<a href="%{sign_up_path}">在本站注册一个</a>。
   landing_strip_signup_html: 还没有这种帐户？你可以<a href="%{sign_up_path}">在本站注册一个</a>。
+  landing_strip_tag_html: 这里展示的是带有话题标签 <strong>#%{name}</strong> 的公开嘟文。如果你想与他们互动，你需要在任意一个 Mastodon 实例或与其兼容的网站上拥有一个帐户。还没有这种帐户？你可以<a href="%{sign_up_path}">在本站注册一个</a>。
   lists:
     errors:
       limit: 你所建立的列表数量已经达到上限
@@ -545,14 +544,14 @@ zh-CN:
           trillion: T
           unit: ''
   oauth_authentications:
-    link: 绑定
-    unlink: 解除绑定
     confirm: 你确定要解除绑定吗？
-    successfully_unlinked: 解除绑定成功
-    successfully_linked: 绑定成功
-    successfully_synchronization: 同步成功
     failed_linking: 绑定失败
     initial_password_usage_note_html: 更改关联的 pixiv 帐户前请先%{link}。
+    link: 绑定
+    successfully_linked: 绑定成功
+    successfully_synchronization: 同步成功
+    successfully_unlinked: 解除绑定成功
+    unlink: 解除绑定
   pagination:
     next: 下一页
     prev: 上一页

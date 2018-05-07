@@ -11,6 +11,7 @@ export default class StatusList extends ImmutablePureComponent {
   static propTypes = {
     scrollKey: PropTypes.string.isRequired,
     statusIds: ImmutablePropTypes.list.isRequired,
+    featuredStatusIds: ImmutablePropTypes.list,
     onLoadMore: PropTypes.func,
     onScrollToTop: PropTypes.func,
     onScroll: PropTypes.func,
@@ -22,14 +23,12 @@ export default class StatusList extends ImmutablePureComponent {
     prepend: PropTypes.node,
     emptyMessage: PropTypes.node,
     schedule: PropTypes.bool,
-    displayPinned: PropTypes.bool,
     pawooMediaScale: PropTypes.string,
     pawooWideMedia: PropTypes.bool,
   };
 
   static defaultProps = {
     trackScroll: true,
-    displayPinned: false,
   };
 
   handleMoveUp = id => {
@@ -55,7 +54,7 @@ export default class StatusList extends ImmutablePureComponent {
   }
 
   render () {
-    const { statusIds, schedule, displayPinned, pawooMediaScale, pawooWideMedia, ...other } = this.props;
+    const { statusIds, featuredStatusIds, schedule, pawooMediaScale, pawooWideMedia, ...other } = this.props;
     const { isLoading, isPartial } = other;
 
     if (isPartial) {
@@ -73,20 +72,31 @@ export default class StatusList extends ImmutablePureComponent {
       );
     }
 
-    const scrollableContent = (isLoading || statusIds.size > 0) ? (
-      statusIds.map((statusId) => (
+    let scrollableContent = (isLoading || statusIds.size > 0) ? (
+      statusIds.map(statusId => (
         <StatusContainer
           key={statusId}
           id={statusId}
           onMoveUp={this.handleMoveUp}
           onMoveDown={this.handleMoveDown}
           schedule={schedule}
-          displayPinned={displayPinned}
           pawooMediaScale={pawooMediaScale}
           pawooWideMedia={pawooWideMedia}
         />
       ))
     ) : null;
+
+    if (scrollableContent && featuredStatusIds) {
+      scrollableContent = featuredStatusIds.map(statusId => (
+        <StatusContainer
+          key={`f-${statusId}`}
+          id={statusId}
+          featured
+          onMoveUp={this.handleMoveUp}
+          onMoveDown={this.handleMoveDown}
+        />
+      )).concat(scrollableContent);
+    }
 
     return (
       <ScrollableList {...other} ref={this.setRef}>

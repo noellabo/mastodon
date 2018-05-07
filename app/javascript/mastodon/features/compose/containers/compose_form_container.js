@@ -21,7 +21,7 @@ const pawooGaCategory = 'Compose';
 
 const mapStateToProps = state => ({
   text: state.getIn(['compose', 'text']),
-  published: state.getIn(['compose', 'pawoo', 'published']),
+  published: state.getIn(['compose', 'pawooPublished']),
   suggestion_token: state.getIn(['compose', 'suggestion_token']),
   suggestions: state.getIn(['compose', 'suggestions']),
   spoiler: state.getIn(['compose', 'spoiler']),
@@ -32,6 +32,7 @@ const mapStateToProps = state => ({
   is_submitting: state.getIn(['compose', 'is_submitting']),
   is_uploading: state.getIn(['compose', 'is_uploading']),
   showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
+  anyMedia: state.getIn(['compose', 'media_attachments']).size > 0,
 });
 
 const mapDispatchToProps = (dispatch) => ({

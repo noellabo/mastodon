@@ -6,7 +6,7 @@ import IconButton from './icon_button';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import { isIOS } from '../is_mobile';
 import classNames from 'classnames';
-import { autoPlayGif } from '../initial_state';
+import { autoPlayGif, displaySensitiveMedia } from '../initial_state';
 
 const messages = defineMessages({
   toggle_visible: { id: 'media_gallery.toggle_visible', defaultMessage: 'Toggle visibility' },
@@ -117,15 +117,20 @@ class Item extends React.PureComponent {
     let thumbnail = '';
 
     if (attachment.get('type') === 'image') {
-      const previewUrl = attachment.get('preview_url');
+      const previewUrl   = attachment.get('preview_url');
       const previewWidth = attachment.getIn(['meta', 'small', 'width']);
 
-      const originalUrl = attachment.get('url');
-      const originalWidth = attachment.getIn(['meta', 'original', 'width']);
+      const originalUrl    = attachment.get('url');
+      const originalWidth  = attachment.getIn(['meta', 'original', 'width']);
 
       const hasSize = typeof originalWidth === 'number' && typeof previewWidth === 'number';
 
       const srcSet = hasSize ? `${originalUrl} ${originalWidth}w, ${previewUrl} ${previewWidth}w` : null;
+
+      const focusX = attachment.getIn(['meta', 'focus', 'x']) || 0;
+      const focusY = attachment.getIn(['meta', 'focus', 'y']) || 0.6;
+      const x      = ((focusX /  2) + .5) * 100;
+      const y      = ((focusY / -2) + .5) * 100;
 
       thumbnail = (
         <a
@@ -134,7 +139,13 @@ class Item extends React.PureComponent {
           onClick={this.handleClick}
           target='_blank'
         >
-          <img src={previewUrl} srcSet={srcSet} alt={attachment.get('description')} title={attachment.get('description')} />
+          <img
+            src={previewUrl}
+            srcSet={srcSet}
+            alt={attachment.get('description')}
+            title={attachment.get('description')}
+            style={{ objectPosition: `${x}% ${y}%` }}
+          />
         </a>
       );
     } else if (attachment.get('type') === 'gifv') {
@@ -189,7 +200,7 @@ export default class MediaGallery extends React.PureComponent {
   };
 
   state = {
-    visible: !this.props.sensitive,
+    visible: !this.props.sensitive || displaySensitiveMedia,
   };
 
   componentWillReceiveProps (nextProps) {
@@ -207,7 +218,7 @@ export default class MediaGallery extends React.PureComponent {
   }
 
   handleRef = (node) => {
-    if (node && this.isStandaloneEligible()) {
+    if (node /*&& this.isStandaloneEligible()*/) {
       // offsetWidth triggers a layout, so only calculate when we need to
       this.setState({
         width: node.offsetWidth,
@@ -230,12 +241,8 @@ export default class MediaGallery extends React.PureComponent {
     const style = {};
 
     if (this.isStandaloneEligible()) {
-      if (!visible && width) {
-        // only need to forcibly set the height in "sensitive" mode
+      if (width) {
         style.height = width / this.props.media.getIn([0, 'meta', 'small', 'aspect']);
-      } else {
-        // layout automatically, using image's natural aspect ratio
-        style.height = '';
       }
     } else if (media.size === 1) {
       // crop the image
@@ -276,7 +283,7 @@ export default class MediaGallery extends React.PureComponent {
     }
 
     return (
-      <div className='media-gallery' style={style}>
+      <div className='media-gallery' style={style} ref={this.handleRef}>
         {pawooOnClick && visible && <div aria-hidden='true' className='pawoo-extension-media-gallery__background' onClick={pawooOnClick} />}
         <div className={classNames('spoiler-button', { 'spoiler-button--visible': visible })}>
           <IconButton title={intl.formatMessage(messages.toggle_visible)} icon={visible ? 'eye' : 'eye-slash'} overlay onClick={this.handleOpen} />

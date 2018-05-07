@@ -28,9 +28,9 @@ class Api::V1::Accounts::StatusesController < Api::BaseController
 
   def account_statuses
     default_statuses.tap do |statuses|
-      statuses.merge!(only_media_scope) if params[:only_media]
-      statuses.merge!(pinned_scope) if params[:pinned]
-      statuses.merge!(no_replies_scope) if params[:exclude_replies]
+      statuses.merge!(only_media_scope) if truthy_param?(:only_media)
+      statuses.merge!(pinned_scope) if truthy_param?(:pinned)
+      statuses.merge!(no_replies_scope) if truthy_param?(:exclude_replies)
     end
   end
 
@@ -52,8 +52,9 @@ class Api::V1::Accounts::StatusesController < Api::BaseController
 
   def account_media_status_ids
     # `SELECT DISTINCT id, updated_at` is too slow, so pluck ids at first, and then select id, updated_at with ids.
-    # NOTE: Nested Loop Joinになるように、statuses.account_idで絞り込まないようにする
-    # statuses.account_idで絞り込むとindex_statuses_20180106が使用され、Merge Joinになる
+    # Also, Avoid getting slow by not narrowing down by `statuses.account_id`.
+    # When narrowing down by `statuses.account_id`, `index_statuses_20180106` will be used
+    # and the table will be joined by `Merge Semi Join`, so the query will be slow.
     Status.joins(:media_attachments).merge(@account.media_attachments).permitted_for(@account, current_account)
           .paginate_by_max_id(limit_param(DEFAULT_STATUSES_LIMIT), params[:max_id], params[:since_id])
           .reorder(id: :desc).distinct(:id).pluck(:id)
