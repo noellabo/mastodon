@@ -136,7 +136,7 @@ jobs:
       - run:
           name: Wait for assets precompilation
           command: |
-            for i in $(seq 240); do
+            for i in $(seq 512); do
               if [ -f tmp/circleci/assets.success ]; then
                 exit 0
               elif [ -f tmp/circleci/assets.failure ]; then
