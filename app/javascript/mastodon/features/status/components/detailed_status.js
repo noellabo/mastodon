@@ -25,6 +25,8 @@ export default class DetailedStatus extends ImmutablePureComponent {
     onOpenMedia: PropTypes.func.isRequired,
     onOpenVideo: PropTypes.func.isRequired,
     onToggleHidden: PropTypes.func.isRequired,
+    pawooMediaScale: PropTypes.string,
+    pawooWideMedia: PropTypes.bool,
   };
 
   handleAccountClick = (e) => {
@@ -88,7 +90,8 @@ export default class DetailedStatus extends ImmutablePureComponent {
             sensitive={status.get('sensitive')}
             media={attachments}
             onOpenMedia={this.props.onOpenMedia}
-            pawooScale='50vh'
+            pawooScale={this.props.pawooMediaScale}
+            pawooWide={this.props.pawooWideMedia}
           />
         );
       }

@@ -57,6 +57,9 @@ const makeMapStateToProps = () => {
     status: getStatus(state, props.params.statusId),
     ancestorsIds: state.getIn(['contexts', 'ancestors', props.params.statusId]),
     descendantsIds: state.getIn(['contexts', 'descendants', props.params.statusId]),
+    pawooMediaScale: state.getIn(['pawoo', 'column_media', 'scale']),
+    pawooWideMedia: typeof props.pawooWideMedia === 'boolean' ?
+      props.pawooWideMedia : state.getIn(['pawoo', 'column_media', 'wide']),
   });
 
   return mapStateToProps;
@@ -78,6 +81,8 @@ export default class Status extends ImmutablePureComponent {
     ancestorsIds: ImmutablePropTypes.list,
     descendantsIds: ImmutablePropTypes.list,
     intl: PropTypes.object.isRequired,
+    pawooMediaScale: PropTypes.string,
+    pawooWideMedia: PropTypes.bool,
   };
 
   state = {
@@ -372,6 +377,8 @@ export default class Status extends ImmutablePureComponent {
                   onOpenVideo={this.handleOpenVideo}
                   onOpenMedia={this.handleOpenMedia}
                   onToggleHidden={this.handleToggleHidden}
+                  pawooMediaScale={this.props.pawooMediaScale}
+                  pawooWideMedia={this.props.pawooWideMedia}
                 />
 
                 <ActionBar
