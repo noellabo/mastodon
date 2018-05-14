@@ -13,10 +13,6 @@ import Motion from '../ui/util/optional_motion';
 import spring from 'react-motion/lib/spring';
 import SearchResultsContainer from './containers/search_results_container';
 import { changeComposing } from '../../actions/compose';
-import {
-  rollbackLayout as pawooRollbackLayout,
-  upgradeLayout as pawooUpgradeLayout,
-} from '../../../pawoo/actions/layout';
 import { setPage as pawooSetPage } from '../../../pawoo/actions/page';
 import Announcements from '../../../pawoo/components/announcements';
 import PawooWebTagLink from '../../../pawoo/components/web_tag_link';
@@ -73,14 +69,6 @@ export default class Compose extends React.PureComponent {
     this.props.dispatch(pawooSetPage('DEFAULT'));
   }
 
-  pawooHandleRollBack = () => {
-    this.props.dispatch(pawooRollbackLayout());
-  }
-
-  pawooHandleUpgrade = () => {
-    this.props.dispatch(pawooUpgradeLayout());
-  }
-
   render () {
     const { multiColumn, showSearch, intl } = this.props;
 
@@ -124,15 +112,6 @@ export default class Compose extends React.PureComponent {
                   <TrendTagsContainer Tag={PawooWebTagLink} />
                 </div>
               </React.Fragment>
-            )}
-            {multiColumn && !this.props.pawooMultiColumn && (
-              <div className='landing-strip pawoo-extension-landing-strip--embedded'>
-                <p>
-                  Pawooが新しいレイアウトになりました！もちろん、元のレイアウトに戻したり、
-                  <a href='https://pawoo.pixiv.help/hc/ja/articles/115002872273-%E3%82%BF%E3%82%B0%E3%81%AE%E3%83%94%E3%83%B3%E7%95%99%E3%82%81%E3%81%AF%E3%81%A9%E3%81%93%E3%81%A7%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B%E3%81%AE%E3%81%A7%E3%81%99%E3%81%8B-'>ピン留めして自分好みに変えることもできます</a>。
-                </p>
-                <button className='button' onClick={this.pawooHandleRollBack}>元に戻すにはこちら</button>
-              </div>
             )}
 
             {multiColumn && (
