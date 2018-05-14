@@ -7,7 +7,7 @@ export function refreshTrendTags() {
     axios.get('/api/v1/trend_tags?limit=7')
       .then(response => {
         dispatch(refreshTrendTagsSuccess(response.data));
-      });
+      }).catch(console.warn);
   };
 }
 

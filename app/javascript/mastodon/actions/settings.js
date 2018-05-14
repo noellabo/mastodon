@@ -1,6 +1,7 @@
 import { resizeColumnMedia as pawooResizeColumnMedia } from '../../pawoo/actions/column_media';
 import api from '../api';
 import { debounce } from 'lodash';
+import { showAlertForError } from './alerts';
 
 export const SETTING_CHANGE = 'SETTING_CHANGE';
 export const SETTING_SAVE   = 'SETTING_SAVE';
@@ -25,7 +26,9 @@ const debouncedSave = debounce((dispatch, getState) => {
 
   const data = getState().get('settings').filter((_, path) => path !== 'saved').toJS();
 
-  api().put('/api/web/settings', { data }).then(() => dispatch({ type: SETTING_SAVE }));
+  api().put('/api/web/settings', { data })
+    .then(() => dispatch({ type: SETTING_SAVE }))
+    .catch(error => dispatch(showAlertForError(error)));
 }, 5000, { trailing: true });
 
 export function saveSettings() {

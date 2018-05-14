@@ -3,13 +3,13 @@
 #
 # Table name: notifications
 #
-#  id              :integer          not null, primary key
-#  activity_id     :integer
+#  id              :bigint(8)        not null, primary key
+#  activity_id     :bigint(8)
 #  activity_type   :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  account_id      :integer
-#  from_account_id :integer
+#  account_id      :bigint(8)
+#  from_account_id :bigint(8)
 #
 
 class Notification < ApplicationRecord
@@ -81,8 +81,6 @@ class Notification < ApplicationRecord
         item.target_status.account = accounts[item.target_status.account_id] if item.target_status
       end
     end
-
-    private
 
     def activity_types_from_types(types)
       types.map { |type| TYPE_CLASS_MAP[type.to_sym] }.compact

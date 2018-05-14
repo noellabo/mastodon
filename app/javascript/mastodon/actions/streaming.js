@@ -2,11 +2,10 @@ import { connectStream } from '../stream';
 import {
   updateTimeline,
   deleteFromTimelines,
-  refreshHomeTimeline,
-  connectTimeline,
+  expandHomeTimeline,
   disconnectTimeline,
 } from './timelines';
-import { updateNotifications, refreshNotifications } from './notifications';
+import { updateNotifications, expandNotifications } from './notifications';
 import { getLocale } from '../locales';
 
 const { messages } = getLocale();
@@ -16,10 +15,6 @@ export function connectTimelineStream (timelineId, path, { pawooShouldUpdateTime
   return connectStream (path, pollingRefresh, (dispatch, getState) => {
     const locale = getState().getIn(['meta', 'locale']);
     return {
-      onConnect() {
-        dispatch(connectTimeline(timelineId));
-      },
-
       onDisconnect() {
         dispatch(disconnectTimeline(timelineId));
       },
@@ -45,8 +40,8 @@ export function connectTimelineStream (timelineId, path, { pawooShouldUpdateTime
 }
 
 function refreshHomeTimelineAndNotification (dispatch) {
-  dispatch(refreshHomeTimeline());
-  dispatch(refreshNotifications());
+  dispatch(expandHomeTimeline());
+  dispatch(expandNotifications());
 }
 
 function pawooHasMediaAttachment (status) {
@@ -58,4 +53,5 @@ export const connectCommunityStream = () => connectTimelineStream('community', '
 export const connectMediaStream = () => connectTimelineStream('media', 'public:local', { pawooShouldUpdateTimeline: pawooHasMediaAttachment });
 export const connectPublicStream = () => connectTimelineStream('public', 'public');
 export const connectHashtagStream = (tag) => connectTimelineStream(`hashtag:${tag}`, `hashtag&tag=${tag}`);
+export const connectDirectStream = () => connectTimelineStream('direct', 'direct');
 export const connectListStream = (id) => connectTimelineStream(`list:${id}`, `list&list=${id}`);

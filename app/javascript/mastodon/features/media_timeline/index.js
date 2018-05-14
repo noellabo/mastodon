@@ -5,10 +5,7 @@ import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
 import Column from '../../components/column';
 import ColumnHeader from '../../components/column_header';
-import {
-  refreshMediaTimeline,
-  expandMediaTimeline,
-} from '../../../pawoo/actions/extensions/timelines';
+import { expandMediaTimeline } from '../../../pawoo/actions/extensions/timelines';
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import ColumnSettingsContainer from './containers/column_settings_container';
@@ -57,7 +54,7 @@ class MediaTimeline extends React.PureComponent {
   componentDidMount () {
     const { dispatch } = this.props;
 
-    dispatch(refreshMediaTimeline());
+    dispatch(expandMediaTimeline());
     this.disconnect = dispatch(connectMediaStream());
   }
 

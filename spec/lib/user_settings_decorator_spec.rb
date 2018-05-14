@@ -70,6 +70,17 @@ describe UserSettingsDecorator do
       expect(user.settings['system_font_ui']).to eq false
     end
 
+    it 'decoerces setting values before applying' do
+      values = {
+        'setting_delete_modal' => 'false',
+        'setting_boost_modal' => 'true',
+      }
+
+      settings.update(values)
+      expect(user.settings['delete_modal']).to eq false
+      expect(user.settings['boost_modal']).to eq true
+    end
+
     it 'does not update unspecified key' do
       values = { 'setting_auto_play_gif' => '1' }
       settings.update(values)

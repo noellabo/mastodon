@@ -59,6 +59,12 @@ const initialState = ImmutableMap({
     }),
   }),
 
+  direct: ImmutableMap({
+    regex: ImmutableMap({
+      body: '',
+    }),
+  }),
+
   media: ImmutableMap({
     regex: ImmutableMap({
       body: '',

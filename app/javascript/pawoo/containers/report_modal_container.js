@@ -10,7 +10,7 @@ import {
   submitReport,
   changeReportType,
 } from '../actions/reports';
-import { refreshAccountTimeline } from '../../mastodon/actions/timelines';
+import { expandAccountTimeline } from '../../mastodon/actions/timelines';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { makeGetAccount } from '../../mastodon/selectors';
@@ -80,12 +80,12 @@ export default class ReportModal extends ImmutablePureComponent {
   }
 
   componentDidMount () {
-    this.props.dispatch(refreshAccountTimeline(this.props.account.get('id')));
+    this.props.dispatch(expandAccountTimeline(this.props.account.get('id')));
   }
 
   componentWillReceiveProps (nextProps) {
     if (this.props.account !== nextProps.account && nextProps.account) {
-      this.props.dispatch(refreshAccountTimeline(nextProps.account.get('id')));
+      this.props.dispatch(expandAccountTimeline(nextProps.account.get('id')));
     }
   }
 

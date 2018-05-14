@@ -33,10 +33,10 @@ class PostStatusService < BaseService
                                         media_attachments: media || [],
                                         thread: in_reply_to,
                                         created_at: published,
-                                        sensitive: options[:sensitive],
+                                        sensitive: (options[:sensitive].nil? ? account.user&.setting_default_sensitive : options[:sensitive]),
                                         spoiler_text: options[:spoiler_text] || '',
                                         visibility: options[:visibility] || account.user&.setting_default_privacy,
-                                        language: LanguageDetector.instance.detect(text, account),
+                                        language: language_from_option(options[:language]) || LanguageDetector.instance.detect(text, account),
                                         application: options[:application])
 
       attach_pixiv_cards(status)
@@ -88,6 +88,10 @@ class PostStatusService < BaseService
         image_url: image_url
       )
     end
+  end
+
+  def language_from_option(str)
+    ISO_639.find(str)&.alpha2
   end
 
   def process_mentions_service

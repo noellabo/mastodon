@@ -97,9 +97,15 @@ export default class ComposeForm extends ImmutablePureComponent {
       this.props.onChange(this.autosuggestTextarea.textarea.value);
     }
 
-    if (!this.props.scheduling || this.props.published !== null) {
-      this.props.onSubmit();
+    // Submit disabled:
+    const { is_submitting, is_uploading, anyMedia } = this.props;
+    const fulltext = [this.props.spoiler_text, countableText(this.props.text)].join('');
+
+    if (is_submitting || is_uploading || length(fulltext) > 500 || (fulltext.length !== 0 && fulltext.trim().length === 0 && !anyMedia) || (this.props.scheduling && this.props.published === null)) {
+      return;
     }
+
+    this.props.onSubmit();
   }
 
   onSuggestionsClearRequested = () => {

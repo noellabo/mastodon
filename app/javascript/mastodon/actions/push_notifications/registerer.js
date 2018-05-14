@@ -1,4 +1,5 @@
 import api from '../../api';
+import { decode as decodeBase64 } from '../../utils/base64';
 import { pushNotificationsSetting } from '../../settings';
 import { setBrowserSupport, setSubscription, clearSubscription } from './setter';
 import { me } from '../../initial_state';
@@ -10,13 +11,7 @@ const urlBase64ToUint8Array = (base64String) => {
     .replace(/\-/g, '+')
     .replace(/_/g, '/');
 
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
+  return decodeBase64(base64);
 };
 
 const getApplicationServerKey = () => document.querySelector('[name="applicationServerKey"]').getAttribute('content');
@@ -116,14 +111,11 @@ export function register () {
             pushNotificationsSetting.remove(me);
           }
 
-          try {
-            getRegistration()
-              .then(getPushSubscription)
-              .then(unsubscribe);
-          } catch (e) {
-
-          }
-        });
+          return getRegistration()
+            .then(getPushSubscription)
+            .then(unsubscribe);
+        })
+        .catch(console.warn);
     } else {
       console.warn('Your browser does not support Web Push Notifications.');
     }
@@ -143,6 +135,6 @@ export function saveSettings() {
       if (me) {
         pushNotificationsSetting.set(me, data);
       }
-    });
+    }).catch(console.warn);
   };
 }
