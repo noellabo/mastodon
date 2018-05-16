@@ -26,7 +26,7 @@ class PostStatusService < BaseService
 
     status = nil
     text   = options.delete(:spoiler_text) if text.blank? && options[:spoiler_text].present?
-    text   = '.' if text.blank? && !media.empty?
+    text   = '.' if text.blank? && media.present?
 
     ApplicationRecord.transaction do
       status = account.statuses.create!(text: text,

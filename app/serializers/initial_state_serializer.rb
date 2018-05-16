@@ -2,7 +2,9 @@
 
 class InitialStateSerializer < ActiveModel::Serializer
   attributes :meta, :compose, :accounts,
-             :media_attachments, :settings, :push_subscription, :pawoo
+             :media_attachments, :settings, :pawoo
+
+  has_one :push_subscription, serializer: REST::WebPushSubscriptionSerializer
 
   def meta
     store = {
