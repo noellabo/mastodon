@@ -18,6 +18,9 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
     end
 
     @report_target_groups = load_report_target_groups(target_statuses.to_a, target_accounts.to_a, state_param)
+    status_count = Pawoo::ReportTarget.where(state: state_param, target_type: 'Status').distinct(:target_id).select(:target_id).count
+    account_count = Pawoo::ReportTarget.where(state: state_param, target_type: 'Account').distinct(:target_id).select(:target_id).count
+    @report_target_count = status_count + account_count
   end
 
   def create
