@@ -27,8 +27,9 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
 
     report_target_groups_map = load_report_target_groups_map(target_statuses.to_a, target_accounts.to_a, state_param)
     @report_target_groups = report_targets_ids.map do |target_type, target_id|
-      report_target_groups_map[target_type][target_id]
+      report_target_groups_map.dig(target_type, target_id)
     end
+    @report_target_groups.compact!
   end
 
   def create
