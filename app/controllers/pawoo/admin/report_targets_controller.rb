@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Pawoo::Admin::ReportTargetsController < Admin::BaseController
-  REPORT_TARGETS_LIMIT = 20
+  REPORT_TARGETS_LIMIT = 50
 
   def index
     authorize Pawoo::ReportTarget, :index?
@@ -9,18 +9,15 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
     target_statuses = Set.new
     target_accounts = Set.new
 
-    # 多めに通報対象を取得
-    report_targets_ids = Pawoo::ReportTarget.where(state: state_param).order(id: :desc).limit(REPORT_TARGETS_LIMIT * 2).pluck(:target_type, :target_id)
-    report_targets_ids.each do |target_type, target_id|
+    # すべて取得して通報の多い順並べる
+    report_targets_ids = Pawoo::ReportTarget.where(state: state_param).group([:target_type, :target_id]).count.sort_by { |_, count| -count }.map(&:first)
+    @report_target_count = report_targets_ids.size
+
+    report_targets_ids.take(REPORT_TARGETS_LIMIT).each do |target_type, target_id|
       target_statuses.add(target_id) if target_type == 'Status'
       target_accounts.add(target_id) if target_type == 'Account'
-      break if target_statuses.size + target_accounts.size == REPORT_TARGETS_LIMIT
     end
-
     @report_target_groups = load_report_target_groups(target_statuses.to_a, target_accounts.to_a, state_param)
-    status_count = Pawoo::ReportTarget.where(state: state_param, target_type: 'Status').distinct(:target_id).select(:target_id).count
-    account_count = Pawoo::ReportTarget.where(state: state_param, target_type: 'Account').distinct(:target_id).select(:target_id).count
-    @report_target_count = status_count + account_count
   end
 
   def create
