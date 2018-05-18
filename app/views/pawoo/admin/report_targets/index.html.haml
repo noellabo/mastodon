@@ -19,3 +19,27 @@
   - if @report_target_groups.size > 0
     %hr/
     = submit_tag t('pawoo.admin.report_targets.submit'), data: { confirm: t('admin.reports.are_you_sure') }, class: 'button'
+
+%nav.pagination
+  - if @current_page != @first_page
+    %span.prev
+      = link_to url_for(page: @first_page, pending: params[:pending]) do
+        %i.fa.fa-chevron-left
+        %i.fa.fa-chevron-left
+        最初
+  - if @prev_page
+    %span.prev
+      = link_to url_for(page: @prev_page, pending: params[:pending]) do
+        %i.fa.fa-chevron-left
+        前
+  - if @next_page
+    %span.next
+      = link_to url_for(page: @next_page, pending: params[:pending]) do
+        次
+        %i.fa.fa-chevron-right
+  - if @current_page != @last_page
+    %span.next
+      = link_to url_for(page: @last_page, pending: params[:pending]) do
+        %i.fa.fa-chevron-right
+        %i.fa.fa-chevron-right
+        最後
