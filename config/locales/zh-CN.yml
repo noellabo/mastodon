@@ -400,6 +400,9 @@ zh-CN:
     oauth_registration: 完成注册
     or: 或者
     or_log_in_with: 或通过其他方式登录
+    providers:
+      cas: CAS
+      saml: SAML
     register: 注册
     register_elsewhere: 前往其他实例注册
     resend_confirmation: 重新发送确认邮件
@@ -584,7 +587,9 @@ zh-CN:
     successfully_unlinked: 解除绑定成功
     unlink: 解除绑定
   pagination:
+    newer: 更新
     next: 下一页
+    older: 更早
     prev: 上一页
     truncate: "…"
   pawoo:
@@ -643,12 +648,14 @@ zh-CN:
       blackberry: Blackberry
       chrome: Chrome
       edge: Microsoft Edge
+      electron: Electron
       firefox: Firefox
       generic: 未知浏览器
       ie: Internet Explorer
       micro_messenger: 微信
       nokia: Nokia S40 Ovi 浏览器
       opera: Opera
+      otter: Otter
       phantom_js: PhantomJS
       qq: QQ浏览器
       safari: Safari
