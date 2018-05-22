@@ -20,51 +20,75 @@ ExceptionNotification.configure do |config|
     OpenSSL::SSL::SSLError
   ].freeze
 
-  network_workers = %w[
-    LinkCrawlWorker
-    ProcessingWorker
-    ThreadResolveWorker
-    NotificationWorker
-    Import::RelationshipWorker
-  ].freeze
+  def handle_sidekiq(exception_name, sidekiq, network_exceptions)
+    worker_class = sidekiq.dig(:job, 'class')
 
-  ignore_workers = %w[
-  ].freeze
+    network_workers = %w[
+      LinkCrawlWorker
+      ProcessingWorker
+      ThreadResolveWorker
+      NotificationWorker
+      Import::RelationshipWorker
+    ].freeze
 
-  ignore_worker_errors = {
-    'ActivityPub::ProcessingWorker' => ['ActiveRecord::RecordInvalid'],
-    'LinkCrawlWorker' => ['ActiveRecord::RecordInvalid'],
-  }.freeze
+    ignore_workers = %w[
+    ].freeze
 
-  ignore_job_errors = {
-    'ActionMailer::DeliveryJob' => ['ActiveJob::DeserializationError']
-  }.freeze
+    ignore_worker_errors = {
+      'ActivityPub::ProcessingWorker' => ['ActiveRecord::RecordInvalid'],
+      'LinkCrawlWorker' => ['ActiveRecord::RecordInvalid'],
+    }.freeze
+
+    ignore_job_errors = {
+      'ActionMailer::DeliveryJob' => ['ActiveJob::DeserializationError']
+    }.freeze
+
+    return true if ignore_workers.include?(worker_class)
+    return true if ignore_worker_errors[worker_class]&.include?(exception_name)
+
+    # ActivityPub or Pubsubhubbub or 通信が頻繁に発生するWorkerではネットワーク系の例外を無視
+    if worker_class.start_with?('ActivityPub::') || worker_class.start_with?('Pubsubhubbub::') || network_workers.include?(worker_class)
+      return true if network_exceptions.include?(exception_name)
+    end
+
+    # ActiveJob
+    if worker_class == 'ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper'
+      return true if ignore_job_errors[sidekiq.dig(:job, 'wrapped')]&.include?(exception_name)
+    end
+
+    false
+  end
+
+  def handle_controller(exception_name, controller_class, network_exceptions)
+    ignore_controller_errors = {
+      'MediaProxyController' => ['ActiveRecord::RecordInvalid'],
+    }.freeze
+
+    return true if ignore_controller_errors[controller_class.name]&.include?(exception_name)
+
+    # SignatureVerificationがincludeされているコントローラではネットワーク系のエラーを無視
+    return true if controller_class.ancestors.include?(SignatureVerification) && network_exceptions.include?(exception_name)
+
+    false
+  end
 
   config.ignore_if do |exception, options|
     exception_name = exception.class.name
 
     # includes invalid characters
-    ignore_worker ||= exception_name == 'ActiveRecord::RecordInvalid' && exception.message.end_with?('includes invalid characters')
+    ignore_exception = exception_name == 'ActiveRecord::RecordInvalid' && exception.message.end_with?('includes invalid characters')
 
-    sidekiq = (options || {})&.dig(:data, :sidekiq)
-    if sidekiq
-      worker_class = sidekiq.dig(:job, 'class')
-
-      ignore_worker ||= ignore_workers.include?(worker_class)
-      ignore_worker ||= ignore_worker_errors[worker_class]&.include?(exception_name)
-
-      # ActivityPub or Pubsubhubbub or 通信が頻繁に発生するWorkerではネットワーク系の例外を無視
-      if worker_class.start_with?('ActivityPub::') || worker_class.start_with?('Pubsubhubbub::') || network_workers.include?(worker_class)
-        ignore_worker ||= network_exceptions.include?(exception_name)
-      end
-
-      # ActiveJob
-      if worker_class == 'ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper'
-        ignore_worker ||= ignore_job_errors[sidekiq.dig(:job, 'wrapped')]&.include?(exception_name)
-      end
+    unless ignore_exception
+      sidekiq = (options || {})&.dig(:data, :sidekiq)
+      ignore_exception = handle_sidekiq(exception_name, sidekiq, network_exceptions) if sidekiq
     end
 
-    !Rails.env.production? || ignore_worker
+    unless ignore_exception
+      controller_class = (options || {})&.dig(:env, 'action_controller.instance')&.class
+      ignore_exception = handle_controller(exception_name, controller_class, network_exceptions) if controller_class
+    end
+
+    !Rails.env.production? || ignore_exception
   end
 
   config.error_grouping = true
