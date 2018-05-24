@@ -7,6 +7,7 @@ zh-CN:
       其开源的设计使得任何人都可以搭建属于自己的实例，进而可以在各种各样的实例中注册一个帐户。
       此外，由于 Mastodon 可以跨实例进行通信，不同社群之间的交流也由此成为了可能。
     about_this: 关于本实例
+    administered_by: 本实例的管理员：
     closed_registrations: 这个实例目前没有开放注册。不过，你可以前往其他实例注册一个帐户，同样可以加入到这个网络中哦！
     contact: 联系方式
     contact_body_mastodon: 在 Pawoo 上联系我们
@@ -30,10 +31,10 @@ zh-CN:
       within_reach_title: 始终触手可及
     generic_description: "%{domain} 是这个庞大网络中的一台服务器"
     hosted_on: 一个在 %{domain} 上运行的 Mastodon 实例
-    learn_more: 详细了解
+    learn_more: 了解详情
     other_instances: 其他实例
     register: 注册
-    source_code: 源码
+    source_code: 源代码
     status_count_after: 条嘟文
     status_count_before: 他们共嘟出了
     user_count_after: 位用户
@@ -46,6 +47,7 @@ zh-CN:
     media: 媒体
     medium: "%{name} 的媒体内容"
     moved_html: "%{name} 已经迁移到 %{new_profile_link}："
+    network_hidden: 此信息不可用。
     nothing_here: 这里神马都没有！
     people_followed_by: "%{name} 关注的人"
     people_who_follow: 关注 %{name} 的人
@@ -55,6 +57,7 @@ zh-CN:
     reserved_username: 此用户名已被保留
     roles:
       admin: 管理员
+      bot: 机器人
       moderator: 监察员
     unfollow: 取消关注
   admin:
@@ -67,6 +70,13 @@ zh-CN:
       are_you_sure: 你确定吗？
       avatar: 头像
       by_domain: 域名
+      change_email:
+        changed_msg: 帐户电子邮件地址更改成功！
+        current_email: 当前的电子邮件地址
+        label: 更改电子邮件地址
+        new_email: 新的电子邮件地址
+        submit: 更改电子邮件地址
+        title: 为 %{username} 更改电子邮件地址
       confirm: 确认
       confirmed: 已确认
       confirming: 确认
@@ -78,7 +88,7 @@ zh-CN:
       domain: 域名
       edit: 编辑
       email: 电子邮件地址
-      email_status: 电子邮件状态
+      email_status: 电子邮件地址状态
       enable: 启用
       enabled: 已启用
       feed_url: 订阅 URL
@@ -121,7 +131,7 @@ zh-CN:
       resend_confirmation:
         already_confirmed: 该用户已被确认
         send: 重发确认邮件
-        success: 确认电子邮件成功发送！
+        success: 确认邮件发送成功！
       reset: 重置
       reset_password: 重置密码
       resubscribe: 重新订阅
@@ -261,24 +271,44 @@ zh-CN:
       linked: 已绑定
       not_linked: 未绑定
       unlink_forcibly: 强制解除绑定
+    report_notes:
+      created_msg: 举报记录建立成功！
+      destroyed_msg: 举报记录删除成功！
     reports:
+      account:
+        note: 条记录
+        report: 条举报
       action_taken_by: 操作执行者
       are_you_sure: 你确定吗？
+      assign_to_self: 接管
+      assigned: 已接管的监察员
       comment:
         none: 没有
+      created_at: 举报时间
       id: ID
       mark_as_resolved: 标记为“已处理”
+      mark_as_unresolved: 标记为“未处理”
+      notes:
+        create: 添加记录
+        create_and_resolve: 添加记录并标记为“已处理”
+        create_and_unresolve: 添加记录并重开
+        delete: 删除
+        placeholder: 描述已经执行的操作，或其他任何相关的跟进情况
+      reopen: 重开举报
       report: '举报 #%{id}'
       report_contents: 内容
       reported_account: 举报用户
       reported_by: 举报人
       resolved: 已处理
+      resolved_msg: 举报处理成功！
       silence_account: 隐藏用户
       status: 状态
       suspend_account: 封禁用户
       target: 被举报人
       title: 举报
+      unassign: 取消接管
       unresolved: 未处理
+      updated_at: 更新时间
       view: 查看
     scheduled_statuses:
       title: 定时发送
@@ -338,8 +368,8 @@ zh-CN:
       back_to_account: 返回帐户信息页
       batch:
         delete: 删除
-        nsfw_off: 取消 NSFW 标记
-        nsfw_on: 添加 NSFW 标记
+        nsfw_off: 标记为非敏感内容
+        nsfw_on: 标记为敏感内容
       failed_to_execute: 执行失败
       media:
         title: 媒体文件
@@ -361,6 +391,7 @@ zh-CN:
   admin_mailer:
     new_report:
       body: "%{reporter} 举报了用户 %{target}"
+      body_remote: 来自 %{domain} 的用户举报了用户 %{target}
       subject: 来自 %{instance} 的用户举报（#%{id}）
   application_mailer:
     notification_preferences: 更改电子邮件首选项
@@ -406,6 +437,7 @@ zh-CN:
     set_new_password: 设置新密码
     synchronize_email_address: 同步 pixiv 帐户中的电子邮件地址设置
   authorize_follow:
+    already_following: 你已经在关注此用户了
     error: 对不起，寻找这个跨站用户时出错
     follow: 关注
     follow_request: 关注请求已发送给：
@@ -457,7 +489,7 @@ zh-CN:
     archive_takeout:
       date: 日期
       download: 下载你的存档
-      hint_html: 你可以请求一份包含你的<strong>嘟文和已上传的媒体文件</strong>的存档。导出的数据为 ActivityPub 格式，因而可以通过相应的软件读取。每次可以请求存档的间隔至少为 7 天。
+      hint_html: 你可以请求一份帐户数据存档，其中包含你的<strong>嘟文和已上传的媒体文件</strong>。导出的数据为 ActivityPub 格式，因而可以被兼容的软件读取。每次允许请求存档的间隔至少为 7 天。
       in_progress: 正在准备你的存档……
       request: 请求你的存档
       size: 大小
@@ -609,20 +641,6 @@ zh-CN:
     other: 其他
     publishing: 发布
     web: 站内
-  push_notifications:
-    favourite:
-      title: "%{name} 收藏了你的嘟文"
-    follow:
-      title: "%{name} 关注了你"
-    group:
-      title: "%{count} 条新通知"
-    mention:
-      action_boost: 转嘟
-      action_expand: 显示更多
-      action_favourite: 收藏
-      title: "%{name} 提到了你"
-    reblog:
-      title: "%{name} 转嘟了你的嘟文"
   remote_follow:
     acct: 请输入你的“用户名@实例域名”
     missing_resource: 无法确定你的帐户的跳转 URL
@@ -675,7 +693,7 @@ zh-CN:
     title: 会话
   settings:
     authorized_apps: 已授权的应用
-    back: 回到 Mastodon
+    back: 返回 Mastodon
     delete: 删除帐户
     development: 开发
     edit_profile: 更改个人资料
@@ -695,7 +713,11 @@ zh-CN:
       description: 附加媒体：%{attached}
       image: "%{count} 张图片"
       video: "%{count} 个视频"
+    boosted_from_html: 转嘟自 %{acct_link}
     content_warning: 内容警告：%{warning}
+    disallowed_hashtags:
+      one: 包含了一个禁止的话题标签：%{tags}
+      other: 包含了这些禁止的话题标签：%{tags}
     open_in_web: 在站内打开
     over_character_limit: 超过了 %{max} 字的限制
     pin_errors:
@@ -722,6 +744,7 @@ zh-CN:
   themes:
     contrast: 高对比度
     default: Mastodon
+    mastodon-light: Mastodon（亮色主题）
   time:
     formats:
       default: "%Y年%-m月%d日 %H:%M"
@@ -767,5 +790,6 @@ zh-CN:
   users:
     invalid_email: 输入的电子邮件地址无效
     invalid_otp_token: 输入的双重认证代码无效
+    otp_lost_help_html: 如果你不慎丢失了所有的代码，请联系 %{email} 寻求帮助
     seamless_external_login: 因为你是通过外部服务登录的，所以密码和电子邮件地址设置都不可用。
     signed_in_as: 当前登录的帐户：

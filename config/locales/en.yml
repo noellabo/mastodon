@@ -43,6 +43,7 @@ en:
     media: Media
     medium: "%{name}'s Media"
     moved_html: "%{name} has moved to %{new_profile_link}:"
+    network_hidden: This information is not available
     nothing_here: There is nothing here!
     people_followed_by: People whom %{name} follows
     people_who_follow: People who follow %{name}
@@ -290,7 +291,7 @@ en:
         create_and_resolve: Resolve with note
         create_and_unresolve: Reopen with note
         delete: Delete
-        placeholder: Describe what actions have been taken, or any other updates to this report…
+        placeholder: Describe what actions have been taken, or any other related updates...
       reopen: Reopen report
       report: 'Report #%{id}'
       report_contents: Contents
@@ -572,7 +573,7 @@ en:
       subject:
         one: "1 new notification since your last visit \U0001F418"
         other: "%{count} new notifications since your last visit \U0001F418"
-      title: In your absence…
+      title: In your absence...
     favourite:
       body: 'Your status was favourited by %{name}:'
       subject: "%{name} favourited your status"
@@ -647,20 +648,6 @@ en:
     other: Other
     publishing: Publishing
     web: Web
-  push_notifications:
-    favourite:
-      title: "%{name} favourited your status"
-    follow:
-      title: "%{name} is now following you"
-    group:
-      title: "%{count} notifications"
-    mention:
-      action_boost: Boost
-      action_expand: Show more
-      action_favourite: Favourite
-      title: "%{name} mentioned you"
-    reblog:
-      title: "%{name} boosted your status"
   remote_follow:
     acct: Enter your username@domain you want to follow from
     missing_resource: Could not find the required redirect URL for your account
@@ -845,6 +832,7 @@ en:
   themes:
     contrast: High contrast
     default: Mastodon
+    mastodon-light: Mastodon (light)
   time:
     formats:
       default: "%b %d, %Y, %H:%M"

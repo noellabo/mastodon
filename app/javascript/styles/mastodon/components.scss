@@ -1989,6 +1989,7 @@ a.account__display-name {
   padding: 15px;
   margin: 0;
   z-index: 3;
+  outline: 0;
 
   &:hover {
     text-decoration: underline;
@@ -3187,6 +3188,7 @@ a.status-card {
   &.active {
     background: $ui-highlight-color;
     color: $primary-text-color;
+    outline: 0;
 
     .time-limit-dropdown__option__content,
     .privacy-dropdown__option__content {
@@ -4741,6 +4743,8 @@ a.status-card {
   }
 }
 
+.community-timeline__section-headline,
+.public-timeline__section-headline,
 .account__section-headline {
   background: darken($ui-base-color, 4%);
   border-bottom: 1px solid lighten($ui-base-color, 8%);

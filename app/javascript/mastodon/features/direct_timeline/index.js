@@ -91,7 +91,6 @@ export default class DirectTimeline extends React.PureComponent {
         </ColumnHeader>
 
         <StatusListContainer
-          trackScroll={!pinned}
           scrollKey={`direct_timeline-${columnId}`}
           timelineId='direct'
           onLoadMore={this.handleLoadMore}
