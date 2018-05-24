@@ -4,12 +4,12 @@
 # Table name: notifications
 #
 #  id              :bigint(8)        not null, primary key
-#  activity_id     :bigint(8)
-#  activity_type   :string
+#  activity_id     :bigint(8)        not null
+#  activity_type   :string           not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  account_id      :bigint(8)
-#  from_account_id :bigint(8)
+#  account_id      :bigint(8)        not null
+#  from_account_id :bigint(8)        not null
 #
 
 class Notification < ApplicationRecord

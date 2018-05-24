@@ -10,13 +10,6 @@ const pawooOldLayout = fromJS([
   { id: 'NOTIFICATIONS', uuid: uuid(), params: {} },
 ]);
 
-export function upgradeLayout() {
-  return dispatch => {
-    sessionStorage.removeItem('pawoo:columns');
-    dispatch(changeSetting(['pawoo', 'multiColumn'], false));
-  };
-}
-
 export function changeLayoutAutomatically() {
   return (dispatch, getState) => {
     const columns = getState().getIn(['settings', 'columns']);
@@ -27,30 +20,11 @@ export function changeLayoutAutomatically() {
             columns.every((column, index) => column.get('id') === pawooOldLayout.getIn([index, 'id']))) ||
           (initialState.pawoo.last_settings_updated < 1524043770 &&
             columns.count() === 1)) {
-        try {
-          sessionStorage.setItem('pawoo:columns', JSON.stringify(getState().getIn(['settings', 'columns']).toJS()));
-        } catch (e) {
-          // [webkit-dev] DOM Storage and private browsing
-          // https://lists.webkit.org/pipermail/webkit-dev/2009-May/007788.html
-        }
-
         dispatch(changeSetting(['columns'], defaultColumns));
       } else if (initialState.pawoo.last_settings_updated > 1522290629 &&
                  initialState.pawoo.last_settings_updated < 1524043770) {
         dispatch(changeSetting(['pawoo', 'multiColumn'], true));
       }
     }
-  };
-}
-
-export function rollbackLayout() {
-  return dispatch => {
-    const item = sessionStorage.getItem('pawoo:columns');
-
-    if (item !== null) {
-      dispatch(changeSetting(['columns'], fromJS(JSON.parse(item))));
-    }
-
-    dispatch(changeSetting(['pawoo', 'multiColumn'], true));
   };
 }

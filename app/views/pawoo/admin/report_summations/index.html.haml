@@ -25,12 +25,11 @@
 
 
 %nav.pagination
-  .prev
+  %span.prev
     = link_to url_for(date: @start.prev_month.to_date) do
       %i.fa.fa-chevron-left
       前月
-  .next
+  %span.next
     = link_to url_for(date: @start.next_month.to_date) do
       翌月
       %i.fa.fa-chevron-right
-

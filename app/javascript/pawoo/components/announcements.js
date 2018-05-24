@@ -1,12 +1,10 @@
 import React from 'react';
 import Immutable from 'immutable';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { defineMessages, injectIntl } from 'react-intl';
 import IconButton from '../../mastodon/components/icon_button';
 import PawooGA from '../actions/ga';
-import { upgradeLayout } from '../actions/layout';
 
 import icon from '../images/announcement_icon.png';
 
@@ -15,10 +13,6 @@ const storageKey = 'announcements_dismissed';
 
 const messages = defineMessages({
   dismiss: { id: 'pawoo.announcements.dismiss', defaultMessage: 'Dismiss' },
-});
-
-const mapStateToProps = state => ({
-  multiColumn: state.getIn(['settings', 'pawoo', 'multiColumn']),
 });
 
 // NOTE: id: 20 まで使用した
@@ -80,13 +74,10 @@ const announcements = [
 ];
 
 @injectIntl
-@connect(mapStateToProps)
 class Announcements extends React.PureComponent {
 
   static propTypes = {
     intl: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    multiColumn: PropTypes.bool.isRequired,
   };
 
   constructor (props, context) {
@@ -119,29 +110,12 @@ class Announcements extends React.PureComponent {
     }
   }
 
-  handleUpgradeLayout = event => {
-    this.props.dispatch(upgradeLayout());
-    event.preventDefault();
-  }
-
   render () {
-    const { multiColumn, intl } = this.props;
-    const announcements = multiColumn ? this.announcements.unshift(Immutable.fromJS({
-      id: 18,
-      icon,
-      body: 'Pawooの新しいレイアウトができました！',
-      link: [
-        {
-          action: this.handleUpgradeLayout,
-          body: '新しいレイアウトを試す',
-          href: '',
-        },
-      ],
-    })) : this.announcements;
+    const { intl } = this.props;
 
     return (
       <ul className='announcements'>
-        {announcements.map(announcement => this.state.dismissed.indexOf(announcement.get('id')) === -1 && (
+        {this.announcements.map(announcement => this.state.dismissed.indexOf(announcement.get('id')) === -1 && (
           <li key={announcement.get('id')}>
             <div className='announcements__icon'>
               <img src={announcement.get('icon')} alt='' />

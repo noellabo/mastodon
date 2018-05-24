@@ -62,6 +62,8 @@ zh-CN:
       signed_up_but_unconfirmed: 一封带有确认链接的邮件已经发送至你的邮箱，请点击邮件中的链接以激活你的帐户。如果没有，请检查你的垃圾邮箱。
       update_needs_confirmation: 信息更新成功，但我们需要验证你的新电子邮件地址，请点击邮件中的链接以确认。如果没有，请检查你的垃圾邮箱。
       updated: 帐户资料更新成功。
+      user:
+        send_paranoid_instructions: 密码重设邮件已发送
     sessions:
       already_signed_out: 已成功登出。
       signed_in: 登录成功。

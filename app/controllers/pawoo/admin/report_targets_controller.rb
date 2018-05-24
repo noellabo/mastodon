@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Pawoo::Admin::ReportTargetsController < Admin::BaseController
-  REPORT_TARGETS_LIMIT = 20
+  REPORT_TARGETS_LIMIT = 30
 
   def index
     authorize Pawoo::ReportTarget, :index?
@@ -9,15 +9,27 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
     target_statuses = Set.new
     target_accounts = Set.new
 
-    # 多めに通報対象を取得
-    report_targets_ids = Pawoo::ReportTarget.where(state: state_param).order(id: :desc).limit(REPORT_TARGETS_LIMIT * 2).pluck(:target_type, :target_id)
+    # すべて取得して通報の多い順並べる
+    report_targets_ids = Pawoo::ReportTarget.where(state: state_param).group([:target_type, :target_id]).count.sort_by { |_, count| -count }.map(&:first)
+    @report_target_count = report_targets_ids.size
+
+    @current_page = params[:page].to_i < 1 ? 1 : params[:page].to_i
+    @first_page = 1
+    @last_page = (@report_target_count.to_f / REPORT_TARGETS_LIMIT).ceil
+    @prev_page = @current_page > 1 ? @current_page - 1 : nil
+    @next_page = @current_page * REPORT_TARGETS_LIMIT < @report_target_count ? @current_page + 1 : nil
+
+    report_targets_ids = report_targets_ids.drop((@current_page - 1) * REPORT_TARGETS_LIMIT).take(REPORT_TARGETS_LIMIT)
     report_targets_ids.each do |target_type, target_id|
       target_statuses.add(target_id) if target_type == 'Status'
       target_accounts.add(target_id) if target_type == 'Account'
-      break if target_statuses.size + target_accounts.size == REPORT_TARGETS_LIMIT
     end
 
-    @report_target_groups = load_report_target_groups(target_statuses.to_a, target_accounts.to_a, state_param)
+    report_target_groups_map = load_report_target_groups_map(target_statuses.to_a, target_accounts.to_a, state_param)
+    @report_target_groups = report_targets_ids.map do |target_type, target_id|
+      report_target_groups_map.dig(target_type, target_id)
+    end
+    @report_target_groups.compact!
   end
 
   def create
@@ -40,19 +52,19 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
     @state_param ||= params[:pending] == '1' ? :pending : :unresolved
   end
 
-  def load_report_target_groups(target_statuses, target_accounts, state)
-    report_target_groups = []
+  def load_report_target_groups_map(target_statuses, target_accounts, state)
+    report_target_groups_map = { 'Account' => {}, 'Status' => {} }
 
     report_targets_for_status_of = Pawoo::ReportTarget.where(state: state, target_type: 'Status', target_id: target_statuses).preload(:report).group_by(&:target_id)
-    report_target_groups += Status.where(id: target_statuses).preload(:mentions, :media_attachments, :pixiv_cards, account: :oauth_authentications).map do |status|
-      Pawoo::ReportTargetGroup.new(status: status, account: status.account, report_targets: report_targets_for_status_of[status.id])
+    Status.where(id: target_statuses).preload(:mentions, :media_attachments, :pixiv_cards, account: :oauth_authentications).map do |status|
+      report_target_groups_map['Status'][status.id] = Pawoo::ReportTargetGroup.new(status: status, account: status.account, report_targets: report_targets_for_status_of[status.id])
     end
 
     report_targets_for_account_of = Pawoo::ReportTarget.where(state: state, target_type: 'Account', target_id: target_accounts).preload(:report).group_by(&:target_id)
-    report_target_groups += Account.where(id: target_accounts).preload(:oauth_authentications).map do |account|
-      Pawoo::ReportTargetGroup.new(account: account, report_targets: report_targets_for_account_of[account.id])
+    Account.where(id: target_accounts).preload(:oauth_authentications).map do |account|
+      report_target_groups_map['Account'][account.id] = Pawoo::ReportTargetGroup.new(account: account, report_targets: report_targets_for_account_of[account.id])
     end
 
-    report_target_groups
+    report_target_groups_map
   end
 end
