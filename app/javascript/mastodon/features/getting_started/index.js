@@ -129,7 +129,6 @@ export default class GettingStarted extends ImmutablePureComponent {
     }
 
     navItems.push(
-      <ColumnLink key='4' icon='star' text={intl.formatMessage(messages.favourites)} to='/favourites' />,
       <ColumnLink key='suggested_accounts' icon='user-plus' text={intl.formatMessage(messages.suggested_accounts)} to='/suggested_accounts' />,
       <ColumnLink key='5' icon='star' text={intl.formatMessage(messages.favourites)} to='/favourites' />,
       <ColumnLink key='6' icon='bars' text={intl.formatMessage(messages.lists)} to='/lists' />

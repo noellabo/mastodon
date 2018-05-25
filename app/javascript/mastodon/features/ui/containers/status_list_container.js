@@ -7,7 +7,8 @@ import { debounce } from 'lodash';
 import { me } from '../../../initial_state';
 
 const makeGetStatusIds = () => createSelector([
-  (state, { type }) => state.getIn(['settings', type], ImmutableMap()),
+  // FIXME: type === 'community:media' ? 'media' : type を直す
+  (state, { type }) => state.getIn(['settings', type === 'community:media' ? 'media' : type], ImmutableMap()),
   (state, { type }) => state.getIn(['timelines', type, 'items'], ImmutableList()),
   (state)           => state.get('statuses'),
 ], (columnSettings, statusIds, statuses) => {

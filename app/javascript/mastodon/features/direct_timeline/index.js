@@ -9,6 +9,7 @@ import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import ColumnSettingsContainer from './containers/column_settings_container';
 import { connectDirectStream } from '../../actions/streaming';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 const messages = defineMessages({
   title: { id: 'column.direct', defaultMessage: 'Direct messages' },
@@ -28,6 +29,7 @@ export default class DirectTimeline extends React.PureComponent {
     intl: PropTypes.object.isRequired,
     hasUnread: PropTypes.bool,
     multiColumn: PropTypes.bool,
+    pawoo: ImmutablePropTypes.map.isRequired,
   };
 
   handlePin = () => {
@@ -72,7 +74,7 @@ export default class DirectTimeline extends React.PureComponent {
   }
 
   render () {
-    const { intl, hasUnread, columnId, multiColumn } = this.props;
+    const { intl, hasUnread, columnId, multiColumn, pawoo } = this.props;
     const pinned = !!columnId;
 
     return (
@@ -86,6 +88,8 @@ export default class DirectTimeline extends React.PureComponent {
           onClick={this.handleHeaderClick}
           pinned={pinned}
           multiColumn={multiColumn}
+          pawoo={pawoo}
+          pawooUrl='/timelines/direct'
         >
           <ColumnSettingsContainer />
         </ColumnHeader>
