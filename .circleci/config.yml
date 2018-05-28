@@ -30,7 +30,7 @@ jobs:
       RAILS_ENV: test
       PAWOO_SKIP_ID_MIGRATE_WARNING: true
     working_directory: /app
-    parallelism: 2
+    parallelism: 1
     steps:
       - run:
           name: Check vm.max_map_count for elasticsearch container
