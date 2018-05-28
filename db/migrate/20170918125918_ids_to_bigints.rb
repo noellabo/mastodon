@@ -110,6 +110,8 @@ class IdsToBigints < ActiveRecord::Migration[5.1]
   end
 
   def show_warning
+    return if ENV['PAWOO_SKIP_ID_MIGRATE_WARNING']
+
     # Print out a warning that this will probably take a while.
     say ''
     say 'WARNING: This migration may take a *long* time for large instances'

@@ -28,6 +28,7 @@ jobs:
       PARALLEL_TEST_PROCESSORS: 4
       PATH: /root/.rbenv/shims:/usr/local/node/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       RAILS_ENV: test
+      PAWOO_SKIP_ID_MIGRATE_WARNING: true
     working_directory: /app
     parallelism: 2
     steps:
