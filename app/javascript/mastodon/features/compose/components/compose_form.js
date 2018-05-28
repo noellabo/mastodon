@@ -72,6 +72,7 @@ export default class ComposeForm extends ImmutablePureComponent {
     onSelectTimeLimit: PropTypes.func.isRequired,
     onInsertHashtag: PropTypes.func.isRequired,
     anyMedia: PropTypes.bool,
+    pawooKeepCaretPosition: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -79,7 +80,6 @@ export default class ComposeForm extends ImmutablePureComponent {
   };
 
   state = { tagSuggestionFrom: null }
-  _restoreCaret = null;
 
   handleChange = (e) => {
     this.props.onChange(e.target.value);
@@ -120,7 +120,6 @@ export default class ComposeForm extends ImmutablePureComponent {
   }
 
   onSuggestionSelected = (tokenStart, token, value) => {
-    this._restoreCaret = 'suggestion';
     this.props.onSuggestionSelected(tokenStart, token, value);
     this.setState({ tagSuggestionFrom: null });
   }
@@ -134,7 +133,16 @@ export default class ComposeForm extends ImmutablePureComponent {
     this.props.onChangeSpoilerText(e.target.value);
   }
 
-  componentDidUpdate (prevProps) {
+  getSnapshotBeforeUpdate() {
+    let pawooPrevCaretPosition = null;
+    if (this.props.pawooKeepCaretPosition) {
+      pawooPrevCaretPosition = this.autosuggestTextarea.textarea.selectionStart;
+    }
+
+    return { pawooPrevCaretPosition };
+  }
+
+  componentDidUpdate (prevProps, prevState, { pawooPrevCaretPosition }) {
     // This statement does several things:
     // - If we're beginning a reply, and,
     //     - Replying to zero or one users, places the cursor at the end of the textbox.
@@ -149,6 +157,9 @@ export default class ComposeForm extends ImmutablePureComponent {
       } else if (typeof this.props.caretPosition === 'number') {
         selectionStart = this.props.caretPosition;
         selectionEnd   = this.props.caretPosition;
+      } else if (pawooPrevCaretPosition) {
+        selectionStart = pawooPrevCaretPosition;
+        selectionEnd   = pawooPrevCaretPosition;
       } else {
         selectionEnd   = this.props.text.length;
         selectionStart = selectionEnd;
@@ -159,7 +170,6 @@ export default class ComposeForm extends ImmutablePureComponent {
     } else if(prevProps.is_submitting && !this.props.is_submitting) {
       this.autosuggestTextarea.textarea.focus();
     }
-    this._restoreCaret = null;
   }
 
   setAutosuggestTextarea = (c) => {
@@ -175,7 +185,6 @@ export default class ComposeForm extends ImmutablePureComponent {
   }
 
   handleSelectTimeLimit = (data) => {
-    this._restoreCaret = this.autosuggestTextarea.textarea.selectionStart;
     this.props.onSelectTimeLimit(data);
   }
 

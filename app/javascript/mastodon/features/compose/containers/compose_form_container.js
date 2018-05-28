@@ -34,6 +34,7 @@ const mapStateToProps = state => ({
   is_uploading: state.getIn(['compose', 'is_uploading']),
   showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
   anyMedia: state.getIn(['compose', 'media_attachments']).size > 0,
+  pawooKeepCaretPosition: state.getIn(['compose', 'pawooKeepCaretPosition']),
 });
 
 const mapDispatchToProps = (dispatch) => ({
