@@ -6,7 +6,7 @@
     %tbody
       %tr
         %th= t('admin.accounts.username')
-        %td= @account.username
+        %td= link_to @account.username, (@account.local? ? short_account_path(@account) : @account.url)
       %tr
         %th= t('admin.accounts.domain')
         %td= @account.domain

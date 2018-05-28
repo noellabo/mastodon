@@ -25,11 +25,12 @@ jobs:
       ELASTICSEARCH_HOST: 127.0.0.1
       LOCAL_DOMAIN: cb6e6126.ngrok.io
       LOCAL_HTTPS: true
-      PARALLEL_TEST_PROCESSORS: 2 # Set 2 explicitly or CircleCI container with 36 processors causes Errno::ENOMEM !
+      PARALLEL_TEST_PROCESSORS: 4
       PATH: /root/.rbenv/shims:/usr/local/node/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       RAILS_ENV: test
       ALLOW_NOPAM: true
       DISABLE_SIMPLECOV: true
+      PAWOO_SKIP_ID_MIGRATE_WARNING: true
     working_directory: /app
     parallelism: 2
     steps:
