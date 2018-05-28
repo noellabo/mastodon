@@ -29,6 +29,7 @@ jobs:
       PATH: /root/.rbenv/shims:/usr/local/node/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       RAILS_ENV: test
       ALLOW_NOPAM: true
+      DISABLE_SIMPLECOV: true
     working_directory: /app
     parallelism: 2
     steps:
