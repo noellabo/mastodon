@@ -25,12 +25,13 @@ const messages = defineMessages({
   notifications: { id: 'tabs_bar.notifications', defaultMessage: 'Notifications' },
   suggested_accounts: { id: 'column.suggested_accounts', defaultMessage: 'Active Users' },
   community: { id: 'navigation_bar.community_timeline', defaultMessage: 'Local timeline' },
+  media: { id: 'column.media_timeline', defaultMessage: 'Media timeline' },
   help: { id: 'navigation_bar.help', defaultMessage: 'Help' },
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   columns: state.getIn(['settings', 'columns']),
-  showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
+  showSearch: ownProps.multiColumn ? state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']) : ownProps.isSearchPage,
   pawooHasUnreadNotifications: state.getIn(['notifications', 'unread']) > 0,
   pawooMultiColumn: state.getIn(['settings', 'pawoo', 'multiColumn']),
 });
@@ -44,17 +45,26 @@ export default class Compose extends React.PureComponent {
     columns: ImmutablePropTypes.list.isRequired,
     multiColumn: PropTypes.bool,
     showSearch: PropTypes.bool,
+    isSearchPage: PropTypes.bool,
     intl: PropTypes.object.isRequired,
     pawooHasUnreadNotifications: PropTypes.bool,
     pawooMultiColumn: PropTypes.bool,
   };
 
   componentDidMount () {
-    this.props.dispatch(mountCompose());
+    const { isSearchPage } = this.props;
+
+    if (!isSearchPage) {
+      this.props.dispatch(mountCompose());
+    }
   }
 
   componentWillUnmount () {
-    this.props.dispatch(unmountCompose());
+    const { isSearchPage } = this.props;
+
+    if (!isSearchPage) {
+      this.props.dispatch(unmountCompose());
+    }
   }
 
   onFocus = () => {
@@ -70,7 +80,7 @@ export default class Compose extends React.PureComponent {
   }
 
   render () {
-    const { multiColumn, showSearch, intl } = this.props;
+    const { multiColumn, showSearch, isSearchPage, intl } = this.props;
 
     let header = '';
 
@@ -88,6 +98,9 @@ export default class Compose extends React.PureComponent {
           {!columns.some(column => column.get('id') === 'COMMUNITY') && (
             <Link to='/timelines/public/local' className='drawer__tab' onClick={this.pawooHandleClick} title={intl.formatMessage(messages.community)} aria-label={intl.formatMessage(messages.community)}><i role='img' className='fa fa-fw fa-users' /></Link>
           )}
+          {!columns.some(column => column.get('id') === 'MEDIA') && columns.some(column => ['HOME', 'NOTIFICATIONS', 'COMMUNITY'].includes(column.get('id'))) && (
+            <Link to='/timelines/public/media' className='drawer__tab' onClick={this.pawooHandleClick} title={intl.formatMessage(messages.media)} aria-label={intl.formatMessage(messages.media)}><i role='img' className='fa fa-fw fa-image' /></Link>
+          )}
           <Link to='/suggested_accounts' className='drawer__tab' onClick={this.pawooHandleClick} title={intl.formatMessage(messages.suggested_accounts)} aria-label={intl.formatMessage(messages.suggested_accounts)}><i role='img' className='fa fa-fw fa-user-plus' /></Link>
           <a href='https://pawoo.pixiv.help' target='_blank' rel='noopener' className='drawer__tab' title={intl.formatMessage(messages.help)} aria-label={intl.formatMessage(messages.help)}><i role='img' className='fa fa-fw fa-question-circle' /></a>
         </nav>
@@ -98,7 +111,7 @@ export default class Compose extends React.PureComponent {
       <div className='drawer'>
         {header}
 
-        <SearchContainer />
+        {(multiColumn || isSearchPage) && <SearchContainer /> }
 
         <div className='drawer__pager'>
           <div className='drawer__inner' onFocus={this.onFocus}>
@@ -121,7 +134,7 @@ export default class Compose extends React.PureComponent {
             )}
           </div>
 
-          <Motion defaultStyle={{ x: -100 }} style={{ x: spring(showSearch ? 0 : -100, { stiffness: 210, damping: 20 }) }}>
+          <Motion defaultStyle={{ x: isSearchPage ? 0 : -100 }} style={{ x: spring(showSearch || isSearchPage ? 0 : -100, { stiffness: 210, damping: 20 }) }}>
             {({ x }) => (
               <div className='drawer__inner darker' style={{ transform: `translateX(${x}%)`, visibility: x === -100 ? 'hidden' : 'visible' }}>
                 <SearchResultsContainer />

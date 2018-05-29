@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { fetchAccount } from '../../actions/accounts';
-import { refreshAccountMediaTimeline, expandAccountMediaTimeline } from '../../actions/timelines';
+import { expandAccountMediaTimeline } from '../../actions/timelines';
 import StatusList from '../../components/status_list';
 import LoadingIndicator from '../../components/loading_indicator';
 import Column from '../ui/components/column';
@@ -29,13 +29,13 @@ class AccountMediaTimeline extends React.PureComponent {
 
   componentWillMount () {
     this.props.dispatch(fetchAccount(this.props.params.accountId));
-    this.props.dispatch(refreshAccountMediaTimeline(this.props.params.accountId));
+    this.props.dispatch(expandAccountMediaTimeline(this.props.params.accountId));
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.accountId !== this.props.params.accountId && nextProps.params.accountId) {
       this.props.dispatch(fetchAccount(nextProps.params.accountId));
-      this.props.dispatch(refreshAccountMediaTimeline(nextProps.params.accountId));
+      this.props.dispatch(expandAccountMediaTimeline(nextProps.params.accountId));
     }
   }
 

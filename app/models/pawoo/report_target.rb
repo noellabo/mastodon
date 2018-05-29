@@ -3,10 +3,10 @@
 #
 # Table name: pawoo_report_targets
 #
-#  id          :integer          not null, primary key
-#  report_id   :integer          not null
+#  id          :bigint(8)        not null, primary key
+#  report_id   :bigint(8)        not null
 #  target_type :string           not null
-#  target_id   :integer          not null
+#  target_id   :bigint(8)        not null
 #  state       :integer          default("unresolved"), not null
 #
 

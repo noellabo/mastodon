@@ -214,12 +214,14 @@ export default class ColumnContainerWithHistory extends ImmutablePureComponent {
     const { column, columnHistory } = this.props;
     const topColumn = columnHistory.first();
     const params = topColumn.get('params', null) === null ? null : topColumn.get('params').toJS();
+    const other  = params && params.other ? params.other : {};
+
     return (
       <BundleContainer
         fetchComponent={columnComponentMap[topColumn.get('id')].component}
         loading={this.renderLoading(column.get('id'))} error={this.renderError}
       >
-        {SpecificComponent => <SpecificComponent columnId={column.get('uuid')} params={params} multiColumn pawoo={this.getPawooProps()} />}
+        {SpecificComponent => <SpecificComponent columnId={column.get('uuid')} params={params} multiColumn pawoo={this.getPawooProps()} {...other} />}
       </BundleContainer>
     );
   }

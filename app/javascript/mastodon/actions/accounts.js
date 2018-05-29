@@ -1,4 +1,6 @@
 import api, { getLinks } from '../api';
+import openDB from '../storage/db';
+import { importAccount, importFetchedAccount, importFetchedAccounts } from './importer';
 import PawooGA from '../../pawoo/actions/ga';
 
 const pawooGaCategory = 'Account';
@@ -67,6 +69,24 @@ export const FOLLOW_REQUEST_REJECT_REQUEST = 'FOLLOW_REQUEST_REJECT_REQUEST';
 export const FOLLOW_REQUEST_REJECT_SUCCESS = 'FOLLOW_REQUEST_REJECT_SUCCESS';
 export const FOLLOW_REQUEST_REJECT_FAIL    = 'FOLLOW_REQUEST_REJECT_FAIL';
 
+function getFromDB(dispatch, getState, index, id) {
+  return new Promise((resolve, reject) => {
+    const request = index.get(id);
+
+    request.onerror = reject;
+
+    request.onsuccess = () => {
+      if (!request.result) {
+        reject();
+        return;
+      }
+
+      dispatch(importAccount(request.result));
+      resolve(request.result.moved && getFromDB(dispatch, getState, index, request.result.moved));
+    };
+  });
+}
+
 export function fetchAccount(id) {
   return (dispatch, getState) => {
     dispatch(fetchRelationships([id]));
@@ -77,8 +97,18 @@ export function fetchAccount(id) {
 
     dispatch(fetchAccountRequest(id));
 
-    api(getState).get(`/api/v1/accounts/${id}`).then(response => {
-      dispatch(fetchAccountSuccess(response.data));
+    openDB().then(db => getFromDB(
+      dispatch,
+      getState,
+      db.transaction('accounts', 'read').objectStore('accounts').index('id'),
+      id
+    ).then(() => db.close(), error => {
+      db.close();
+      throw error;
+    })).catch(() => api(getState).get(`/api/v1/accounts/${id}`).then(response => {
+      dispatch(importFetchedAccount(response.data));
+    })).then(() => {
+      dispatch(fetchAccountSuccess());
     }).catch(error => {
       dispatch(fetchAccountFail(id, error));
     });
@@ -92,10 +122,9 @@ export function fetchAccountRequest(id) {
   };
 };
 
-export function fetchAccountSuccess(account) {
+export function fetchAccountSuccess() {
   return {
     type: ACCOUNT_FETCH_SUCCESS,
-    account,
   };
 };
 
@@ -334,6 +363,7 @@ export function fetchFollowers(id) {
     api(getState).get(`/api/v1/accounts/${id}/followers`).then(response => {
       const next = getLinks(response).refs.find(link => link.rel === 'next');
 
+      dispatch(importFetchedAccounts(response.data));
       dispatch(fetchFollowersSuccess(id, response.data, next ? next.uri : null));
       dispatch(fetchRelationships(response.data.map(item => item.id)));
     }).catch(error => {
@@ -379,6 +409,7 @@ export function expandFollowers(id) {
     api(getState).get(url).then(response => {
       const next = getLinks(response).refs.find(link => link.rel === 'next');
 
+      dispatch(importFetchedAccounts(response.data));
       dispatch(expandFollowersSuccess(id, response.data, next ? next.uri : null));
       dispatch(fetchRelationships(response.data.map(item => item.id)));
     }).catch(error => {
@@ -418,6 +449,7 @@ export function fetchFollowing(id) {
     api(getState).get(`/api/v1/accounts/${id}/following`).then(response => {
       const next = getLinks(response).refs.find(link => link.rel === 'next');
 
+      dispatch(importFetchedAccounts(response.data));
       dispatch(fetchFollowingSuccess(id, response.data, next ? next.uri : null));
       dispatch(fetchRelationships(response.data.map(item => item.id)));
     }).catch(error => {
@@ -463,6 +495,7 @@ export function expandFollowing(id) {
     api(getState).get(url).then(response => {
       const next = getLinks(response).refs.find(link => link.rel === 'next');
 
+      dispatch(importFetchedAccounts(response.data));
       dispatch(expandFollowingSuccess(id, response.data, next ? next.uri : null));
       dispatch(fetchRelationships(response.data.map(item => item.id)));
     }).catch(error => {
@@ -544,6 +577,7 @@ export function fetchFollowRequests() {
 
     api(getState).get('/api/v1/follow_requests').then(response => {
       const next = getLinks(response).refs.find(link => link.rel === 'next');
+      dispatch(importFetchedAccounts(response.data));
       dispatch(fetchFollowRequestsSuccess(response.data, next ? next.uri : null));
     }).catch(error => dispatch(fetchFollowRequestsFail(error)));
   };
@@ -582,6 +616,7 @@ export function expandFollowRequests() {
 
     api(getState).get(url).then(response => {
       const next = getLinks(response).refs.find(link => link.rel === 'next');
+      dispatch(importFetchedAccounts(response.data));
       dispatch(expandFollowRequestsSuccess(response.data, next ? next.uri : null));
     }).catch(error => dispatch(expandFollowRequestsFail(error)));
   };

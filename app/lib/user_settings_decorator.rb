@@ -28,6 +28,7 @@ class UserSettingsDecorator
     user.settings['system_font_ui']          = system_font_ui_preference if change?('setting_system_font_ui')
     user.settings['noindex']                 = noindex_preference if change?('setting_noindex')
     user.settings['theme']                   = theme_preference if change?('setting_theme')
+    user.settings['hide_network']            = hide_network_preference if change?('setting_hide_network')
 
     user.settings['notification_firebase_cloud_messagings'] = merged_notification_firebase_cloud_messagings if change?('notification_firebase_cloud_messagings')
     user.settings['notification_pawoo_expo_pushes'] = merged_notification_pawoo_expo_pushes if change?('notification_pawoo_expo_pushes')
@@ -89,12 +90,16 @@ class UserSettingsDecorator
     boolean_cast_setting 'setting_noindex'
   end
 
+  def hide_network_preference
+    boolean_cast_setting 'setting_hide_network'
+  end
+
   def theme_preference
     settings['setting_theme']
   end
 
   def boolean_cast_setting(key)
-    settings[key] == '1'
+    ActiveModel::Type::Boolean.new.cast(settings[key])
   end
 
   def coerced_settings(key)
@@ -102,7 +107,7 @@ class UserSettingsDecorator
   end
 
   def coerce_values(params_hash)
-    params_hash.transform_values { |x| x == '1' }
+    params_hash.transform_values { |x| ActiveModel::Type::Boolean.new.cast(x) }
   end
 
   def change?(key)

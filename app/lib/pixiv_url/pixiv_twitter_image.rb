@@ -25,12 +25,13 @@ module PixivUrl
         request = Request.new(:get, url)
         request.add_headers('Referer' => "https://#{Rails.configuration.x.local_domain}")
 
-        response = request.perform
-        return unless response.status == 200
+        request.perform do |response|
+          next unless response.status == 200
 
-        html = Nokogiri::HTML.parse(response.body.to_s)
-        url = html.xpath('/html/head/meta[@property="twitter:image"]/@content').to_s
-        url if PixivUrl.valid_twitter_image?(url)
+          html = Nokogiri::HTML.parse(response.body.to_s)
+          url = html.xpath('/html/head/meta[@property="twitter:image"]/@content').to_s
+          url if PixivUrl.valid_twitter_image?(url)
+        end
       end
     end
   end

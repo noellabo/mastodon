@@ -4,6 +4,7 @@ import {
   COMPOSE_CHANGE,
   COMPOSE_REPLY,
   COMPOSE_REPLY_CANCEL,
+  COMPOSE_DIRECT,
   COMPOSE_MENTION,
   COMPOSE_SUBMIT_REQUEST,
   COMPOSE_SUBMIT_SUCCESS,
@@ -47,6 +48,7 @@ const initialState = ImmutableMap({
   privacy: null,
   text: '',
   focusDate: null,
+  caretPosition: null,
   preselectDate: null,
   in_reply_to: null,
   is_composing: false,
@@ -61,6 +63,7 @@ const initialState = ImmutableMap({
   resetFileKey: Math.floor((Math.random() * 0x10000)),
   idempotencyKey: null,
   pawooPublished: null,
+  pawooKeepCaretPosition: false,
   tagHistory: ImmutableList(),
 });
 
@@ -68,6 +71,7 @@ const pawooInsertTag = (state, tag) => {
   return state.withMutations(map => {
     map.update('text', oldText => `${oldText} ${tag}`);
     map.set('focusDate', new Date());
+    map.set('pawooKeepCaretPosition', true);
     map.set('idempotencyKey', uuid());
   });
 };
@@ -86,6 +90,7 @@ function clearAll(state) {
   return state.withMutations(map => {
     map.set('text', '');
     map.set('pawooPublished', null);
+    map.set('pawooKeepCaretPosition', false);
     map.set('spoiler', false);
     map.set('spoiler_text', '');
     map.set('is_submitting', false);
@@ -104,7 +109,6 @@ function appendMedia(state, media) {
     map.update('media_attachments', list => list.push(media));
     map.set('is_uploading', false);
     map.set('resetFileKey', Math.floor((Math.random() * 0x10000)));
-    map.set('focusDate', new Date());
     map.set('idempotencyKey', uuid());
 
     if (prevSize === 0 && (state.get('default_sensitive'))) {
@@ -132,6 +136,8 @@ const insertSuggestion = (state, position, token, completion) => {
     map.set('suggestion_token', null);
     map.update('suggestions', ImmutableList(), list => list.clear());
     map.set('focusDate', new Date());
+    map.set('caretPosition', position + completion.length + 1);
+    map.set('pawooKeepCaretPosition', false);
     map.set('idempotencyKey', uuid());
   });
 };
@@ -155,6 +161,8 @@ const insertEmoji = (state, position, emojiData, needsSpace) => {
   return state.merge({
     text: `${oldText.slice(0, position)}${emoji} ${oldText.slice(position)}`,
     focusDate: new Date(),
+    caretPosition: position + emoji.length + 1,
+    pawooKeepCaretPosition: false,
     idempotencyKey: uuid(),
   });
 };
@@ -223,6 +231,8 @@ export default function compose(state = initialState, action) {
       map.set('text', statusToTextMentions(state, action.status));
       map.set('privacy', privacyPreference(action.status.get('visibility'), state.get('default_privacy')));
       map.set('focusDate', new Date());
+      map.set('caretPosition', null);
+      map.set('pawooKeepCaretPosition', false);
       map.set('preselectDate', new Date());
       map.set('idempotencyKey', uuid());
 
@@ -243,6 +253,7 @@ export default function compose(state = initialState, action) {
       map.set('spoiler_text', '');
       map.set('privacy', state.get('default_privacy'));
       map.set('idempotencyKey', uuid());
+      map.set('pawooKeepCaretPosition', false);
     });
   case COMPOSE_SUBMIT_REQUEST:
   case COMPOSE_UPLOAD_CHANGE_REQUEST:
@@ -263,10 +274,22 @@ export default function compose(state = initialState, action) {
   case COMPOSE_UPLOAD_PROGRESS:
     return state.set('progress', Math.round((action.loaded / action.total) * 100));
   case COMPOSE_MENTION:
-    return state
-      .update('text', text => `${text}@${action.account.get('acct')} `)
-      .set('focusDate', new Date())
-      .set('idempotencyKey', uuid());
+    return state.withMutations(map => {
+      map.update('text', text => [text.trim(), `@${action.account.get('acct')} `].filter((str) => str.length !== 0).join(' '));
+      map.set('focusDate', new Date());
+      map.set('caretPosition', null);
+      map.set('pawooKeepCaretPosition', false);
+      map.set('idempotencyKey', uuid());
+    });
+  case COMPOSE_DIRECT:
+    return state.withMutations(map => {
+      map.update('text', text => [text.trim(), `@${action.account.get('acct')} `].filter((str) => str.length !== 0).join(' '));
+      map.set('privacy', 'direct');
+      map.set('focusDate', new Date());
+      map.set('caretPosition', null);
+      map.set('pawooKeepCaretPosition', false);
+      map.set('idempotencyKey', uuid());
+    });
   case COMPOSE_SUGGESTIONS_CLEAR:
     return state.update('suggestions', ImmutableList(), list => list.clear()).set('suggestion_token', null);
   case COMPOSE_SUGGESTIONS_READY:
