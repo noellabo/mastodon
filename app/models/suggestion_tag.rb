@@ -2,13 +2,13 @@
 #
 # Table name: suggestion_tags
 #
-#  id              :integer          not null, primary key
-#  tag_id          :integer          not null
+#  id              :bigint(8)        not null, primary key
 #  order           :integer          default(1), not null
 #  description     :string           default(""), not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  suggestion_type :integer          default("normal"), not null
+#  tag_id          :bigint(8)        not null
 #
 
 class SuggestionTag < ApplicationRecord

@@ -26,6 +26,10 @@ export function HashtagTimeline () {
   return import(/* webpackChunkName: "features/hashtag_timeline" */'../../hashtag_timeline');
 }
 
+export function DirectTimeline() {
+  return import(/* webpackChunkName: "features/direct_timeline" */'../../direct_timeline');
+}
+
 export function ListTimeline () {
   return import(/* webpackChunkName: "features/list_timeline" */'../../list_timeline');
 }
@@ -104,6 +108,10 @@ export function AccountMediaTimeline () {
 
 export function Blocks () {
   return import(/* webpackChunkName: "features/blocks" */'../../blocks');
+}
+
+export function DomainBlocks () {
+  return import(/* webpackChunkName: "features/domain_blocks" */'../../domain_blocks');
 }
 
 export function Mutes () {

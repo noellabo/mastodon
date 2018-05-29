@@ -2,11 +2,11 @@
 #
 # Table name: pixiv_follows
 #
-#  id                      :integer          not null, primary key
-#  oauth_authentication_id :integer          not null
+#  id                      :bigint(8)        not null, primary key
 #  target_pixiv_uid        :integer          not null
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#  oauth_authentication_id :bigint(8)        not null
 #
 
 class PixivFollow < ApplicationRecord

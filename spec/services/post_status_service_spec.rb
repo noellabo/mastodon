@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PostStatusService do
+RSpec.describe PostStatusService, type: :service do
   subject { PostStatusService.new }
 
   context 'with published option' do
