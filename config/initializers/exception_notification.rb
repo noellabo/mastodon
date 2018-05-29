@@ -9,6 +9,7 @@ ExceptionNotification.configure do |config|
     ActionController::ParameterMissing
     ActiveRecord::RecordNotUnique
     Mastodon::UnexpectedResponseError
+    Mastodon::RaceConditionError
   )
 
   network_exceptions = %w[
@@ -18,6 +19,7 @@ ExceptionNotification.configure do |config|
     HTTP::Redirector::TooManyRedirectsError
     HTTP::Redirector::EndlessRedirectError
     OpenSSL::SSL::SSLError
+    Stoplight::Error::RedLight
   ].freeze
 
   def handle_sidekiq(exception_name, sidekiq, network_exceptions)
@@ -31,9 +33,6 @@ ExceptionNotification.configure do |config|
       Import::RelationshipWorker
     ].freeze
 
-    ignore_workers = %w[
-    ].freeze
-
     ignore_worker_errors = {
       'ActivityPub::ProcessingWorker' => ['ActiveRecord::RecordInvalid'],
       'LinkCrawlWorker' => ['ActiveRecord::RecordInvalid'],
@@ -43,7 +42,6 @@ ExceptionNotification.configure do |config|
       'ActionMailer::DeliveryJob' => ['ActiveJob::DeserializationError']
     }.freeze
 
-    return true if ignore_workers.include?(worker_class)
     return true if ignore_worker_errors[worker_class]&.include?(exception_name)
 
     # ActivityPub or Pubsubhubbub or 通信が頻繁に発生するWorkerではネットワーク系の例外を無視
@@ -60,14 +58,20 @@ ExceptionNotification.configure do |config|
   end
 
   def handle_controller(exception_name, controller_class, network_exceptions)
+    network_controllers = [
+      RemoteFollowController
+    ].freeze
+
     ignore_controller_errors = {
       'MediaProxyController' => ['ActiveRecord::RecordInvalid'],
     }.freeze
 
     return true if ignore_controller_errors[controller_class.name]&.include?(exception_name)
 
-    # SignatureVerificationがincludeされているコントローラではネットワーク系のエラーを無視
-    return true if controller_class.ancestors.include?(SignatureVerification) && network_exceptions.include?(exception_name)
+    # SignatureVerificationがincludeされているコントローラ or 通信が頻繁に発生するコントローラではネットワーク系のエラーを無視
+    if controller_class.ancestors.include?(SignatureVerification) || network_controllers.include?(controller_class)
+      return true if network_exceptions.include?(exception_name)
+    end
 
     false
   end
