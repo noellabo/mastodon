@@ -13,8 +13,8 @@ import Immutable from 'immutable';
 
 const mapStateToProps = (state, props) => ({
   statusIds: state.getIn(['timelines', `account:${props.params.accountId}:media`, 'items'], Immutable.List()),
-  isLoading: state.getIn(['timelines', `account:${props.params.accountId}:media`, 'isLoading'], false),
-  hasMore: !!state.getIn(['timelines', `account:${props.params.accountId}:media`, 'next'], false),
+  isLoading: state.getIn(['timelines', `account:${props.params.accountId}:media`, 'isLoading']),
+  hasMore:   state.getIn(['timelines', `account:${props.params.accountId}:media`, 'hasMore']),
 });
 
 class AccountMediaTimeline extends React.PureComponent {
@@ -39,9 +39,9 @@ class AccountMediaTimeline extends React.PureComponent {
     }
   }
 
-  handleLoadMore = () => {
+  handleLoadMore = maxId => {
     if (this.props.hasMore) {
-      this.props.dispatch(expandAccountMediaTimeline(this.props.params.accountId));
+      this.props.dispatch(expandAccountMediaTimeline(this.props.params.accountId, { maxId }));
     }
   }
 
