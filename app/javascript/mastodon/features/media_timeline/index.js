@@ -69,8 +69,10 @@ class MediaTimeline extends React.PureComponent {
     this.column = c;
   }
 
-  handleLoadMore = () => {
-    this.props.dispatch(expandCommunityTimeline({ onlyMedia: true }));
+  handleLoadMore = maxId => {
+    const { dispatch } = this.props;
+
+    dispatch(expandCommunityTimeline({ maxId, onlyMedia: true }));
   }
 
   render () {
