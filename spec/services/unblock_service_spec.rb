@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UnblockService, type: :service do
+RSpec.describe UnblockService do
   let(:sender) { Fabricate(:account, username: 'alice') }
 
   subject { UnblockService.new }

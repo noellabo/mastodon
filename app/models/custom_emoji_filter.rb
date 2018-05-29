@@ -28,7 +28,7 @@ class CustomEmojiFilter
     when 'by_domain'
       CustomEmoji.where(domain: value)
     when 'shortcode'
-      CustomEmoji.search(value)
+      CustomEmoji.where(shortcode: value)
     else
       raise "Unknown filter: #{key}"
     end

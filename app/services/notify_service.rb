@@ -9,7 +9,6 @@ class NotifyService < BaseService
     return if recipient.user.nil? || blocked?
 
     create_notification
-    push_notification if @notification.browserable?
     send_email if email_enabled?
     send_firebase_cloud_messaging if firebase_cloud_messaging_enabled?
     send_pawoo_expo_push if pawoo_expo_push_enabled?
@@ -104,27 +103,25 @@ class NotifyService < BaseService
 
   def create_notification
     @notification.save!
-  end
-
-  def push_notification
-    return if @notification.activity.nil?
-
+    return unless @notification.browserable?
     Redis.current.publish("timeline:#{@recipient.id}", Oj.dump(event: :notification, payload: InlineRenderer.render(@notification, @recipient, :notification)))
     send_push_notifications
   end
 
   def send_push_notifications
-    subscriptions_ids = ::Web::PushSubscription.where(user_id: @recipient.user.id)
-                                               .select { |subscription| subscription.pushable?(@notification) }
-                                               .map(&:id)
+    # HACK: Can be caused by quickly unfavouriting a status, since creating
+    # a favourite and creating a notification are not wrapped in a transaction.
+    return if @notification.activity.nil?
 
-    ::Web::PushNotificationWorker.push_bulk(subscriptions_ids) do |subscription_id|
-      [subscription_id, @notification.id]
+    sessions_with_subscriptions = @recipient.user.session_activations.where.not(web_push_subscription: nil)
+    sessions_with_subscriptions_ids = sessions_with_subscriptions.select { |session| session.web_push_subscription.pushable? @notification }.map(&:id)
+
+    WebPushNotificationWorker.push_bulk(sessions_with_subscriptions_ids) do |session_activation_id|
+      [session_activation_id, @notification.id]
     end
   end
 
   def send_email
-    return if @notification.activity.nil?
     NotificationMailer.public_send(@notification.type, @recipient, @notification).deliver_later
   end
 

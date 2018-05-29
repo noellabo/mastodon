@@ -1,9 +1,0 @@
----
-eu:
-  activerecord:
-    errors:
-      models:
-        account:
-          attributes:
-            username:
-              invalid: letrak, zenbakiak eta gidoi baxuak besterik ez

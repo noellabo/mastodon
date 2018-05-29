@@ -5,7 +5,6 @@ import {
   CommunityTimeline,
   PublicTimeline,
   HashtagTimeline,
-  DirectTimeline,
   FavouritedStatuses,
   ListTimeline,
   MediaTimeline,
@@ -36,10 +35,6 @@ export default {
   'HASHTAG': {
     component: HashtagTimeline,
     match: { path: '/timelines/tag/:id' },
-  },
-  'DIRECT': {
-    component: DirectTimeline,
-    match: { path: '/timelines/direct' },
   },
   'LIST': {
     component: ListTimeline,

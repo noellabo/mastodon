@@ -1,5 +1,4 @@
 import api from '../api';
-import { importFetchedAccounts, importFetchedStatus } from './importer';
 import PawooGA from '../../pawoo/actions/ga';
 
 const pawooGaCategory = 'Interaction';
@@ -45,8 +44,7 @@ export function reblog(status) {
     api(getState).post(`/api/v1/statuses/${status.get('id')}/reblog`).then(function (response) {
       // The reblog API method returns a new status wrapped around the original. In this case we are only
       // interested in how the original is modified, hence passing it skipping the wrapper
-      dispatch(importFetchedStatus(response.data.reblog));
-      dispatch(reblogSuccess(status));
+      dispatch(reblogSuccess(status, response.data.reblog));
     }).catch(function (error) {
       dispatch(reblogFail(status, error));
     });
@@ -60,8 +58,7 @@ export function unreblog(status) {
     PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unreblog' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/unreblog`).then(response => {
-      dispatch(importFetchedStatus(response.data));
-      dispatch(unreblogSuccess(status));
+      dispatch(unreblogSuccess(status, response.data));
     }).catch(error => {
       dispatch(unreblogFail(status, error));
     });
@@ -76,10 +73,11 @@ export function reblogRequest(status) {
   };
 };
 
-export function reblogSuccess(status) {
+export function reblogSuccess(status, response) {
   return {
     type: REBLOG_SUCCESS,
     status: status,
+    response: response,
     skipLoading: true,
   };
 };
@@ -101,10 +99,11 @@ export function unreblogRequest(status) {
   };
 };
 
-export function unreblogSuccess(status) {
+export function unreblogSuccess(status, response) {
   return {
     type: UNREBLOG_SUCCESS,
     status: status,
+    response: response,
     skipLoading: true,
   };
 };
@@ -125,8 +124,7 @@ export function favourite(status) {
     PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Favourite' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/favourite`).then(function (response) {
-      dispatch(importFetchedStatus(response.data));
-      dispatch(favouriteSuccess(status));
+      dispatch(favouriteSuccess(status, response.data));
     }).catch(function (error) {
       dispatch(favouriteFail(status, error));
     });
@@ -140,8 +138,7 @@ export function unfavourite(status) {
     PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unfavourite' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/unfavourite`).then(response => {
-      dispatch(importFetchedStatus(response.data));
-      dispatch(unfavouriteSuccess(status));
+      dispatch(unfavouriteSuccess(status, response.data));
     }).catch(error => {
       dispatch(unfavouriteFail(status, error));
     });
@@ -156,10 +153,11 @@ export function favouriteRequest(status) {
   };
 };
 
-export function favouriteSuccess(status) {
+export function favouriteSuccess(status, response) {
   return {
     type: FAVOURITE_SUCCESS,
     status: status,
+    response: response,
     skipLoading: true,
   };
 };
@@ -181,10 +179,11 @@ export function unfavouriteRequest(status) {
   };
 };
 
-export function unfavouriteSuccess(status) {
+export function unfavouriteSuccess(status, response) {
   return {
     type: UNFAVOURITE_SUCCESS,
     status: status,
+    response: response,
     skipLoading: true,
   };
 };
@@ -203,7 +202,6 @@ export function fetchReblogs(id) {
     dispatch(fetchReblogsRequest(id));
 
     api(getState).get(`/api/v1/statuses/${id}/reblogged_by`).then(response => {
-      dispatch(importFetchedAccounts(response.data));
       dispatch(fetchReblogsSuccess(id, response.data));
     }).catch(error => {
       dispatch(fetchReblogsFail(id, error));
@@ -238,7 +236,6 @@ export function fetchFavourites(id) {
     dispatch(fetchFavouritesRequest(id));
 
     api(getState).get(`/api/v1/statuses/${id}/favourited_by`).then(response => {
-      dispatch(importFetchedAccounts(response.data));
       dispatch(fetchFavouritesSuccess(id, response.data));
     }).catch(error => {
       dispatch(fetchFavouritesFail(id, error));
@@ -275,8 +272,7 @@ export function pin(status) {
     PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Pin' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/pin`).then(response => {
-      dispatch(importFetchedStatus(response.data));
-      dispatch(pinSuccess(status));
+      dispatch(pinSuccess(status, response.data));
     }).catch(error => {
       dispatch(pinFail(status, error));
     });
@@ -291,10 +287,11 @@ export function pinRequest(status) {
   };
 };
 
-export function pinSuccess(status) {
+export function pinSuccess(status, response) {
   return {
     type: PIN_SUCCESS,
     status,
+    response,
     skipLoading: true,
   };
 };
@@ -315,8 +312,7 @@ export function unpin (status) {
     PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unpin' });
 
     api(getState).post(`/api/v1/statuses/${status.get('id')}/unpin`).then(response => {
-      dispatch(importFetchedStatus(response.data));
-      dispatch(unpinSuccess(status));
+      dispatch(unpinSuccess(status, response.data));
     }).catch(error => {
       dispatch(unpinFail(status, error));
     });
@@ -331,10 +327,11 @@ export function unpinRequest(status) {
   };
 };
 
-export function unpinSuccess(status) {
+export function unpinSuccess(status, response) {
   return {
     type: UNPIN_SUCCESS,
     status,
+    response,
     skipLoading: true,
   };
 };

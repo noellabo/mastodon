@@ -1,5 +1,5 @@
 .card {
-  background-color: $base-shadow-color;
+  background-color: lighten($ui-base-color, 4%);
   background-size: cover;
   background-position: center;
   border-radius: 4px 4px 0 0;
@@ -75,7 +75,7 @@
     small {
       display: block;
       font-size: 14px;
-      color: $highlight-text-color;
+      color: $ui-highlight-color;
       font-weight: 400;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -113,7 +113,7 @@
     width: 33.3%;
     box-sizing: border-box;
     flex: 0 0 auto;
-    color: $darker-text-color;
+    color: $ui-primary-color;
     padding: 5px 10px 0;
     margin-bottom: 10px;
     border-right: 1px solid lighten($ui-base-color, 4%);
@@ -143,7 +143,7 @@
 
     &.active {
       &::after {
-        border-bottom: 4px solid $highlight-text-color;
+        border-bottom: 4px solid $ui-highlight-color;
         opacity: 1;
       }
     }
@@ -178,7 +178,7 @@
     font-size: 14px;
     line-height: 18px;
     padding: 0 15px;
-    color: $secondary-text-color;
+    color: $ui-secondary-color;
   }
 
   @media screen and (max-width: 480px) {
@@ -256,7 +256,7 @@
   .current {
     background: $simple-background-color;
     border-radius: 100px;
-    color: $inverted-text-color;
+    color: $ui-base-color;
     cursor: default;
     margin: 0 10px;
   }
@@ -268,7 +268,7 @@
   .older,
   .newer {
     text-transform: uppercase;
-    color: $secondary-text-color;
+    color: $ui-secondary-color;
   }
 
   .older {
@@ -293,7 +293,7 @@
 
   .disabled {
     cursor: default;
-    color: lighten($inverted-text-color, 10%);
+    color: lighten($ui-base-color, 10%);
   }
 
   @media screen and (max-width: 700px) {
@@ -322,15 +322,6 @@
   z-index: 2;
   position: relative;
 
-  &.empty img {
-    position: absolute;
-    opacity: 0.2;
-    height: 200px;
-    left: 0;
-    bottom: 0;
-    pointer-events: none;
-  }
-
   @media screen and (max-width: 740px) {
     border-radius: 0;
     box-shadow: none;
@@ -341,7 +332,7 @@
     width: 335px;
     background: $simple-background-color;
     border-radius: 4px;
-    color: $inverted-text-color;
+    color: $ui-base-color;
     margin: 0 5px 10px;
     position: relative;
 
@@ -353,7 +344,7 @@
       overflow: hidden;
       height: 100px;
       border-radius: 4px 4px 0 0;
-      background-color: lighten($inverted-text-color, 4%);
+      background-color: lighten($ui-base-color, 4%);
       background-size: cover;
       background-position: center;
       position: relative;
@@ -401,7 +392,7 @@
 
       a {
         display: block;
-        color: $inverted-text-color;
+        color: $ui-base-color;
         text-decoration: none;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -423,7 +414,7 @@
     }
 
     .username {
-      color: $lighter-text-color;
+      color: lighten($ui-base-color, 34%);
       font-size: 14px;
       font-weight: 400;
     }
@@ -431,7 +422,7 @@
     .account__header__content {
       padding: 10px 15px;
       padding-top: 15px;
-      color: $lighter-text-color;
+      color: lighten($ui-base-color, 26%);
       word-wrap: break-word;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -443,12 +434,12 @@
 .nothing-here {
   width: 100%;
   display: block;
-  color: $light-text-color;
+  color: $ui-primary-color;
   font-size: 14px;
   font-weight: 500;
   text-align: center;
-  padding: 130px 0;
-  padding-top: 125px;
+  padding: 60px 0;
+  padding-top: 55px;
   margin: 0 auto;
   cursor: default;
 }
@@ -502,7 +493,7 @@
 
       span {
         font-size: 14px;
-        color: $light-text-color;
+        color: $ui-primary-color;
       }
     }
 
@@ -517,7 +508,7 @@
 
   .account__header__content {
     font-size: 14px;
-    color: $inverted-text-color;
+    color: $ui-base-color;
   }
 }
 
@@ -531,18 +522,18 @@
     display: inline-block;
     padding: 15px;
     text-decoration: none;
-    color: $highlight-text-color;
+    color: $ui-highlight-color;
     text-transform: uppercase;
     font-weight: 500;
 
     &:hover,
     &:active,
     &:focus {
-      color: lighten($highlight-text-color, 8%);
+      color: lighten($ui-highlight-color, 8%);
     }
 
     &.active {
-      color: $inverted-text-color;
+      color: $ui-base-color;
       cursor: default;
     }
   }
@@ -570,59 +561,5 @@
     color: lighten($error-red, 12%);
     background-color: rgba(lighten($error-red, 12%), 0.1);
     border-color: rgba(lighten($error-red, 12%), 0.5);
-  }
-}
-
-.account__header__fields {
-  padding: 0;
-  margin: 15px -15px -15px;
-  border: 0 none;
-  border-top: 1px solid lighten($ui-base-color, 4%);
-  border-bottom: 1px solid lighten($ui-base-color, 4%);
-  font-size: 14px;
-  line-height: 20px;
-
-  dl {
-    display: flex;
-    border-bottom: 1px solid lighten($ui-base-color, 4%);
-  }
-
-  dt,
-  dd {
-    box-sizing: border-box;
-    padding: 14px;
-    text-align: center;
-    max-height: 48px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  dt {
-    font-weight: 500;
-    width: 120px;
-    flex: 0 0 auto;
-    color: $secondary-text-color;
-    background: rgba(darken($ui-base-color, 8%), 0.5);
-  }
-
-  dd {
-    flex: 1 1 auto;
-    color: $darker-text-color;
-  }
-
-  a {
-    color: $highlight-text-color;
-    text-decoration: none;
-
-    &:hover,
-    &:focus,
-    &:active {
-      text-decoration: underline;
-    }
-  }
-
-  dl:last-child {
-    border-bottom: 0;
   }
 }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SendInteractionService, type: :service do
+RSpec.describe SendInteractionService do
   subject { SendInteractionService.new }
 
   it 'sends an XML envelope to the Salmon end point of remote user'

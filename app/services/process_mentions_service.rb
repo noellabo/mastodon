@@ -10,63 +10,59 @@ class ProcessMentionsService < BaseService
   def call(status)
     return unless status.local?
 
-    @status  = status
-    mentions = []
-
     status.text = status.text.gsub(Account::MENTION_RE) do |match|
-      username, domain  = Regexp.last_match(1).split('@')
+      username, domain  = $1.split('@')
       mentioned_account = Account.find_remote(username, domain)
 
-      if mention_undeliverable?(mentioned_account)
+      if mention_undeliverable?(status, mentioned_account)
         begin
-          mentioned_account = resolve_account_service.call(Regexp.last_match(1))
-        rescue Goldfinger::Error, HTTP::Error, OpenSSL::SSL::SSLError, Mastodon::UnexpectedResponseError
+          mentioned_account = resolve_account_service.call($1)
+        rescue Goldfinger::Error, HTTP::Error
           mentioned_account = nil
         end
       end
 
-      next match if mention_undeliverable?(mentioned_account)
+      mentioned_account ||= Account.find_remote(username, domain)
 
-      mentions << mentioned_account.mentions.where(status: status).first_or_create(status: status)
+      next match if mention_undeliverable?(status, mentioned_account)
 
+      mentioned_account.mentions.where(status: status).first_or_create(status: status)
       "@#{mentioned_account.acct}"
     end
 
     status.save!
 
-    mentions.each { |mention| create_notification(mention) }
+    status.mentions.includes(:account).each do |mention|
+      create_notification(status, mention)
+    end
   end
 
   private
 
-  def mention_undeliverable?(mentioned_account)
-    mentioned_account.nil? || (!mentioned_account.local? && mentioned_account.ostatus? && @status.stream_entry.hidden?)
+  def mention_undeliverable?(status, mentioned_account)
+    mentioned_account.nil? || (!mentioned_account.local? && mentioned_account.ostatus? && status.stream_entry.hidden?)
   end
 
-  def create_notification(mention)
-    time_limit = TimeLimit.from_status(@status)
+  def create_notification(status, mention)
+    time_limit = TimeLimit.from_status(status)
 
     mentioned_account = mention.account
 
     if mentioned_account.local?
-      LocalNotificationWorker.perform_async(mention.id)
-    elsif time_limit.nil? && mentioned_account.ostatus? && !@status.stream_entry.hidden?
-      NotificationWorker.perform_async(ostatus_xml, @status.account_id, mentioned_account.id)
+      NotifyService.new.call(mentioned_account, mention)
+    elsif time_limit.nil? && mentioned_account.ostatus? && !status.stream_entry.hidden?
+      NotificationWorker.perform_async(stream_entry_to_xml(status.stream_entry), status.account_id, mentioned_account.id)
     elsif time_limit.nil? && mentioned_account.activitypub?
-      ActivityPub::DeliveryWorker.perform_async(activitypub_json, mention.status.account_id, mentioned_account.inbox_url)
+      ActivityPub::DeliveryWorker.perform_async(build_json(mention.status), mention.status.account_id, mentioned_account.inbox_url)
     end
   end
 
-  def ostatus_xml
-    @ostatus_xml ||= stream_entry_to_xml(@status.stream_entry)
-  end
-
-  def activitypub_json
-    @activitypub_json ||= Oj.dump(ActivityPub::LinkedDataSignature.new(ActiveModelSerializers::SerializableResource.new(
-      @status,
+  def build_json(status)
+    Oj.dump(ActivityPub::LinkedDataSignature.new(ActiveModelSerializers::SerializableResource.new(
+      status,
       serializer: ActivityPub::ActivitySerializer,
       adapter: ActivityPub::Adapter
-    ).as_json).sign!(@status.account))
+    ).as_json).sign!(status.account))
   end
 
   def resolve_account_service

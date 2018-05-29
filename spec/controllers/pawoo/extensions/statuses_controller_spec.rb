@@ -15,11 +15,7 @@ describe StatusesController, type: :controller do
 
     it 'sets the link for the previous status' do
       previous_status = Fabricate(:status)
-
-      # Previous statuses in the shown tree should be ignored.
-      previous_status_in_tree = Fabricate(:status, account: previous_status.account)
-
-      status = Fabricate(:status, account: previous_status.account, in_reply_to_id: previous_status_in_tree.id)
+      status = Fabricate(:status, account: previous_status.account)
 
       get :show, params: { account_username: status.account.username, id: status }
 
@@ -28,10 +24,6 @@ describe StatusesController, type: :controller do
 
     it 'sets the link for the next status' do
       status = Fabricate(:status)
-
-      # Next statuses in the shown tree should be ignored.
-      next_status_in_tree = Fabricate(:status, account: status.account, in_reply_to_id: status.id)
-
       next_status = Fabricate(:status, account: status.account)
 
       get :show, params: { account_username: status.account.username, id: status }

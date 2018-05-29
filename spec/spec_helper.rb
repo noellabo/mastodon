@@ -1,12 +1,11 @@
+require 'simplecov'
+
 GC.disable
 
-if ENV['DISABLE_SIMPLECOV'] != 'true'
-  require 'simplecov'
-  SimpleCov.start 'rails' do
-    add_group 'Services', 'app/services'
-    add_group 'Presenters', 'app/presenters'
-    add_group 'Validators', 'app/validators'
-  end
+SimpleCov.start 'rails' do
+  add_group 'Services', 'app/services'
+  add_group 'Presenters', 'app/presenters'
+  add_group 'Validators', 'app/validators'
 end
 
 gc_counter = -1

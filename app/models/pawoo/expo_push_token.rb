@@ -3,8 +3,8 @@
 #
 # Table name: pawoo_expo_push_tokens
 #
-#  id      :bigint(8)        not null, primary key
-#  user_id :bigint(8)        not null
+#  id      :integer          not null, primary key
+#  user_id :integer          not null
 #  token   :string           not null
 #
 

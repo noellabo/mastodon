@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BootstrapTimelineService, type: :service do
+RSpec.describe BootstrapTimelineService do
   subject { described_class.new }
 
   describe '#call' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ResolveAccountService, type: :service do
+RSpec.describe ResolveAccountService do
   subject { described_class.new }
 
   before do
@@ -107,21 +107,6 @@ RSpec.describe ResolveAccountService, type: :service do
       expect(account.activitypub?).to eq true
       expect(account.domain).to eq 'ap.example.com'
       expect(account.inbox_url).to eq 'https://ap.example.com/users/foo/inbox'
-    end
-
-    context 'with multiple types' do
-      before do
-        stub_request(:get, "https://ap.example.com/users/foo").to_return(request_fixture('activitypub-actor-individual.txt'))
-      end
-
-      it 'returns new remote account' do
-        account = subject.call('foo@ap.example.com')
-
-        expect(account.activitypub?).to eq true
-        expect(account.domain).to eq 'ap.example.com'
-        expect(account.inbox_url).to eq 'https://ap.example.com/users/foo/inbox'
-        expect(account.actor_type).to eq 'Person'
-      end
     end
 
     pending

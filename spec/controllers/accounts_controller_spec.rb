@@ -42,7 +42,7 @@ RSpec.describe AccountsController, type: :controller do
       end
 
       it 'returns http success' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
 
       it 'returns correct format' do

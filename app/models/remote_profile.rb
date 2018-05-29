@@ -41,10 +41,6 @@ class RemoteProfile
     @header ||= link_href_from_xml(author, 'header')
   end
 
-  def emojis
-    @emojis ||= author.xpath('./xmlns:link[@rel="emoji"]', xmlns: OStatus::TagManager::XMLNS)
-  end
-
   def locked?
     scope == 'private'
   end

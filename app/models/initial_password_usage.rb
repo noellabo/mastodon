@@ -2,8 +2,8 @@
 #
 # Table name: initial_password_usages
 #
-#  id      :bigint(8)        not null, primary key
-#  user_id :bigint(8)        not null
+#  id      :integer          not null, primary key
+#  user_id :integer          not null
 #
 
 class InitialPasswordUsage < ApplicationRecord

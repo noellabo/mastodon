@@ -22,7 +22,8 @@ Paperclip::Attachment.default_options.merge!(
 )
 
 if ENV['S3_ENABLED'] == 'true'
-  require 'aws-sdk-s3'
+  require 'aws-sdk'
+  Aws.eager_autoload!(services: %w(S3))
 
   s3_region   = ENV.fetch('S3_REGION')   { 'us-east-1' }
   s3_protocol = ENV.fetch('S3_PROTOCOL') { 'https' }
@@ -68,7 +69,6 @@ elsif ENV['SWIFT_ENABLED'] == 'true'
     fog_credentials: {
       provider: 'OpenStack',
       openstack_username: ENV['SWIFT_USERNAME'],
-      openstack_project_id: ENV['SWIFT_PROJECT_ID'],
       openstack_project_name: ENV['SWIFT_TENANT'],
       openstack_tenant: ENV['SWIFT_TENANT'], # Some OpenStack-v2 ignores project_name but needs tenant
       openstack_api_key: ENV['SWIFT_PASSWORD'],

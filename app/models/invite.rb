@@ -3,8 +3,8 @@
 #
 # Table name: invites
 #
-#  id         :bigint(8)        not null, primary key
-#  user_id    :bigint(8)        not null
+#  id         :integer          not null, primary key
+#  user_id    :integer          not null
 #  code       :string           default(""), not null
 #  expires_at :datetime
 #  max_uses   :integer

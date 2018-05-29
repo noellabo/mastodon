@@ -17,7 +17,7 @@ RSpec.describe Api::V1::StatusesController, type: :controller do
 
       it 'returns http success' do
         get :show, params: { id: status.id }
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
     end
 
@@ -30,7 +30,7 @@ RSpec.describe Api::V1::StatusesController, type: :controller do
 
       it 'returns http success' do
         get :context, params: { id: status.id }
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe Api::V1::StatusesController, type: :controller do
       end
 
       it 'returns http success' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe Api::V1::StatusesController, type: :controller do
       end
 
       it 'returns http success' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
 
       it 'removes the status' do
@@ -72,7 +72,7 @@ RSpec.describe Api::V1::StatusesController, type: :controller do
       describe 'GET #show' do
         it 'returns http unautharized' do
           get :show, params: { id: status.id }
-          expect(response).to have_http_status(404)
+          expect(response).to have_http_status(:missing)
         end
       end
 
@@ -83,14 +83,14 @@ RSpec.describe Api::V1::StatusesController, type: :controller do
 
         it 'returns http unautharized' do
           get :context, params: { id: status.id }
-          expect(response).to have_http_status(404)
+          expect(response).to have_http_status(:missing)
         end
       end
 
       describe 'GET #card' do
         it 'returns http unautharized' do
           get :card, params: { id: status.id }
-          expect(response).to have_http_status(404)
+          expect(response).to have_http_status(:missing)
         end
       end
     end
@@ -101,7 +101,7 @@ RSpec.describe Api::V1::StatusesController, type: :controller do
       describe 'GET #show' do
         it 'returns http success' do
           get :show, params: { id: status.id }
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:success)
         end
       end
 
@@ -112,14 +112,14 @@ RSpec.describe Api::V1::StatusesController, type: :controller do
 
         it 'returns http success' do
           get :context, params: { id: status.id }
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:success)
         end
       end
 
       describe 'GET #card' do
         it 'returns http success' do
           get :card, params: { id: status.id }
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:success)
         end
       end
     end

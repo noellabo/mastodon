@@ -28,13 +28,11 @@ const mapStateToProps = state => ({
   spoiler_text: state.getIn(['compose', 'spoiler_text']),
   privacy: state.getIn(['compose', 'privacy']),
   focusDate: state.getIn(['compose', 'focusDate']),
-  caretPosition: state.getIn(['compose', 'caretPosition']),
   preselectDate: state.getIn(['compose', 'preselectDate']),
   is_submitting: state.getIn(['compose', 'is_submitting']),
   is_uploading: state.getIn(['compose', 'is_uploading']),
   showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
   anyMedia: state.getIn(['compose', 'media_attachments']).size > 0,
-  pawooKeepCaretPosition: state.getIn(['compose', 'pawooKeepCaretPosition']),
 });
 
 const mapDispatchToProps = (dispatch) => ({

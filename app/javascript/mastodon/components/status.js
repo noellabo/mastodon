@@ -33,8 +33,6 @@ export default class Status extends ImmutablePureComponent {
     onFavourite: PropTypes.func,
     onReblog: PropTypes.func,
     onDelete: PropTypes.func,
-    onDirect: PropTypes.func,
-    onMention: PropTypes.func,
     onPin: PropTypes.func,
     onOpenMedia: PropTypes.func,
     onOpenVideo: PropTypes.func,
@@ -98,8 +96,8 @@ export default class Status extends ImmutablePureComponent {
     return <div className='media-spoiler-video' style={{ height: 132 }} />;
   }
 
-  handleOpenVideo = (media, startTime) => {
-    this.props.onOpenVideo(media, startTime);
+  handleOpenVideo = startTime => {
+    this.props.onOpenVideo(this._properStatus().getIn(['media_attachments', 0]), startTime);
   }
 
   handleHotkeyReply = e => {
@@ -130,16 +128,12 @@ export default class Status extends ImmutablePureComponent {
     this.context.pawooPushHistory(`/accounts/${this._properStatus().getIn(['account', 'id'])}`);
   }
 
-  handleHotkeyMoveUp = e => {
-    this.props.onMoveUp(this.props.status.get('id'), e.target.getAttribute('data-featured'));
+  handleHotkeyMoveUp = () => {
+    this.props.onMoveUp(this.props.status.get('id'));
   }
 
-  handleHotkeyMoveDown = e => {
-    this.props.onMoveDown(this.props.status.get('id'), e.target.getAttribute('data-featured'));
-  }
-
-  handleHotkeyToggleHidden = () => {
-    this.props.onToggleHidden(this._properStatus());
+  handleHotkeyMoveDown = () => {
+    this.props.onMoveDown(this.props.status.get('id'));
   }
 
   handleHotkeyPawooOpenOtherColumn = () => {
@@ -241,7 +235,7 @@ export default class Status extends ImmutablePureComponent {
         );
       } else {
         media = (
-          <Bundle fetchComponent={MediaGallery} loading={this.renderLoadingMediaGallery}>
+          <Bundle fetchComponent={MediaGallery} loading={this.renderLoadingMediaGallery} >
             {Component => <Component media={attachments} sensitive={status.get('sensitive')} onOpenMedia={this.props.onOpenMedia} pawooOnClick={this.handleClick} pawooScale={pawooMediaScale} pawooWide={pawooWideMedia} />}
           </Bundle>
         );
@@ -263,13 +257,12 @@ export default class Status extends ImmutablePureComponent {
       openProfile: this.handleHotkeyOpenProfile,
       moveUp: this.handleHotkeyMoveUp,
       moveDown: this.handleHotkeyMoveDown,
-      toggleHidden: this.handleHotkeyToggleHidden,
       pawooOpenOtherColumn: this.handleHotkeyPawooOpenOtherColumn,
     };
 
     return (
       <HotKeys handlers={handlers}>
-        <div className={classNames('status__wrapper', `status__wrapper-${status.get('visibility')}`, { focusable: !this.props.muted })} tabIndex={this.props.muted ? null : 0} data-featured={featured ? 'true' : null}>
+        <div className={classNames('status__wrapper', `status__wrapper-${status.get('visibility')}`, { focusable: !this.props.muted, featured })} tabIndex={this.props.muted ? null : 0}>
           {prepend}
 
           <div className={classNames('status', `status-${status.get('visibility')}`, { muted: this.props.muted })} data-id={status.get('id')}>

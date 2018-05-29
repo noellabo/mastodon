@@ -6,7 +6,7 @@ RSpec.describe PixivCard, type: :model do
       instance = described_class.new
       instance.valid?
 
-      expect(instance.errors).to be_added(:status, :blank)
+      expect(instance.errors).to be_added(:status, :required)
       expect(instance.errors).to be_added(:url, :blank)
     end
   end

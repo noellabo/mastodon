@@ -18,7 +18,7 @@ describe Settings::TwoFactorAuthenticationsController do
           user.update(otp_required_for_login: true)
           get :show
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:success)
         end
       end
 
@@ -27,7 +27,7 @@ describe Settings::TwoFactorAuthenticationsController do
           user.update(otp_required_for_login: false)
           get :show
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:success)
         end
       end
     end

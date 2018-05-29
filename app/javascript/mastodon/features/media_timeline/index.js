@@ -5,18 +5,21 @@ import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
 import Column from '../../components/column';
 import ColumnHeader from '../../components/column_header';
-import { expandCommunityTimeline } from '../../actions/timelines';
+import {
+  refreshMediaTimeline,
+  expandMediaTimeline,
+} from '../../../pawoo/actions/extensions/timelines';
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import ColumnSettingsContainer from './containers/column_settings_container';
-import { connectCommunityStream } from '../../actions/streaming';
+import { connectMediaStream } from '../../actions/streaming';
 
 const messages = defineMessages({
   title: { id: 'column.media', defaultMessage: 'Media timeline' },
 });
 
 const mapStateToProps = state => ({
-  hasUnread: state.getIn(['timelines', 'community:media', 'unread']) > 0,
+  hasUnread: state.getIn(['timelines', 'media', 'unread']) > 0,
   streamingAPIBaseURL: state.getIn(['meta', 'streaming_api_base_url']),
   accessToken: state.getIn(['meta', 'access_token']),
 });
@@ -54,8 +57,8 @@ class MediaTimeline extends React.PureComponent {
   componentDidMount () {
     const { dispatch } = this.props;
 
-    dispatch(expandCommunityTimeline({ onlyMedia: true }));
-    this.disconnect = dispatch(connectCommunityStream({ onlyMedia: true }));
+    dispatch(refreshMediaTimeline());
+    this.disconnect = dispatch(connectMediaStream());
   }
 
   componentWillUnmount () {
@@ -70,7 +73,7 @@ class MediaTimeline extends React.PureComponent {
   }
 
   handleLoadMore = () => {
-    this.props.dispatch(expandCommunityTimeline({ onlyMedia: true }));
+    this.props.dispatch(expandMediaTimeline());
   }
 
   render () {
@@ -89,17 +92,14 @@ class MediaTimeline extends React.PureComponent {
           pinned={pinned}
           multiColumn={multiColumn}
           pawoo={pawoo}
-          pawooUrl='/timelines/public/media'
         >
           <ColumnSettingsContainer />
         </ColumnHeader>
-
         <StatusListContainer
-          timelineId='community:media'
-          scrollKey={`media_timeline-${columnId}`}
-          onLoadMore={this.handleLoadMore}
+          timelineId='media'
           loadMore={this.handleLoadMore}
-          emptyMessage={<FormattedMessage id='empty_column.community' defaultMessage='The local timeline is empty. Write something publicly to get the ball rolling!' />}
+          scrollKey={`media_timeline-${columnId}`}
+          emptyMessage={<FormattedMessage id='empty_column.public' defaultMessage='There is nothing here! Write something publicly, or manually follow users from other instances to fill it up' />}
         />
       </Column>
     );

@@ -10,7 +10,6 @@ export default class EmbedModal extends ImmutablePureComponent {
   static propTypes = {
     url: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
-    onError: PropTypes.func.isRequired,
     intl: PropTypes.object.isRequired,
   }
 
@@ -36,8 +35,6 @@ export default class EmbedModal extends ImmutablePureComponent {
       iframeDocument.body.style.margin = 0;
       this.iframe.width  = iframeDocument.body.scrollWidth;
       this.iframe.height = iframeDocument.body.scrollHeight;
-    }).catch(error => {
-      this.props.onError(error);
     });
   }
 

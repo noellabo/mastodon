@@ -3,9 +3,9 @@
 #
 # Table name: conversation_mutes
 #
-#  id              :bigint(8)        not null, primary key
-#  conversation_id :bigint(8)        not null
-#  account_id      :bigint(8)        not null
+#  id              :integer          not null, primary key
+#  conversation_id :integer          not null
+#  account_id      :integer          not null
 #
 
 class ConversationMute < ApplicationRecord

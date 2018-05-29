@@ -52,7 +52,7 @@ export default class ReplyIndicator extends ImmutablePureComponent {
     return (
       <div className='reply-indicator'>
         <div className='reply-indicator__header'>
-          <div className='reply-indicator__cancel'><IconButton title={intl.formatMessage(messages.cancel)} icon='times' onClick={this.handleClick} inverted /></div>
+          <div className='reply-indicator__cancel'><IconButton title={intl.formatMessage(messages.cancel)} icon='times' onClick={this.handleClick} /></div>
 
           <a href={status.getIn(['account', 'url'])} onClick={this.handleAccountClick} className='reply-indicator__display-name'>
             <div className='reply-indicator__display-avatar'><Avatar account={status.get('account')} size={24} /></div>

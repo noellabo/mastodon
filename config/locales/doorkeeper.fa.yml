@@ -3,72 +3,72 @@ fa:
   activerecord:
     attributes:
       doorkeeper/application:
-        name: نام برنامه
-        redirect_uri: نشانی تغییرمسیر
-        scopes: محدوده
-        website: وبگاه برنامه
+        name: Application name
+        redirect_uri: Redirect URI
+        scopes: Scopes
+        website: Application website
     errors:
       models:
         doorkeeper/application:
           attributes:
             redirect_uri:
-              fragment_present: نمی‌تواند چندتکه باشد.
-              invalid_uri: باید یک نشانی معتبر باشد.
-              relative_uri: باید یک نشانی مطلق باشد.
-              secured_uri: باید یک نشانی HTTPS/SSL باشد.
+              fragment_present: cannot contain a fragment.
+              invalid_uri: must be a valid URI.
+              relative_uri: must be an absolute URI.
+              secured_uri: must be an HTTPS/SSL URI.
   doorkeeper:
     applications:
       buttons:
-        authorize: اجازه دادن
-        cancel: لغو
-        destroy: پاک کردن
-        edit: ویرایش
+        authorize: Authorize
+        cancel: Cancel
+        destroy: Destroy
+        edit: Edit
         submit: Submit
       confirmations:
-        destroy: آیا مطمئن هستید؟
+        destroy: Are you sure?
       edit:
-        title: ویرایش برنامه
+        title: Edit application
       form:
-        error: اوخ! ببینید چیزی را اشتباهی در فرم وارد نکرده‌اید؟
+        error: Whoops! Check your form for possible errors
       help:
-        native_redirect_uri: برای آزمایش‌های محلی %{native_redirect_uri} را به کار ببرید
-        redirect_uri: هر URI را در یک سطر جدا بنویسید
-        scopes: دامنه‌ها را با فاصلهٔ خالی از هم جدا کنید. برای به‌کاربردن دامنهٔ پیش‌فرض خالی بگذارید.
+        native_redirect_uri: Use %{native_redirect_uri} for local tests
+        redirect_uri: Use one line per URI
+        scopes: Separate scopes with spaces. Leave blank to use the default scopes.
       index:
-        application: برنامه
-        callback_url: نشانی Callback
+        application: Application
+        callback_url: Callback URL
         delete: Delete
         name: Name
-        new: برنامهٔ تازه
-        scopes: دامنه‌ها
-        show: نمایش
-        title: برنامه‌های شما
+        new: New application
+        scopes: Scopes
+        show: Show
+        title: Your applications
       new:
-        title: برنامهٔ تازه
+        title: New application
       show:
         actions: Actions
-        application_id: کلید کلاینت
-        callback_urls: نشانی‌های Callabck
-        scopes: دامنه‌ها
-        secret: کد سری کلاینت
-        title: 'برنامه: %{name}'
+        application_id: Client key
+        callback_urls: Callback URLs
+        scopes: Scopes
+        secret: Client secret
+        title: 'Application: %{name}'
     authorizations:
       buttons:
-        authorize: اجازه دادن
-        deny: لغو اجازه
+        authorize: Authorize
+        deny: Deny
       error:
-        title: خطایی رخ داد
+        title: An error has occurred
       new:
-        able_to: اجازه خواهد داشت
-        prompt: برنامهٔ %{client_name} می‌خواهد به حساب شما دسترسی داشته باشد
-        title: نیاز به اجازه دادن
+        able_to: It will be able to
+        prompt: Application %{client_name} requests access to your account
+        title: Authorization required
       show:
-        title: این کد مجوز را کپی کرده و در برنامه وارد کنید.
+        title: Copy this authorization code and paste it to the application.
     authorized_applications:
       buttons:
-        revoke: فسخ
+        revoke: Revoke
       confirmations:
-        revoke: آیا مطمئن هستید؟
+        revoke: Are you sure?
       index:
         application: برنامه
         created_at: مجازشده از
@@ -77,7 +77,7 @@ fa:
         title: برنامه‌های مجاز
     errors:
       messages:
-        access_denied: دارندهٔ منبع یا سرور اجازه دهنده درخواست را نپذیرفت.
+        access_denied: The resource owner or authorization server denied the request.
         credential_flow_not_configured: Resource Owner Password Credentials flow failed due to Doorkeeper.configure.resource_owner_from_credentials being unconfigured.
         invalid_client: Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method.
         invalid_grant: The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.
@@ -86,35 +86,34 @@ fa:
         invalid_resource_owner: The provided resource owner credentials are not valid, or resource owner cannot be found
         invalid_scope: The requested scope is invalid, unknown, or malformed.
         invalid_token:
-          expired: کد دسترسی منقضی شده است
-          revoked: کد دسترسی فسخ شده است
-          unknown: کد دسترسی معتبر نیست
+          expired: The access token expired
+          revoked: The access token was revoked
+          unknown: The access token is invalid
         resource_owner_authenticator_not_configured: Resource Owner find failed due to Doorkeeper.configure.resource_owner_authenticator being unconfiged.
-        server_error: خطای پیش‌بینی‌نشده‌ای برای سرور اجازه‌دهنده رخ داد که جلوی اجرای این درخواست را گرفت.
-        temporarily_unavailable: سرور اجازه‌دهنده به دلیل بار زیاد یا تعمیرات سرور هم‌اینک نمی‌تواند درخواست شما را بررسی کند.
+        server_error: The authorization server encountered an unexpected condition which prevented it from fulfilling the request.
+        temporarily_unavailable: The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.
         unauthorized_client: The client is not authorized to perform this request using this method.
         unsupported_grant_type: The authorization grant type is not supported by the authorization server.
         unsupported_response_type: The authorization server does not support this response type.
     flash:
       applications:
         create:
-          notice: برنامه ساخته شد.
+          notice: Application created.
         destroy:
-          notice: برنامه حذف شد.
+          notice: Application deleted.
         update:
-          notice: برنامه به‌روز شد.
+          notice: Application updated.
       authorized_applications:
         destroy:
-          notice: برنامه فسخ شد.
+          notice: Application revoked.
     layouts:
       admin:
         nav:
-          applications: برنامه‌ها
-          oauth2_provider: فراهم‌کنندهٔ ورود دومرحله‌ای
+          applications: Applications
+          oauth2_provider: OAuth2 Provider
       application:
-        title: درخواست اجازهٔ OAuth
+        title: OAuth authorization required
     scopes:
-      follow: پیگیری، مسدودسازی، لغو مسدودسازی، و لغو پیگیری حساب‌ها
-      push: برای حساب خود اعلان‌های لحظه‌ای دریافت کنید
-      read: خواندن اطلاعات حساب شما
-      write: انتشار مطالب از طرف شما
+      follow: follow, block, unblock and unfollow accounts
+      read: read your account's data
+      write: post on your behalf

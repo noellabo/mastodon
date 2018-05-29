@@ -1,5 +1,4 @@
 import api from '../../api';
-import { decode as decodeBase64 } from '../../utils/base64';
 import { pushNotificationsSetting } from '../../settings';
 import { setBrowserSupport, setSubscription, clearSubscription } from './setter';
 import { me } from '../../initial_state';
@@ -11,7 +10,13 @@ const urlBase64ToUint8Array = (base64String) => {
     .replace(/\-/g, '+')
     .replace(/_/g, '/');
 
-  return decodeBase64(base64);
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 };
 
 const getApplicationServerKey = () => document.querySelector('[name="applicationServerKey"]').getAttribute('content');
@@ -50,6 +55,13 @@ const supportsPushNotifications = ('serviceWorker' in navigator && 'PushManager'
 export function register () {
   return (dispatch, getState) => {
     dispatch(setBrowserSupport(supportsPushNotifications));
+
+    if (me && !pushNotificationsSetting.get(me)) {
+      const alerts = getState().getIn(['push_notifications', 'alerts']);
+      if (alerts) {
+        pushNotificationsSetting.set(me, { alerts: alerts });
+      }
+    }
 
     if (supportsPushNotifications) {
       if (!getApplicationServerKey()) {
@@ -104,11 +116,14 @@ export function register () {
             pushNotificationsSetting.remove(me);
           }
 
-          return getRegistration()
-            .then(getPushSubscription)
-            .then(unsubscribe);
-        })
-        .catch(console.warn);
+          try {
+            getRegistration()
+              .then(getPushSubscription)
+              .then(unsubscribe);
+          } catch (e) {
+
+          }
+        });
     } else {
       console.warn('Your browser does not support Web Push Notifications.');
     }
@@ -128,6 +143,6 @@ export function saveSettings() {
       if (me) {
         pushNotificationsSetting.set(me, data);
       }
-    }).catch(console.warn);
+    });
   };
 }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ActivityPub::FetchRemoteAccountService, type: :service do
+RSpec.describe ActivityPub::FetchRemoteAccountService do
   subject { ActivityPub::FetchRemoteAccountService.new }
 
   let!(:actor) do

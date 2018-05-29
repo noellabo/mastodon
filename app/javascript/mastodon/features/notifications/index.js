@@ -13,7 +13,6 @@ import { createSelector } from 'reselect';
 import { List as ImmutableList } from 'immutable';
 import { debounce } from 'lodash';
 import ScrollableList from '../../components/scrollable_list';
-import LoadGap from '../../components/load_gap';
 
 const messages = defineMessages({
   title: { id: 'column.notifications', defaultMessage: 'Notifications' },
@@ -22,13 +21,13 @@ const messages = defineMessages({
 const getNotifications = createSelector([
   state => ImmutableList(state.getIn(['settings', 'notifications', 'shows']).filter(item => !item).keys()),
   state => state.getIn(['notifications', 'items']),
-], (excludedTypes, notifications) => notifications.filterNot(item => item !== null && excludedTypes.includes(item.get('type'))));
+], (excludedTypes, notifications) => notifications.filterNot(item => excludedTypes.includes(item.get('type'))));
 
 const mapStateToProps = state => ({
   notifications: getNotifications(state),
   isLoading: state.getIn(['notifications', 'isLoading'], true),
   isUnread: state.getIn(['notifications', 'unread']) > 0,
-  hasMore: state.getIn(['notifications', 'hasMore']),
+  hasMore: !!state.getIn(['notifications', 'next']),
 });
 
 @connect(mapStateToProps)
@@ -53,19 +52,14 @@ export default class Notifications extends React.PureComponent {
   };
 
   componentWillUnmount () {
-    this.handleLoadOlder.cancel();
+    this.handleLoadMore.cancel();
     this.handleScrollToTop.cancel();
     this.handleScroll.cancel();
     this.props.dispatch(scrollTopNotifications(false));
   }
 
-  handleLoadGap = (maxId) => {
-    this.props.dispatch(expandNotifications({ maxId }));
-  };
-
-  handleLoadOlder = debounce(() => {
-    const last = this.props.notifications.last();
-    this.props.dispatch(expandNotifications({ maxId: last && last.get('id') }));
+  handleLoadMore = debounce(() => {
+    this.props.dispatch(expandNotifications());
   }, 300, { leading: true });
 
   handleScrollToTop = debounce(() => {
@@ -100,12 +94,12 @@ export default class Notifications extends React.PureComponent {
   }
 
   handleMoveUp = id => {
-    const elementIndex = this.props.notifications.findIndex(item => item !== null && item.get('id') === id) - 1;
+    const elementIndex = this.props.notifications.findIndex(item => item.get('id') === id) - 1;
     this._selectChild(elementIndex);
   }
 
   handleMoveDown = id => {
-    const elementIndex = this.props.notifications.findIndex(item => item !== null && item.get('id') === id) + 1;
+    const elementIndex = this.props.notifications.findIndex(item => item.get('id') === id) + 1;
     this._selectChild(elementIndex);
   }
 
@@ -127,14 +121,7 @@ export default class Notifications extends React.PureComponent {
     if (isLoading && this.scrollableContent) {
       scrollableContent = this.scrollableContent;
     } else if (notifications.size > 0 || hasMore) {
-      scrollableContent = notifications.map((item, index) => item === null ? (
-        <LoadGap
-          key={'gap:' + notifications.getIn([index + 1, 'id'])}
-          disabled={isLoading}
-          maxId={index > 0 ? notifications.getIn([index - 1, 'id']) : null}
-          onClick={this.handleLoadGap}
-        />
-      ) : (
+      scrollableContent = notifications.map((item) => (
         <NotificationContainer
           key={item.get('id')}
           notification={item}
@@ -155,7 +142,7 @@ export default class Notifications extends React.PureComponent {
         isLoading={isLoading}
         hasMore={hasMore}
         emptyMessage={emptyMessage}
-        onLoadMore={this.handleLoadOlder}
+        onLoadMore={this.handleLoadMore}
         onScrollToTop={this.handleScrollToTop}
         onScroll={this.handleScroll}
         shouldUpdateScroll={shouldUpdateScroll}

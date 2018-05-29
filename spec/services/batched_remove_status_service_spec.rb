@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BatchedRemoveStatusService, type: :service do
+RSpec.describe BatchedRemoveStatusService do
   subject { BatchedRemoveStatusService.new }
 
   let!(:alice)  { Fabricate(:account) }

@@ -3,10 +3,10 @@
 #
 # Table name: pixiv_cards
 #
-#  id        :bigint(8)        not null, primary key
+#  id        :integer          not null, primary key
+#  status_id :integer          not null
 #  url       :string           not null
 #  image_url :string
-#  status_id :bigint(8)        not null
 #
 
 class PixivCard < ApplicationRecord

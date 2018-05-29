@@ -1,4 +1,3 @@
-import { importFetchedStatuses } from '../../mastodon/actions/importer';
 import api, { getLinks } from '../../mastodon/api';
 
 export const SCHEDULED_STATUSES_FETCH_REQUEST = 'PAWOO_SCHEDULED_STATUSES_FETCH_REQUEST';
@@ -17,8 +16,6 @@ export function fetchScheduledStatuses() {
 
     api(getState).get('/api/v1/schedules').then(response => {
       const next = getLinks(response).refs.find(link => link.rel === 'next');
-
-      dispatch(importFetchedStatuses(response.data));
       dispatch(fetchScheduledStatusesSuccess(response.data, next ? next.uri : null));
     }).catch(error => {
       dispatch(fetchScheduledStatusesFail(error));
@@ -49,8 +46,6 @@ export function fetchScheduledStatusesFail(error) {
 
 export function addScheduledStatuses(statuses) {
   return (dispatch, getState) => {
-    dispatch(importFetchedStatuses(statuses));
-
     dispatch({
       type: SCHEDULED_STATUSES_ADDITION,
       statuses,
@@ -71,8 +66,6 @@ export function expandScheduledStatuses() {
 
     api(getState).get(url).then(response => {
       const next = getLinks(response).refs.find(link => link.rel === 'next');
-
-      dispatch(importFetchedStatuses(response.data));
       dispatch(expandScheduledStatusesSuccess(response.data, next ? next.uri : null));
     }).catch(error => {
       dispatch(expandScheduledStatusesFail(error));

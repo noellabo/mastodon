@@ -54,7 +54,7 @@ $button-icon-scale-ration-on-pc: 0.85;
   }
 }
 
-.status__wrapper[data-featured="true"] {
+.status__wrapper.featured {
   background: rgba(lighten($ui-base-color, 4%), 0.9);
 }
 
@@ -368,7 +368,6 @@ $button-icon-scale-ration-on-pc: 0.85;
   .status__content {
     padding: 0;
     white-space: normal;
-    word-break: break-all;
   }
 
   .video-player {

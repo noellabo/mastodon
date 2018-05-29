@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'sidekiq-bulk'
+
 class FanOutOnWriteService < BaseService
   # Push a status into home and mentions feeds
   # @param [Status] status
@@ -8,11 +10,8 @@ class FanOutOnWriteService < BaseService
 
     deliver_to_self(status) if status.account.local?
 
-    render_anonymous_payload(status)
-
     if status.direct_visibility?
       deliver_to_mentioned_followers(status)
-      deliver_to_direct_timelines(status)
     else
       deliver_to_followers(status)
       deliver_to_lists(status)
@@ -20,12 +19,12 @@ class FanOutOnWriteService < BaseService
 
     return if status.account.silenced? || !status.public_visibility? || status.reblog?
 
+    render_anonymous_payload(status)
     deliver_to_hashtags(status)
 
     return if status.reply? && status.in_reply_to_account_id != status.account_id
 
     deliver_to_public(status)
-    deliver_to_media(status) if status.media_attachments.any?
   end
 
   private
@@ -38,7 +37,7 @@ class FanOutOnWriteService < BaseService
   def deliver_to_followers(status)
     Rails.logger.debug "Delivering status #{status.id} to followers"
 
-    followers = status.account.followers.where(domain: nil).joins(:user).where('users.current_sign_in_at > ?', User::ACTIVE_DURATION.ago).select(:id).reorder(nil)
+    followers = status.account.followers.where(domain: nil).joins(:user).where('users.current_sign_in_at > ?', 14.days.ago).select(:id).reorder(nil)
 
     batch_size = Rails.configuration.x.fan_out_job_batch_size
     if batch_size > 1
@@ -59,7 +58,7 @@ class FanOutOnWriteService < BaseService
   def deliver_to_lists(status)
     Rails.logger.debug "Delivering status #{status.id} to lists"
 
-    lists = status.account.lists.joins(account: :user).where('users.current_sign_in_at > ?', User::ACTIVE_DURATION.days.ago).select(:id).reorder(nil)
+    lists = status.account.lists.joins(account: :user).where('users.current_sign_in_at > ?', 14.days.ago).select(:id).reorder(nil)
 
     batch_size = Rails.configuration.x.fan_out_job_batch_size
     if batch_size > 1
@@ -106,21 +105,5 @@ class FanOutOnWriteService < BaseService
 
     Redis.current.publish('timeline:public', @payload)
     Redis.current.publish('timeline:public:local', @payload) if status.local?
-  end
-
-  def deliver_to_media(status)
-    Rails.logger.debug "Delivering status #{status.id} to media timeline"
-
-    Redis.current.publish('timeline:public:media', @payload)
-    Redis.current.publish('timeline:public:local:media', @payload) if status.local?
-  end
-
-  def deliver_to_direct_timelines(status)
-    Rails.logger.debug "Delivering status #{status.id} to direct timelines"
-
-    status.mentions.includes(:account).each do |mention|
-      Redis.current.publish("timeline:direct:#{mention.account.id}", @payload) if mention.account.local?
-    end
-    Redis.current.publish("timeline:direct:#{status.account.id}", @payload) if status.account.local?
   end
 end

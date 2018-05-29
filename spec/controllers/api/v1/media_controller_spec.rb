@@ -30,7 +30,7 @@ RSpec.describe Api::V1::MediaController, type: :controller do
         end
 
         it 'returns http 422' do
-          expect(response).to have_http_status(500)
+          expect(response).to have_http_status(:error)
         end
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe Api::V1::MediaController, type: :controller do
       end
 
       it 'returns http success' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
 
       it 'creates a media attachment' do
@@ -63,7 +63,7 @@ RSpec.describe Api::V1::MediaController, type: :controller do
       end
 
       it 'returns http success' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
 
       it 'creates a media attachment' do
@@ -85,7 +85,7 @@ RSpec.describe Api::V1::MediaController, type: :controller do
       end
 
       xit 'returns http success' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
 
       xit 'creates a media attachment' do

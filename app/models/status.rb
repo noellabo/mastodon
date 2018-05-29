@@ -3,13 +3,13 @@
 #
 # Table name: statuses
 #
-#  id                     :bigint(8)        not null, primary key
+#  id                     :integer          not null, primary key
 #  uri                    :string
 #  text                   :text             default(""), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  in_reply_to_id         :bigint(8)
-#  reblog_of_id           :bigint(8)
+#  in_reply_to_id         :integer
+#  reblog_of_id           :integer
 #  url                    :string
 #  sensitive              :boolean          default(FALSE), not null
 #  visibility             :integer          default("public"), not null
@@ -18,11 +18,11 @@
 #  favourites_count       :integer          default(0), not null
 #  reblogs_count          :integer          default(0), not null
 #  language               :string
-#  conversation_id        :bigint(8)
+#  conversation_id        :integer
 #  local                  :boolean
-#  account_id             :bigint(8)        not null
-#  application_id         :bigint(8)
-#  in_reply_to_account_id :bigint(8)
+#  account_id             :integer          not null
+#  application_id         :integer
+#  in_reply_to_account_id :integer
 #
 
 class Status < ApplicationRecord
@@ -31,10 +31,6 @@ class Status < ApplicationRecord
   include Cacheable
   include StatusThreadingConcern
   include StatusSearchable
-
-  # If `override_timestamps` is set at creation time, Snowflake ID creation
-  # will be based on current time instead of `created_at`
-  attr_accessor :override_timestamps
 
   update_index('statuses#status', :proper) if Chewy.enabled?
 
@@ -66,7 +62,6 @@ class Status < ApplicationRecord
   validates :uri, uniqueness: true, presence: true, unless: :local?
   validates :text, presence: true, unless: -> { with_media? || reblog? }
   validates_with StatusLengthValidator
-  validates_with DisallowedHashtagsValidator
   validates :reblog, uniqueness: { scope: :account }, if: :reblog?
 
   # Check for invalid characters
@@ -182,7 +177,7 @@ class Status < ApplicationRecord
   end
 
   def emojis
-    @emojis ||= CustomEmoji.from_text([spoiler_text, text].join(' '), account.domain)
+    CustomEmoji.from_text([spoiler_text, text].join(' '), account.domain)
   end
 
   after_create_commit :store_uri, if: :local?
@@ -205,47 +200,6 @@ class Status < ApplicationRecord
     def as_home_timeline(account)
       where(account: [account] + account.following).where(visibility: [:public, :unlisted, :private])
                                                    .published
-    end
-
-    def as_direct_timeline(account, limit = 20, max_id = nil, since_id = nil, cache_ids = false)
-      # direct timeline is mix of direct message from_me and to_me.
-      # 2 querys are executed with pagination.
-      # constant expression using arel_table is required for partial index
-
-      # _from_me part does not require any timeline filters
-      query_from_me = where(account_id: account.id)
-                      .where(Status.arel_table[:visibility].eq(3))
-                      .limit(limit)
-                      .order('statuses.id DESC')
-
-      # _to_me part requires mute and block filter.
-      # FIXME: may we check mutes.hide_notifications?
-      query_to_me = Status
-                    .joins(:mentions)
-                    .merge(Mention.where(account_id: account.id))
-                    .where(Status.arel_table[:visibility].eq(3))
-                    .limit(limit)
-                    .order('mentions.status_id DESC')
-                    .not_excluded_by_account(account)
-
-      if max_id.present?
-        query_from_me = query_from_me.where('statuses.id < ?', max_id)
-        query_to_me = query_to_me.where('mentions.status_id < ?', max_id)
-      end
-
-      if since_id.present?
-        query_from_me = query_from_me.where('statuses.id > ?', since_id)
-        query_to_me = query_to_me.where('mentions.status_id > ?', since_id)
-      end
-
-      if cache_ids
-        # returns array of cache_ids object that have id and updated_at
-        (query_from_me.cache_ids.to_a + query_to_me.cache_ids.to_a).uniq(&:id).sort_by(&:id).reverse.take(limit)
-      else
-        # returns ActiveRecord.Relation
-        items = (query_from_me.select(:id).to_a + query_to_me.select(:id).to_a).uniq(&:id).sort_by(&:id).reverse.take(limit)
-        Status.where(id: items.map(&:id))
-      end
     end
 
     def as_public_timeline(account = nil, local_only = false)
@@ -387,7 +341,7 @@ class Status < ApplicationRecord
       self.in_reply_to_account_id = carried_over_reply_to_account_id
       self.conversation_id        = thread.conversation_id if conversation_id.nil?
     elsif conversation_id.nil?
-      self.conversation = Conversation.new
+      create_conversation
     end
   end
 

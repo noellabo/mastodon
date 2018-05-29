@@ -1,7 +1,7 @@
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { expandHomeTimeline } from '../../actions/timelines';
+import { expandHomeTimeline, refreshHomeTimeline } from '../../actions/timelines';
 import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
 import Column from '../../components/column';
@@ -17,7 +17,7 @@ const messages = defineMessages({
 
 const mapStateToProps = state => ({
   hasUnread: state.getIn(['timelines', 'home', 'unread']) > 0,
-  isPartial: state.getIn(['timelines', 'home', 'items', 0], null) === null,
+  isPartial: state.getIn(['timelines', 'home', 'isPartial'], false),
 });
 
 @connect(mapStateToProps)
@@ -57,8 +57,8 @@ export default class HomeTimeline extends React.PureComponent {
     this.column = c;
   }
 
-  handleLoadMore = maxId => {
-    this.props.dispatch(expandHomeTimeline({ maxId }));
+  handleLoadMore = () => {
+    this.props.dispatch(expandHomeTimeline());
   }
 
   componentDidMount () {
@@ -80,7 +80,7 @@ export default class HomeTimeline extends React.PureComponent {
       return;
     } else if (!wasPartial && isPartial) {
       this.polling = setInterval(() => {
-        dispatch(expandHomeTimeline());
+        dispatch(refreshHomeTimeline());
       }, 3000);
     } else if (wasPartial && !isPartial) {
       this._stopPolling();
@@ -117,7 +117,7 @@ export default class HomeTimeline extends React.PureComponent {
 
         <StatusListContainer
           scrollKey={`home_timeline-${columnId}`}
-          onLoadMore={this.handleLoadMore}
+          loadMore={this.handleLoadMore}
           timelineId='home'
           emptyMessage={<FormattedMessage id='empty_column.home' defaultMessage='Your home timeline is empty! Visit {public} or use search to get started and meet other users.' values={{ public: <Link to='/suggested_accounts'><FormattedMessage id='empty_column.home.suggested_accounts' defaultMessage='the active accounts' /></Link> }} />}
         />

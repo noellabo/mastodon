@@ -18,31 +18,12 @@ RSpec.describe ActivityPub::Activity::Add do
   describe '#perform' do
     subject { described_class.new(json, sender) }
 
-    it 'creates a pin' do
+    before do
       subject.perform
-      expect(sender.pinned?(status)).to be true
     end
 
-    context 'when status was not known before' do
-      let(:json) do
-        {
-          '@context': 'https://www.w3.org/ns/activitystreams',
-          id: 'foo',
-          type: 'Add',
-          actor: ActivityPub::TagManager.instance.uri_for(sender),
-          object: 'https://example.com/unknown',
-          target: sender.featured_collection_url,
-        }.with_indifferent_access
-      end
-
-      before do
-        stub_request(:get, 'https://example.com/unknown').to_return(status: 410)
-      end
-
-      it 'fetches the status' do
-        subject.perform
-        expect(a_request(:get, 'https://example.com/unknown')).to have_been_made.at_least_once
-      end
+    it 'creates a pin' do
+      expect(sender.pinned?(status)).to be true
     end
   end
 end

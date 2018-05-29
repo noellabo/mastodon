@@ -39,7 +39,7 @@ describe ApplicationController, type: :controller do
     it 'returns http success' do
       account = Fabricate(:account)
       get 'success', params: { account_username: account.username }
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:success)
     end
   end
 end

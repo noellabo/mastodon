@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FanOutOnWriteService, type: :service do
+RSpec.describe FanOutOnWriteService do
   let(:author)   { Fabricate(:account, username: 'tom') }
   let(:status)   { Fabricate(:status, text: 'Hello @alice #test', account: author) }
   let(:alice)    { Fabricate(:user, account: Fabricate(:account, username: 'alice')).account }

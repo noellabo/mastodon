@@ -15,20 +15,14 @@ export const DOMAIN_BLOCKS_FETCH_REQUEST = 'DOMAIN_BLOCKS_FETCH_REQUEST';
 export const DOMAIN_BLOCKS_FETCH_SUCCESS = 'DOMAIN_BLOCKS_FETCH_SUCCESS';
 export const DOMAIN_BLOCKS_FETCH_FAIL    = 'DOMAIN_BLOCKS_FETCH_FAIL';
 
-export const DOMAIN_BLOCKS_EXPAND_REQUEST = 'DOMAIN_BLOCKS_EXPAND_REQUEST';
-export const DOMAIN_BLOCKS_EXPAND_SUCCESS = 'DOMAIN_BLOCKS_EXPAND_SUCCESS';
-export const DOMAIN_BLOCKS_EXPAND_FAIL    = 'DOMAIN_BLOCKS_EXPAND_FAIL';
-
-export function blockDomain(domain) {
+export function blockDomain(domain, accountId) {
   return (dispatch, getState) => {
     dispatch(blockDomainRequest(domain));
 
     PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Block' });
 
     api(getState).post('/api/v1/domain_blocks', { domain }).then(() => {
-      const at_domain = '@' + domain;
-      const accounts = getState().get('accounts').filter(item => item.get('acct').endsWith(at_domain)).valueSeq().map(item => item.get('id'));
-      dispatch(blockDomainSuccess(domain, accounts));
+      dispatch(blockDomainSuccess(domain, accountId));
     }).catch(err => {
       dispatch(blockDomainFail(domain, err));
     });
@@ -42,11 +36,11 @@ export function blockDomainRequest(domain) {
   };
 };
 
-export function blockDomainSuccess(domain, accounts) {
+export function blockDomainSuccess(domain, accountId) {
   return {
     type: DOMAIN_BLOCK_SUCCESS,
     domain,
-    accounts,
+    accountId,
   };
 };
 
@@ -58,16 +52,14 @@ export function blockDomainFail(domain, error) {
   };
 };
 
-export function unblockDomain(domain) {
+export function unblockDomain(domain, accountId) {
   return (dispatch, getState) => {
     dispatch(unblockDomainRequest(domain));
 
     PawooGA.event({ eventCategory: pawooGaCategory, eventAction: 'Unblock' });
 
     api(getState).delete('/api/v1/domain_blocks', { params: { domain } }).then(() => {
-      const at_domain = '@' + domain;
-      const accounts = getState().get('accounts').filter(item => item.get('acct').endsWith(at_domain)).valueSeq().map(item => item.get('id'));
-      dispatch(unblockDomainSuccess(domain, accounts));
+      dispatch(unblockDomainSuccess(domain, accountId));
     }).catch(err => {
       dispatch(unblockDomainFail(domain, err));
     });
@@ -81,11 +73,11 @@ export function unblockDomainRequest(domain) {
   };
 };
 
-export function unblockDomainSuccess(domain, accounts) {
+export function unblockDomainSuccess(domain, accountId) {
   return {
     type: DOMAIN_UNBLOCK_SUCCESS,
     domain,
-    accounts,
+    accountId,
   };
 };
 
@@ -101,7 +93,7 @@ export function fetchDomainBlocks() {
   return (dispatch, getState) => {
     dispatch(fetchDomainBlocksRequest());
 
-    api(getState).get('/api/v1/domain_blocks').then(response => {
+    api(getState).get().then(response => {
       const next = getLinks(response).refs.find(link => link.rel === 'next');
       dispatch(fetchDomainBlocksSuccess(response.data, next ? next.uri : null));
     }).catch(err => {
@@ -127,46 +119,6 @@ export function fetchDomainBlocksSuccess(domains, next) {
 export function fetchDomainBlocksFail(error) {
   return {
     type: DOMAIN_BLOCKS_FETCH_FAIL,
-    error,
-  };
-};
-
-export function expandDomainBlocks() {
-  return (dispatch, getState) => {
-    const url = getState().getIn(['domain_lists', 'blocks', 'next']);
-
-    if (url === null) {
-      return;
-    }
-
-    dispatch(expandDomainBlocksRequest());
-
-    api(getState).get(url).then(response => {
-      const next = getLinks(response).refs.find(link => link.rel === 'next');
-      dispatch(expandDomainBlocksSuccess(response.data, next ? next.uri : null));
-    }).catch(err => {
-      dispatch(expandDomainBlocksFail(err));
-    });
-  };
-};
-
-export function expandDomainBlocksRequest() {
-  return {
-    type: DOMAIN_BLOCKS_EXPAND_REQUEST,
-  };
-};
-
-export function expandDomainBlocksSuccess(domains, next) {
-  return {
-    type: DOMAIN_BLOCKS_EXPAND_SUCCESS,
-    domains,
-    next,
-  };
-};
-
-export function expandDomainBlocksFail(error) {
-  return {
-    type: DOMAIN_BLOCKS_EXPAND_FAIL,
     error,
   };
 };

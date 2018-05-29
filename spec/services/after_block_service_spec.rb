@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AfterBlockService, type: :service do
+RSpec.describe AfterBlockService do
   subject do
     -> { described_class.new.call(account, target_account) }
   end
