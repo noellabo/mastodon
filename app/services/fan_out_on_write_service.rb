@@ -38,7 +38,7 @@ class FanOutOnWriteService < BaseService
   def deliver_to_followers(status)
     Rails.logger.debug "Delivering status #{status.id} to followers"
 
-    followers = status.account.followers.where(domain: nil).joins(:user).where('users.current_sign_in_at > ?', User::ACTIVE_DURATION.ago).select(:id).reorder(nil)
+    followers = status.account.followers_for_local_distribution.select(:id).reorder(nil)
 
     batch_size = Rails.configuration.x.fan_out_job_batch_size
     if batch_size > 1
@@ -59,7 +59,7 @@ class FanOutOnWriteService < BaseService
   def deliver_to_lists(status)
     Rails.logger.debug "Delivering status #{status.id} to lists"
 
-    lists = status.account.lists.joins(account: :user).where('users.current_sign_in_at > ?', User::ACTIVE_DURATION.days.ago).select(:id).reorder(nil)
+    lists = status.account.lists_for_local_distribution.select(:id).reorder(nil)
 
     batch_size = Rails.configuration.x.fan_out_job_batch_size
     if batch_size > 1
