@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: pawoo/circleci-primary:20180129
+      - image: pawoo/circleci-primary:20180405
       - image: postgres:9.5.4
         environment:
           POSTGRES_USER: root
@@ -28,6 +28,8 @@ jobs:
       PARALLEL_TEST_PROCESSORS: 4
       PATH: /root/.rbenv/shims:/usr/local/node/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       RAILS_ENV: test
+      ALLOW_NOPAM: true
+      DISABLE_SIMPLECOV: true
       PAWOO_SKIP_ID_MIGRATE_WARNING: true
     working_directory: /app
     parallelism: 1
@@ -52,7 +54,7 @@ jobs:
       # Bundler
       - restore_cache:
           key: bundler/{{ checksum ".ruby-version" }}.{{ checksum "Gemfile.lock" }}/3
-      - run: bundle check || bundle install --without development production --retry=3 --path=vendor/bundle
+      - run: bundle check || bundle install --with pam_authentication --without development production --retry=3 --path=vendor/bundle
       - run:
           command: ./bin/spring server
           background: true

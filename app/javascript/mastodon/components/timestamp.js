@@ -20,7 +20,7 @@ const dateFormatOptions = {
 };
 
 const shortDateFormatOptions = {
-  month: 'numeric',
+  month: 'short',
   day: 'numeric',
 };
 
@@ -67,10 +67,15 @@ export default class RelativeTimestamp extends React.Component {
     absolute: PropTypes.bool,
     intl: PropTypes.object.isRequired,
     timestamp: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
   };
 
   state = {
     now: this.props.intl.now(),
+  };
+
+  static defaultProps = {
+    year: (new Date()).getFullYear(),
   };
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -115,7 +120,7 @@ export default class RelativeTimestamp extends React.Component {
   }
 
   render () {
-    const { absolute, timestamp, intl } = this.props;
+    const { absolute, timestamp, intl, year } = this.props;
 
     const date  = new Date(timestamp);
     const delta = this.state.now - date.getTime();
@@ -124,7 +129,7 @@ export default class RelativeTimestamp extends React.Component {
 
     if (delta < 10 * SECOND) {
       relativeTime = intl.formatMessage(messages.just_now);
-    } else if (delta < 3 * DAY) {
+    } else if (delta < 7 * DAY) {
       if (delta < MINUTE) {
         relativeTime = intl.formatMessage(messages.seconds, { number: Math.floor(delta / SECOND) });
       } else if (delta < HOUR) {
@@ -134,8 +139,10 @@ export default class RelativeTimestamp extends React.Component {
       } else {
         relativeTime = intl.formatMessage(messages.days, { number: Math.floor(delta / DAY) });
       }
-    } else {
+    } else if (date.getFullYear() === year) {
       relativeTime = intl.formatDate(date, shortDateFormatOptions);
+    } else {
+      relativeTime = intl.formatDate(date, { ...shortDateFormatOptions, year: 'numeric' });
     }
 
     return (

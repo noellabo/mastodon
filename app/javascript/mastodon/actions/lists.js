@@ -1,4 +1,6 @@
 import api from '../api';
+import { importFetchedAccounts } from './importer';
+import { showAlertForError } from './alerts';
 import PawooGA from '../../pawoo/actions/ga';
 
 const pawooGaCategory = 'List';
@@ -209,9 +211,10 @@ export const deleteListFail = (id, error) => ({
 export const fetchListAccounts = listId => (dispatch, getState) => {
   dispatch(fetchListAccountsRequest(listId));
 
-  api(getState).get(`/api/v1/lists/${listId}/accounts`, { params: { limit: 0 } })
-    .then(({ data }) => dispatch(fetchListAccountsSuccess(listId, data)))
-    .catch(err => dispatch(fetchListAccountsFail(listId, err)));
+  api(getState).get(`/api/v1/lists/${listId}/accounts`, { params: { limit: 0 } }).then(({ data }) => {
+    dispatch(importFetchedAccounts(data));
+    dispatch(fetchListAccountsSuccess(listId, data));
+  }).catch(err => dispatch(fetchListAccountsFail(listId, err)));
 };
 
 export const fetchListAccountsRequest = id => ({
@@ -240,8 +243,10 @@ export const fetchListSuggestions = q => (dispatch, getState) => {
     following: true,
   };
 
-  api(getState).get('/api/v1/accounts/search', { params })
-    .then(({ data }) => dispatch(fetchListSuggestionsReady(q, data)));
+  api(getState).get('/api/v1/accounts/search', { params }).then(({ data }) => {
+    dispatch(importFetchedAccounts(data));
+    dispatch(fetchListSuggestionsReady(q, data));
+  }).catch(error => dispatch(showAlertForError(error)));
 };
 
 export const fetchListSuggestionsReady = (query, accounts) => ({

@@ -32,6 +32,11 @@ class AccountsController < ApplicationController
         render xml: OStatus::AtomSerializer.render(OStatus::AtomSerializer.new.feed(@account, @entries.reject { |entry| entry.status.nil? }))
       end
 
+      format.rss do
+        @statuses = cache_collection(default_statuses.without_reblogs.without_replies.limit(PAGE_SIZE), Status)
+        render xml: RSS::AccountSerializer.render(@account, @statuses)
+      end
+
       format.json do
         skip_session!
 
