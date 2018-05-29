@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BlockDomainFromAccountService, type: :service do
+RSpec.describe BlockDomainFromAccountService do
   let!(:wolf) { Fabricate(:account, username: 'wolf', domain: 'evil.org') }
   let!(:alice) { Fabricate(:account, username: 'alice') }
 

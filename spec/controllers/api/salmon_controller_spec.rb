@@ -24,7 +24,7 @@ RSpec.describe Api::SalmonController, type: :controller do
       end
 
       it 'returns http success' do
-        expect(response).to have_http_status(202)
+        expect(response).to have_http_status(:success)
       end
 
       it 'creates remote account' do

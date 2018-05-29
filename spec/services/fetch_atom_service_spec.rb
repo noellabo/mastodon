@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FetchAtomService, type: :service do
+RSpec.describe FetchAtomService do
   describe '#call' do
     let(:url) { 'http://example.com' }
     subject { FetchAtomService.new.call(url) }

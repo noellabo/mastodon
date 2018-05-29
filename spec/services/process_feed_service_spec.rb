@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ProcessFeedService, type: :service do
+RSpec.describe ProcessFeedService do
   subject { ProcessFeedService.new }
 
   describe 'processing a feed' do

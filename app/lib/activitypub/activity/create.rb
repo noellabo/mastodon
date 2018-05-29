@@ -11,8 +11,6 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       if lock.acquired?
         @status = find_existing_status
         process_status if @status.nil?
-      else
-        raise Mastodon::RaceConditionError
       end
     end
 
@@ -49,8 +47,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       text: text_from_content || '',
       language: detected_language,
       spoiler_text: @object['summary'] || '',
-      created_at: @object['published'],
-      override_timestamps: @options[:override_timestamps],
+      created_at: @options[:override_timestamps] ? nil : @object['published'],
       reply: @object['inReplyTo'].present?,
       sensitive: @object['sensitive'] || false,
       visibility: visibility_from_audience,
@@ -64,11 +61,12 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     return if @object['tag'].nil?
 
     as_array(@object['tag']).each do |tag|
-      if equals_or_includes?(tag['type'], 'Hashtag')
+      case tag['type']
+      when 'Hashtag'
         process_hashtag tag, status
-      elsif equals_or_includes?(tag['type'], 'Mention')
+      when 'Mention'
         process_mention tag, status
-      elsif equals_or_includes?(tag['type'], 'Emoji')
+      when 'Emoji'
         process_emoji tag, status
       end
     end
@@ -81,8 +79,6 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     hashtag = Tag.where(name: hashtag).first_or_initialize(name: hashtag)
 
     status.tags << hashtag
-  rescue ActiveRecord::RecordInvalid
-    nil
   end
 
   def process_mention(tag, status)
@@ -117,13 +113,13 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     media_attachments = []
 
     as_array(@object['attachment']).each do |attachment|
-      next if attachment['url'].blank?
+      next if unsupported_media_type?(attachment['mediaType']) || attachment['url'].blank?
 
       href             = Addressable::URI.parse(attachment['url']).normalize.to_s
       media_attachment = MediaAttachment.create(account: @account, remote_url: href, description: attachment['name'].presence, focus: attachment['focalPoint'])
       media_attachments << media_attachment
 
-      next if unsupported_media_type?(attachment['mediaType']) || skip_download?
+      next if skip_download?
 
       media_attachment.file_remote_url = href
       media_attachment.save
@@ -237,11 +233,11 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def supported_object_type?
-    equals_or_includes_any?(@object['type'], SUPPORTED_TYPES)
+    SUPPORTED_TYPES.include?(@object['type'])
   end
 
   def converted_object_type?
-    equals_or_includes_any?(@object['type'], CONVERTED_TYPES)
+    CONVERTED_TYPES.include?(@object['type'])
   end
 
   def skip_download?

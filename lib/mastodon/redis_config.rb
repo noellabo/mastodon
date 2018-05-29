@@ -1,29 +1,16 @@
 # frozen_string_literal: true
 
-def setup_redis_env_url(prefix = nil, defaults = true)
-  prefix = prefix.to_s.upcase + '_' unless prefix.nil?
-  prefix = '' if prefix.nil?
+if ENV['REDIS_URL'].blank?
+  password = ENV.fetch('REDIS_PASSWORD') { '' }
+  host     = ENV.fetch('REDIS_HOST') { 'localhost' }
+  port     = ENV.fetch('REDIS_PORT') { 6379 }
+  db       = ENV.fetch('REDIS_DB') { 0 }
 
-  return if ENV[prefix + 'REDIS_URL'].present?
-
-  password = ENV.fetch(prefix + 'REDIS_PASSWORD') { '' if defaults }
-  host     = ENV.fetch(prefix + 'REDIS_HOST') { 'localhost' if defaults }
-  port     = ENV.fetch(prefix + 'REDIS_PORT') { 6379 if defaults }
-  db       = ENV.fetch(prefix + 'REDIS_DB') { 0 if defaults }
-
-  ENV[prefix + 'REDIS_URL'] = if [password, host, port, db].all?(&:nil?)
-                                ENV['REDIS_URL']
-                              else
-                                "redis://#{password.blank? ? '' : ":#{password}@"}#{host}:#{port}/#{db}"
-                              end
+  ENV['REDIS_URL'] = "redis://#{password.blank? ? '' : ":#{password}@"}#{host}:#{port}/#{db}"
 end
 
-setup_redis_env_url
-setup_redis_env_url(:cache, false)
-
-namespace       = ENV.fetch('REDIS_NAMESPACE') { nil }
+namespace = ENV.fetch('REDIS_NAMESPACE') { nil }
 cache_namespace = namespace ? namespace + '_cache' : 'cache'
-
 REDIS_CACHE_PARAMS = {
   compress: true,
   compress_threshold: 5.kilobytes, # FIXME: 本番環境で試して一番効率がよかった。疑ってかかって良い。

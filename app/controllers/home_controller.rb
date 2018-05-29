@@ -2,7 +2,6 @@
 
 class HomeController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_referrer_policy_header
   before_action :set_initial_state_json
 
   def index
@@ -67,9 +66,5 @@ class HomeController < ApplicationController
     else
       about_path
     end
-  end
-
-  def set_referrer_policy_header
-    response.headers['Referrer-Policy'] = 'origin'
   end
 end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'sidekiq-bulk'
+
 class SoftBlockDomainFollowersWorker
   include Sidekiq::Worker
 

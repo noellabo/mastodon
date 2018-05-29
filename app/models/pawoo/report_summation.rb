@@ -3,7 +3,7 @@
 #
 # Table name: pawoo_report_summations
 #
-#  id                 :bigint(8)        not null, primary key
+#  id                 :integer          not null, primary key
 #  date               :date             not null
 #  total_count        :integer          default(0), not null
 #  other_count        :integer          default(0), not null

@@ -12,7 +12,7 @@ RSpec.describe Api::SubscriptionsController, type: :controller do
       end
 
       it 'returns http success' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
 
       it 'echoes back the challenge' do
@@ -27,7 +27,7 @@ RSpec.describe Api::SubscriptionsController, type: :controller do
       end
 
       it 'returns http success' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_http_status(:missing)
       end
     end
   end
@@ -59,7 +59,7 @@ RSpec.describe Api::SubscriptionsController, type: :controller do
     end
 
     it 'returns http success' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:success)
     end
 
     it 'creates statuses for feed' do

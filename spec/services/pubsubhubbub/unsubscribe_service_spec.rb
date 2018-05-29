@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Pubsubhubbub::UnsubscribeService, type: :service do
+describe Pubsubhubbub::UnsubscribeService do
   describe '#call' do
     subject { described_class.new }
 

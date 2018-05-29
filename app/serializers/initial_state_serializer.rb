@@ -2,9 +2,13 @@
 
 class InitialStateSerializer < ActiveModel::Serializer
   attributes :meta, :compose, :accounts,
-             :media_attachments, :settings, :pawoo
+             :media_attachments, :settings, :push_subscription, :pawoo
 
-  has_one :push_subscription, serializer: REST::WebPushSubscriptionSerializer
+  has_many :custom_emojis, serializer: REST::CustomEmojiSerializer
+
+  def custom_emojis
+    CustomEmoji.local.where(disabled: false)
+  end
 
   def meta
     store = {

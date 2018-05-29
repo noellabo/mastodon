@@ -54,9 +54,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
   getChildContext() {
     return ({
       pawooIsColumnWithHistory: false,
-      pawooPushHistory: (path) => {
-        this.context.router.history.push(path);
-      },
+      pawooPushHistory: (path) => {this.context.router.history.push(path);},
       pawooPopHistory: () => {
         if (window.history && window.history.length === 1) {
           this.context.router.history.push('/');

@@ -15,7 +15,13 @@ class StreamEntriesController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        redirect_to short_account_status_url(params[:account_username], @stream_entry.activity) if @type == 'status'
+        @ancestors   = @stream_entry.activity.reply? ? cache_collection(@stream_entry.activity.ancestors(current_account), Status) : []
+        @descendants = cache_collection(@stream_entry.activity.descendants(current_account), Status)
+
+        if @stream_entry.activity_type == 'Status'
+          # TODO: Status以外のactivityが増えたら対応の必要あり
+          redirect_to short_account_status_url(@stream_entry.account, @stream_entry.status)
+        end
       end
 
       format.atom do
@@ -25,7 +31,6 @@ class StreamEntriesController < ApplicationController
           skip_session!
           expires_in 3.minutes, public: true
         end
-
         render xml: OStatus::AtomSerializer.render(OStatus::AtomSerializer.new.entry(@stream_entry, true))
       end
     end

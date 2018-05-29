@@ -7,8 +7,7 @@ import { debounce } from 'lodash';
 import { me } from '../../../initial_state';
 
 const makeGetStatusIds = () => createSelector([
-  // FIXME: type === 'community:media' ? 'media' : type を直す
-  (state, { type }) => state.getIn(['settings', type === 'community:media' ? 'media' : type], ImmutableMap()),
+  (state, { type }) => state.getIn(['settings', type], ImmutableMap()),
   (state, { type }) => state.getIn(['timelines', type, 'items'], ImmutableList()),
   (state)           => state.get('statuses'),
 ], (columnSettings, statusIds, statuses) => {
@@ -22,8 +21,6 @@ const makeGetStatusIds = () => createSelector([
   }
 
   return statusIds.filter(id => {
-    if (id === null) return true;
-
     const statusForId = statuses.get(id);
     let showStatus    = true;
 
@@ -51,13 +48,15 @@ const makeMapStateToProps = () => {
     statusIds: getStatusIds(state, { type: timelineId }),
     isLoading: state.getIn(['timelines', timelineId, 'isLoading'], true),
     isPartial: state.getIn(['timelines', timelineId, 'isPartial'], false),
-    hasMore:   state.getIn(['timelines', timelineId, 'hasMore']),
+    hasMore: !!state.getIn(['timelines', timelineId, 'next']),
   });
 
   return mapStateToProps;
 };
 
-const mapDispatchToProps = (dispatch, { timelineId }) => ({
+const mapDispatchToProps = (dispatch, { timelineId, loadMore }) => ({
+
+  onLoadMore: debounce(loadMore, 300, { leading: true }),
 
   onScrollToTop: debounce(() => {
     dispatch(scrollTopTimeline(timelineId, true));

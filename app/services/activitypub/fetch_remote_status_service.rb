@@ -4,9 +4,9 @@ class ActivityPub::FetchRemoteStatusService < BaseService
   include JsonLdHelper
 
   # Should be called when uri has already been checked for locality
-  def call(uri, id: true, prefetched_body: nil, on_behalf_of: nil)
+  def call(uri, id: true, prefetched_body: nil)
     @json = if prefetched_body.nil?
-              fetch_resource(uri, id, on_behalf_of)
+              fetch_resource(uri, id)
             else
               body_to_json(prefetched_body)
             end
@@ -34,7 +34,6 @@ class ActivityPub::FetchRemoteStatusService < BaseService
   end
 
   def trustworthy_attribution?(uri, attributed_to)
-    return false if uri.nil? || attributed_to.nil?
     Addressable::URI.parse(uri).normalized_host.casecmp(Addressable::URI.parse(attributed_to).normalized_host).zero?
   end
 
@@ -43,7 +42,7 @@ class ActivityPub::FetchRemoteStatusService < BaseService
   end
 
   def expected_type?
-    equals_or_includes_any?(@json['type'], ActivityPub::Activity::Create::SUPPORTED_TYPES + ActivityPub::Activity::Create::CONVERTED_TYPES)
+    (ActivityPub::Activity::Create::SUPPORTED_TYPES + ActivityPub::Activity::Create::CONVERTED_TYPES).include? @json['type']
   end
 
   def needs_update(actor)

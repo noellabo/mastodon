@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FetchRemoteAccountService, type: :service do
+RSpec.describe FetchRemoteAccountService do
   let(:url) { 'https://example.com' }
   let(:prefetched_body) { nil }
   let(:protocol) { :ostatus }

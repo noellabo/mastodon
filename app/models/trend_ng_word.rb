@@ -2,7 +2,7 @@
 #
 # Table name: trend_ng_words
 #
-#  id         :bigint(8)        not null, primary key
+#  id         :integer          not null, primary key
 #  word       :string           default(""), not null
 #  memo       :string           default(""), not null
 #  created_at :datetime         not null

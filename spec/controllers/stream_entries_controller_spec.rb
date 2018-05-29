@@ -66,18 +66,19 @@ RSpec.describe StreamEntriesController, type: :controller do
   describe 'GET #show' do
     include_examples 'before_action', :show
 
-    it 'redirects to status page' do
-      status = Fabricate(:status)
+    it 'renders with HTML' do
+      ancestor = Fabricate(:status)
+      status = Fabricate(:status, in_reply_to_id: ancestor.id)
+      descendant = Fabricate(:status, in_reply_to_id: status.id)
 
       get :show, params: { account_username: status.account.username, id: status.stream_entry.id }
-
-      expect(response).to redirect_to(short_account_status_url(status.account, status))
+      expect(response).to have_http_status(:redirect)
     end
 
     it 'returns http success with Atom' do
       status = Fabricate(:status)
       get :show, params: { account_username: status.account.username, id: status.stream_entry.id }, format: 'atom'
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:success)
     end
   end
 

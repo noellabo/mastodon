@@ -33,7 +33,7 @@
       a {
         display: block;
         padding: 15px;
-        color: $darker-text-color;
+        color: rgba($primary-text-color, 0.7);
         text-decoration: none;
         transition: all 200ms linear;
         border-radius: 4px 0 0 4px;
@@ -90,7 +90,7 @@
     padding-left: 25px;
 
     h2 {
-      color: $secondary-text-color;
+      color: $ui-secondary-color;
       font-size: 24px;
       line-height: 28px;
       font-weight: 400;
@@ -98,7 +98,7 @@
     }
 
     h3 {
-      color: $secondary-text-color;
+      color: $ui-secondary-color;
       font-size: 20px;
       line-height: 28px;
       font-weight: 400;
@@ -109,7 +109,7 @@
       text-transform: uppercase;
       font-size: 13px;
       font-weight: 500;
-      color: $darker-text-color;
+      color: $ui-primary-color;
       padding-bottom: 8px;
       margin-bottom: 8px;
       border-bottom: 1px solid lighten($ui-base-color, 8%);
@@ -117,7 +117,7 @@
 
     h6 {
       font-size: 16px;
-      color: $secondary-text-color;
+      color: $ui-secondary-color;
       line-height: 28px;
       font-weight: 400;
     }
@@ -125,7 +125,7 @@
     & > p {
       font-size: 14px;
       line-height: 18px;
-      color: $secondary-text-color;
+      color: $ui-secondary-color;
       margin-bottom: 20px;
 
       strong {
@@ -141,23 +141,17 @@
     }
 
     hr {
-      width: 100%;
-      height: 0;
-      border: 0;
-      border-bottom: 1px solid rgba($ui-base-lighter-color, .6);
       margin: 20px 0;
-
-      &.spacer {
-        height: 1px;
-        border: 0;
-      }
+      border: 0;
+      background: transparent;
+      border-bottom: 1px solid $ui-base-color;
     }
 
     .muted-hint {
-      color: $darker-text-color;
+      color: $ui-primary-color;
 
       a {
-        color: $highlight-text-color;
+        color: $ui-highlight-color;
       }
     }
 
@@ -254,7 +248,7 @@
 
     a {
       display: inline-block;
-      color: $darker-text-color;
+      color: rgba($primary-text-color, 0.7);
       text-decoration: none;
       text-transform: uppercase;
       font-size: 12px;
@@ -267,7 +261,7 @@
       }
 
       &.selected {
-        color: $highlight-text-color;
+        color: $ui-highlight-color;
         border-bottom: 2px solid $ui-highlight-color;
       }
     }
@@ -292,7 +286,7 @@
     font-weight: 500;
     font-size: 14px;
     line-height: 18px;
-    color: $secondary-text-color;
+    color: $ui-secondary-color;
 
     @each $lang in $cjk-langs {
       &:lang(#{$lang}) {
@@ -336,11 +330,6 @@
   }
 }
 
-.simple_form.new_report_note,
-.simple_form.new_account_moderation_note {
-  max-width: 100%;
-}
-
 .batch-form-box {
   display: flex;
   flex-wrap: wrap;
@@ -366,12 +355,19 @@
   }
 }
 
+.batch-checkbox,
+.batch-checkbox-all {
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+}
+
 .back-link {
   margin-bottom: 10px;
   font-size: 14px;
 
   a {
-    color: $highlight-text-color;
+    color: $classic-highlight-color;
     text-decoration: none;
 
     &:hover {
@@ -385,7 +381,7 @@
 }
 
 .log-entry {
-  margin-bottom: 20px;
+  margin-bottom: 8px;
   line-height: 20px;
 
   &__header {
@@ -394,7 +390,7 @@
     align-items: center;
     padding: 10px;
     background: $ui-base-color;
-    color: $darker-text-color;
+    color: $ui-primary-color;
     border-radius: 4px 4px 0 0;
     font-size: 14px;
     position: relative;
@@ -421,14 +417,14 @@
   }
 
   &__timestamp {
-    color: $dark-text-color;
+    color: lighten($ui-base-color, 34%);
   }
 
   &__extras {
     background: lighten($ui-base-color, 6%);
     border-radius: 0 0 4px 4px;
     padding: 10px;
-    color: $darker-text-color;
+    color: $ui-primary-color;
     font-family: 'mastodon-font-monospace', monospace;
     font-size: 12px;
     word-wrap: break-word;
@@ -438,7 +434,7 @@
   &__icon {
     font-size: 28px;
     margin-right: 10px;
-    color: $dark-text-color;
+    color: lighten($ui-base-color, 34%);
   }
 
   &__icon__overlay {
@@ -454,7 +450,7 @@
     }
 
     &.negative {
-      background: lighten($error-red, 12%);
+      background: $error-red;
     }
 
     &.neutral {
@@ -465,17 +461,17 @@
   a,
   .username,
   .target {
-    color: $secondary-text-color;
+    color: $ui-secondary-color;
     text-decoration: none;
     font-weight: 500;
   }
 
   .diff-old {
-    color: lighten($error-red, 12%);
+    color: $error-red;
   }
 
   .diff-neutral {
-    color: $secondary-text-color;
+    color: $ui-secondary-color;
   }
 
   .diff-new {
@@ -483,31 +479,6 @@
   }
 }
 
-a.name-tag,
-.name-tag,
-a.inline-name-tag,
-.inline-name-tag {
-  text-decoration: none;
-  color: $secondary-text-color;
-
-  .username {
-    font-weight: 500;
-  }
-
-  &.suspended {
-    .username {
-      text-decoration: line-through;
-      color: lighten($error-red, 12%);
-    }
-
-    .avatar {
-      filter: grayscale(100%);
-      opacity: 0.8;
-    }
-  }
-}
-
-a.name-tag,
 .name-tag {
   display: flex;
   align-items: center;
@@ -519,46 +490,7 @@ a.name-tag,
     border-radius: 50%;
   }
 
-  &.suspended {
-    .avatar {
-      filter: grayscale(100%);
-      opacity: 0.8;
-    }
-  }
-}
-
-.speech-bubble {
-  margin-bottom: 20px;
-  border-left: 4px solid $ui-highlight-color;
-
-  &.positive {
-    border-left-color: $success-green;
-  }
-
-  &.negative {
-    border-left-color: lighten($error-red, 12%);
-  }
-
-  &__bubble {
-    padding: 16px;
-    padding-left: 14px;
-    font-size: 15px;
-    line-height: 20px;
-    border-radius: 4px 4px 4px 0;
-    position: relative;
+  .username {
     font-weight: 500;
-
-    a {
-      color: $darker-text-color;
-    }
-  }
-
-  &__owner {
-    padding: 8px;
-    padding-left: 12px;
-  }
-
-  time {
-    color: $dark-text-color;
   }
 }

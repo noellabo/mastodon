@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FetchRemoteStatusService, type: :service do
+RSpec.describe FetchRemoteStatusService do
   let(:account) { Fabricate(:account) }
   let(:prefetched_body) { nil }
   let(:valid_domain) { Rails.configuration.x.local_domain }

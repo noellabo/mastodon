@@ -84,17 +84,9 @@ export default class AutosuggestTextarea extends ImmutablePureComponent {
       return;
     }
 
-    if (e.which === 229 || e.isComposing) {
-      // Ignore key events during text composition
-      // e.key may be a name of the physical key even in this case (e.x. Safari / Chrome on Mac)
-      return;
-    }
-
     switch(e.key) {
     case 'Escape':
-      if (suggestions.size === 0 || suggestionsHidden) {
-        document.querySelector('.ui').parentElement.focus();
-      } else {
+      if (!suggestionsHidden) {
         e.preventDefault();
         this.setState({ suggestionsHidden: true });
       }
@@ -131,6 +123,16 @@ export default class AutosuggestTextarea extends ImmutablePureComponent {
     }
 
     this.props.onKeyDown(e);
+  }
+
+  onKeyUp = e => {
+    if (e.key === 'Escape' && this.state.suggestionsHidden) {
+      document.querySelector('.ui').parentElement.focus();
+    }
+
+    if (this.props.onKeyUp) {
+      this.props.onKeyUp(e);
+    }
   }
 
   onBlur = () => {
@@ -184,7 +186,7 @@ export default class AutosuggestTextarea extends ImmutablePureComponent {
   }
 
   render () {
-    const { value, suggestions, disabled, placeholder, onKeyUp, autoFocus } = this.props;
+    const { value, suggestions, disabled, placeholder, autoFocus } = this.props;
     const { suggestionsHidden } = this.state;
     const style = { direction: 'ltr' };
 
@@ -206,7 +208,7 @@ export default class AutosuggestTextarea extends ImmutablePureComponent {
             value={value}
             onChange={this.onChange}
             onKeyDown={this.onKeyDown}
-            onKeyUp={onKeyUp}
+            onKeyUp={this.onKeyUp}
             onBlur={this.onBlur}
             onPaste={this.onPaste}
             style={style}

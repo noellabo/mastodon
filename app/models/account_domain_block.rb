@@ -3,11 +3,11 @@
 #
 # Table name: account_domain_blocks
 #
-#  id         :bigint(8)        not null, primary key
+#  id         :integer          not null, primary key
 #  domain     :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  account_id :bigint(8)
+#  account_id :integer
 #
 
 class AccountDomainBlock < ApplicationRecord

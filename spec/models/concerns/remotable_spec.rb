@@ -29,10 +29,7 @@ RSpec.describe Remotable do
 
   context 'Remotable module is included' do
     before do
-      class Foo
-        include Remotable
-        remotable_attachment :hoge, 1.kilobyte
-      end
+      class Foo; include Remotable; end
     end
 
     let(:attribute_name) { "#{hoge}_remote_url".to_sym }

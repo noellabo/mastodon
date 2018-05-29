@@ -3,73 +3,64 @@ fi:
   simple_form:
     hints:
       defaults:
-        avatar: PNG, GIF tai JPG. Enintään 2 Mt. Skaalataan kokoon 400 x 400 px
-        digest: Lähetetään vain pitkän poissaolon jälkeen ja vain, jos olet saanut suoria viestejä poissaolosi aikana
-        display_name:
-          one: <span class="name-counter">1</span> merkki jäljellä
-          other: <span class="name-counter">%{count}</span> merkkiä jäljellä
-        fields: Sinulla voi olla korkeintaan 4 asiaa profiilissasi taulukossa
-        header: PNG, GIF tai JPG. Enintään 2 Mt. Skaalataan kokoon 700 x 335 px
-        locked: Sinun täytyy hyväksyä seuraajat manuaalisesti
-        note:
-          one: <span class="note-counter">1</span> merkki jäljellä
-          other: <span class="note-counter">%{count}</span> merkkiä jäljellä
-        setting_noindex: Vaikuttaa julkiseen profiiliisi ja tilasivuihisi
-        setting_theme: Vaikuttaa Mastodonin ulkoasuun millä tahansa laitteella kirjauduttaessa.
+        avatar: PNG, GIF tai JPG. Korkeintaan 2MB. Skaalataan kokoon 400x400px
+        digest: Lähetetään vain pitkän poissaolon jälkeen, ja vain jos olet vastaanottanut yksityisviestejä poissaolosi aikana
+        display_name: Korkeintaan 30 merkkiä
+        header: PNG, GIF tai JPG. Korkeintaan 2MB. Skaalataan kokoon 700x335px
+        locked: Vaatii sinua manuaalisesti hyväksymään seuraajat
+        note: Korkeintaan 160 merkkiä
+        setting_noindex: Vaikuttaa julkiseen profiiliisi ja statuspäivityksiisi
+        setting_theme: Vaikuttaa siihen, miltä Mastodon näyttää kun olet kirjautuneena milllä tahansa laitteella.
       imports:
-        data: Toisesta Mastodon-instanssista tuotu CSV-tiedosto
+        data: CSV tiedosto, joka on tuotu toiselta Mastodon-palvelimelta
       sessions:
-        otp: Syötä puhelimeen saamasi kaksivaiheisen tunnistautumisen koodi tai käytä palautuskoodia.
+        otp: Syötä kaksivaiheisen tunnistuksen koodi puhelimestasi tai käytä yhtä palautuskoodeistasi.
       user:
-        filtered_languages: Valitut kielet suodatetaan pois julkisilta aikajanoilta
+        filtered_languages: Valitut kielet suodatetaan julkisilta aikajanoilta
     labels:
-      account:
-        fields:
-          value: Sisältö
       defaults:
         avatar: Profiilikuva
-        confirm_new_password: Vahvista uusi salasana
-        confirm_password: Vahvista salasana
+        confirm_new_password: Varmista uusi salasana
+        confirm_password: Varmista salasana
         current_password: Nykyinen salasana
-        data: Tiedot
+        data: Data
         display_name: Nimimerkki
         email: Sähköpostiosoite
-        expires_in: Vanhenee
-        fields: Profiilin metadata
+        expires_in: Vanhentuu
         filtered_languages: Suodatetut kielet
         header: Otsakekuva
         locale: Kieli
-        locked: Lukitse tili
-        max_uses: Käyttökertoja enintään
+        locked: Tee tilistä yksityinen
+        max_uses: Max käyttökerrat
         new_password: Uusi salasana
         note: Kuvaus
-        otp_attempt: Kaksivaiheisen tunnistuksen koodi
+        otp_attempt: Kaksivaiheinen koodi
         password: Salasana
-        setting_auto_play_gif: Toista GIF-animaatiot automaattisesti
-        setting_boost_modal: Kysy vahvistusta ennen buustausta
-        setting_default_privacy: Julkaisun näkyvyys
+        setting_auto_play_gif: Animoitujen GIFfien automaattitoisto
+        setting_boost_modal: Näytä vahvistusikkuna ennen boostausta
+        setting_default_privacy: Julkaisun yksityisyys
         setting_default_sensitive: Merkitse media aina arkaluontoiseksi
-        setting_delete_modal: Kysy vahvistusta ennen tuuttauksen poistamista
+        setting_delete_modal: Näytä vahvistusikkuna ennen töötin poistamista
         setting_display_sensitive_media: Näytä aina arkaluontoiseksi merkitty media
         setting_noindex: Jättäydy pois hakukoneindeksoinnista
-        setting_reduce_motion: Vähennä animaatioiden liikettä
-        setting_system_font_ui: Käytä järjestelmän oletusfonttia
+        setting_reduce_motion: Vähennä liikettä animaatioissa
+        setting_system_font_ui: Käytä käyttöjärjestelmän oletusfonttia
         setting_theme: Sivuston teema
-        setting_unfollow_modal: Kysy vahvistusta, ennen kuin lopetat seuraamisen
-        severity: Vakavuus
-        type: Tietojen laji
+        setting_unfollow_modal: Näytä vahvistusikkuna ennen seuraamisen lopettamista
+        severity: Vakavuusaste
+        type: Tuontityyppi
         username: Käyttäjänimi
         username_or_email: Käyttäjänimi tai sähköposti
       interactions:
         must_be_follower: Estä ilmoitukset käyttäjiltä, jotka eivät seuraa sinua
         must_be_following: Estä ilmoitukset käyttäjiltä, joita et seuraa
-        must_be_following_dm: Estä suorat viestit käyttäjiltä, joita et seuraa
+        must_be_following_dm: Estä suorat viestit ihmisiltä, joita et seuraa
       notification_emails:
-        digest: Lähetä koosteviestejä sähköpostitse
-        favourite: Lähetä sähköposti, kun joku tykkää tilastasi
+        digest: Lähetä koosteviestejä sähköpostilla
+        favourite: Lähetä sähköposti, kun joku tykkää statuksestasi
         follow: Lähetä sähköposti, kun joku seuraa sinua
         follow_request: Lähetä sähköposti, kun joku pyytää seurata sinua
-        mention: Lähetä sähköposti, kun sinut mainitaan
+        mention: Lähetä sähköposti, kun joku mainitsee sinut
         reblog: Lähetä sähköposti, kun joku buustaa julkaisusi
     'no': Ei
     required:

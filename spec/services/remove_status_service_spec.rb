@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe RemoveStatusService, type: :service do
+RSpec.describe RemoveStatusService do
   subject { RemoveStatusService.new }
 
   let!(:alice)  { Fabricate(:account) }

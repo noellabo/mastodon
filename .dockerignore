@@ -11,4 +11,3 @@ vendor/bundle
 *~
 postgres
 redis
-elasticsearch

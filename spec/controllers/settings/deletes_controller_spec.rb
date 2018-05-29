@@ -13,7 +13,7 @@ describe Settings::DeletesController do
 
       it 'renders confirmation page' do
         get :show
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:success)
       end
     end
 

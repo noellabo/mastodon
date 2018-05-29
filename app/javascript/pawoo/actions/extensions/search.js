@@ -1,5 +1,8 @@
 import api from '../../../mastodon/api';
 import {
+  refreshTimelineRequest,
+  refreshTimelineSuccess,
+  refreshTimelineFail,
   expandTimelineRequest,
   expandTimelineSuccess,
   expandTimelineFail,
@@ -26,16 +29,16 @@ export function refreshStatusSearchTimeline(keyword) {
       page: page,
     };
 
-    dispatch(expandTimelineRequest(timelineId, skipLoading));
+    dispatch(refreshTimelineRequest(timelineId, skipLoading));
 
     api(getState).get(`/api/v1/search/statuses/${keyword}`, { params }).then(response => {
       const hitsTotal = response.data.hits_total;
       const statuses = hitsTotal > 0 ? response.data.statuses : [];
 
-      dispatch(expandTimelineSuccess(timelineId, statuses, skipLoading, calculateHasNext(page, hitsTotal)));
+      dispatch(refreshTimelineSuccess(timelineId, statuses, skipLoading, calculateHasNext(page, hitsTotal)));
       dispatch(refreshStatusSearchTimelineSuccess(timelineId, page, hitsTotal));
     }).catch(error => {
-      dispatch(expandTimelineFail(keyword, error, skipLoading));
+      dispatch(refreshTimelineFail(keyword, error, skipLoading));
     });
   };
 };

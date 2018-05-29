@@ -38,8 +38,7 @@ const getFrequentlyUsedEmojis = createSelector([
     .toArray();
 
   if (emojis.length < DEFAULTS.length) {
-    let uniqueDefaults = DEFAULTS.filter(emoji => !emojis.includes(emoji));
-    emojis = emojis.concat(uniqueDefaults.slice(0, DEFAULTS.length - emojis.length));
+    emojis = emojis.concat(DEFAULTS.slice(0, DEFAULTS.length - emojis.length));
   }
 
   return emojis;

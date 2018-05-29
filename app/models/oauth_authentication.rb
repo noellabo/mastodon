@@ -2,12 +2,12 @@
 #
 # Table name: oauth_authentications
 #
-#  id         :bigint(8)        not null, primary key
+#  id         :integer          not null, primary key
+#  user_id    :integer          not null
 #  provider   :string           not null
 #  uid        :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  user_id    :bigint(8)        not null
 #
 
 class OauthAuthentication < ApplicationRecord

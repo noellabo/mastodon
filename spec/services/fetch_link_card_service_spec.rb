@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FetchLinkCardService, type: :service do
+RSpec.describe FetchLinkCardService do
   subject { FetchLinkCardService.new }
 
   before do
