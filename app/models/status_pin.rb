@@ -12,6 +12,7 @@
 
 class StatusPin < ApplicationRecord
   include Paginable
+  include Pawoo::StatusPinExtension
 
   belongs_to :account
   belongs_to :status
