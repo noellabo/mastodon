@@ -15,12 +15,16 @@ module StatusThreadingConcern
 
   def ancestor_ids
     Rails.cache.fetch("ancestors:#{id}") do
-      ancestor_statuses.pluck(:id)
+      ancestors_without_self.pluck(:id)
     end
   end
 
+  def ancestors_without_self
+    ancestor_statuses - [self]
+  end
+
   def ancestor_statuses
-    Status.find_by_sql([<<-SQL.squish, id: in_reply_to_id])
+    Status.find_by_sql([<<-SQL.squish, id: id])
       WITH RECURSIVE search_tree(id, in_reply_to_id, path)
       AS (
         SELECT id, in_reply_to_id, ARRAY[id]
@@ -39,7 +43,11 @@ module StatusThreadingConcern
   end
 
   def descendant_ids
-    descendant_statuses.pluck(:id)
+    descendants_without_self.pluck(:id)
+  end
+
+  def descendants_without_self
+    descendant_statuses - [self]
   end
 
   def descendant_statuses
@@ -48,7 +56,7 @@ module StatusThreadingConcern
       AS (
         SELECT id, ARRAY[id]
         FROM statuses
-        WHERE in_reply_to_id = :id
+        WHERE id = :id
         UNION ALL
         SELECT statuses.id, path || statuses.id
         FROM search_tree
