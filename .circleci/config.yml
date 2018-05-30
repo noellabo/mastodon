@@ -49,6 +49,7 @@ jobs:
       - checkout
       - run: ./.circleci/primary/setup.sh
       - run: mkdir -p tmp/circleci/db
+      - run: echo $CIRCLE_SHA1 | tee tmp/circleci/HEAD.hash
       - run: git merge-base $CIRCLE_SHA1 origin/master | tee tmp/circleci/master.hash
 
       # Bundler
@@ -79,7 +80,7 @@ jobs:
 
       # Start assets precompilation. It wastes about 60 seconds, so that runs on background.
       - restore_cache:
-          key: assets/{{ checksum "tmp/circleci/master.hash" }}/3
+          key: assets/{{ checksum "tmp/circleci/master.hash" }}/4
       - run:
           command: |
             # `rake assets:precompile error_page:generate` causes curious error: https://circleci.com/gh/pixiv/pawoo/2274
@@ -93,7 +94,7 @@ jobs:
 
       # Database schema
       - restore_cache:
-          key: db/{{ checksum "tmp/circleci/master.hash" }}/1
+          key: db/{{ checksum "tmp/circleci/master.hash" }}/2
       - run:
           name: Wait for PostgreSQL container
           command: |
@@ -114,9 +115,9 @@ jobs:
               ./bin/rails parallel:create
             fi
       - run: ./bin/rails parallel:migrate
-      - run: pg_dumpall --host=$DB_HOST --file=tmp/circleci/db/$(cat tmp/circleci/master.hash).$PARALLEL_TEST_PROCESSORS.sql
+      - run: pg_dumpall --host=$DB_HOST --file=tmp/circleci/db/$(cat tmp/circleci/HEAD.hash).$PARALLEL_TEST_PROCESSORS.sql
       - save_cache:
-          key: db/{{ checksum "tmp/circleci/master.hash" }}/1
+          key: db/{{ checksum "tmp/circleci/HEAD.hash" }}/2
           paths:
             - tmp/circleci/db
 
@@ -154,7 +155,7 @@ jobs:
 
       # Save compiled assets
       - save_cache:
-          key: assets/{{ checksum "tmp/circleci/master.hash" }}/3
+          key: assets/{{ checksum "tmp/circleci/HEAD.hash" }}/4
           paths:
             - public/assets
             - public/packs-test
