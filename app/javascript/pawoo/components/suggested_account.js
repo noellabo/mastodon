@@ -26,7 +26,7 @@ export default class SuggestedAccount extends React.PureComponent {
   static propTypes = {
     account: ImmutablePropTypes.map.isRequired,
     onFollow: PropTypes.func,
-    onOpenMedia: PropTypes.func,
+    onOpenMedia: PropTypes.func.isRequired,
     intl: PropTypes.object.isRequired,
     target: PropTypes.string,
   };
@@ -54,7 +54,7 @@ export default class SuggestedAccount extends React.PureComponent {
   }
 
   render () {
-    const { account, onOpenMedia, intl, target ,onFollow } = this.props;
+    const { account, onOpenMedia, intl, target, onFollow } = this.props;
 
     if (!account) {
       return <div />;
