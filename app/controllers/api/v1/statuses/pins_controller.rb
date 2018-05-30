@@ -2,7 +2,6 @@
 
 class Api::V1::Statuses::PinsController < Api::BaseController
   include Authorization
-  include Pawoo::Api::V1::Statuses::PinsControllerConcern
 
   before_action -> { doorkeeper_authorize! :write }
   before_action :require_user!
