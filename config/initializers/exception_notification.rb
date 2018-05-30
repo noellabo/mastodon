@@ -10,6 +10,7 @@ ExceptionNotification.configure do |config|
     ActiveRecord::RecordNotUnique
     Mastodon::UnexpectedResponseError
     Mastodon::RaceConditionError
+    Mastodon::HostValidationError
   )
 
   network_exceptions = %w[
