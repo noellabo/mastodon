@@ -19,7 +19,7 @@ class Item extends React.PureComponent {
     attachment: ImmutablePropTypes.map.isRequired,
     index: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,
-    onOpenMedia: PropTypes.func,
+    onOpenMedia: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -54,7 +54,7 @@ class Item extends React.PureComponent {
       eventLabel: account.get('id'),
     });
 
-    if (onOpenMedia && this.context.router && e.button === 0) {
+    if (e.button === 0) {
       e.preventDefault();
       onOpenMedia(attachment);
     }
@@ -150,7 +150,7 @@ export default class SuggestedAccountMedia extends React.PureComponent {
 
   static propTypes = {
     account: ImmutablePropTypes.map.isRequired,
-    onOpenMedia: PropTypes.func,
+    onOpenMedia: PropTypes.func.isRequired,
   };
 
   render () {
