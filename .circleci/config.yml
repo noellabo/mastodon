@@ -48,13 +48,13 @@ jobs:
       - run: cat /proc/cpuinfo
       - checkout
       - run: ./.circleci/primary/setup.sh
-      - run: mkdir -p tmp/circleci/db
-      - run: echo $CIRCLE_SHA1 | tee tmp/circleci/HEAD.hash
-      - run: git merge-base $CIRCLE_SHA1 origin/master | tee tmp/circleci/master.hash
 
       # Bundler
       - restore_cache:
-          key: bundler/{{ checksum ".ruby-version" }}.{{ checksum "Gemfile.lock" }}/3
+          keys:
+            - v1-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+            - v1-ruby-dependencies-{{ checksum ".ruby-version" }}-
+            - v1-ruby-dependencies-
       - run: bundle check || bundle install --with pam_authentication --without development production --retry=3 --path=vendor/bundle
       - run:
           command: ./bin/spring server
@@ -64,26 +64,29 @@ jobs:
           command: sleep 1; ./bin/rails r "puts 'Hello!'"; ./bin/spring status
           background: true
       - save_cache:
-          key: bundler/{{ checksum ".ruby-version" }}.{{ checksum "Gemfile.lock" }}/3
+          key: v1-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
             - .bundle/config
 
       # yarn
       - restore_cache:
-          key: yarn/{{ checksum ".nvmrc" }}.{{ checksum "yarn.lock" }}/1
-      - run: yarn install
+          keys:
+            - v1-node-dependencies-{{ checksum ".nvmrc" }}-{{ checksum "yarn.lock" }}
+            - v1-node-dependencies-{{ checksum ".nvmrc" }}-
+            - v1-node-dependencies-
+      - run: yarn install --frozen-lockfile
       - save_cache:
-          key: yarn/{{ checksum ".nvmrc" }}.{{ checksum "yarn.lock" }}/1
+          key: v1-node-dependencies-{{ checksum ".nvmrc" }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
 
       # Start assets precompilation. It wastes about 60 seconds, so that runs on background.
       - restore_cache:
           keys:
-            - precompiled-assets-1-{{ .Branch }}-{{ .Revision }}
-            - precompiled-assets-1-{{ .Branch }}-
-            - precompiled-assets-1-
+            - v1-precompiled-assets-{{ .Branch }}-{{ .Revision }}
+            - v1-precompiled-assets-{{ .Branch }}-
+            - v1-precompiled-assets-
       - run:
           command: |
             # `rake assets:precompile error_page:generate` causes curious error: https://circleci.com/gh/pixiv/pawoo/2274
@@ -96,6 +99,9 @@ jobs:
           background: true
 
       # Database schema
+      - run: mkdir -p tmp/circleci/db
+      - run: echo $CIRCLE_SHA1 | tee tmp/circleci/HEAD.hash
+      - run: git merge-base $CIRCLE_SHA1 origin/master | tee tmp/circleci/master.hash
       - restore_cache:
           key: db/{{ checksum "tmp/circleci/master.hash" }}/2
       - run:
@@ -158,7 +164,7 @@ jobs:
 
       # Save compiled assets
       - save_cache:
-          key: precompiled-assets-1-{{ .Branch }}-{{ .Revision }}
+          key: v1-precompiled-assets-{{ .Branch }}-{{ .Revision }}
           paths:
             - public/assets
             - public/packs-test
