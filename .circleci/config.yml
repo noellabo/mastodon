@@ -159,6 +159,6 @@ jobs:
           paths:
             - public/assets
             - public/packs-test
-            - tmp/cache/webpacker
+            - tmp/cache
 
       - run: ./bin/spring stop
