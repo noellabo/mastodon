@@ -80,7 +80,10 @@ jobs:
 
       # Start assets precompilation. It wastes about 60 seconds, so that runs on background.
       - restore_cache:
-          key: assets/{{ checksum "tmp/circleci/master.hash" }}/4
+          keys:
+            - precompiled-assets-1-{{ .Branch }}-{{ .Revision }}
+            - precompiled-assets-1-{{ .Branch }}-
+            - precompiled-assets-1-
       - run:
           command: |
             # `rake assets:precompile error_page:generate` causes curious error: https://circleci.com/gh/pixiv/pawoo/2274
@@ -155,7 +158,7 @@ jobs:
 
       # Save compiled assets
       - save_cache:
-          key: assets/{{ checksum "tmp/circleci/HEAD.hash" }}/4
+          key: precompiled-assets-1-{{ .Branch }}-{{ .Revision }}
           paths:
             - public/assets
             - public/packs-test
