@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe StatusPagination do
-  let(:instance) { described_class.new(status, Status, account) }
+  let(:instance) { described_class.new(status, account) }
   let!(:previous_status) { Fabricate(:status, id: 1, account: status.account) }
   let!(:next_status) { Fabricate(:status, id: 3, account: status.account) }
   let!(:account) { Fabricate(:account) }
