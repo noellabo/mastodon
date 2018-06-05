@@ -21,10 +21,13 @@ class StatusesController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        @ancestors   = @status.reply? ? cache_collection(@status.ancestors(current_account), Status) : []
-        @descendants = cache_collection(@status.descendants(current_account), Status)
+        set_ancestors
+        set_descendants
 
-        @status_pagination = StatusPagination.new(@status, current_account)
+        @status_pagination = StatusPagination.new(
+          @status,
+          Status.where.not(id: [@ancestors, @descendant_threads.pluck(:statuses)].flatten!)
+        )
         set_link_headers(@status_pagination.previous, @status_pagination.next)
 
         render 'stream_entries/show'
