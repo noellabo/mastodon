@@ -51,13 +51,11 @@ class StatusSearchResults extends React.PureComponent {
   }
 
   handleLoadMore = () => {
-    if (!this.props.isLoading && this.props.hasMore) {
-      this.props.dispatch(expandStatusSearchTimeline(this.props.params.keyword));
-    }
+    this.props.dispatch(expandStatusSearchTimeline(this.props.params.keyword));
   }
 
   render () {
-    const { statusIds, isLoading, params, pawoo } = this.props;
+    const { statusIds, isLoading, hasMore, params, pawoo } = this.props;
     const keyword = params.keyword;
     const column_header = <FormattedMessage id='column.search_toots' defaultMessage='Search: "{keyword}"' values={{ keyword }} />;
 
@@ -87,6 +85,7 @@ class StatusSearchResults extends React.PureComponent {
           scrollKey='status_search_results'
           statusIds={statusIds}
           isLoading={isLoading}
+          hasMore={hasMore}
           onLoadMore={this.handleLoadMore}
           emptyMessage={<FormattedMessage id='empty_column.search_toots' defaultMessage='No toots found.' />}
         />
