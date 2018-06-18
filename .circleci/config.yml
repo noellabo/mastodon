@@ -167,7 +167,6 @@ jobs:
           key: v1-precompiled-assets-{{ .Branch }}-{{ .Revision }}
           paths:
             - public/assets
-            - public/packs-test
             - tmp/cache
 
       - run: ./bin/spring stop
