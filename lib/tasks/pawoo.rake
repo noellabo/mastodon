@@ -17,5 +17,23 @@ namespace :pawoo do
 
       Rails.logger.debug 'Done!'
     end
+
+    desc 'Calculate Redis prefix frequencies'
+    task redis_frequencies: :environment do
+      hash = {}
+      cursor = 0
+      while cursor != '0'
+        cursor, keys = Redis.current.scan(cursor)
+        keys.each do |key|
+          scrubbed = key.scrub('?')
+          colon = scrubbed.rindex(':')
+          prefix = colon.nil? ? scrubbed : scrubbed[0..colon]
+          old = hash[prefix]
+          hash[prefix] = old.nil? ? 1 : old + 1
+        end
+      end
+
+      pp hash
+    end
   end
 end
