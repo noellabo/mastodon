@@ -98,14 +98,6 @@ ExceptionNotification.configure do |config|
 
   config.error_grouping = true
 
-  if ENV['EXCEPTION_NOTIFICATION_EMAIL'] && ENV['LOCAL_DOMAIN']
-    # Email notifier sends notifications by email.
-    config.add_notifier :email,
-      email_prefix: '[pawoo-errors] ',
-      sender_address: %{"pawoo Errors" <errors@#{ENV['LOCAL_DOMAIN']}>},
-      exception_recipients: ENV['EXCEPTION_NOTIFICATION_EMAIL'].split(',')
-  end
-
   if Rails.application.secrets.slack[:error_webhook_url] && Rails.application.secrets.slack[:error_channel]
     config.add_notifier :slack,
       webhook_url: Rails.application.secrets.slack[:error_webhook_url],
