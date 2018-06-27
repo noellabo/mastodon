@@ -160,16 +160,20 @@ RSpec.describe Pawoo::Auth::OmniauthCallbacksController, type: :controller do
           expect(oauth_authentication.user.reload.remember_created_at).to be_present
         end
 
-        it 'enqueues pixiv follows fetch' do
-          Sidekiq::Testing.fake! do
-            subject
-            expect(FetchPixivFollowsWorker).to have_enqueued_sidekiq_job oauth_authentication.id, *auth['credentials'].values_at('token', 'refresh_token', 'expires_at')
-          end
+        it 'redirects to the path for the user after signing in' do
+          controller.store_location_for(:user, '/path/after/sign/in')
+          is_expected.to redirect_to '/path/after/sign/in'
         end
 
-        it 'redirects to the path for the user after signing in' do
-        controller.store_location_for(:user, '/path/after/sign/in')
-          is_expected.to redirect_to '/path/after/sign/in'
+        context 'when user has not confirmed' do
+          before do
+            oauth_authentication.user.update!(confirmed_at: nil)
+          end
+
+          it "doesn't log the user in" do
+            subject
+            expect(controller.current_user).to be_nil
+          end
         end
       end
 
@@ -177,6 +181,13 @@ RSpec.describe Pawoo::Auth::OmniauthCallbacksController, type: :controller do
         followee = Fabricate(:account, domain: nil, username: 'followee')
         get :pixiv, session: { 'pawoo.follow': 'followee' }
         expect(oauth_authentication.user.account.following?(followee)).to eq true
+      end
+
+      it 'enqueues pixiv follows fetch' do
+        Sidekiq::Testing.fake! do
+          subject
+          expect(FetchPixivFollowsWorker).to have_enqueued_sidekiq_job oauth_authentication.id, *auth['credentials'].values_at('token', 'refresh_token', 'expires_at')
+        end
       end
     end
 

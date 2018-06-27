@@ -1,4 +1,5 @@
 class Pawoo::OauthRegistrationsController < DeviseController
+  include Devise::Controllers::Rememberable
   include Pawoo::WithRedisSessionStore
 
   before_action :require_omniauth_auth
@@ -11,15 +12,17 @@ class Pawoo::OauthRegistrationsController < DeviseController
     @oauth_registration.assign_attributes(oauth_registration_params)
 
     if @oauth_registration.save
-      BootstrapTimelineWorker.perform_async(@oauth_registration.user.account_id)
-      sign_in(@oauth_registration.user)
+      user = @oauth_registration.user
+      sign_in(user)
+      remember_me(user)
 
+      BootstrapTimelineWorker.perform_async(user.account_id)
       FetchPixivFollowsWorker.perform_async(
         @oauth_registration.oauth_authentication.id,
         *omniauth_auth['credentials'].values_at('token', 'refresh_token', 'expires_at')
       )
 
-      redirect_to after_sign_in_path_for(@oauth_registration.user)
+      redirect_to after_sign_in_path_for(user)
     elsif @oauth_registration.errors.added?(:base, :invalid_user_attributes) &&
           @oauth_registration.user.errors.added?(:email, :taken)
       redirect_to new_user_session_path, alert: t('.already_registered')
