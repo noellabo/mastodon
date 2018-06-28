@@ -13,6 +13,12 @@ RSpec.describe Pawoo::OauthRegistrationsController, type: :controller do
       .to_return(status: 200, body: File.read('spec/fixtures/files/attachment.jpg'))
   end
 
+  around do |example|
+    Sidekiq::Testing.fake! do
+      example.run
+    end
+  end
+
   shared_examples 'cache miss' do
     context 'missing cache' do
       it { is_expected.to redirect_to(root_path) }
@@ -43,6 +49,7 @@ RSpec.describe Pawoo::OauthRegistrationsController, type: :controller do
       before do
         cache
         allow(BootstrapTimelineWorker).to receive(:perform_async)
+        allow(FetchPixivFollowsWorker).to receive(:perform_async)
       end
 
       it 'creates user' do
@@ -50,10 +57,45 @@ RSpec.describe Pawoo::OauthRegistrationsController, type: :controller do
         expect(Account.joins(:user).where(attributes)).to exist
       end
 
+      it 'creates OauthAuthentication' do
+        subject
+        expect(OauthAuthentication.joins(:user).where(users: { email: auth.info.email })).to exist
+      end
+
       it 'queues up bootstrapping of home timeline' do
         subject
         user = User.find_by(email: auth.info.email)
         expect(BootstrapTimelineWorker).to have_received(:perform_async).with(user.account_id)
+      end
+
+      it 'logs the user in' do
+        subject
+        expect(controller.current_user).to eq User.find_by(email: auth.info.email)
+      end
+
+      it 'remembers the user' do
+        subject
+        user = User.find_by(email: auth.info.email)
+        expect(user.remember_created_at).to be_present
+      end
+
+      it 'enqueues pixiv follows fetch' do
+        subject
+        oauth_authentication = User.find_by(email: auth.info.email).oauth_authentications.first
+        expect(FetchPixivFollowsWorker).to have_received(:perform_async).with(oauth_authentication.id, *auth['credentials'].values_at('token', 'refresh_token', 'expires_at'))
+      end
+
+      context 'when is_mail_authorized is false' do
+        let(:auth) do
+          OmniAuth.config.mock_auth[:pixiv].tap do |mock_auth|
+            mock_auth['extra']['raw_info']['is_mail_authorized'] = false
+          end
+        end
+
+        it "doesn't log the user in" do
+          subject
+          expect(controller.current_user).to be_nil
+        end
       end
 
       context 'when the email is duplicated' do

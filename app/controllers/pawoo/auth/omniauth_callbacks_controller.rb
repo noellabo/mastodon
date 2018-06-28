@@ -37,6 +37,8 @@ class Pawoo::Auth::OmniauthCallbacksController < Devise::OmniauthCallbacksContro
       oauth_authentication = OauthAuthentication.find_by(provider: data.provider, uid: data.uid)
 
       if oauth_authentication
+        enqueue_fetch_pixiv_follows_worker(oauth_authentication, data)
+
         user = oauth_authentication.user
         if user.otp_required_for_login?
           session[:otp_user_id] = user.id
@@ -45,7 +47,6 @@ class Pawoo::Auth::OmniauthCallbacksController < Devise::OmniauthCallbacksContro
         else
           sign_in(user)
           remember_me(user)
-          enqueue_fetch_pixiv_follows_worker(oauth_authentication, data)
 
           after_sign_in_for user
         end

@@ -20,6 +20,7 @@ OmniAuth.config.mock_auth[:pixiv] = OmniAuth::AuthHash.new(
       profile: {
         introduction: 'introduction',
       },
+      is_mail_authorized: true,
     },
   }
 )
