@@ -1,5 +1,5 @@
-import { autoPlayGif } from '../../initial_state';
-import { putAccounts, putStatuses } from '../../storage/modifier';
+// import { autoPlayGif } from '../../initial_state';
+// import { putAccounts, putStatuses } from '../../storage/modifier';
 import { normalizeAccount, normalizeStatus } from './normalizer';
 
 export const ACCOUNT_IMPORT = 'ACCOUNT_IMPORT';
@@ -54,7 +54,7 @@ export function importFetchedAccounts(accounts) {
     }
 
     accounts.forEach(processAccount);
-    putAccounts(normalAccounts, !autoPlayGif);
+    //putAccounts(normalAccounts, !autoPlayGif);
 
     dispatch(importAccounts(normalAccounts));
   };
@@ -79,7 +79,7 @@ export function importFetchedStatuses(statuses) {
     }
 
     statuses.forEach(processStatus);
-    putStatuses(normalStatuses);
+    //putStatuses(normalStatuses);
 
     dispatch(importFetchedAccounts(accounts));
     dispatch(importStatuses(normalStatuses));
