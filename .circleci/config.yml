@@ -25,6 +25,7 @@ jobs:
       ELASTICSEARCH_HOST: 127.0.0.1
       LOCAL_DOMAIN: cb6e6126.ngrok.io
       LOCAL_HTTPS: true
+      NODE_ENV: test
       PARALLEL_TEST_PROCESSORS: 4
       PATH: /root/.rbenv/shims:/usr/local/node/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       RAILS_ENV: test
@@ -90,7 +91,7 @@ jobs:
       - run:
           command: |
             # `rake assets:precompile error_page:generate` causes curious error: https://circleci.com/gh/pixiv/pawoo/2274
-            if ./bin/rake assets:precompile && ./bin/rake error_page:generate; then
+            if ./bin/webpack && ./bin/rake error_page:generate; then
               touch tmp/circleci/assets.success
             else
               touch tmp/circleci/assets.failure
