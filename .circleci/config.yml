@@ -170,7 +170,7 @@ jobs:
       - restore_cache:
           key: db/{{ checksum "tmp/circleci/master.hash" }}/2
       # Wait Database
-      - run: dockerize -wait tcp://$DB_HOST:5432 -timeout 30s
+      - run: ./.circleci/wait_for_connection.sh tcp://$DB_HOST:5432 30
       - run:
           name: Create Database
           command: |
@@ -209,9 +209,9 @@ jobs:
             - tmp/cache
 
       # Wait redis
-      - run: dockerize -wait tcp://127.0.0.1:6379 -timeout 30s
+      - run: ./.circleci/wait_for_connection.sh tcp://127.0.0.1:6379 30
       # Wait Elasticsearch
-      - run: dockerize -wait http://$ELASTICSEARCH_HOST:9200 -timeout 30s
+      - run: ./.circleci/wait_for_connection.sh http://$ELASTICSEARCH_HOST:9200 30
 
       # Run rspec
       - run: bundle exec parallel_test --group-by filesize --type rspec -- --profile -- $(circleci tests glob 'spec/**/*_spec.rb' | circleci tests split --split-by=filesize)
