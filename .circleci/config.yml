@@ -1,24 +1,9 @@
 version: 2
-jobs:
-  build:
+
+aliases:
+  - &defaults
     docker:
       - image: pawoo/circleci-primary:20180405
-      - image: postgres:9.5.4
-        environment:
-          POSTGRES_USER: root
-      - image: redis:3.2.4
-      - image: docker.elastic.co/elasticsearch/elasticsearch:5.4.0
-        environment:
-          ES_JAVA_OPTS: -Xms256m -Xmx256m
-        entrypoint:
-          - /bin/sh
-          - -c
-          - >
-            elasticsearch-plugin remove x-pack &&
-            elasticsearch-plugin install analysis-kuromoji &&
-            elasticsearch-plugin install analysis-icu &&
-            elasticsearch
-
     environment:
       CONTINUOUS_INTEGRATION: true # for fuubar gem
       DB_HOST: 127.0.0.1
@@ -33,20 +18,20 @@ jobs:
       DISABLE_SIMPLECOV: true
       PAWOO_SKIP_ID_MIGRATE_WARNING: true
     working_directory: /app
-    parallelism: 1
+
+  - &attach_workspace
+    attach_workspace:
+      at: .
+
+  - &persist_to_workspace
+    persist_to_workspace:
+      root: .
+      paths:
+        - .
+jobs:
+  install-and-lint:
+    <<: *defaults
     steps:
-      - run:
-          name: Check vm.max_map_count for elasticsearch container
-          command: |
-            vm_max_map_count=$(sysctl --values vm.max_map_count)
-            if [ $vm_max_map_count -ge 262144 ]; then
-              exit 0
-            fi
-            >&2 echo "Error: elasticsearch container requires vm.max_map_count >= 262144 but $vm_max_map_count now."
-            >&2 echo "Please execute 'sudo sysctl --write vm.max_map_count=262144' to raise that value on your docker host."
-            >&2 echo "See https://www.elastic.co/guide/en/elasticsearch/reference/5.4/docker.html#docker-cli-run-prod-mode"
-            exit 1
-      - run: cat /proc/cpuinfo
       - checkout
       - run: ./.circleci/primary/setup.sh
 
@@ -56,14 +41,7 @@ jobs:
             - v1-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
             - v1-ruby-dependencies-{{ checksum ".ruby-version" }}-
             - v1-ruby-dependencies-
-      - run: bundle check || bundle install --with pam_authentication --without development production --retry=3 --path=vendor/bundle
-      - run:
-          command: ./bin/spring server
-          background: true
-      - run:
-          name: Wake up spring [application_manager:test]
-          command: sleep 1; ./bin/rails r "puts 'Hello!'"; ./bin/spring status
-          background: true
+      - run: bundle check || bundle install --clean --jobs 4 --path ./vendor/bundle/ --retry 3 --with pam_authentication --without development production
       - save_cache:
           key: v1-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
           paths:
@@ -82,16 +60,90 @@ jobs:
           paths:
             - node_modules
 
+      - *persist_to_workspace
+
+      - run: yarn test:lint
+      # - run: bundle exec rubocop --parallel
+
+  build-assets:
+    <<: *defaults
+    steps:
+      - *attach_workspace
+      - run: ./.circleci/primary/setup.sh
+
       # Start assets precompilation. It wastes about 60 seconds, so that runs on background.
       - restore_cache:
           keys:
-            - v1-precompiled-assets-{{ .Branch }}-{{ .Revision }}
-            - v1-precompiled-assets-{{ .Branch }}-
-            - v1-precompiled-assets-
+            - v4-precompiled-assets-{{ .Branch }}-{{ .Revision }}
+            - v4-precompiled-assets-{{ .Branch }}-
+            - v4-precompiled-assets-
+
+      # `rake assets:precompile error_page:generate` causes curious error: https://circleci.com/gh/pixiv/pawoo/2274
+      - run: ./bin/rake assets:precompile
+      - run: ./bin/rake error_page:generate
+
+      # Save compiled assets
+      - save_cache:
+          key: v4-precompiled-assets-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - public/assets
+            - public/packs
+            - public/packs-test
+            - tmp/cache
+
+  test:
+    <<: *defaults
+    docker:
+      - image: pawoo/circleci-primary:20180405
+      - image: postgres:9.5.4
+        environment:
+          POSTGRES_USER: root
+      - image: redis:3.2.4
+      - image: docker.elastic.co/elasticsearch/elasticsearch:5.4.0
+        environment:
+          ES_JAVA_OPTS: -Xms256m -Xmx256m
+        entrypoint:
+          - /bin/sh
+          - -c
+          - >
+            elasticsearch-plugin remove x-pack &&
+            elasticsearch-plugin install analysis-kuromoji &&
+            elasticsearch-plugin install analysis-icu &&
+            elasticsearch
+
+    steps:
+      - *attach_workspace
+      - run: ./.circleci/primary/setup.sh
+
+      - run:
+          name: Check vm.max_map_count for elasticsearch container
+          command: |
+            vm_max_map_count=$(sysctl --values vm.max_map_count)
+            if [ $vm_max_map_count -ge 262144 ]; then
+              exit 0
+            fi
+            >&2 echo "Error: elasticsearch container requires vm.max_map_count >= 262144 but $vm_max_map_count now."
+            >&2 echo "Please execute 'sudo sysctl --write vm.max_map_count=262144' to raise that value on your docker host."
+            >&2 echo "See https://www.elastic.co/guide/en/elasticsearch/reference/5.4/docker.html#docker-cli-run-prod-mode"
+            exit 1
+
+      - run:
+          command: ./bin/spring server
+          background: true
+      - run:
+          name: Wake up spring [application_manager:test]
+          command: sleep 1; ./bin/rails r "puts 'Hello!'"; ./bin/spring status
+          background: true
+
+      # Start assets precompilation. It wastes about 60 seconds, so that runs on background.
+      - restore_cache:
+          keys:
+            - v1-assets-for-test-{{ .Branch }}-{{ .Revision }}
+            - v1-assets-for-test-{{ .Branch }}-
+            - v1-assets-for-test-
       - run:
           command: |
-            # `rake assets:precompile error_page:generate` causes curious error: https://circleci.com/gh/pixiv/pawoo/2274
-            if ./bin/webpack && ./bin/rake error_page:generate; then
+            if ./bin/webpack; then
               touch tmp/circleci/assets.success
             else
               touch tmp/circleci/assets.failure
@@ -99,22 +151,16 @@ jobs:
             fi
           background: true
 
+      - run: yarn test:jest
+
       # Database schema
       - run: mkdir -p tmp/circleci/db
       - run: echo $CIRCLE_SHA1 | tee tmp/circleci/HEAD.hash
       - run: git merge-base $CIRCLE_SHA1 origin/master | tee tmp/circleci/master.hash
       - restore_cache:
           key: db/{{ checksum "tmp/circleci/master.hash" }}/2
-      - run:
-          name: Wait for PostgreSQL container
-          command: |
-            for i in $(seq 60); do
-              if nc -z $DB_HOST 5432; then
-                exit 0
-              fi
-              sleep 0.5
-            done
-            exit 1
+      # Wait Database
+      - run: ./.circleci/wait_for_connection.sh tcp://$DB_HOST:5432 30
       - run:
           name: Create Database
           command: |
@@ -131,21 +177,6 @@ jobs:
           paths:
             - tmp/circleci/db
 
-      # Elasticsearch
-      - run:
-          name: Wait for Elasticsearch container
-          command: |
-            for i in $(seq 60); do
-              if curl -fsv http://$ELASTICSEARCH_HOST:9200/_stats?pretty; then
-                exit 0
-              fi
-              sleep 0.5;
-            done
-            exit 1
-
-      # Run npm test
-      - run: if [ $CIRCLE_NODE_INDEX = 0 ]; then npm test; fi
-
       # Wait for assets precompilation
       - run:
           name: Wait for assets precompilation
@@ -160,14 +191,31 @@ jobs:
             done
             exit 1
 
+      # Save compiled assets
+      - save_cache:
+          key: v1-assets-for-test-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - public/packs-test
+            - tmp/cache
+
+      # Wait redis
+      - run: ./.circleci/wait_for_connection.sh tcp://127.0.0.1:6379 30
+      # Wait Elasticsearch
+      - run: ./.circleci/wait_for_connection.sh http://$ELASTICSEARCH_HOST:9200 30
+
       # Run rspec
       - run: bundle exec parallel_test --group-by filesize --type rspec -- --profile -- $(circleci tests glob 'spec/**/*_spec.rb' | circleci tests split --split-by=filesize)
 
-      # Save compiled assets
-      - save_cache:
-          key: v1-precompiled-assets-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - public/assets
-            - tmp/cache
-
       - run: ./bin/spring stop
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - install-and-lint
+      - build-assets:
+          requires:
+            - install-and-lint
+      - test:
+          requires:
+            - install-and-lint
