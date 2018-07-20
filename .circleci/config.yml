@@ -29,7 +29,7 @@ aliases:
       paths:
         - .
 jobs:
-  install:
+  install-and-lint:
     <<: *defaults
     steps:
       - checkout
@@ -62,6 +62,9 @@ jobs:
 
       - *persist_to_workspace
 
+      - run: yarn test:lint
+      # - run: bundle exec rubocop --parallel
+
   build-assets:
     <<: *defaults
     steps:
@@ -88,22 +91,7 @@ jobs:
             - public/packs-test
             - tmp/cache
 
-  yarn-test:
-    <<: *defaults
-    steps:
-      - *attach_workspace
-      - run: ./.circleci/primary/setup.sh
-
-      # Run yarn test
-      - run: yarn test
-
-  # rubocop:
-  #   <<: *defaults
-  #   steps:
-  #     - *attach_workspace
-  #     - run: ./.circleci/primary/setup.sh
-
-  rspec:
+  test:
     <<: *defaults
     docker:
       - image: pawoo/circleci-primary:20180405
@@ -162,6 +150,8 @@ jobs:
               exit 1
             fi
           background: true
+
+      - run: yarn test:jest
 
       # Database schema
       - run: mkdir -p tmp/circleci/db
@@ -222,13 +212,10 @@ workflows:
   version: 2
   build:
     jobs:
-      - install
+      - install-and-lint
       - build-assets:
           requires:
-            - install
-      - yarn-test:
+            - install-and-lint
+      - test:
           requires:
-            - install
-      - rspec:
-          requires:
-            - install
+            - install-and-lint
