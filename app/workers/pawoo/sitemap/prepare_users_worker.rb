@@ -17,7 +17,7 @@ class Pawoo::Sitemap::PrepareUsersWorker
   private
 
   def perform_continuously(page, continuously_key)
-    return if page == 1 && !redis.setnx(redis_lock_key, continuously_key)
+    return if page == 1 && !redis.setnx(redis_lock_key, continuously_key).tap { |lock| redis.expire(redis_lock_key, 12 * 3600) if lock }
     return if page > 1 && redis.get(redis_lock_key) != continuously_key
 
     prepare_sitemap(page)
