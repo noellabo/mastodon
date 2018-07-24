@@ -16,7 +16,6 @@ class Pawoo::Sitemap::StatusIndexesController < Pawoo::Sitemap::ApplicationContr
         @status_pages = sitemap.query.load
       end
     else
-      Pawoo::Sitemap::PrepareStatusesWorker.perform_async(page)
       @status_pages = []
     end
   end

@@ -16,7 +16,6 @@ class Pawoo::Sitemap::UserIndexesController < Pawoo::Sitemap::ApplicationControl
         @accounts = sitemap.query.load
       end
     else
-      Pawoo::Sitemap::PrepareUsersWorker.perform_async(page)
       @accounts = []
     end
   end
