@@ -10,11 +10,10 @@
   - if @account.user&.setting_noindex
     %meta{ name: 'robots', content: 'noindex' }/
 
-  - if @statuses_collection.present?
-    - unless @statuses.last_page?
-      %link{ rel: 'next', href: pawoo_next_url }/
-    - unless @statuses.first_page?
-      %link{ rel: 'prev', href: pawoo_prev_url }/
+  - if @older_url
+    %link{ rel: 'next', href: @older_url }/
+  - if @newer_url
+    %link{ rel: 'prev', href: @newer_url }/
 
   %link{ rel: 'salmon', href: api_salmon_url(@account.id) }/
   %link{ rel: 'alternate', type: 'application/rss+xml', href: account_url(@account, format: 'rss') }/
@@ -61,8 +60,7 @@
     .pawoo-extension-account__strip__extra
       #pawoo-suggestion-strip{ data: { props: Oj.dump(pawoo_suggestion_strip_props) } }
 
-- if @statuses_collection.present?
+- if @older_url || @newer_url
   .pagination
-    = link_to safe_join([t('pagination.older'), fa_icon('chevron-right')], ' '), pawoo_next_url, class: 'newer', rel: 'next' unless @statuses.last_page?
-    = link_to safe_join([fa_icon('chevron-left'), t('pagination.newer')], ' '), pawoo_prev_url, class: 'older', rel: 'prev' unless @statuses.first_page?
-
+    = link_to safe_join([t('pagination.older'), fa_icon('chevron-right')], ' '), @older_url, class: 'newer', rel: 'next' if @older_url
+    = link_to safe_join([fa_icon('chevron-left'), t('pagination.newer')], ' '), @newer_url, class: 'older', rel: 'prev' if @newer_url
