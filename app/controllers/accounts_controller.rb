@@ -21,8 +21,18 @@ class AccountsController < ApplicationController
         end
 
         @pinned_statuses     = cache_collection(pawoo_statuses_from_pinned_status, Status) if show_pinned_statuses?
-        @statuses            = filtered_statuses.where.not(id: pawoo_statuses_from_pinned_status.map(&:id)).page(params[:page]).per(PAGE_SIZE).without_count
+        @statuses            = pawoo_id_pagination? ? filtered_status_page(params) : pawoo_filtered_status_page(params, PAGE_SIZE)
         @statuses_collection = cache_collection(@statuses, Status)
+
+        unless @statuses.empty?
+          if pawoo_id_pagination?
+            @older_url = older_url if @statuses.last.id > filtered_statuses.last.id
+            @newer_url = newer_url if @statuses.first.id < filtered_statuses.first.id
+          else
+            @older_url = pawoo_next_url unless @statuses.last_page?
+            @newer_url = pawoo_prev_url unless @statuses.first_page?
+          end
+        end
 
         render 'pawoo/extensions/accounts/show'
       end

@@ -5,13 +5,21 @@ module Pawoo::AccountsControllerConcern
 
   included do
     before_action :pawoo_set_container_classes
-    helper_method :pawoo_next_url, :pawoo_prev_url, :pawoo_suggestion_strip_props, :pawoo_schema
+    helper_method :pawoo_next_url, :pawoo_prev_url, :pawoo_suggestion_strip_props, :pawoo_schema, :pawoo_id_pagination?
   end
 
   private
 
   def pawoo_statuses_from_pinned_status
     @pawoo_statuses_from_pinned_status ||= @account.pinned_statuses.published
+  end
+
+  def pawoo_filtered_status_page(params, page_size)
+    filtered_statuses.where.not(id: pawoo_statuses_from_pinned_status.map(&:id)).page(params[:page]).per(page_size).without_count
+  end
+
+  def pawoo_id_pagination?
+    params[:min_id].present? || params[:max_id].present?
   end
 
   def pawoo_next_url
