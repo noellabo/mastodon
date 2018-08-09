@@ -87,7 +87,7 @@ RSpec.describe Pawoo::OauthRegistrationsController, type: :controller do
 
       context 'when is_mail_authorized is false' do
         let(:auth) do
-          OmniAuth.config.mock_auth[:pixiv].tap do |mock_auth|
+          Marshal.load(Marshal.dump(OmniAuth.config.mock_auth[:pixiv])).tap do |mock_auth|
             mock_auth['extra']['raw_info']['is_mail_authorized'] = false
           end
         end
@@ -95,6 +95,12 @@ RSpec.describe Pawoo::OauthRegistrationsController, type: :controller do
         it "doesn't log the user in" do
           subject
           expect(controller.current_user).to be_nil
+        end
+
+        context 'when the email is duplicated' do
+          let!(:unlinked_user) { Fabricate(:user, email: auth.info.email) }
+
+          it { is_expected.not_to redirect_to new_user_session_path }
         end
       end
 
