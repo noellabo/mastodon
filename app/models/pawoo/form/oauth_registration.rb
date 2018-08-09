@@ -82,7 +82,20 @@ class Pawoo::Form::OauthRegistration
 
   def validate_user
     self.user = User.new(user_attributes)
-    errors.add(:base, :invalid_user_attributes) if user.invalid?
+    return if user.valid?
+
+    user.errors.messages.each do |key, messages|
+      case key
+      when :email
+        messages.each { |message| errors.add(:email, message) }
+      when :'account.username'
+        messages.each { |message| errors.add(:username, message) }
+      when :'account.display_name'
+        messages.each { |message| errors.add(:display_name, message) }
+      when :'account.note'
+        messages.each { |message| errors.add(:note, message) }
+      end
+    end
   end
 
   def user_attributes
