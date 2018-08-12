@@ -817,7 +817,7 @@ DEPENDENCIES
   rack-attack (~> 5.2)
   rack-cors (~> 1.0)
   rack-timeout (~> 0.4)
-  rails (~> 5.2.0)
+  rails (~> 5.2.1)
   rails-controller-testing (~> 1.0)
   rails-i18n (~> 5.1)
   rails-settings-cached (~> 0.6)
