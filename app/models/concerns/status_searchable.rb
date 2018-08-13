@@ -39,6 +39,10 @@ module StatusSearchable
       end
     end
 
+    def postable_to_es?
+      public_visibility? && local?
+    end
+
     def as_indexed_json(_options = {})
       if postable_to_es?
         {
@@ -53,14 +57,12 @@ module StatusSearchable
       end
     end
 
-    after_commit on: [:create] do
-      PostStatusToESWorker.perform_async(id) if postable_to_es?
+    def pawoo_post_status_to_es
+      PostStatusToESWorker.perform_async(id)
     end
 
-    after_commit on: [:destroy] do
-      if postable_to_es?
-        RemoveStatusFromESWorker.perform_async(__elasticsearch__.index_name, __elasticsearch__.document_type, id)
-      end
+    def pawoo_remove_status_to_es
+      RemoveStatusFromESWorker.perform_async(__elasticsearch__.index_name, __elasticsearch__.document_type, id)
     end
   end
 
