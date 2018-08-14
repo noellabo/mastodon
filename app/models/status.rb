@@ -97,10 +97,6 @@ class Status < ApplicationRecord
     reblog: [{ account: :oauth_authentications }, :application, :media_attachments, :conversation, :tags, :stream_entry, :pixiv_cards, :status_pin, mentions: { account: :oauth_authentications }],
     thread: { account: :oauth_authentications }
 
-  def postable_to_es?
-    public_visibility? && local?
-  end
-
   delegate :domain, to: :account, prefix: true
 
   REAL_TIME_WINDOW = 6.hours
@@ -187,6 +183,9 @@ class Status < ApplicationRecord
 
   after_create_commit :store_uri, if: :local?
   after_create_commit :update_statistics, if: :local?
+
+  after_create_commit :pawoo_post_status_to_es, if: :postable_to_es?
+  after_destroy_commit :pawoo_remove_status_to_es, if: :postable_to_es?
 
   around_create Mastodon::Snowflake::Callbacks
 
