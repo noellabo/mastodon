@@ -78,3 +78,22 @@
   50% { transform: translateY(-100%); }
   100% { transform: translateY(0); }
 }
+
+.pawoo-extension-drawer__inner__mastodon--animation {
+  animation: pawoo-extension-drawer__inner__mastodon--animation-keyframes 1s;
+}
+
+@keyframes pawoo-extension-drawer__inner__mastodon--animation-keyframes {
+  0% { transform: scale(0.5); }
+  50% { transform: scale(1); }
+  100% { transform: scale(0.5); }
+}
+
+.pawoo-extension-drawer__inner__mastodon.drawer__inner__mastodon {
+  min-height: 94px;
+
+  > * {
+    transform-origin: bottom left;
+    transform: scale(0.5);
+  }
+}

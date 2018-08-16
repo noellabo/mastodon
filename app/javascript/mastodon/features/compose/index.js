@@ -51,6 +51,8 @@ export default class Compose extends React.PureComponent {
     pawooMultiColumn: PropTypes.bool,
   };
 
+  pawooRef = null;
+
   componentDidMount () {
     const { isSearchPage } = this.props;
 
@@ -78,6 +80,21 @@ export default class Compose extends React.PureComponent {
   pawooHandleClick = () => {
     this.props.dispatch(pawooSetPage('DEFAULT'));
   }
+
+  pawooHandleSubmit = () => {
+    if (this.pawooRef) {
+      this.pawooRef.classList.remove('pawoo-extension-drawer__inner__mastodon--animation');
+
+      // Trigger layout
+      this.pawooRef.offsetWidth; // eslint-disable-line no-unused-expressions
+
+      this.pawooRef.classList.add('pawoo-extension-drawer__inner__mastodon--animation');
+    }
+  };
+
+  pawooSetRef = c => {
+    this.pawooRef = c;
+  };
 
   render () {
     const { multiColumn, showSearch, isSearchPage, intl } = this.props;
@@ -116,7 +133,7 @@ export default class Compose extends React.PureComponent {
         <div className='drawer__pager'>
           <div className='drawer__inner' onFocus={this.onFocus}>
             <NavigationContainer onClose={this.onBlur} />
-            <ComposeFormContainer />
+            <ComposeFormContainer pawooOnSubmit={this.pawooHandleSubmit} />
 
             {(!multiColumn || this.props.pawooMultiColumn) && (
               <React.Fragment>
@@ -128,8 +145,8 @@ export default class Compose extends React.PureComponent {
             )}
 
             {multiColumn && (
-              <div className='drawer__inner__mastodon'>
-                <img alt='' draggable='false' src={elephantUIPlane} />
+              <div className='pawoo-extension-drawer__inner__mastodon drawer__inner__mastodon'>
+                <img alt='' draggable='false' ref={this.pawooSetRef} src={elephantUIPlane} />
               </div>
             )}
           </div>
