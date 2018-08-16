@@ -37,7 +37,7 @@ const mapStateToProps = state => ({
   pawooKeepCaretPosition: state.getIn(['compose', 'pawooKeepCaretPosition']),
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch, { pawooOnSubmit }) => ({
 
   onChange (text) {
     dispatch(changeCompose(text));
@@ -51,6 +51,10 @@ const mapDispatchToProps = (dispatch) => ({
 
   onSubmit () {
     dispatch(submitCompose());
+
+    if (pawooOnSubmit) {
+      pawooOnSubmit();
+    }
   },
 
   onClearSuggestions () {

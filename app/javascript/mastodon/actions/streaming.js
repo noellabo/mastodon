@@ -9,6 +9,25 @@ import { updateNotifications, expandNotifications } from './notifications';
 import { getLocale } from '../locales';
 
 const { messages } = getLocale();
+const pawooListeners = Object.create(null);
+
+export function pawooAddListener(timelineId, listener) {
+  if (pawooListeners[timelineId]) {
+    pawooListeners[timelineId].add(listener);
+  } else {
+    pawooListeners[timelineId] = new Set([listener]);
+  }
+}
+
+export function pawooRemoveListener(timelineId, listener) {
+  if (pawooListeners[timelineId]) {
+    if (pawooListeners[timelineId].size > 1) {
+      pawooListeners[timelineId].delete(listener);
+    } else {
+      delete pawooListeners[timelineId];
+    }
+  }
+}
 
 export function connectTimelineStream (timelineId, path, pollingRefresh = null) {
 
@@ -22,6 +41,10 @@ export function connectTimelineStream (timelineId, path, pollingRefresh = null) 
       onReceive (data) {
         switch(data.event) {
         case 'update':
+          if (pawooListeners[timelineId]) {
+            pawooListeners[timelineId].forEach(listener => listener());
+          }
+
           dispatch(updateTimeline(timelineId, JSON.parse(data.payload)));
           break;
         case 'delete':

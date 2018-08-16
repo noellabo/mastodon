@@ -35,6 +35,7 @@ export default class ColumnHeader extends React.PureComponent {
     onMove: PropTypes.func,
     onClick: PropTypes.func,
     pawoo: ImmutablePropTypes.map,
+    pawooIconRef: PropTypes.func,
     pawooUrl: PropTypes.string,
   };
 
@@ -168,7 +169,7 @@ export default class ColumnHeader extends React.PureComponent {
         <h1 className={buttonClassName}>
           {hasTitle && (
             <button onClick={this.handleTitleClick}>
-              {icon && <i className={`fa fa-fw fa-${icon} column-header__icon`} />}
+              {icon && <i className={`fa fa-fw fa-${icon} column-header__icon`} ref={this.props.pawooIconRef} />}
               {title}
             </button>
           )}
