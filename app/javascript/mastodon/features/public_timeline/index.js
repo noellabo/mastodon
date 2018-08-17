@@ -5,12 +5,12 @@ import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
 import Column from '../../components/column';
-import ColumnHeader from '../../components/column_header';
 import { expandPublicTimeline } from '../../actions/timelines';
 import { addColumn, removeColumn, moveColumn, changeColumnParams } from '../../actions/columns';
 import ColumnSettingsContainer from './containers/column_settings_container';
 // import SectionHeadline from '../community_timeline/components/section_headline';
 import { connectPublicStream } from '../../actions/streaming';
+import ColumnHeader from '../../../pawoo/components/animated_timeline_column_header';
 
 const messages = defineMessages({
   title: { id: 'column.public', defaultMessage: 'Federated timeline' },
@@ -127,6 +127,7 @@ export default class PublicTimeline extends React.PureComponent {
           multiColumn={multiColumn}
           pawoo={pawoo}
           pawooUrl='/timelines/public'
+          timelineId={`public${onlyMedia ? ':media' : ''}`}
         >
           <ColumnSettingsContainer />
         </ColumnHeader>

@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
 import Column from '../../components/column';
-import ColumnHeader from '../../components/column_header';
 import { expandDirectTimeline } from '../../actions/timelines';
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import ColumnSettingsContainer from './containers/column_settings_container';
 import { connectDirectStream } from '../../actions/streaming';
+import ColumnHeader from '../../../pawoo/components/animated_timeline_column_header';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
 const messages = defineMessages({
@@ -90,6 +90,7 @@ export default class DirectTimeline extends React.PureComponent {
           multiColumn={multiColumn}
           pawoo={pawoo}
           pawooUrl='/timelines/direct'
+          timelineId='direct'
         >
           <ColumnSettingsContainer />
         </ColumnHeader>

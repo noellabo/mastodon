@@ -5,12 +5,12 @@ import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
 import Column from '../../components/column';
-import ColumnHeader from '../../components/column_header';
 import { expandCommunityTimeline } from '../../actions/timelines';
 import { addColumn, removeColumn, moveColumn, changeColumnParams } from '../../actions/columns';
 import ColumnSettingsContainer from './containers/column_settings_container';
 // import SectionHeadline from './components/section_headline';
-import { connectCommunityStream, pawooAddListener, pawooRemoveListener } from '../../actions/streaming';
+import { connectCommunityStream } from '../../actions/streaming';
+import ColumnHeader from '../../../pawoo/components/animated_timeline_column_header';
 
 const messages = defineMessages({
   title: { id: 'column.community', defaultMessage: 'Local timeline' },
@@ -73,11 +73,6 @@ export default class CommunityTimeline extends React.PureComponent {
       this.disconnect();
       dispatch(expandCommunityTimeline({ onlyMedia }));
       this.disconnect = dispatch(connectCommunityStream({ onlyMedia }));
-
-      if (this.pawooListener) {
-        pawooRemoveListener(`community${prevProps.onlyMedia ? ':media' : ''}`, this.pawooListener);
-        pawooAddListener(`community${this.props.onlyMedia ? ':media' : ''}`, this.pawooListener);
-      }
     }
   }
 
@@ -86,8 +81,6 @@ export default class CommunityTimeline extends React.PureComponent {
       this.disconnect();
       this.disconnect = null;
     }
-
-    pawooRemoveListener(`community${this.props.onlyMedia ? ':media' : ''}`, this.pawooListener);
   }
 
   setRef = c => {
@@ -106,22 +99,6 @@ export default class CommunityTimeline extends React.PureComponent {
 
     dispatch(changeColumnParams(columnId, { other: { onlyMedia } }));
   }
-
-  pawooSetIconRef = c => {
-    const timelineId = `community${this.props.onlyMedia ? ':media' : ''}`;
-
-    this.pawooListener = () => {
-      c.classList.remove('pawoo-extension-column-header__icon--animation');
-
-      // Trigger layout
-      c.offsetWidth; // eslint-disable-line no-unused-expressions
-
-      c.classList.add('pawoo-extension-column-header__icon--animation');
-    };
-
-    pawooRemoveListener(timelineId, this.pawooListener);
-    pawooAddListener(timelineId, this.pawooListener);
-  };
 
   render () {
     const { intl, hasUnread, columnId, multiColumn, onlyMedia, pawoo } = this.props;
@@ -151,8 +128,8 @@ export default class CommunityTimeline extends React.PureComponent {
           pinned={pinned}
           multiColumn={multiColumn}
           pawoo={pawoo}
-          pawooIconRef={this.pawooSetIconRef}
           pawooUrl='/timelines/public/local'
+          timelineId={`community${onlyMedia ? ':media' : ''}`}
         >
           <ColumnSettingsContainer />
         </ColumnHeader>

@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import StatusListContainer from '../../ui/containers/status_list_container';
 import { expandPublicTimeline } from '../../../actions/timelines';
 import Column from '../../../components/column';
-import ColumnHeader from '../../../components/column_header';
 import { defineMessages, injectIntl } from 'react-intl';
 import { connectPublicStream } from '../../../actions/streaming';
+import ColumnHeader from '../../../../pawoo/components/animated_timeline_column_header';
 
 const messages = defineMessages({
   title: { id: 'standalone.public_title', defaultMessage: 'A look inside...' },
@@ -56,6 +56,7 @@ export default class PublicTimeline extends React.PureComponent {
           icon='globe'
           title={intl.formatMessage(messages.title)}
           onClick={this.handleHeaderClick}
+          timelineId='public'
         />
 
         <StatusListContainer

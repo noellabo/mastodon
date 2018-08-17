@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
 import Column from '../../components/column';
-import ColumnHeader from '../../components/column_header';
 import { expandCommunityTimeline } from '../../actions/timelines';
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import ColumnSettingsContainer from './containers/column_settings_container';
 import { connectCommunityStream } from '../../actions/streaming';
+import ColumnHeader from '../../../pawoo/components/animated_timeline_column_header';
 
 const messages = defineMessages({
   title: { id: 'column.media', defaultMessage: 'Media timeline' },
@@ -92,6 +92,7 @@ class MediaTimeline extends React.PureComponent {
           multiColumn={multiColumn}
           pawoo={pawoo}
           pawooUrl='/timelines/public/media'
+          timelineId='community:media'
         >
           <ColumnSettingsContainer />
         </ColumnHeader>
