@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 import StatusListContainer from '../../ui/containers/status_list_container';
 import { expandCommunityTimeline } from '../../../actions/timelines';
 import Column from '../../../components/column';
-import ColumnHeader from '../../../components/column_header';
 import { injectIntl } from 'react-intl';
 import { connectCommunityStream } from '../../../actions/streaming';
 import initialState from '../../../initial_state';
 
+import ColumnHeader from '../../../../pawoo/components/animated_timeline_column_header';
 import pawooLogo from '../../../../pawoo/images/logo_elephant.png';
 
 const mapStateToProps = state => ({
@@ -63,6 +63,7 @@ export default class CommunityTimeline extends React.PureComponent {
             </div>
           )}
           onClick={this.handleHeaderClick}
+          timelineId='community'
         />
 
         <StatusListContainer

@@ -5,10 +5,10 @@ import { expandHomeTimeline } from '../../actions/timelines';
 import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
 import Column from '../../components/column';
-import ColumnHeader from '../../components/column_header';
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import ColumnSettingsContainer from './containers/column_settings_container';
+import ColumnHeader from '../../../pawoo/components/animated_timeline_column_header';
 import Link from '../../../pawoo/components/wrapped_link';
 
 const messages = defineMessages({
@@ -111,6 +111,7 @@ export default class HomeTimeline extends React.PureComponent {
           multiColumn={multiColumn}
           pawoo={pawoo}
           pawooUrl='/timelines/home'
+          timelineId='home'
         >
           <ColumnSettingsContainer />
         </ColumnHeader>

@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import StatusListContainer from '../ui/containers/status_list_container';
 import Column from '../../components/column';
-import ColumnHeader from '../../components/column_header';
 import { expandHashtagTimeline } from '../../actions/timelines';
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
 import { FormattedMessage } from 'react-intl';
 import { connectHashtagStream } from '../../actions/streaming';
+import ColumnHeader from '../../../pawoo/components/animated_timeline_column_header';
 
 const mapStateToProps = (state, props) => ({
   hasUnread: state.getIn(['timelines', `hashtag:${props.params.id}`, 'unread']) > 0,
@@ -103,6 +103,7 @@ export default class HashtagTimeline extends React.PureComponent {
           showBackButton
           pawoo={pawoo}
           pawooUrl={`/timelines/tag/${id}`}
+          timelineId={`hashtag:${id}`}
         />
 
         <StatusListContainer

@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import StatusListContainer from '../../ui/containers/status_list_container';
 import { expandHashtagTimeline } from '../../../actions/timelines';
 import Column from '../../../components/column';
-import ColumnHeader from '../../../components/column_header';
 import { connectHashtagStream } from '../../../actions/streaming';
+import ColumnHeader from '../../../../pawoo/components/animated_timeline_column_header';
 
 @connect()
 export default class HashtagTimeline extends React.PureComponent {
@@ -50,6 +50,7 @@ export default class HashtagTimeline extends React.PureComponent {
           icon='hashtag'
           title={hashtag}
           onClick={this.handleHeaderClick}
+          timelineId={`hashtag:${hashtag}`}
         />
 
         <StatusListContainer
