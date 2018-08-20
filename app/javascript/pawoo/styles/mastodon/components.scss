@@ -1,6 +1,6 @@
 .mastodon_bridge {
   background: $ui-highlight-color;
-  margin: 10px 5px 0 0;
+  margin: 10px;
   border-radius: 4px;
   transition: all 100ms ease-in;
 
@@ -8,6 +8,8 @@
     text-align: left;
     max-width: 330px;
     background: transparent;
+    font-size: 15px;
+    padding: 10px;
 
     &:hover {
       background: transparent;

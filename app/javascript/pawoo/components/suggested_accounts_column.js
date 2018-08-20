@@ -12,7 +12,6 @@ import SuggestedAccountsContainer from '../containers/suggested_accounts_contain
 
 const messages = defineMessages({
   title: { id: 'column.suggested_accounts', defaultMessage: 'Active Users' },
-  mastodonBridge: { id: 'suggested_accounts.mastodon_bridge', defaultMessage: 'Search your Twitter friends' },
   goToLocalTimeline: { id: 'suggested_accounts.go_to_local_timeline', defaultMessage: 'Go To Local Timeline' },
 });
 
@@ -54,12 +53,6 @@ export default class SuggestedAccountsColumn extends React.PureComponent {
       <div className='pawoo-suggested-accounts-column--page'>
         <div className='column'>
           <ColumnBackButton />
-          <div class="mastodon_bridge">
-            <a class="column-link" href="https://bridge.joinmastodon.org/" target="_blank">
-              <i class="fa fa-fw fa-twitter column-link__icon"></i>
-              {this.props.intl.formatMessage(messages.mastodonBridge)}
-            </a>
-          </div>
         </div>
         <img alt='' src={PawooUI} />
       </div>
