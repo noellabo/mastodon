@@ -3,11 +3,12 @@
 class Pawoo::Form::ReportTargetGroup
   include ActiveModel::Model
 
-  attr_accessor :report_target_groups_params, :current_account
+  attr_accessor :report_target_groups_params, :current_account, :state_param
 
   def save
     @report_target_groups_of = report_target_groups_params.values.group_by { |report_target_group| report_target_group[:action] }
     @resolved_report_target_groups = []
+    @additional_resolved_report_targets = []
     @action_logs = []
 
     ApplicationRecord.transaction do
@@ -19,8 +20,12 @@ class Pawoo::Form::ReportTargetGroup
       prosess_suspend_account
 
       change_report_state(@resolved_report_target_groups, :resolved)
+      Pawoo::ReportTarget.where(id: @additional_resolved_report_targets.map(&:id).uniq).update_all(state: :resolved) if @additional_resolved_report_targets.present?
+
       save_log_actions!
     end
+
+    post_prosess_suspend_account
 
     true
   rescue ActiveRecord::RecordInvalid
@@ -99,6 +104,10 @@ class Pawoo::Form::ReportTargetGroup
     target_accounts = Account.where(id: extract_account_ids(report_target_groups)).select(:id)
     target_accounts.update_all(silenced: true)
 
+    target_account_ids = target_accounts.map(&:id)
+    @additional_resolved_report_targets += Pawoo::ReportTarget.where(state: state_param, target_type: 'Account', target_id: target_account_ids)
+    @additional_resolved_report_targets += Pawoo::ReportTarget.where(state: state_param).filter_status_by_account(target_account_ids)
+
     @resolved_report_target_groups += report_target_groups
     @action_logs += target_accounts.map do |target_account|
       build_log_action('silence', target: target_account)
@@ -109,14 +118,22 @@ class Pawoo::Form::ReportTargetGroup
     report_target_groups = @report_target_groups_of['suspend']
     return if report_target_groups.blank?
 
-    target_accounts = Account.where(id: extract_account_ids(report_target_groups)).select(:id)
-    target_accounts.each do |account|
-      Admin::SuspensionWorker.perform_async(account.id)
-    end
+    @suspend_target_accounts = Account.where(id: extract_account_ids(report_target_groups)).select(:id)
+    target_account_ids = @suspend_target_accounts.map(&:id)
+    @additional_resolved_report_targets += Pawoo::ReportTarget.where(state: state_param, target_type: 'Account', target_id: target_account_ids)
+    @additional_resolved_report_targets += Pawoo::ReportTarget.where(state: state_param).filter_status_by_account(target_account_ids)
 
     @resolved_report_target_groups += report_target_groups
-    @action_logs += target_accounts.map do |target_account|
+    @action_logs += @suspend_target_accounts.map do |target_account|
       build_log_action('suspend', target: target_account)
+    end
+  end
+
+  def post_prosess_suspend_account
+    return unless @suspend_target_accounts
+
+    @suspend_target_accounts.each do |account|
+      Admin::SuspensionWorker.perform_async(account.id)
     end
   end
 

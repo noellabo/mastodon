@@ -34,7 +34,7 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
 
   def create
     authorize Pawoo::ReportTarget, :create?
-    form = Pawoo::Form::ReportTargetGroup.new(report_target_groups_params: params.require(:report_target_groups), current_account: current_account)
+    form = Pawoo::Form::ReportTargetGroup.new(report_target_groups_params: params.require(:report_target_groups), current_account: current_account, state_param: state_param)
 
     if form.save
       flash[:notice] = I18n.t('pawoo.admin.report_targets.success_msg')
