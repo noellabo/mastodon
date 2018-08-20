@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Pawoo::Form::ReportTargetGroup do
-  let!(:form) { Pawoo::Form::ReportTargetGroup.new(report_target_groups_params: report_target_groups_params, current_account: account) }
+  let!(:form) { Pawoo::Form::ReportTargetGroup.new(report_target_groups_params: report_target_groups_params, current_account: account, state_param: :unresolved) }
   let(:account) { Fabricate(:account) }
   let(:target_account1) { Fabricate(:account) }
   let(:target_account2) { Fabricate(:account) }
@@ -41,10 +41,6 @@ describe Pawoo::Form::ReportTargetGroup do
     it { expect(form.save).to be true }
     it { expect { form.save }.to change { Admin::ActionLog.where(action: 'pawoo_report_target_no_problem', target: [target_account1, target_account2, target_status1, target_status2]).count }.by(4) }
     it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: report_target_ids).pluck(:state) }.from(6.times.map {'unresolved' }).to(6.times.map {'resolved' }) }
-    it { expect { form.save }.not_to change { target_account1.reload } }
-    it { expect { form.save }.not_to change { target_account2.reload } }
-    it { expect { form.save }.not_to change { target_status1.reload } }
-    it { expect { form.save }.not_to change { target_status2.reload } }
   end
 
   describe 'with change_to_pending action' do
@@ -55,10 +51,6 @@ describe Pawoo::Form::ReportTargetGroup do
     it { expect(form.save).to be true }
     it { expect { form.save }.to change { Admin::ActionLog.where(action: 'pawoo_report_target_change_to_pending', target: [target_account1, target_account2, target_status1, target_status2]).count }.by(4) }
     it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: report_target_ids).pluck(:state) }.from(6.times.map {'unresolved' }).to(6.times.map {'pending' }) }
-    it { expect { form.save }.not_to change { target_account1.reload } }
-    it { expect { form.save }.not_to change { target_account2.reload } }
-    it { expect { form.save }.not_to change { target_status1.reload } }
-    it { expect { form.save }.not_to change { target_status2.reload } }
   end
 
   describe 'with set_nsfw action' do
@@ -122,32 +114,46 @@ describe Pawoo::Form::ReportTargetGroup do
 
   describe 'with silence_account action' do
     let(:action) { 'silence' }
+    let!(:other_report_targets) do
+      [
+        Fabricate(:report, action_taken: true, pawoo_report_targets: [Pawoo::ReportTarget.new(target: Fabricate(:status, account: target_account))]).pawoo_report_targets.first,
+        Fabricate(:report, action_taken: true, pawoo_report_targets: [Pawoo::ReportTarget.new(target: target_account)]).pawoo_report_targets.first,
+      ]
+    end
 
     context 'when target type is status' do
       let(:report_target_groups_params) { report_target_groups_params_for_status }
       let(:report_target_ids) { [*report_targets_status1, *report_targets_status2] }
+      let(:target_account) { target_status1.account }
 
       it { expect(form.save).to be true }
       it { expect { form.save }.to change { Admin::ActionLog.where(action: 'pawoo_report_target_silence', target: [target_status1, target_status2].map(&:account)).count }.by(2) }
       it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: report_target_ids).pluck(:state) }.from(3.times.map {'unresolved' }).to(3.times.map {'resolved' }) }
-      it { expect { form.save }.to change { target_status1.account.reload.silenced }.from(false).to(true) }
-      it { expect { form.save }.to change { target_status2.account.reload.silenced }.from(false).to(true) }
+      it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: other_report_targets.map(&:id)).pluck(:state) }.from(2.times.map {'unresolved' }).to(2.times.map {'resolved' }) }
+      it { expect { form.save }.to change { Account.where(id: [target_status1.account.id, target_status2.account.id]).pluck(:silenced) }.from([false, false]).to([true, true]) }
     end
 
     context 'when target type is account' do
       let(:report_target_groups_params) { report_target_groups_params_for_account }
       let(:report_target_ids) { [*report_targets_account1, *report_targets_account2] }
+      let(:target_account) { target_account1 }
 
       it { expect(form.save).to be true }
       it { expect { form.save }.to change { Admin::ActionLog.where(action: 'pawoo_report_target_silence', target: [target_account1, target_account2]).count }.by(2) }
       it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: report_target_ids).pluck(:state) }.from(3.times.map {'unresolved' }).to(3.times.map {'resolved' }) }
-      it { expect { form.save }.to change { target_account1.reload.silenced }.from(false).to(true) }
-      it { expect { form.save }.to change { target_account2.reload.silenced }.from(false).to(true) }
+      it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: other_report_targets.map(&:id)).pluck(:state) }.from(2.times.map {'unresolved' }).to(2.times.map {'resolved' }) }
+      it { expect { form.save }.to change { Account.where(id: [target_account1.id, target_account2.id]).pluck(:silenced) }.from([false, false]).to([true, true]) }
     end
   end
 
   describe 'with suspend_account action' do
     let(:action) { 'suspend' }
+    let!(:other_report_targets) do
+      [
+        Fabricate(:report, action_taken: true, pawoo_report_targets: [Pawoo::ReportTarget.new(target: Fabricate(:status, account: target_account))]).pawoo_report_targets.first,
+        Fabricate(:report, action_taken: true, pawoo_report_targets: [Pawoo::ReportTarget.new(target: target_account)]).pawoo_report_targets.first,
+      ]
+    end
 
     before do
       allow(Admin::SuspensionWorker).to receive(:perform_async)
@@ -156,10 +162,13 @@ describe Pawoo::Form::ReportTargetGroup do
     context 'when target type is status' do
       let(:report_target_groups_params) { report_target_groups_params_for_status }
       let(:report_target_ids) { [*report_targets_status1, *report_targets_status2] }
+      let!(:account_report_target_ids) { [*report_targets_account1, *report_targets_account2] }
+      let(:target_account) { target_status1.account }
 
       it { expect(form.save).to be true }
       it { expect { form.save }.to change { Admin::ActionLog.where(action: 'pawoo_report_target_suspend', target: [target_status1, target_status2].map(&:account)).count }.by(2) }
       it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: report_target_ids).pluck(:state) }.from(3.times.map {'unresolved' }).to(3.times.map {'resolved' }) }
+      it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: other_report_targets.map(&:id)).pluck(:state) }.from(2.times.map {'unresolved' }).to(2.times.map {'resolved' }) }
       it 'call Admin::SuspensionWorker' do
         form.save
         expect(Admin::SuspensionWorker).to have_received(:perform_async).with(target_status1.account.id)
@@ -170,10 +179,12 @@ describe Pawoo::Form::ReportTargetGroup do
     context 'when target type is account' do
       let(:report_target_groups_params) { report_target_groups_params_for_account }
       let(:report_target_ids) { [*report_targets_account1, *report_targets_account2] }
+      let(:target_account) { target_account1 }
 
       it { expect(form.save).to be true }
       it { expect { form.save }.to change { Admin::ActionLog.where(action: 'pawoo_report_target_suspend', target: [target_account1, target_account2]).count }.by(2) }
       it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: report_target_ids).pluck(:state) }.from(3.times.map {'unresolved' }).to(3.times.map {'resolved' }) }
+      it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: other_report_targets.map(&:id)).pluck(:state) }.from(2.times.map {'unresolved' }).to(2.times.map {'resolved' }) }
       it 'call Admin::SuspensionWorker' do
         form.save
         expect(Admin::SuspensionWorker).to have_received(:perform_async).with(target_account1.id)
@@ -200,8 +211,6 @@ describe Pawoo::Form::ReportTargetGroup do
     it { expect { form.save }.to change { Admin::ActionLog.where(action: 'pawoo_report_target_silence', target: target_status2.account).count }.by(1) }
     it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: resolved_report_target_ids).pluck(:state) }.from(4.times.map {'unresolved' }).to(4.times.map {'resolved' }) }
     it { expect { form.save }.to change { Pawoo::ReportTarget.where(id: report_targets_account2).pluck(:state) }.from(2.times.map {'unresolved' }).to(2.times.map {'pending' }) }
-    it { expect { form.save }.not_to change { target_account1.reload } }
-    it { expect { form.save }.not_to change { target_account2.reload } }
     it { expect { form.save }.to change { target_status1.reload.sensitive }.from(false).to(true) }
     it { expect { form.save }.to change { target_status2.account.reload.silenced }.from(false).to(true) }
   end

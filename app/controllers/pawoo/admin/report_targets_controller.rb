@@ -10,7 +10,7 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
     target_accounts = Set.new
 
     # すべて取得して通報の多い順並べる
-    report_targets_ids = Pawoo::ReportTarget.where(state: state_param).group([:target_type, :target_id]).count.sort_by { |_, count| -count }.map(&:first)
+    report_targets_ids = report_target_scope.group([:target_type, :target_id]).count.sort_by { |_, count| -count }.map(&:first)
     @report_target_count = report_targets_ids.size
 
     @current_page = params[:page].to_i < 1 ? 1 : params[:page].to_i
@@ -34,7 +34,7 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
 
   def create
     authorize Pawoo::ReportTarget, :create?
-    form = Pawoo::Form::ReportTargetGroup.new(report_target_groups_params: params.require(:report_target_groups), current_account: current_account)
+    form = Pawoo::Form::ReportTargetGroup.new(report_target_groups_params: params.require(:report_target_groups), current_account: current_account, state_param: state_param)
 
     if form.save
       flash[:notice] = I18n.t('pawoo.admin.report_targets.success_msg')
@@ -50,6 +50,15 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
 
   def state_param
     @state_param ||= params[:pending] == '1' ? :pending : :unresolved
+  end
+
+  def report_target_scope
+    scope = Pawoo::ReportTarget.where(state: state_param)
+    if params[:media]
+      ids = scope.where(target_type: 'Status').joins(status: :media_attachments).distinct(:id).pluck(:id)
+      scope = scope.where(id: ids)
+    end
+    scope
   end
 
   def load_report_target_groups_map(target_statuses, target_accounts, state)

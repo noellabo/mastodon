@@ -8,9 +8,15 @@
     %ul
       %li= filter_link_to t('pawoo.admin.report_targets.unresolved'), pending: nil
       %li= filter_link_to t('pawoo.admin.report_targets.pending'), pending: '1'
+  .filter-subset
+    %strong= t('pawoo.admin.report_targets.media')
+    %ul
+      %li= filter_link_to t('pawoo.admin.report_targets.all_report'), media: nil
+      %li= filter_link_to t('pawoo.admin.report_targets.only_media'), media: '1'
 
 = form_tag admin_pawoo_report_targets_path do
   = hidden_field_tag :pending, 1 if params[:pending] == '1'
+  = hidden_field_tag :media, 1 if params[:media] == '1'
 
   .table-wrapper
     %table.table

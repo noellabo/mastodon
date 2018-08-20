@@ -6,7 +6,7 @@ module Admin::FilterHelper
   INVITE_FILTER        = %i(available expired).freeze
   CUSTOM_EMOJI_FILTERS = %i(local remote by_domain shortcode).freeze
 
-  PAWOO_REPORT_TARGET_FILTERS = %i(pending)
+  PAWOO_REPORT_TARGET_FILTERS = %i(pending media).freeze
 
   FILTERS = ACCOUNT_FILTERS + REPORT_FILTERS + INVITE_FILTER + CUSTOM_EMOJI_FILTERS + PAWOO_REPORT_TARGET_FILTERS
 
