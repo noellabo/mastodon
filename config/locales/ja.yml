@@ -640,7 +640,10 @@ ja:
         nav_title: 日別のレポート件数
         title: "%{year}年%{month}のレポート件数"
       report_targets:
+        all_report: すべて
         failed_msg: レポートの処理に失敗しました
+        media: メディア
+        only_media: メディアあり
         pending: 保留中
         report_type:
           donotlike: 好みではない
