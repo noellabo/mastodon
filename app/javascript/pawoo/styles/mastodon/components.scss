@@ -71,6 +71,36 @@
         border-left-width: 1px;
         border-top-width: 1px;
       }
+
+      > .load-more {
+        flex: 100%;
+      }
+
+      > .mastodon_bridge {
+        background: $ui-highlight-color;
+        margin: 10px;
+        border-radius: 4px;
+        transition: all 100ms ease-in;
+        flex: 100%;
+
+        a {
+          text-align: left;
+          background: transparent;
+          font-size: 15px;
+          padding: 10px;
+
+          &:hover {
+            background: transparent;
+          }
+        }
+
+        &:hover {
+          background: lighten($ui-highlight-color, 20%);
+          margin-right: 5px;
+          border-radius: 4px;
+          transition: all 200ms ease-out;
+        }
+      }
     }
   }
 }
@@ -92,7 +122,7 @@
   display: flex;
   flex-direction: column;
 
-  * {
+  .column-back-button {
     background: transparent;
     text-align: right;
   }

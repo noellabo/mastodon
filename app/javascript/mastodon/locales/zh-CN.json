@@ -228,7 +228,7 @@
   "pawoo.onboarding.start.description": "开始",
   "pawoo.onboarding.start.heading": "准备好了吗？",
   "pawoo.onboarding.suggested_accounts.description": "关注你喜欢的用户吧。稍后你可以在“推荐关注的用户”中找到这份列表。",
-  "pawoo.onboarding.suggested_accounts.heading": "在 {site} 上寻找用户",
+  "pawoo.onboarding.suggested_accounts.heading": "上寻找用户",
   "pawoo.report.placeholder": "附言（如选择其他则必填）",
   "pawoo.report.select.donotlike": "我不喜欢这条内容",
   "pawoo.report.select.nsfw": "NSFW 设置不当",

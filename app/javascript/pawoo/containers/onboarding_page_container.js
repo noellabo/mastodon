@@ -54,8 +54,7 @@ export default class OnboardingPage extends React.PureComponent {
         <h2>
           <FormattedMessage
             id='pawoo.onboarding.suggested_accounts.heading'
-            defaultMessage='Find people on {site}'
-            values={{ site: initialState.pawoo.title }}
+            defaultMessage='Find people'
           />
         </h2>
         <p>
