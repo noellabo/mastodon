@@ -45,11 +45,11 @@ export default class SuggestedAccounts extends React.PureComponent {
     const mastodon_bridge_button = (
       <div className='mastodon_bridge'>
         <a className='column-link' href='https://bridge.joinmastodon.org/' target='_blank'>
-            <i className='fa fa-fw fa-twitter column-link__icon' />
-            <FormattedMessage
-              id='messages.mastodonBridge'
-              defaultMessage='Find your Twitter friends'
-            />
+          <i className='fa fa-fw fa-twitter column-link__icon' />
+          <FormattedMessage
+            id='messages.mastodonBridge'
+            defaultMessage='Find your Twitter friends'
+          />
         </a>
         <div className='mastodon_bridge_clear'></div>
       </div>
