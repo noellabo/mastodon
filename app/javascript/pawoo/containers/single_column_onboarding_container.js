@@ -56,8 +56,7 @@ export default class SingleColumnOnboarding extends React.PureComponent {
           <Link className='button' onClick={this.handleClick} to='/suggested_accounts'>
             <FormattedMessage
               id='pawoo.onboarding.suggested_accounts.heading'
-              defaultMessage='Find people on {site}'
-              values={{ site: initialState.pawoo.title }}
+              defaultMessage='Find people'
             />
           </Link>
         </div>

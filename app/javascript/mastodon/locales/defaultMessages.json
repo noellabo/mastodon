@@ -2021,7 +2021,7 @@
         "id": "pawoo.onboarding.description"
       },
       {
-        "defaultMessage": "Find people on {site}",
+        "defaultMessage": "Find people",
         "id": "pawoo.onboarding.suggested_accounts.heading"
       },
       {
@@ -2115,7 +2115,7 @@
         "id": "pawoo.onboarding.description"
       },
       {
-        "defaultMessage": "Find people on {site}",
+        "defaultMessage": "Find people",
         "id": "pawoo.onboarding.suggested_accounts.heading"
       }
     ],
