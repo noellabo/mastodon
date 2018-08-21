@@ -36,4 +36,12 @@ namespace :pawoo do
       pp hash
     end
   end
+
+  namespace :dev do
+    desc 'Set popular accounts'
+    task set_popular_accounts: :environment do
+      accounts = Account.limit(100)
+      Redis.current.zadd(Pawoo::RefreshPopularAccountService::REDIS_KEY, accounts.map { |account| [account.id, account.id] })
+    end
+  end
 end
