@@ -1,32 +1,3 @@
-.mastodon_bridge {
-  background: $ui-highlight-color;
-  margin: 10px;
-  border-radius: 4px;
-  transition: all 100ms ease-in;
-  flex: 100% !important;
-
-  a {
-    text-align: left;
-    background: transparent;
-    font-size: 15px;
-    padding: 10px;
-
-    &:hover {
-      background: transparent;
-    }
-  }
-
-  &:hover {
-    background: lighten($ui-highlight-color, 20%);
-    margin-right: 5px;
-    border-radius: 4px;
-    transition: all 200ms ease-out;
-  }
-}
-.mastodon_bridge_clear {
-  clear: both;
-}
-
 .pawoo-onboarding-page {
   display: flex;
   flex: 1;
@@ -99,6 +70,36 @@
         border: 0 solid lighten($ui-base-color, 8%);
         border-left-width: 1px;
         border-top-width: 1px;
+      }
+
+      > .load-more {
+        flex: 100%;
+      }
+
+      > .mastodon_bridge {
+        background: $ui-highlight-color;
+        margin: 10px;
+        border-radius: 4px;
+        transition: all 100ms ease-in;
+        flex: 100%;
+
+        a {
+          text-align: left;
+          background: transparent;
+          font-size: 15px;
+          padding: 10px;
+
+          &:hover {
+            background: transparent;
+          }
+        }
+
+        &:hover {
+          background: lighten($ui-highlight-color, 20%);
+          margin-right: 5px;
+          border-radius: 4px;
+          transition: all 200ms ease-out;
+        }
       }
     }
   }

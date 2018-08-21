@@ -47,11 +47,10 @@ export default class SuggestedAccounts extends React.PureComponent {
         <a className='column-link' href='https://bridge.joinmastodon.org/' target='_blank' rel='noopener'>
           <i className='fa fa-fw fa-twitter column-link__icon' />
           <FormattedMessage
-            id='messages.mastodonBridge'
+            id='pawoo.suggested_accounts.mastodon_bridge'
             defaultMessage='Find your Twitter friends'
           />
         </a>
-        <div className='mastodon_bridge_clear' />
       </div>
     );
 
