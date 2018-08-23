@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Pawoo::Api::V1::FollowRecommendationController < Api::BaseController
-  # before_action -> { doorkeeper_authorize! :follow }
-  # before_action :require_user!
+  before_action -> { doorkeeper_authorize! :follow }
+  before_action :require_user!
   respond_to :json
 
   def index
