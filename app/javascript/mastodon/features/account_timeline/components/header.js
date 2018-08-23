@@ -8,6 +8,7 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import MovedNote from './moved_note';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
+import PawooFollowersYouFollow from '../../../../pawoo/containers/followers_you_follow';
 
 export default class Header extends ImmutablePureComponent {
 
@@ -89,6 +90,8 @@ export default class Header extends ImmutablePureComponent {
           onFollow={this.handleFollow}
           onBlock={this.handleBlock}
         />
+
+        <PawooFollowersYouFollow targetAccount={account} />
 
         <ActionBar
           account={account}
