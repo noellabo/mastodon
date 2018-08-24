@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
 class Pawoo::Api::V1::FollowersYouFollowController < Api::BaseController
-  # before_action -> { doorkeeper_authorize! :follow }
-  # before_action :require_user!
+  before_action -> { doorkeeper_authorize! :read }
+  before_action :require_user!
   respond_to :json
 
   def show
-    target_user_id = params[:user_id].to_i
+    target_account = Account.find(params[:account_id])
     current_account_id = current_account.id
-    return render json: [] if target_user_id == current_account_id
-    target_followers = Follow.where(target_account_id: target_user_id).select(:account_id)
-    @followers_you_follow = Follow.where(account_id: current_account_id, target_account_id: target_followers).preload(:target_account)
+    return render json: {}, status: :not_found if target_account.blank?
+    return render json: [] if target_account.id == current_account_id
+    target_followers = Follow.where(target_account_id: target_account.id).select(:account_id)
+    @followers_you_follow = Follow.where(account_id: current_account_id, target_account_id: target_followers).preload(target_account: :oauth_authentications).limit(6)
     render json: @followers_you_follow.map(&:target_account), each_serializer: REST::AccountSerializer
   end
 end

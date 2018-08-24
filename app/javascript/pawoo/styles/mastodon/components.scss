@@ -279,6 +279,21 @@
 }
 
 .pawoo-followers-you-follow {
+  &__account-list {
+    display: flex;
+    justify-content: left;
+    flex-wrap: wrap;
+    position: relative;
+
+    .multi-column {
+      border: none;
+      width: calc(100% / 3.4);
+      @media screen and (max-width: 630px) {
+        width: calc(100% / 2.3);
+      }
+    }
+  }
+
   p {
     font-weight: bold;
     display: block;
