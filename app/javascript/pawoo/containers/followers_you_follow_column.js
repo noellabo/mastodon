@@ -4,12 +4,20 @@ import Avatar from '../../mastodon/components/avatar';
 import DisplayName from '../../mastodon/components/display_name';
 import Permalink from '../../mastodon/components/permalink';
 import ImmutablePureComponent from 'react-immutable-pure-component';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
+const mapStateToProps = (state, props) => ({
+  account: state.getIn(['accounts', props.accountId]),
+});
+
+@connect(mapStateToProps)
 export default class FollowersYouFollowColumn extends ImmutablePureComponent {
 
   static propTypes = {
     account: ImmutablePropTypes.map.isRequired,
-  }
+    accountId: PropTypes.string.isRequired,
+  };
 
   render() {
     const { account } = this.props;

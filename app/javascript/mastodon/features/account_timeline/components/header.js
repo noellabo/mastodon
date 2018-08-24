@@ -91,7 +91,7 @@ export default class Header extends ImmutablePureComponent {
           onBlock={this.handleBlock}
         />
 
-        <PawooFollowersYouFollow targetAccount={account} />
+        <PawooFollowersYouFollow targetAccountId={account.get('id')} />
 
         <ActionBar
           account={account}
