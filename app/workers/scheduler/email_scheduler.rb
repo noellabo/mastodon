@@ -3,7 +3,7 @@
 class Scheduler::EmailScheduler
   include Sidekiq::Worker
 
-  sidekiq_options unique: :until_executed
+  sidekiq_options unique: :until_executed, retry: 0
 
   def perform
     eligible_users.find_each do |user|
