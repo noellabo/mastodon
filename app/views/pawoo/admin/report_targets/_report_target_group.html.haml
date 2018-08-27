@@ -46,7 +46,7 @@
       = hidden_field_tag "report_target_groups[#{target_group_key}][report_targets][]", report_target.id
 
     %label
-      = radio_button_tag "report_target_groups[#{target_group_key}][action]", :no_problem, false, checked: true
+      = radio_button_tag "report_target_groups[#{target_group_key}][action]", :no_problem, false
       %span 問題なし
     %label
       = radio_button_tag "report_target_groups[#{target_group_key}][action]", :change_to_pending, false
