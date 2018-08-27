@@ -5,7 +5,7 @@ export const PAWOO_FOLLOWERS_YOU_FOLLOW_SUCCESS = 'PAWOO_FOLLOWERS_YOU_FOLLOW_SU
 
 export function fetchFollowersYouFollow(targetAccountId) {
   return (dispatch, getState) => {
-    api(getState).get(`/api/v1/followers_you_follow/${targetAccountId}`).then(response => {
+    api(getState).get(`/api/v1/pawoo/followers_you_follow/${targetAccountId}`).then(response => {
       dispatch(importFetchedAccounts(response.data));
       dispatch(fetchFollowersYouFollowSuccess(targetAccountId, response.data.map(account => account.id)));
     }).catch(e => console.warn(e));
