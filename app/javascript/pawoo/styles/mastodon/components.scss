@@ -279,25 +279,32 @@
 }
 
 .pawoo-followers-you-follow {
-  padding: 10px 0;
+  padding: 10px 10px;
 
   &__account-list {
     display: flex;
     justify-content: left;
     flex-wrap: wrap;
     position: relative;
+    max-height: 88px;
+    overflow: hidden;
+    @media screen and (max-width: 630px) {
+      justify-content: center;
+    }
 
     .multi-column {
-      border: none;
-      width: calc(100% / 3.4);
-      @media screen and (max-width: 630px) {
-        width: calc(100% / 2.3);
+      padding: 2.37px;
+
+      .account__avatar-wrapper {
+        padding: 0;
+        margin: 0;
       }
     }
   }
 
   p {
     font-weight: bold;
-    margin: 0 0 5px 20px;
+    margin-bottom: 5px;
+    color: #9baec8;
   }
 }
