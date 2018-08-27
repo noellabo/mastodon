@@ -22,7 +22,8 @@ export default class FollowersYouFollow extends ImmutablePureComponent {
     this.props.fetch(this.props.targetAccountId);
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    if (this.props.targetAccountId === prevProps.targetAccountId) return;
     this.props.fetch(this.props.targetAccountId);
   };
 
