@@ -40,7 +40,7 @@ export default class FollowersYouFollowColumn extends ImmutablePureComponent {
     const { account } = this.props;
 
     return (
-      <div className='multi-column'>
+      <div className='multi-column' title={account.get('username')}>
         <Permalink key={account.get('id')} className='account__display-name' href={account.get('url')} to={`/accounts/${account.get('id')}`} onInterceptClick={this.handleAccountClick}>
           <div className='account__avatar-wrapper'><Avatar account={account} size={40} /></div>
         </Permalink>
