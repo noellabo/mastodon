@@ -288,12 +288,9 @@
     position: relative;
     max-height: 88px;
     overflow: hidden;
-    @media screen and (max-width: 630px) {
-      justify-content: center;
-    }
 
     .multi-column {
-      padding: 2.37px;
+      padding: 2px;
 
       .account__avatar-wrapper {
         padding: 0;
