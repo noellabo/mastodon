@@ -380,6 +380,7 @@ Rails.application.routes.draw do
 
         scope :pawoo, as: :pawoo do
           resource :expo_push_tokens, only: [:create, :destroy]
+          resources :followers_you_follow, only: [:show], param: :account_id
         end
       end
     end
