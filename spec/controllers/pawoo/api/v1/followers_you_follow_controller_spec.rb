@@ -31,7 +31,7 @@ describe Pawoo::Api::V1::FollowersYouFollowController, type: :controller do
 
       context 'get correct accounts' do
         before do
-          accounts = 3.times.map{ Fabricate(:account) }
+          accounts = Fabricate.times(3, :account)
           accounts.each do |account|
             account.follow!(target_account)
             user.account.follow!(account)

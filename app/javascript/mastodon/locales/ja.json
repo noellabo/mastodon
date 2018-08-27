@@ -221,6 +221,7 @@
   "onboarding.skip": "スキップ",
   "pawoo.announcements.dismiss": "閉じる",
   "pawoo.expand": "展開",
+  "pawoo.followers_you_follow.title": "知り合いのフォロワー",
   "pawoo.maximize": "最大化",
   "pawoo.multicolumn": "マルチカラム",
   "pawoo.onboarding.description": "{site}は『インスタンス』と呼ばれる、Mastodonというソーシャルネットワークのサーバーの1つです。このハンドルは他のインスタンスのユーザーによって使用されます。{site}上のユーザーはあなたのハンドルとして単に{acct}も使います。",
