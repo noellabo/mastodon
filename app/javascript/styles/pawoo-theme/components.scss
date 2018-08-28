@@ -290,17 +290,17 @@ $button-icon-scale-ration-on-pc: 0.85;
   border-radius: 4px;
   margin-left: 0;
   overflow: hidden;
+}
 
-  .time-limit-dropdown__header {
-    padding: 10px;
-    color: $ui-base-color;
-    border-bottom: 1px solid lighten($ui-secondary-color, 4%);
-  }
+.time-limit-dropdown__header {
+  padding: 10px;
+  color: $ui-base-color;
+  border-bottom: 1px solid lighten($ui-secondary-color, 4%);
+}
 
-  .time-limit-dropdown__header_note {
-    font-size: 10px;
-    color: lighten($ui-base-color, 50%);
-  }
+.time-limit-dropdown__header_note {
+  font-size: 10px;
+  color: lighten($ui-base-color, 50%);
 }
 
 .search-results__search-statuses {
