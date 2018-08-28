@@ -48,7 +48,7 @@ ja:
         setting_auto_play_gif: アニメーションGIFを自動再生する
         setting_boost_modal: ブーストする前に確認ダイアログを表示する
         setting_default_privacy: 投稿の公開範囲
-        setting_default_sensitive: メディアを常に閲覧注意としてマークする
+        setting_default_sensitive: 自分が投稿するメディアを常に閲覧注意(NSFW)に設定する
         setting_delete_modal: トゥートを削除する前に確認ダイアログを表示する
         setting_display_sensitive_media: 閲覧注意としてマークされたメディアも常に表示する
         setting_hide_network: 繋がりを隠す
