@@ -53,13 +53,15 @@ export default class CommunityTimeline extends React.PureComponent {
   }
 
   render () {
+    const { intl } = this.props;
+
     return (
       <Column ref={this.setRef}>
         <ColumnHeader
           title={(
             <div className='pawoo-extension-standalone-community'>
               <img src={pawooLogo} />
-              \ {initialState.pawoo.user_count}人が、{initialState.pawoo.status_count + this.props.pawooStatusCount}回パウってます /
+              \ {intl.formatNumber(initialState.pawoo.user_count)}人が、{intl.formatNumber(initialState.pawoo.status_count + this.props.pawooStatusCount)}回パウってます /
             </div>
           )}
           onClick={this.handleHeaderClick}
