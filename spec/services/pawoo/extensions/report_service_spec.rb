@@ -10,7 +10,7 @@ RSpec.describe ReportService do
     let!(:status1) { Fabricate(:status) }
     let!(:status2) { Fabricate(:status) }
     let(:status_ids) { [status1.id, status2.id] }
-    let(:pawoo_report_type) { Report.pawoo_report_types.keys.sample }
+    let(:pawoo_report_type) { %w[other prohibited reproduction spam].sample }
 
     before do
       ReportService.new.call(
@@ -35,9 +35,28 @@ RSpec.describe ReportService do
     context 'when the target status has been dealt with' do
       let(:status1) { Fabricate('Pawoo::ReportTarget', target: Fabricate(:status), state: :resolved).target }
 
-      it 'creates pawoo_report_targets' do
-        expect(subject.pawoo_report_targets.count).to eq 2
-        expect(subject.pawoo_report_targets.find_by(target: status1).state).to eq 'resolved'
+      it 'creates pawoo_report_targets for target status that has not been dealt with yet' do
+        expect(subject.pawoo_report_targets.count).to eq 1
+        expect(subject.pawoo_report_targets.find_by(target: status1)).to be nil
+        expect(subject.pawoo_report_targets.find_by(target: status2).state).to eq 'unresolved'
+      end
+    end
+
+    context 'when pawoo_report_type is donotlike' do
+      let(:pawoo_report_type) { 'donotlike' }
+
+      it 'does not create pawoo_report_targets' do
+        expect(subject.pawoo_report_targets.count).to eq 0
+      end
+    end
+
+    context 'when pawoo_report_type is donotlike' do
+      let(:pawoo_report_type) { 'nsfw' }
+      let(:status1) { Fabricate(:status, sensitive: true) }
+
+      it 'creates pawoo_report_targets for not sensitive status' do
+        expect(subject.pawoo_report_targets.count).to eq 1
+        expect(subject.pawoo_report_targets.find_by(target: status1)).to be nil
         expect(subject.pawoo_report_targets.find_by(target: status2).state).to eq 'unresolved'
       end
     end
@@ -53,6 +72,14 @@ RSpec.describe ReportService do
         expect(subject.pawoo_report_targets.count).to eq 1
         expect(subject.pawoo_report_targets.first.target).to eq target_account
         expect(subject.pawoo_report_targets.first.state).to eq 'unresolved'
+      end
+
+      context 'when pawoo_report_type is donotlike' do
+        let(:pawoo_report_type) { 'donotlike' }
+
+        it 'does not create pawoo_report_targets' do
+          expect(subject.pawoo_report_targets.count).to eq 0
+        end
       end
     end
 

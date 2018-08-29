@@ -59,11 +59,20 @@ class ReportService < BaseService
   end
 
   def pawoo_report_targets
+    return [] if @options[:pawoo_report_type].to_s == 'donotlike'
+
     if @status_ids.present?
-      resolved_target_ids = Pawoo::ReportTarget.where(state: :resolved, target_type: 'Status', target_id: @status_ids).distinct(:target_id).pluck(:target_id).to_set
-      @status_ids.map do |status_id|
-        state = resolved_target_ids.include?(status_id) ? :resolved : :unresolved
-        Pawoo::ReportTarget.new(target_type: 'Status', target_id: status_id, state: state)
+      status_ids = @status_ids
+      resolved_target_ids = Pawoo::ReportTarget.where(state: :resolved, target_type: 'Status', target_id: status_ids).distinct(:target_id).pluck(:target_id)
+      status_ids -= resolved_target_ids
+
+      if @options[:pawoo_report_type].to_s == 'nsfw'
+        nsfw_status_ids = Status.where(sensitive: true, id: status_ids).pluck(:id)
+        status_ids -= nsfw_status_ids
+      end
+
+      status_ids.map do |status_id|
+        Pawoo::ReportTarget.new(target_type: 'Status', target_id: status_id, state: :unresolved)
       end
     else
       [Pawoo::ReportTarget.new(target: @target_account)]
