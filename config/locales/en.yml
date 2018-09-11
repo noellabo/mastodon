@@ -633,6 +633,9 @@ en:
       statuses:
         pin_errors:
           time_limit: Toot with automatic disapperance setting cannot be pinned
+    gallery:
+      index: Galleries
+      show: "%{name} - Gallery"
     login_email: Log in with email address
     oauth_registrations:
       already_registered: It has already been registered. After logging in with your e-mail address and password, please link with pixiv account from setting page.

@@ -38,6 +38,7 @@ const messages = defineMessages({
   keyboard_shortcuts: { id: 'navigation_bar.keyboard_shortcuts', defaultMessage: 'Keyboard shortcuts' },
   suggested_accounts: { id: 'navigation_bar.suggested_accounts', defaultMessage: 'Active Accounts' },
   media_timeline: { id: 'navigation_bar.media_timeline', defaultMessage: 'Media timeline' },
+  gallery: { id: 'pawoo.navigation_bar.gallery', defaultMessage: 'Gallery' },
 });
 
 const mapStateToProps = state => ({
@@ -143,6 +144,8 @@ export default class GettingStarted extends ImmutablePureComponent {
     }
 
     navItems.push(<ColumnLink key='9' icon='book' text={intl.formatMessage(messages.info)} href='/about/more' />);
+    // TODO: あとでコメントを外す
+    // navItems.push(<ColumnLink key='10' icon='image' text={intl.formatMessage(messages.gallery)} href='/pawoo/galleries' />);
 
     return (
       <Column icon='asterisk' heading={intl.formatMessage(messages.heading)} hideHeadingOnMobile>

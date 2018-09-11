@@ -668,6 +668,9 @@ ja:
       statuses:
         pin_errors:
           time_limit: 自動消滅するトゥートを固定することはできません
+    gallery:
+      index: ギャラリー一覧
+      show: "%{name} - ギャラリー"
     login_email: メールアドレスでログイン
     oauth_registrations:
       already_registered: すでに登録されています。メールアドレスとパスワードでログイン後、設定ページよりpixivアカウント連携してください。

@@ -1,0 +1,33 @@
+- content_for :page_title do
+  ギャラリー一覧
+
+%form
+  %table.table
+    %thead
+      %tr
+        %th タグ
+        %th 公開状態
+        %th 画像
+        %th
+    %tbody
+      - @galleries.find_each do |gallery|
+        %tr
+          %td= gallery.name
+          %td= gallery.published ? '公開' : '非公開'
+          %td
+            - if gallery.image.present?
+              = image_tag gallery.image.url(:original), width: 200
+            - else
+              なし
+          %td
+            = link_to admin_pawoo_gallery_path(gallery), class: 'table-action-link' do
+              詳細
+          %td
+            = link_to pawoo_gallery_path(gallery.name), class: 'table-action-link', target: '_blank', rel: 'noopener' do
+              ページを開く
+          %td
+            = link_to edit_admin_pawoo_gallery_path(gallery), class: 'table-action-link' do
+              %i.fa.fa-pencil-square-o
+              編集する
+
+= link_to '追加', new_admin_pawoo_gallery_path, class: 'button'

@@ -364,6 +364,9 @@ Rails.application.routes.draw do
       scope :pawoo, as: :pawoo do
         resources :report_targets, only: [:index, :create]
         resources :report_summations, only: [:index]
+        resources :galleries, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
+          resources :blacklist, only: :destroy, controller: :gallery_blacklisted_statuses
+        end
       end
     end
 
@@ -381,6 +384,9 @@ Rails.application.routes.draw do
         scope :pawoo, as: :pawoo do
           resource :expo_push_tokens, only: [:create, :destroy]
           resources :followers_you_follow, only: [:show], param: :account_id
+          resources :galleries, only: [:show], param: :tag do
+            resources :blacklist, only: :update, controller: :gallery_blacklisted_statuses
+          end
         end
       end
     end
@@ -388,6 +394,10 @@ Rails.application.routes.draw do
     namespace :sitemap do
       resources :user_indexes, only: [:index, :show], param: :page, format: :xml
       resources :status_indexes, only: [:index, :show], param: :page, format: :xml
+    end
+
+    scope :pawoo, as: :pawoo do
+      resources :galleries, only: [:index, :show], param: :tag
     end
   end
 

@@ -1,0 +1,45 @@
+- content_for :page_title do
+  = 'ギャラリー: '
+  = @gallery.name
+
+%table.table.inline-table
+  %tbody
+    %tr
+      %th タグ
+      %td= link_to @gallery.name, tag_path(@gallery.name), target: '_blank', rel: 'noopener'
+    %tr
+      %th 公開状態
+      %td= @gallery.published ? '公開' : '非公開'
+    %tr
+      %th 画像
+      %td
+        - if @gallery.image.present?
+          = image_tag @gallery.image.url(:original), width: 200
+        - else
+          なし
+    %tr
+      %th 説明
+      %td= @gallery.description
+    %tr
+      %th トゥートIDの最大値
+      %td= @gallery.max_id
+    %tr
+      %th トゥートIDの最小値
+      %td= @gallery.min_id
+
+.simple_form
+  = link_to '編集', edit_admin_pawoo_gallery_path(@gallery), class: 'button'
+  = link_to '削除', admin_pawoo_gallery_path(@gallery), class: 'button negative', method: :delete, data: { confirm: '削除してよろしいですか？' }
+
+
+%br
+
+%h2 ブラックリスト一覧
+.table-wrapper
+  %table.table
+    - @gallery_blacklisted_statuses.each do |gallery_blacklisted_status|
+      %tr.pawoo-gallery_blacklisted_statuses
+        %td
+          .activity-stream.activity-stream-headless
+            .entry= render 'stream_entries/simple_status', status: gallery_blacklisted_status.status
+        %td= link_to 'ブラックリストから削除', admin_pawoo_gallery_blacklist_path(@gallery, gallery_blacklisted_status), method: :delete, data: { confirm: '削除してよろしいですか？' }

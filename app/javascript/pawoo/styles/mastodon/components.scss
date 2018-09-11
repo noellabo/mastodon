@@ -305,3 +305,120 @@
     color: $classic-primary-color;
   }
 }
+
+.pawoo-gallery-index {
+  h1 {
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
+
+  li {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  p {
+    margin-bottom: 5px;
+  }
+
+  a {
+    color: $highlight-text-color;
+    font-weight: 500;
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: $highlight-text-color;
+    }
+  }
+
+  &__header-image {
+    max-height: 250px;
+    max-width: 100%;
+  }
+}
+
+.pawoo-gallery {
+  width: 990px;
+  margin: 0 auto;
+
+  @media screen and (max-width: 1024px) {
+    width: 660px;
+  }
+
+  @media screen and (max-width: 660px) {
+    width: 100%;
+  }
+
+  &__breadcrumb {
+    margin-bottom: 10px;
+  }
+
+  &__header-image {
+    max-height: 250px;
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
+
+  &__description {
+    padding: 10px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba($ui-base-lighter-color, .6);
+
+    a {
+      color: $highlight-text-color;
+      font-weight: 500;
+
+      &:hover,
+      &:active,
+      &:focus {
+        color: $highlight-text-color;
+      }
+    }
+  }
+}
+
+.pawoo-gallery-item {
+  width: 330px;
+
+  @media screen and (max-width: 660px) {
+    width: 100%;
+  }
+
+  &__wrapper {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    background: lighten($ui-base-color, 4%);
+  }
+
+  &__header {
+    display: flex;
+
+    > .account {
+      flex: 1;
+      padding: 0;
+      border-bottom: none;
+
+      .account__avatar-wrapper {
+        margin-left: 0;
+      }
+    }
+  }
+
+  &__actions {
+    height: 24px;
+  }
+
+  .media-gallery__item  ~ .media-gallery__item {
+    margin-top: 5px;
+  }
+
+  .video-player {
+    margin-top: 8px;
+  }
+
+  .status__content {
+    margin-top: 5px;
+  }
+}

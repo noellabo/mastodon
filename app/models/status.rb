@@ -55,6 +55,7 @@ class Status < ApplicationRecord
   has_many :mentions, dependent: :destroy
   has_many :media_attachments, dependent: :destroy
   has_many :pixiv_cards, dependent: :destroy
+  has_many :gallery_blacklisted_statuses, dependent: :destroy, class_name: 'Pawoo::GalleryBlacklistedStatus'
 
   has_and_belongs_to_many :tags
   has_and_belongs_to_many :preview_cards
