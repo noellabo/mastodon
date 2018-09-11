@@ -30,13 +30,10 @@ class Api::V1::Timelines::HomeController < Api::BaseController
     max_id = params[:max_id]&.to_i
     since_id = params[:since_id]&.to_i
 
-    limited_since_id = FeedManager.instance.calc_since_id(max_id)
-    return [] if limited_since_id.nil? && since_id.nil?
-
     account_home_feed.get(
       limit_param(DEFAULT_STATUSES_LIMIT),
       max_id,
-      (since_id.nil? || since_id < limited_since_id) ? limited_since_id : since_id
+      since_id
     )
   end
 
