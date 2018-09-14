@@ -6,7 +6,7 @@ class Pawoo::Api::V1::GalleriesController < Api::BaseController
   DEFAULT_SUGGESTION_LIMIT = 30
 
   def show
-    @gallery = Pawoo::Gallery.joins(:tag).find_by!(tags: { name: params[:tag] })
+    @gallery = Pawoo::Gallery.joins(:tag).find_by!(tags: { name: params[:tag].downcase })
     if !@gallery.published? && !current_user&.admin?
       raise ActiveRecord::RecordNotFound
     end
