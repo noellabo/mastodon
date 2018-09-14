@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_14_171349) do
+ActiveRecord::Schema.define(version: 2018_09_12_175821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -363,6 +363,28 @@ ActiveRecord::Schema.define(version: 2018_08_14_171349) do
     t.index ["user_id", "token"], name: "index_pawoo_expo_push_tokens_on_user_id_and_token", unique: true
   end
 
+  create_table "pawoo_galleries", force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.text "description", default: "", null: false
+    t.boolean "published", default: false, null: false
+    t.string "image_file_name"
+    t.string "image_content_type"
+    t.integer "image_file_size"
+    t.datetime "image_updated_at"
+    t.bigint "max_id"
+    t.bigint "min_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_id"], name: "index_pawoo_galleries_on_tag_id", unique: true
+  end
+
+  create_table "pawoo_gallery_blacklisted_statuses", force: :cascade do |t|
+    t.bigint "status_id", null: false
+    t.bigint "pawoo_gallery_id", null: false
+    t.index ["pawoo_gallery_id", "status_id"], name: "index_pawoo_gallery_id_and_status_id", unique: true
+    t.index ["status_id"], name: "index_pawoo_gallery_blacklisted_statuses_on_status_id"
+  end
+
   create_table "pawoo_report_summations", force: :cascade do |t|
     t.date "date", null: false
     t.integer "total_count", default: 0, null: false
@@ -678,6 +700,8 @@ ActiveRecord::Schema.define(version: 2018_08_14_171349) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id", name: "fk_e84df68546", on_delete: :cascade
   add_foreign_key "oauth_applications", "users", column: "owner_id", name: "fk_b0988c7c0a", on_delete: :cascade
   add_foreign_key "pawoo_expo_push_tokens", "users", on_delete: :cascade
+  add_foreign_key "pawoo_gallery_blacklisted_statuses", "pawoo_galleries", on_delete: :cascade
+  add_foreign_key "pawoo_gallery_blacklisted_statuses", "statuses", on_delete: :cascade
   add_foreign_key "report_notes", "accounts", on_delete: :cascade
   add_foreign_key "report_notes", "reports", on_delete: :cascade
   add_foreign_key "reports", "accounts", column: "action_taken_by_account_id", name: "fk_bca45b75fd", on_delete: :nullify

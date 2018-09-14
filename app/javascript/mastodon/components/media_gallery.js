@@ -189,6 +189,7 @@ export default class MediaGallery extends React.PureComponent {
     pawooOnClick: PropTypes.func,
     pawooScale: PropTypes.string.isRequired,
     pawooWide: PropTypes.bool,
+    pawooVertical: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -228,7 +229,7 @@ export default class MediaGallery extends React.PureComponent {
   }
 
   render () {
-    const { media, intl, sensitive, pawooOnClick, pawooScale, pawooWide } = this.props;
+    const { media, intl, sensitive, pawooOnClick, pawooScale, pawooWide, pawooVertical } = this.props;
     const { width, visible } = this.state;
 
     let pawooMaxWidth;
@@ -262,6 +263,13 @@ export default class MediaGallery extends React.PureComponent {
         warning = <FormattedMessage id='status.media_hidden' defaultMessage='Media hidden' />;
       }
 
+      // for pawoo-gallery
+      if (pawooVertical) {
+        if (width) {
+          style.height = this.props.media.reduce((height, media) => height + width / media.getIn(['meta', 'small', 'aspect'], 1), (this.props.media.size - 1) * 5);
+        }
+      }
+
       children = (
         <button type='button' className='media-spoiler' onClick={this.handleOpen} style={style} ref={this.handleRef}>
           <span className='media-spoiler__warning'>{warning}</span>
@@ -274,7 +282,7 @@ export default class MediaGallery extends React.PureComponent {
       if (this.isStandaloneEligible()) {
         children = <Item standalone onClick={this.handleClick} attachment={media.get(0)} pawooMaxWidth={pawooMaxWidth} />;
       } else {
-        children = media.take(4).map((attachment, i) => <Item key={attachment.get('id')} onClick={this.handleClick} attachment={attachment} index={i} size={size} pawooMaxWidth={pawooMaxWidth} />);
+        children = media.take(4).map((attachment, i) => <Item key={attachment.get('id')} onClick={this.handleClick} attachment={attachment} index={i} size={pawooVertical ? 1 : size} pawooMaxWidth={pawooMaxWidth} />);
       }
     }
 

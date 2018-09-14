@@ -1,0 +1,19 @@
+- content_for :page_title do
+  = t('pawoo.gallery.index')
+
+- content_for :header_tags do
+  = render partial: 'og'
+  = opengraph 'og:title', t('pawoo.gallery.index')
+
+= render 'accounts/service_logo'
+
+
+.pawoo-gallery-index
+  %h1= t('pawoo.gallery.index')
+
+  %ul
+    - @galleries.each do |gallery|
+      %li
+        %p= link_to gallery.name, pawoo_gallery_path(gallery.name)
+        = link_to pawoo_gallery_path(gallery.name) do
+          = image_tag gallery.image.url(:original), class: 'pawoo-gallery-index__header-image'

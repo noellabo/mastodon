@@ -1,0 +1,23 @@
+= simple_form_for [:admin, gallery] do |f|
+  = render 'shared/error_messages', object: f.object
+
+  - if f.object.new_record?
+    = f.fields_for :tag do |ff|
+      = ff.input :name, wrapper: :with_block_label, label: 'タグ名'
+    %p.hint 先頭にシャープは付けないで下さい。
+
+
+  = f.input :description, wrapper: :with_block_label, label: '説明'
+  %p.hint タグの下に出る説明文です
+
+  = f.input :image, as: :file, wrapper: :with_block_label, label: '画像'
+  %p.hint 横長推奨
+
+  = f.input :max_id, wrapper: :with_block_label, label: 'トゥートIDの最大値'
+
+  = f.input :min_id, wrapper: :with_block_label, label: 'トゥートIDの最小値'
+
+  = f.input :published, as: :radio_buttons, wrapper: :with_block_label, label: '公開'
+
+  .actions
+    = f.button :button, (f.object.new_record? ? '作成' : '保存'), type: :submit

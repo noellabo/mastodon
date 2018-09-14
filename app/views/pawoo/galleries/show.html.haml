@@ -1,0 +1,28 @@
+- content_for :page_title do
+  = t('pawoo.gallery.show', name: @gallery.name)
+
+- content_for :header_tags do
+  = render partial: 'og'
+  = opengraph 'og:title', t('pawoo.gallery.show', name: @gallery.name)
+  %script#initial-state{ type: 'application/json' }!= json_escape(@initial_state_json)
+  = javascript_pack_tag 'pawoo/gallery', integrity: true, crossorigin: 'anonymous'
+
+= render 'accounts/service_logo'
+
+.pawoo-gallery
+  .pawoo-gallery__breadcrumb
+    %span.back-link
+      = link_to t('pawoo.gallery.index'), pawoo_galleries_path
+    = fa_icon('chevron-right')
+    = @gallery.name
+
+  - if @gallery.image.present? || @gallery.description.present?
+    .pawoo-gallery__description
+      - if @gallery.image.present?
+        = image_tag @gallery.image.url(:original), class: 'pawoo-gallery__header-image'
+      - if @gallery.description.present?
+        .pawoo-gallery__description-text= Formatter.instance.linkify @gallery.description
+
+  #pawoo-gallery{ data: { props: Oj.dump(default_props.merge(tag: @gallery.name)) } }
+
+#modal-container

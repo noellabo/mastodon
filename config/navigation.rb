@@ -40,6 +40,7 @@ SimpleNavigation::Configuration.run do |navigation|
       admin.item :suggestion_tags, safe_join([fa_icon('tags fw'), t('admin.suggestion.title')]), admin_suggestion_tags_url, highlights_on: %r{/admin/suggestion_tags}
       admin.item :scheduled_statuses, safe_join([fa_icon('clock-o fw'), t('admin.scheduled_statuses.title')]), admin_scheduled_statuses_url, highlights_on: %r{/admin/scheduled_statuses}
       admin.item :trend_ng_words, safe_join([fa_icon('ban fw'), t('admin.trend_ng_word.title')]), admin_trend_ng_words_url, highlights_on: %r{/admin/trend_ng_words}
+      admin.item :galleries, safe_join([fa_icon('image fw'), 'ギャラリー']), admin_pawoo_galleries_url, highlights_on: %r{/admin/pawoo/galleries}
       admin.item :custom_emojis, safe_join([fa_icon('smile-o fw'), t('admin.custom_emojis.title')]), admin_custom_emojis_url, highlights_on: %r{/admin/custom_emojis}
       admin.item :subscriptions, safe_join([fa_icon('paper-plane-o fw'), t('admin.subscriptions.title')]), admin_subscriptions_url, if: -> { current_user.admin? }
       admin.item :sidekiq, safe_join([fa_icon('diamond fw'), 'Sidekiq']), sidekiq_url, link_html: { target: 'sidekiq' }, if: -> { current_user.admin? }
