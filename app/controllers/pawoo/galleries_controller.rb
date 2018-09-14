@@ -25,7 +25,7 @@ class Pawoo::GalleriesController < ApplicationController
   end
 
   def pawoo_set_container_classes
-    @pawoo_container_classes = 'container pawoo-wide'
+    @pawoo_container_classes = 'container'
   end
 
   def set_initial_state_json

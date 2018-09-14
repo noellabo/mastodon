@@ -21,7 +21,7 @@
       - if @gallery.image.present?
         = image_tag @gallery.image.url(:original), class: 'pawoo-gallery__header-image'
       - if @gallery.description.present?
-        = Formatter.instance.linkify @gallery.description
+        .pawoo-gallery__description-text= Formatter.instance.linkify @gallery.description
 
   #pawoo-gallery{ data: { props: Oj.dump(default_props.merge(tag: @gallery.name)) } }
 
