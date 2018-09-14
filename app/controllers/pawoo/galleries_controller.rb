@@ -12,7 +12,7 @@ class Pawoo::GalleriesController < ApplicationController
   end
 
   def show
-    @gallery = Pawoo::Gallery.joins(:tag).find_by!(tags: { name: params[:tag] })
+    @gallery = Pawoo::Gallery.joins(:tag).find_by!(tags: { name: params[:tag].downcase })
     if !@gallery.published? && !current_user&.admin?
       raise ActiveRecord::RecordNotFound
     end

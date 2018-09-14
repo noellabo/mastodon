@@ -6,7 +6,7 @@ class Pawoo::Api::V1::GalleryBlacklistedStatusesController < Api::BaseController
   before_action :require_admin!
 
   def update
-    @gallery = Pawoo::Gallery.joins(:tag).find_by!(tags: { name: params[:gallery_tag] })
+    @gallery = Pawoo::Gallery.joins(:tag).find_by!(tags: { name: params[:gallery_tag].downcase })
     status = Status.find(params[:id])
     unless @gallery.gallery_blacklisted_statuses.exists?(status: status)
       @gallery.gallery_blacklisted_statuses.create!(status: status)
