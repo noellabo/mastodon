@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
+  include Pawoo::HomeControllerConcern
+
   before_action :authenticate_user!
   before_action :set_referrer_policy_header
   before_action :set_initial_state_json

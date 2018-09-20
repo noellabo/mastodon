@@ -173,34 +173,47 @@ function main() {
   delegate(document, '.omniauth-pixiv', 'click', (event) => {
     event.preventDefault();
 
-    window.pixivSignupSDK.start('index', 'pawoo', () => {
-      const follow = event.target.getAttribute('data-follow');
+    const follow = event.target.getAttribute('data-follow');
+    const action = 'login';
+    const service = 'pawoo';
 
-      if (follow) {
-        const form = document.createElement('form');
-        const button = document.createElement('button');
-        const csrfInput = document.createElement('input');
-        const followInput = document.createElement('input');
-
-        csrfInput.name = csrfParam();
-        csrfInput.value = csrfToken();
-
-        followInput.name = 'follow';
-        followInput.value = follow;
-
-        form.method = 'POST';
-        form.action = '/auth/oauth/pixiv';
-        form.style.display = 'none';
-        form.appendChild(button);
-        form.appendChild(csrfInput);
-        form.appendChild(followInput);
-
-        document.body.appendChild(form);
-        button.click();
-      } else {
-        location.href = '/auth/oauth/pixiv';
+    if (location.port.length === 0 && !follow) {
+      let urlBase = window.pixivSignupSDKSettings.urlBase;
+      if (!/\/$/.test(urlBase)) {
+        urlBase += '/';
       }
-    });
+
+      const returnToUrl = encodeURIComponent(`${location.origin}/auth/oauth/pixiv`);
+
+      location.href = `${urlBase}${action}?view_type=popup&source=${service}&return_to=${returnToUrl}`;
+    } else {
+      window.pixivSignupSDK.start(action, service, () => {
+        if (follow) {
+          const form = document.createElement('form');
+          const button = document.createElement('button');
+          const csrfInput = document.createElement('input');
+          const followInput = document.createElement('input');
+
+          csrfInput.name = csrfParam();
+          csrfInput.value = csrfToken();
+
+          followInput.name = 'follow';
+          followInput.value = follow;
+
+          form.method = 'POST';
+          form.action = '/auth/oauth/pixiv';
+          form.style.display = 'none';
+          form.appendChild(button);
+          form.appendChild(csrfInput);
+          form.appendChild(followInput);
+
+          document.body.appendChild(form);
+          button.click();
+        } else {
+          location.href = '/auth/oauth/pixiv';
+        }
+      });
+    }
   });
 
   delegate(document, '#account_avatar', 'change', ({ target }) => {
