@@ -5,7 +5,6 @@ module Pawoo::AboutControllerConcern
 
   included do
     with_options only: :show do
-      skip_before_action :store_current_location
       before_action :pawoo_authenticate_no_user
     end
   end

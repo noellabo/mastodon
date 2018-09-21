@@ -26,11 +26,6 @@ describe AboutController, type: :controller do
         get :show
       end
 
-      it 'does not store current location' do
-        subject
-        expect(controller.stored_location_for(user)).to eq nil
-      end
-
       it { is_expected.to redirect_to root_url }
     end
   end
