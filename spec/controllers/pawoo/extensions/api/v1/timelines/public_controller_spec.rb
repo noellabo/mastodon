@@ -6,8 +6,8 @@ describe Api::V1::Timelines::PublicController, type: :controller do
   describe 'GET #show' do
     context 'with media parameter' do
       it 'returns only media' do
-        statuses = 2.times.map { Fabricate(:status) }
-        media = Fabricate(:media_attachment, status: statuses[0])
+        statuses = Fabricate.times(2, :status)
+        Fabricate(:media_attachment, status: statuses[0], file: nil)
 
         get :show, params: { media: true }
 
@@ -17,8 +17,8 @@ describe Api::V1::Timelines::PublicController, type: :controller do
       end
 
       it 'sets the path to the next page with media parameter' do
-        statuses = 2.times.map { Fabricate(:status) }
-        statuses.each { |status| Fabricate(:media_attachment, status: status) }
+        statuses = Fabricate.times(2, :status)
+        statuses.each { |status| Fabricate(:media_attachment, status: status, file: nil) }
 
         get :show, params: { media: true, since_id: statuses[0] }
 
@@ -26,8 +26,8 @@ describe Api::V1::Timelines::PublicController, type: :controller do
       end
 
       it 'sets the path to the previous page with media parameter' do
-        statuses = 2.times.map { Fabricate(:status) }
-        statuses.each { |status| Fabricate(:media_attachment, status: status) }
+        statuses = Fabricate.times(2, :status)
+        statuses.each { |status| Fabricate(:media_attachment, status: status, file: nil) }
 
         get :show, params: { media: true, max_id: statuses[1] }
 

@@ -13,8 +13,8 @@ describe 'Pawoo extensions of account page', type: :feature do
     context 'with media requested' do
       it 'shows the link for the next media page' do
         stub_const 'AccountsController::PAGE_SIZE', 1
-        statuses = 2.times.map { Fabricate(:status, account: account) }
-        statuses.each { |status| Fabricate(:media_attachment, account: account, status: status) }
+        statuses = Fabricate.times(2, :status, account: account)
+        statuses.each { |status| Fabricate(:media_attachment, account: account, status: status, file: nil) }
 
         visit '/@username/media?page=1'
 
@@ -23,8 +23,8 @@ describe 'Pawoo extensions of account page', type: :feature do
 
       it 'shows the link for the previous media page' do
         stub_const 'AccountsController::PAGE_SIZE', 1
-        statuses = 2.times.map { Fabricate(:status, account: account) }
-        statuses.each { |status| Fabricate(:media_attachment, account: account, status: status) }
+        statuses = Fabricate.times(2, :status, account: account)
+        statuses.each { |status| Fabricate(:media_attachment, account: account, status: status, file: nil) }
 
         visit '/@username/media?page=2'
 
@@ -35,7 +35,7 @@ describe 'Pawoo extensions of account page', type: :feature do
     context 'with replies requested' do
       it 'shows the link for the next reply page' do
         stub_const 'AccountsController::PAGE_SIZE', 1
-        2.times.each { Fabricate(:status, account: account) }
+        Fabricate.times(2, :status, account: account)
 
         visit '/@username/with_replies?page=1'
 
@@ -44,7 +44,7 @@ describe 'Pawoo extensions of account page', type: :feature do
 
       it 'shows the link for the previous reply page' do
         stub_const 'AccountsController::PAGE_SIZE', 1
-        2.times.each { Fabricate(:status, account: account) }
+        Fabricate.times(2, :status, account: account)
 
         visit '/@username/with_replies?page=2'
 
@@ -109,7 +109,7 @@ describe 'Pawoo extensions of account page', type: :feature do
 
     it 'shows the link for the next page' do
       stub_const 'AccountsController::PAGE_SIZE', 1
-      2.times.each { Fabricate(:status, account: account) }
+      Fabricate.times(2, :status, account: account)
 
       visit '/@username?page=1'
 
@@ -118,7 +118,7 @@ describe 'Pawoo extensions of account page', type: :feature do
 
     it 'shows the link for the previous page' do
       stub_const 'AccountsController::PAGE_SIZE', 1
-      3.times.each { Fabricate(:status, account: account) }
+      Fabricate.times(3, :status, account: account)
 
       visit '/@username?page=3'
 
@@ -127,7 +127,7 @@ describe 'Pawoo extensions of account page', type: :feature do
 
     it 'shows the link for the initial page if it is the second page' do
       stub_const 'AccountsController::PAGE_SIZE', 1
-      2.times.each { Fabricate(:status, account: account) }
+      Fabricate.times(2, :status, account: account)
 
       visit '/@username?page=2'
 
