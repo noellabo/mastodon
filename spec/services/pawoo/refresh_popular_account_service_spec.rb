@@ -15,7 +15,7 @@ describe Pawoo::RefreshPopularAccountService do
     # メディアに対するリアクションが多い
     def prepare_popular_account_on_pawoo
       status = Fabricate.times(2, :status, account: popular_account_on_pawoo).first
-      Fabricate(:media_attachment, account: popular_account_on_pawoo, status: status, created_at: status.created_at)
+      Fabricate(:media_attachment, account: popular_account_on_pawoo, status: status, created_at: status.created_at, file: nil)
       Fabricate.times(3, :favourite, status: status)
       Fabricate.times(3, :status, reblog: status)
     end
@@ -30,13 +30,13 @@ describe Pawoo::RefreshPopularAccountService do
     # メディアに対するリアクションが少ない
     def prepare_normal_account
       status = Fabricate.times(2, :status, account: normal_account).first
-      Fabricate(:media_attachment, account: normal_account, status: status, created_at: status.created_at)
+      Fabricate(:media_attachment, account: normal_account, status: status, created_at: status.created_at, file: nil)
     end
 
     # 最後のトゥートが古い
     def prepare_inactive_account
       status = Fabricate.times(2, :status, account: inactive_account, created_at: 2.month.ago).first
-      Fabricate(:media_attachment, account: inactive_account, status: status, created_at: status.created_at)
+      Fabricate(:media_attachment, account: inactive_account, status: status, created_at: status.created_at, file: nil)
       Fabricate.times(3, :favourite, status: status)
       Fabricate.times(3, :status, reblog: status)
     end
@@ -44,7 +44,7 @@ describe Pawoo::RefreshPopularAccountService do
     # トゥートが少ない
     def prepare_inactive_account2
       status = Fabricate(:status, account: inactive_account2)
-      Fabricate(:media_attachment, account: inactive_account2, status: status, created_at: status.created_at)
+      Fabricate(:media_attachment, account: inactive_account2, status: status, created_at: status.created_at, file: nil)
       Fabricate.times(3, :favourite, status: status)
       Fabricate.times(3, :status, reblog: status)
     end

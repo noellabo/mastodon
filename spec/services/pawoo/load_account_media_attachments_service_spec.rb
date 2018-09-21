@@ -7,7 +7,7 @@ describe Pawoo::LoadAccountMediaAttachmentsService do
     let!(:media_attachments) do
       accounts.map do |account|
         status = Fabricate(:status, account: account)
-        Fabricate(:media_attachment, account: account, status: status, created_at: status.created_at)
+        Fabricate(:media_attachment, account: account, status: status, created_at: status.created_at, file: nil)
       end
     end
     let(:limit) { 3 }
@@ -50,7 +50,7 @@ describe Pawoo::LoadAccountMediaAttachmentsService do
     context 'when having multiple media' do
       let(:accounts) { [account] }
       let(:account) { Fabricate(:account) }
-      let(:media_attachment_ids) { Fabricate.times(3, :media_attachment, account: account).map(&:id).shuffle }
+      let(:media_attachment_ids) { Fabricate.times(3, :media_attachment, account: account, file: nil).map(&:id).shuffle }
 
       before do
         query = Pawoo::AccountMediaAttachmentIdsQuery.new(account)
