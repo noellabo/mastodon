@@ -21,7 +21,9 @@ class Pawoo::ReportSummation < ApplicationRecord
     total_count = 0
 
     summation = find_or_initialize_by(date: start.to_date)
-    report_count = Report.where(created_at: (start..finish)).group(:pawoo_report_type).count
+    report_count = Report.select('pawoo_report_type, sum(COALESCE(array_length(status_ids, 1), 1)) as sum')
+                         .where(created_at: (start..finish)).group(:pawoo_report_type)
+                         .each_with_object({}) { |report, hash| hash[report.pawoo_report_type] = report.sum }
 
     Report.pawoo_report_types.keys.each do |report_type|
       count = report_count[report_type] || 0
