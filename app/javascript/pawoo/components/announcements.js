@@ -18,19 +18,6 @@ const messages = defineMessages({
 // NOTE: id: 21 まで使用した
 const announcements = [
   {
-    id: 21,
-    icon,
-    body: 'ユーザー40万人突破記念のイラスト企画開催中！応募は9/30まで！',
-    link: [
-      {
-        reactRouter: true,
-        inline: false,
-        href: '/statuses/100677408583606079',
-        body: '詳細はこちら',
-      },
-    ],
-  },
-  {
     id: 1,
     icon,
     body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
