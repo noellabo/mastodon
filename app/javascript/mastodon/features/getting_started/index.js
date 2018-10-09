@@ -144,8 +144,7 @@ export default class GettingStarted extends ImmutablePureComponent {
     }
 
     navItems.push(<ColumnLink key='9' icon='book' text={intl.formatMessage(messages.info)} href='/about/more' />);
-    // TODO: あとでコメントを外す
-    // navItems.push(<ColumnLink key='10' icon='image' text={intl.formatMessage(messages.gallery)} href='/pawoo/galleries' />);
+    navItems.push(<ColumnLink key='10' icon='image' text={intl.formatMessage(messages.gallery)} href='/pawoo/galleries' />);
 
     return (
       <Column icon='asterisk' heading={intl.formatMessage(messages.heading)} hideHeadingOnMobile>
