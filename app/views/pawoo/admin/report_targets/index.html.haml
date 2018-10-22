@@ -13,10 +13,16 @@
     %ul
       %li= filter_link_to t('pawoo.admin.report_targets.all_report'), media: nil
       %li= filter_link_to t('pawoo.admin.report_targets.only_media'), media: '1'
+  .filter-subset
+    %strong レポート数で絞り込み
+    %ul
+      %li= filter_link_to '2つ以上', count_filter: nil
+      %li= filter_link_to '全て', count_filter: 'all'
 
 = form_tag admin_pawoo_report_targets_path do
   = hidden_field_tag :pending, 1 if params[:pending] == '1'
   = hidden_field_tag :media, 1 if params[:media] == '1'
+  = hidden_field_tag :count_filter, 'all' if params[:count_filter] == 'all'
 
   .table-wrapper
     %table.table
@@ -29,23 +35,23 @@
 %nav.pagination
   - if @current_page != @first_page
     %span.prev
-      = link_to url_for(page: @first_page, pending: params[:pending], media: params[:media]) do
+      = link_to url_for(page: @first_page, pending: params[:pending], media: params[:media], count_filter: params[:count_filter]) do
         %i.fa.fa-chevron-left
         %i.fa.fa-chevron-left
         最初
   - if @prev_page
     %span.prev
-      = link_to url_for(page: @prev_page, pending: params[:pending], media: params[:media]) do
+      = link_to url_for(page: @prev_page, pending: params[:pending], media: params[:media], count_filter: params[:count_filter]) do
         %i.fa.fa-chevron-left
         前
   - if @next_page
     %span.next
-      = link_to url_for(page: @next_page, pending: params[:pending], media: params[:media]) do
+      = link_to url_for(page: @next_page, pending: params[:pending], media: params[:media], count_filter: params[:count_filter]) do
         次
         %i.fa.fa-chevron-right
   - if @current_page != @last_page
     %span.next
-      = link_to url_for(page: @last_page, pending: params[:pending], media: params[:media]) do
+      = link_to url_for(page: @last_page, pending: params[:pending], media: params[:media], count_filter: params[:count_filter]) do
         %i.fa.fa-chevron-right
         %i.fa.fa-chevron-right
         最後
