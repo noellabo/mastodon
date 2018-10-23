@@ -10,7 +10,11 @@ class Pawoo::Admin::ReportTargetsController < Admin::BaseController
     target_accounts = Set.new
 
     # すべて取得して通報の多い順並べる
-    report_targets_ids = report_target_scope.group([:target_type, :target_id]).count.sort_by { |_, count| -count }.map(&:first)
+    report_target_ids_with_count = report_target_scope.group([:target_type, :target_id]).count
+    if params[:count_filter] != 'all'
+      report_target_ids_with_count = report_target_ids_with_count.select { |_, count| count > 1 }
+    end
+    report_targets_ids = report_target_ids_with_count.sort_by { |_, count| -count }.map(&:first)
     @report_target_count = report_targets_ids.size
 
     @current_page = params[:page].to_i < 1 ? 1 : params[:page].to_i
