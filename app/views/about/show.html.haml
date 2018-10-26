@@ -29,21 +29,6 @@
         ピクシブが運営するマストドンインスタンス「Pawoo」は、文章や画像を投稿して楽しむSNSです。
         「創作活動や自由なコミュニケーションを楽しめる場」として、どなたにも幅広く使っていただけます。
 
-      .about-col-body-spacer.hide_on_short_display
-
-      .about-col-body-apps
-        %h2
-          %span アプリもあります
-
-        %ul.no-list
-          %li
-            = link_to 'https://itunes.apple.com/us/app/pawoo/id1229070679' do
-              = image_tag asset_pack_path('pawoo/about/badge-appstore.png'), width: 190
-
-          %li
-            = link_to 'https://play.google.com/store/apps/details?id=jp.pxv.pawoo' do
-              = image_tag asset_pack_path('pawoo/about/badge-googleplay.png'), width: 190
-
       .about-col-body-spacer.bottom
 
   - if Setting.timeline_preview
