@@ -134,56 +134,6 @@
         font-size: 18px;
       }
 
-      .about-col-body-apps {
-        box-sizing: border-box;
-        margin: 0 auto;
-        padding: 20px;
-        width: 100%;
-        background-color: black;
-        font-size: 16px;
-        font-weight: bold;
-        line-height: 1.5;
-
-        h2 {
-          display: flex;
-          align-items: center;
-          position: relative;
-          margin-bottom: 20px;
-          text-align: center;
-
-          span {
-            flex: 0 0 auto;
-            padding: 0 10px;
-          }
-
-          &:before {
-            display: block;
-            content: '';
-            width: 50%;
-            border-bottom: 1px solid $ui-primary-color;
-          }
-
-          &:after {
-            display: block;
-            content: '';
-            width: 50%;
-            border-bottom: 1px solid $ui-primary-color;
-          }
-        }
-
-        ul {
-          display: flex;
-          flex-wrap: wrap;
-          margin: 0 auto;
-          justify-content: space-around;
-          max-width: 420px;
-        }
-
-        & + .about-col-body-apps {
-          margin-top: 20px;
-        }
-      }
-
       .form-footer {
         margin-top: 10px;
       }
