@@ -18,23 +18,6 @@ const messages = defineMessages({
 // NOTE: id: 21 まで使用した
 const announcements = [
   {
-    id: 1,
-    icon,
-    body: 'iOS・AndroidでもPawoo！Pawooアプリを使おう！',
-    link: [
-      {
-        reactRouter: false,
-        inline: true,
-        href: 'https://itunes.apple.com/us/app/%E3%83%9E%E3%82%B9%E3%83%88%E3%83%89%E3%83%B3%E3%82%A2%E3%83%97%E3%83%AA-pawoo/id1229070679?l=ja&ls=1&mt=8',
-        body: 'Appストア',
-      }, {
-        reactRouter: false,
-        inline: true,
-        href: 'https://play.google.com/store/apps/details?id=jp.pxv.pawoo&hl=ja',
-        body: 'Google Playストア',
-      },
-    ],
-  }, {
     id: 7,
     icon,
     body: 'Pawooにどんなユーザーさんがいるのか見てみよう！',
