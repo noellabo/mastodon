@@ -12,7 +12,7 @@ class FollowService < BaseService
     target_account = uri.is_a?(Account) ? uri : ResolveAccountService.new.call(uri)
 
     raise ActiveRecord::RecordNotFound if target_account.nil? || target_account.id == source_account.id || target_account.suspended?
-    raise Mastodon::NotPermittedError  if target_account.blocking?(source_account) || source_account.blocking?(target_account)
+    raise Mastodon::NotPermittedError  if target_account.blocking?(source_account) || source_account.blocking?(target_account) || target_account.moved?
 
     if source_account.following?(target_account)
       # We're already following this account, but we'll call follow! again to

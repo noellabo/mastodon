@@ -46,6 +46,7 @@
 #  featured_collection_url :string
 #  fields                  :jsonb
 #  actor_type              :string
+#  also_known_as           :string           is an Array
 #
 
 class Account < ApplicationRecord
@@ -211,6 +212,10 @@ class Account < ApplicationRecord
 
   def keypair
     @keypair ||= OpenSSL::PKey::RSA.new(private_key || public_key)
+  end
+
+  def also_known_as
+    self[:also_known_as] || []
   end
 
   def fields

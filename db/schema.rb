@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 2019_09_17_213523) do
     t.string "featured_collection_url"
     t.jsonb "fields"
     t.string "actor_type"
+    t.string "also_known_as", array: true
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), lower((domain)::text)", name: "index_accounts_on_username_and_domain_lower"
     t.index ["uri"], name: "index_accounts_on_uri"
