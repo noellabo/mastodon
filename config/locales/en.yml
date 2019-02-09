@@ -1191,6 +1191,18 @@ en:
     contrast: Mastodon (High contrast)
     default: Mastodon (Dark)
     mastodon-light: Mastodon (Light)
+    instance-ticker-type-0: Mastodon (Dark / Instance Ticker Type-0)
+    instance-ticker-type-0x: Mastodon (Dark / Instance Ticker Type-0x)
+    instance-ticker-type-1: Mastodon (Dark / Instance Ticker Type-1)
+    instance-ticker-type-1x: Mastodon (Dark / Instance Ticker Type-1x)
+    instance-ticker-type-0-contrast: Mastodon (High contrast / Instance Ticker Type-0)
+    instance-ticker-type-0x-contrast: Mastodon (High contrast / Instance Ticker Type-0x)
+    instance-ticker-type-1-contrast: Mastodon (High contrast / Instance Ticker Type-1)
+    instance-ticker-type-1x-contrast: Mastodon (High contrast / Instance Ticker Type-1x)
+    instance-ticker-type-0-light: Mastodon (Light / Instance Ticker Type-0)
+    instance-ticker-type-0x-light: Mastodon (Light / Instance Ticker Type-0x)
+    instance-ticker-type-1-light: Mastodon (Light / Instance Ticker Type-1)
+    instance-ticker-type-1x-light: Mastodon (Light / Instance Ticker Type-1x)
   time:
     formats:
       default: "%b %d, %Y, %H:%M"

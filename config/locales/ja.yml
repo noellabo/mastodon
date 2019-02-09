@@ -1173,6 +1173,18 @@ ja:
     contrast: Mastodon (ハイコントラスト)
     default: Mastodon (ダーク)
     mastodon-light: Mastodon (ライト)
+    instance-ticker-type-0: Mastodon (Dark / インスタンス・ティッカー Type-0)
+    instance-ticker-type-0x: Mastodon (Dark / インスタンス・ティッカー Type-0x)
+    instance-ticker-type-1: Mastodon (Dark / インスタンス・ティッカー Type-1)
+    instance-ticker-type-1x: Mastodon (Dark / インスタンス・ティッカー Type-1x)
+    instance-ticker-type-0-contrast: Mastodon (High contrast / インスタンス・ティッカー Type-0)
+    instance-ticker-type-0x-contrast: Mastodon (High contrast / インスタンス・ティッカー Type-0x)
+    instance-ticker-type-1-contrast: Mastodon (High contrast / インスタンス・ティッカー Type-1)
+    instance-ticker-type-1x-contrast: Mastodon (High contrast / インスタンス・ティッカー Type-1x)
+    instance-ticker-type-0-light: Mastodon (Light / インスタンス・ティッカー Type-0)
+    instance-ticker-type-0x-light: Mastodon (Light / インスタンス・ティッカー Type-0x)
+    instance-ticker-type-1-light: Mastodon (Light / インスタンス・ティッカー Type-1)
+    instance-ticker-type-1x-light: Mastodon (Light / インスタンス・ティッカー Type-1x)
   time:
     formats:
       default: "%Y年%m月%d日 %H:%M"
