@@ -42,18 +42,6 @@ export default class SuggestedAccounts extends React.PureComponent {
 
   render () {
     const { accountIds, hasMore, isLoading, ...props } = this.props;
-    const mastodon_bridge_button = (
-      <div className='mastodon_bridge'>
-        <a className='column-link' href='https://bridge.joinmastodon.org/' target='_blank' rel='noopener'>
-          <i className='fa fa-fw fa-twitter column-link__icon' />
-          <FormattedMessage
-            id='pawoo.suggested_accounts.mastodon_bridge'
-            defaultMessage='Find your Twitter friends'
-          />
-        </a>
-      </div>
-    );
-
     let scrollableContent = null;
 
     if (isLoading && this.scrollableContent) {
@@ -70,7 +58,6 @@ export default class SuggestedAccounts extends React.PureComponent {
       <div className='pawoo-suggested-accounts'>
         <ScrollableList
           {...props}
-          prepend={mastodon_bridge_button}
           isLoading={isLoading}
           hasMore={hasMore}
           onLoadMore={this.handleLoadMore}
