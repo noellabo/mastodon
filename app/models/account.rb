@@ -333,12 +333,12 @@ class Account < ApplicationRecord
           AND target_account_id NOT IN (:excluded_account_ids)
           AND accounts.suspended = false
         GROUP BY target_account_id, accounts.id
-        HAVING (
+        HAVING EXISTS (
           SELECT created_at
           FROM statuses
-          WHERE statuses.account_id = target_account_id
+          WHERE statuses.account_id = target_account_id AND statuses.id >= :oldest_id
           ORDER BY statuses.id DESC LIMIT 1
-        ) >= TIMESTAMP :current_timestamp - '3 days'::INTERVAL
+        )
         ORDER BY count(account_id) DESC
         OFFSET :offset
         LIMIT :limit
@@ -347,7 +347,7 @@ class Account < ApplicationRecord
       excluded_account_ids = account.excluded_from_timeline_account_ids + [account.id] + exclude_ids
 
       find_by_sql(
-        [sql, { account_id: account.id, excluded_account_ids: excluded_account_ids, limit: limit, offset: offset, current_timestamp: current_time }]
+        [sql, { account_id: account.id, excluded_account_ids: excluded_account_ids, limit: limit, offset: offset, oldest_id: Mastodon::Snowflake.id_at(current_time - 3.days) }]
       )
     end
 
