@@ -561,16 +561,6 @@
     - 503
   images:
     - https://img.pawoo.net/media_attachments/files/000/384/188/original/6e2ce7f2a562dfc4.png
-- id: 4897646
-  statuses:
-    - 403
-    - 404
-    - 410
-    - 422
-    - 500
-    - 503
-  images:
-    - https://img.pawoo.net/media_attachments/files/000/384/128/original/8fb239b12034e476.png
 - id: 4862537
   statuses:
     - 403
