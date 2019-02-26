@@ -6,10 +6,10 @@ describe ApplicationHelper, type: :helper do
   describe 'title' do
     subject { helper.title }
 
-    context 'when it is production and the host name is "ap-staging"' do
+    context 'when it is production and the host name is "ap-staging001"' do
       before do
         allow(Rails.env).to receive(:production?).and_return(true)
-        allow(Socket).to receive(:gethostname).and_return('ap-staging')
+        allow(Socket).to receive(:gethostname).and_return('ap-staging001')
       end
 
       it { is_expected.to eq 'Pawoo (Staging)' }
