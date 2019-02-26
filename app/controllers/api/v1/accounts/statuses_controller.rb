@@ -63,9 +63,9 @@ class Api::V1::Accounts::StatusesController < Api::BaseController
       attachments = attachments.where('media_attachments.status_id > ?', params[:since_id])
     end
 
-    Status.joins(:media_attachments).merge(attachments).permitted_for(@account, current_account)
-          .paginate_by_max_id(limit_param(DEFAULT_STATUSES_LIMIT), params[:max_id], params[:since_id])
-          .reorder(id: :desc).distinct(:id).pluck(:id)
+    @account.statuses.joins(:media_attachments).merge(attachments).permitted_for(@account, current_account)
+            .paginate_by_max_id(limit_param(DEFAULT_STATUSES_LIMIT), params[:max_id], params[:since_id])
+            .reorder(id: :desc).distinct(:id).pluck(:id)
   end
 
   def pinned_scope
