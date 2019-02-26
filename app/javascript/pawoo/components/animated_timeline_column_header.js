@@ -25,6 +25,10 @@ export default class AnimatedTimelineColumnHeader extends React.PureComponent {
   setIconRef = c => {
     pawooRemoveListener(this.props.timelineId, this.listener);
 
+    if (c === null) {
+      return;
+    }
+
     this.listener = () => {
       c.classList.remove('pawoo-extension-column-header__icon--animation');
 
