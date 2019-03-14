@@ -23,7 +23,7 @@ class Pawoo::OauthRegistrationsController < DeviseController
       )
 
       redirect_to after_sign_in_path_for(user)
-    elsif @oauth_registration.user.errors.added?(:email, :taken) && @oauth_registration.email_confirmed?
+    elsif @oauth_registration.user.errors.added?(:email, :taken, value: @oauth_registration.user.email) && @oauth_registration.email_confirmed?
       redirect_to new_user_session_path, alert: t('.already_registered')
     else
       render :new, status: :unprocessable_entity
