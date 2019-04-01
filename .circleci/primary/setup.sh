@@ -60,8 +60,12 @@ if ! dpkg --verify $debs; then
   curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
   echo 'deb https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list
 
+  # archived
+  sed -i '/jessie-updates/d' /etc/apt/sources.list
+  echo "Acquire::Check-Valid-Until false;" >> /etc/apt/apt.conf.d/10-nocheckvalid
+
   # ffmpeg
-  echo 'deb http://ftp.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
+  echo 'deb http://archive.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
 
   # postgresql
   curl -Lf https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
