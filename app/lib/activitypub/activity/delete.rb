@@ -12,6 +12,12 @@ class ActivityPub::Activity::Delete < ActivityPub::Activity
   private
 
   def delete_person
+    if @account.domain == 'friends.nico'
+      delay = Random.rand((0...(1.minute * 50_000).to_i))
+      Pawoo::DeletePersonWorker.perform_in(delay, @account.id)
+      return
+    end
+
     SuspendAccountService.new.call(@account)
     @account.destroy!
   end
