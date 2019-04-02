@@ -4,7 +4,7 @@ default: &default
   timeout: 5000
   encoding: unicode
   variables:
-    statement_timeout: 30000
+    statement_timeout: <%= ENV['STATEMENT_TIMEOUT'] || 0 %>
 
 development: &development
   <<: *default
