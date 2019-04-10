@@ -9,7 +9,7 @@ module Mastodon
     end
 
     def minor
-      7
+      8
     end
 
     def patch
@@ -21,7 +21,7 @@ module Mastodon
     end
 
     def flags
-      ''
+      'rc3'
     end
 
     def to_a
