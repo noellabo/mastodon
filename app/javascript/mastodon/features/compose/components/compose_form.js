@@ -28,6 +28,8 @@ const messages = defineMessages({
   spoiler_placeholder: { id: 'compose_form.spoiler_placeholder', defaultMessage: 'Write your warning here' },
   publish: { id: 'compose_form.publish', defaultMessage: 'Toot' },
   publishLoud: { id: 'compose_form.publish_loud', defaultMessage: '{publish}!' },
+  publish_with_default_tag: { id: 'compose_form.publish_with_default_tag', defaultMessage: 'Toot with default-tag' },
+  publish_without_community: { id: 'compose_form.publish_without_community', defaultMessage: 'Toot without Local' },
 });
 
 export default @injectIntl
@@ -72,12 +74,14 @@ class ComposeForm extends ImmutablePureComponent {
   }
 
   handleKeyDown = (e) => {
-    if (e.keyCode === 13 && (e.ctrlKey || e.metaKey)) {
+    if (e.keyCode === 13 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+      this.handleSubmit(false);
+    } else if (e.keyCode === 13 && (e.ctrlKey || e.metaKey)) {
       this.handleSubmit();
     }
   }
 
-  handleSubmit = () => {
+  handleSubmit = (primary = true) => {
     if (this.props.text !== this.autosuggestTextarea.textarea.value) {
       // Something changed the text inside the textarea (e.g. browser extensions like Grammarly)
       // Update the state to match the current text
@@ -92,7 +96,11 @@ class ComposeForm extends ImmutablePureComponent {
       return;
     }
 
-    this.props.onSubmit(this.context.router ? this.context.router.history : null);
+    this.props.onSubmit(this.context.router ? this.context.router.history : null, primary);
+  }
+
+  handleSubmitSecondary = () => {
+    this.handleSubmit(false);
   }
 
   onSuggestionsClearRequested = () => {
@@ -183,11 +191,13 @@ class ComposeForm extends ImmutablePureComponent {
     const text     = [this.props.spoilerText, countableText(this.props.text)].join('');
     const disabledButton = disabled || this.props.isUploading || this.props.isChangingUpload || length(text) > 500 || (text.length !== 0 && text.trim().length === 0 && !anyMedia);
     let publishText = '';
+    let secondaryPublishText = '';
 
     if (this.props.privacy === 'private' || this.props.privacy === 'direct') {
       publishText = <span className='compose-form__publish-private'><Icon id='lock' /> {intl.formatMessage(messages.publish)}</span>;
     } else {
       publishText = this.props.privacy !== 'unlisted' ? intl.formatMessage(messages.publishLoud, { publish: intl.formatMessage(messages.publish) }) : intl.formatMessage(messages.publish);
+      secondaryPublishText = this.props.privacy !== 'unlisted' ? intl.formatMessage(messages.publish_without_community) : intl.formatMessage(messages.publish_with_default_tag);
     }
 
     return (
@@ -248,6 +258,10 @@ class ComposeForm extends ImmutablePureComponent {
 
         <div className='compose-form__publish'>
           <div className='compose-form__publish-button-wrapper'><Button text={publishText} onClick={this.handleSubmit} disabled={disabledButton} block /></div>
+        </div>
+
+        <div className='compose-form__publish'>
+          { secondaryPublishText === '' || <div className='compose-form__publish-button-wrapper'><Button text={secondaryPublishText} onClick={this.handleSubmitSecondary} disabled={disabledButton} block secondary /></div> }
         </div>
       </div>
     );

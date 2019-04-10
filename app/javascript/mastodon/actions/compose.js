@@ -13,6 +13,8 @@ import { defineMessages } from 'react-intl';
 
 let cancelFetchComposeSuggestionsAccounts, cancelFetchComposeSuggestionsTags;
 
+import { extractHashtags } from 'twitter-text';
+
 export const COMPOSE_CHANGE          = 'COMPOSE_CHANGE';
 export const COMPOSE_SUBMIT_REQUEST  = 'COMPOSE_SUBMIT_REQUEST';
 export const COMPOSE_SUBMIT_SUCCESS  = 'COMPOSE_SUBMIT_SUCCESS';
@@ -123,14 +125,20 @@ export function directCompose(account, routerHistory) {
   };
 };
 
-export function submitCompose(routerHistory) {
+export function submitCompose(routerHistory, primary) {
   return function (dispatch, getState) {
-    const status = getState().getIn(['compose', 'text'], '');
-    const media  = getState().getIn(['compose', 'media_attachments']);
-
-    if ((!status || !status.length) && media.size === 0) {
+    const rawStatus = getState().getIn(['compose', 'text'], '');
+    const media = getState().getIn(['compose', 'media_attachments']);
+    if ((!rawStatus || !rawStatus.length) && media.size === 0) {
       return;
     }
+
+    const { status, visibility, hasDefaultHashtag } = handleDefaultTag(
+      primary,
+      rawStatus,
+      getState().getIn(['compose', 'privacy']),
+      getState().getIn(['compose', 'in_reply_to']),
+    );
 
     dispatch(submitComposeRequest());
 
@@ -140,7 +148,7 @@ export function submitCompose(routerHistory) {
       media_ids: media.map(item => item.get('id')),
       sensitive: getState().getIn(['compose', 'sensitive']),
       spoiler_text: getState().getIn(['compose', 'spoiler']) ? getState().getIn(['compose', 'spoiler_text'], '') : '',
-      visibility: getState().getIn(['compose', 'privacy']),
+      visibility: visibility,
       poll: getState().getIn(['compose', 'poll'], null),
     }, {
       headers: {
@@ -172,13 +180,62 @@ export function submitCompose(routerHistory) {
       }
 
       if (response.data.in_reply_to_id === null && response.data.visibility === 'public') {
-        insertIfOnline('community');
+        if (hasDefaultHashtag) {
+          // Refresh the community timeline only if there is default hashtag
+          insertIfOnline('community');
+        }
         insertIfOnline('public');
       }
     }).catch(function (error) {
       dispatch(submitComposeFail(error));
     });
   };
+};
+
+const handleDefaultTag = (primary, status, visibility, in_reply_to) => {
+  const tags = extractHashtags(status);
+  const hasHashtags = tags.length > 0;
+  const hasDefaultHashtag = tags.some(tag => tag === process.env.DEFAULT_HASHTAG);
+  const isPublic = visibility === 'public';
+  const isUnlisted = visibility === 'unlisted';
+
+  if (primary) {
+    // primary toot button:
+    // if has default hashtag: keep
+    // else if public && non-reply: add default hashtag
+    return hasDefaultHashtag ? {
+      status,
+      visibility,
+      hasDefaultHashtag: true,
+    } : {
+      status: isPublic && !in_reply_to ? `${status} #${process.env.DEFAULT_HASHTAG}` : status,
+      visibility,
+      hasDefaultHashtag: true,
+    };
+
+  } else if (isUnlisted) {
+    // secondary toot button:
+    // if unlisted: add default hashta, change visibility to public
+    return {
+      status: !in_reply_to ? `${status} #${process.env.DEFAULT_HASHTAG}` : status,
+      visibility: 'public',
+      hasDefaultHashtag: false,
+    };
+
+  } else {
+    // secondary toot button:
+    // if has hashtag: keep
+    // else if public: change visibility to unlisted
+    return hasHashtags ? {
+      status,
+      visibility,
+      hasDefaultHashtag: false,
+    } : {
+      status,
+      visibility: isPublic ? 'unlisted' : visibility,
+      hasDefaultHashtag: false,
+    };
+  }
 };
 
 export function submitComposeRequest() {

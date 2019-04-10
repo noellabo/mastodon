@@ -2,7 +2,14 @@
 
 class ProcessHashtagsService < BaseService
   def call(status, tags = [])
-    tags    = Extractor.extract_hashtags(status.text) if status.local?
+    if status.local?
+      tags = Extractor.extract_hashtags(status.text)
+
+      if Rails.configuration.x.default_hashtag.present? && tags.empty? && status.visibility == 'public' && !status.reply? then
+        tags << Rails.configuration.x.default_hashtag
+        status.update(text: "#{status.text} ##{Rails.configuration.x.default_hashtag}")
+      end
+    end
     records = []
 
     Tag.find_or_create_by_names(tags) do |tag|
