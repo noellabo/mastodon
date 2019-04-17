@@ -116,13 +116,13 @@ export default class GettingStarted extends ImmutablePureComponent {
         navItems.push(<ColumnLink key='2' icon='users' text={intl.formatMessage(messages.community_timeline)} to='/timelines/public/local' />);
       }
 
-      if (!columns.find(item => item.get('id') === 'PUBLIC')) {
-        navItems.push(<ColumnLink key='3' icon='globe' text={intl.formatMessage(messages.public_timeline)} to='/timelines/public' />);
-      }
-
       if (!columns.find(item => item.get('id') === 'MEDIA')) {
         navItems.push(<ColumnLink key='media_timeline' icon='image' text={intl.formatMessage(messages.media_timeline)} to='/timelines/public/media' />);
       }
+    }
+
+    if (!multiColumn || !columns.find(item => item.get('id') === 'PUBLIC')) {
+      navItems.push(<ColumnLink key='3' icon='globe' text={intl.formatMessage(messages.public_timeline)} to='/timelines/public' />);
     }
 
     if (!multiColumn || !columns.find(item => item.get('id') === 'DIRECT')) {
