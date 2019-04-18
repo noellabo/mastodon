@@ -47,6 +47,8 @@ class SearchService < BaseService
       definition = definition.filter(range: { id: range })
     end
 
+    definition = definition.order(id: { order: 'desc' })
+
     results             = definition.limit(@limit).offset(@offset).objects.compact
     account_ids         = results.map(&:account_id)
     account_domains     = results.map(&:account_domain)
