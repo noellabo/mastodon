@@ -33,8 +33,7 @@ class SearchService < BaseService
   end
 
   def perform_statuses_search!
-    definition = StatusesIndex.filter(term: { searchable_by: @account.id })
-                              .query(multi_match: { type: 'most_fields', query: @query, operator: 'and', fields: %w(text text.stemmed) })
+    definition = StatusesIndex.query(multi_match: { type: 'most_fields', query: @query, operator: 'and', fields: %w(text text.stemmed) })
 
     if @options[:account_id].present?
       definition = definition.filter(term: { account_id: @options[:account_id] })
@@ -46,6 +45,8 @@ class SearchService < BaseService
       range[:lt] = @options[:max_id].to_i if @options[:max_id].present?
       definition = definition.filter(range: { id: range })
     end
+
+    definition = definition.order(id: { order: 'desc' })
 
     results             = definition.limit(@limit).offset(@offset).objects.compact
     account_ids         = results.map(&:account_id)
