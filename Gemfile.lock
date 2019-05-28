@@ -1,11 +1,11 @@
 GIT
   remote: https://github.com/noellabo/chewy.git
-  revision: 00903efeb8f99fd81d7436b9c0a72d027ac7c0a6
+  revision: 94e8a6cfc540e06c051d1217e13dda0d73442e8b
   branch: es6-client-compatibility-workaround-for-es7
   specs:
     chewy (5.0.0)
       activesupport (>= 4.0)
-      elasticsearch (>= 7.0.0.pre)
+      elasticsearch (>= 7.0.0)
       elasticsearch-dsl
 
 GIT
