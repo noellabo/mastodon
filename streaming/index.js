@@ -266,7 +266,9 @@ const startWorker = (workerId) => {
     'public:local',
     'public:local:media',
     'hashtag',
+    'hashtag:media',
     'hashtag:local',
+    'hashtag:local:media',
   ];
 
   const wsVerifyClient = (info, cb) => {
@@ -539,25 +541,17 @@ const startWorker = (workerId) => {
   });
 
   app.get('/api/v1/streaming/hashtag', (req, res) => {
-    const { tag } = req.query;
+    const onlyMedia = req.query.only_media === '1' || req.query.only_media === 'true';
+    const channel   = onlyMedia ? `timeline:hashtag:${process.env.DEFAULT_HASHTAG.toLowerCase()}:media` : `timeline:hashtag:${process.env.DEFAULT_HASHTAG.toLowerCase()}`;
 
-    if (!tag || tag.length === 0) {
-      httpNotFound(res);
-      return;
-    }
-
-    streamFrom(`timeline:hashtag:${tag.toLowerCase()}`, req, streamToHttp(req, res), streamHttpEnd(req), true);
+    streamFrom(channel, req, streamToHttp(req, res), streamHttpEnd(req), true);
   });
 
   app.get('/api/v1/streaming/hashtag/local', (req, res) => {
-    const { tag } = req.query;
+    const onlyMedia = req.query.only_media === '1' || req.query.only_media === 'true';
+    const channel   = onlyMedia ? `timeline:hashtag:${process.env.DEFAULT_HASHTAG.toLowerCase()}:local:media` : `timeline:hashtag:${process.env.DEFAULT_HASHTAG.toLowerCase()}:local`;
 
-    if (!tag || tag.length === 0) {
-      httpNotFound(res);
-      return;
-    }
-
-    streamFrom(`timeline:hashtag:${tag.toLowerCase()}:local`, req, streamToHttp(req, res), streamHttpEnd(req), true);
+    streamFrom(channel, req, streamToHttp(req, res), streamHttpEnd(req), true);
   });
 
   app.get('/api/v1/streaming/list', (req, res) => {
@@ -601,7 +595,7 @@ const startWorker = (workerId) => {
       streamFrom('timeline:public:media', req, streamToWs(req, ws), streamWsEnd(req, ws), true);
       break;
     case 'public:local:media':
-      streamFrom('timeline:public:local:media', req, streamToWs(req, ws), streamWsEnd(req, ws), true);
+      streamFrom(`timeline:hashtag:${process.env.DEFAULT_HASHTAG.toLowerCase()}:media`, req, streamToWs(req, ws), streamWsEnd(req, ws), true);
       break;
     case 'direct':
       channel = `timeline:direct:${req.accountId}`;
@@ -622,6 +616,12 @@ const startWorker = (workerId) => {
       }
 
       streamFrom(`timeline:hashtag:${location.query.tag.toLowerCase()}:local`, req, streamToWs(req, ws), streamWsEnd(req, ws), true);
+      break;
+    case 'hashtag:media':
+      streamFrom(`timeline:hashtag:${location.query.tag.toLowerCase()}:media`, req, streamToWs(req, ws), streamWsEnd(req, ws), true);
+      break;
+    case 'hashtag:local:media':
+      streamFrom(`timeline:hashtag:${location.query.tag.toLowerCase()}:local:media`, req, streamToWs(req, ws), streamWsEnd(req, ws), true);
       break;
     case 'list':
       const listId = location.query.list;

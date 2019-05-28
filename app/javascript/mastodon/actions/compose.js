@@ -2,7 +2,7 @@ import api from '../api';
 import { CancelToken, isCancel } from 'axios';
 import { throttle } from 'lodash';
 import { search as emojiSearch } from '../features/emoji/emoji_mart_search_light';
-import { tagHistory } from '../settings';
+import { tagHistory, tagTemplate } from '../settings';
 import { useEmoji } from './emojis';
 import resizeImage from '../utils/resize_image';
 import { importFetchedAccounts } from './importer';
@@ -10,6 +10,7 @@ import { updateTimeline } from './timelines';
 import { showAlertForError } from './alerts';
 import { showAlert } from './alerts';
 import { defineMessages } from 'react-intl';
+import { fromJS } from 'immutable';
 
 let cancelFetchComposeSuggestionsAccounts;
 
@@ -22,6 +23,8 @@ export const COMPOSE_SUBMIT_FAIL     = 'COMPOSE_SUBMIT_FAIL';
 export const COMPOSE_REPLY           = 'COMPOSE_REPLY';
 export const COMPOSE_REPLY_CANCEL    = 'COMPOSE_REPLY_CANCEL';
 export const COMPOSE_DIRECT          = 'COMPOSE_DIRECT';
+export const COMPOSE_QUOTE           = 'COMPOSE_QUOTE';
+export const COMPOSE_QUOTE_CANCEL    = 'COMPOSE_QUOTE_CANCEL';
 export const COMPOSE_MENTION         = 'COMPOSE_MENTION';
 export const COMPOSE_RESET           = 'COMPOSE_RESET';
 export const COMPOSE_UPLOAD_REQUEST  = 'COMPOSE_UPLOAD_REQUEST';
@@ -36,6 +39,8 @@ export const COMPOSE_SUGGESTION_SELECT = 'COMPOSE_SUGGESTION_SELECT';
 export const COMPOSE_SUGGESTION_TAGS_UPDATE = 'COMPOSE_SUGGESTION_TAGS_UPDATE';
 
 export const COMPOSE_TAG_HISTORY_UPDATE = 'COMPOSE_TAG_HISTORY_UPDATE';
+
+export const COMPOSE_TAG_TEMPLATE_UPDATE = 'COMPOSE_TAG_TEMPLATE_UPDATE';
 
 export const COMPOSE_MOUNT   = 'COMPOSE_MOUNT';
 export const COMPOSE_UNMOUNT = 'COMPOSE_UNMOUNT';
@@ -97,6 +102,25 @@ export function cancelReplyCompose() {
   };
 };
 
+export function quoteCompose(status, router) {
+  return (dispatch, getState) => {
+    dispatch({
+      type: COMPOSE_QUOTE,
+      status: status,
+    });
+
+    if (!getState().getIn(['compose', 'mounted'])) {
+      router.push('/statuses/new');
+    }
+  };
+};
+
+export function cancelQuoteCompose() {
+  return {
+    type: COMPOSE_QUOTE_CANCEL,
+  };
+};
+
 export function resetCompose() {
   return {
     type: COMPOSE_RESET,
@@ -143,13 +167,14 @@ export function submitCompose(routerHistory, primary) {
     dispatch(submitComposeRequest());
 
     api(getState).post('/api/v1/statuses', {
-      status,
+      status: newStatus,
       in_reply_to_id: getState().getIn(['compose', 'in_reply_to'], null),
       media_ids: media.map(item => item.get('id')),
       sensitive: getState().getIn(['compose', 'sensitive']),
       spoiler_text: getState().getIn(['compose', 'spoiler_text'], ''),
       visibility: visibility,
       poll: getState().getIn(['compose', 'poll'], null),
+      quote_id: getState().getIn(['compose', 'quote_from'], null),
     }, {
       headers: {
         'Idempotency-Key': getState().getIn(['compose', 'idempotencyKey']),
@@ -161,7 +186,7 @@ export function submitCompose(routerHistory, primary) {
         routerHistory.goBack();
       }
 
-      dispatch(insertIntoTagHistory(response.data.tags, status));
+      dispatch(insertIntoTagHistory(response.data.tags, newStatus));
       dispatch(submitComposeSuccess({ ...response.data }));
 
       // To make the app more responsive, immediately push the status
@@ -481,6 +506,86 @@ export function updateTagHistory(tags) {
     type: COMPOSE_TAG_HISTORY_UPDATE,
     tags,
   };
+}
+
+export function updateTextTagTemplate(text, index) {
+  return (dispatch, getState) => {
+    let active = getState().getIn(['compose', 'tagTemplate', index, 'active']) || true;
+
+    if (text.length === 0) {
+      active = false;
+    }
+
+    updateTagTemplate(text, active, index, dispatch, getState);
+  };
+}
+
+export function addTagTemplate(index) {
+  return (dispatch, getState) => {
+    const oldTemplate = getState().getIn(['compose', 'tagTemplate']);
+    const me = getState().getIn(['meta', 'me']);
+
+    if (oldTemplate.size >= 4 || oldTemplate.getIn([index, 'text']).length === 0) {
+      return;
+    }
+
+    const tags = oldTemplate.push(fromJS({text: '', active: false}));
+
+    dispatch({
+      type: COMPOSE_TAG_TEMPLATE_UPDATE,
+      tags,
+    });
+
+    tagTemplate.set(me, tags);
+  }
+}
+
+export function delTagTemplate(index) {
+  return (dispatch, getState) => {
+    if (index === 0) {
+      return;
+    }
+
+    const oldTemplate = getState().getIn(['compose', 'tagTemplate']);
+    const me = getState().getIn(['meta', 'me']);
+    const tags = oldTemplate.delete(index);
+
+    dispatch({
+      type: COMPOSE_TAG_TEMPLATE_UPDATE,
+      tags,
+    });
+  
+    tagTemplate.set(me, tags);
+  }
+}
+
+export function enableTagTemplate(index) {
+  return (dispatch, getState) => {
+    const text = getState().getIn(['compose', 'tagTemplate', index, 'text']);
+    if (text.length > 0) {
+      updateTagTemplate(text, true, index, dispatch, getState);
+    }
+  };
+}
+
+export function disableTagTemplate(index) {
+  return (dispatch, getState) => {
+    const text = getState().getIn(['compose', 'tagTemplate', index, 'text']);
+    updateTagTemplate(text, false, index, dispatch, getState);
+  };
+}
+
+function updateTagTemplate(text, active, index, dispatch, getState) {
+    const oldTemplate = getState().getIn(['compose', 'tagTemplate']);
+    const me = getState().getIn(['meta', 'me']);
+    const tags = oldTemplate.setIn([index], fromJS({text: text, active: active}));
+
+    dispatch({
+      type: COMPOSE_TAG_TEMPLATE_UPDATE,
+      tags,
+    });
+
+    tagTemplate.set(me, tags);
 }
 
 export function hydrateCompose() {
