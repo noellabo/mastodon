@@ -527,8 +527,10 @@ const startWorker = (workerId) => {
   });
 
   app.get('/api/v1/streaming/public/local', (req, res) => {
+    const defaultTag = process.env.DEFAULT_HASHTAG.toLowerCase();
+
     const onlyMedia = req.query.only_media === '1' || req.query.only_media === 'true';
-    const channel   = onlyMedia ? `timeline:hashtag:${process.env.DEFAULT_HASHTAG.toLowerCase()}:media` : `timeline:hashtag:${process.env.DEFAULT_HASHTAG.toLowerCase()}`;
+    const channel   = onlyMedia ? `timeline:hashtag:${defaultTag}:media` : `timeline:hashtag:${defaultTag}`;
 
     streamFrom(channel, req, streamToHttp(req, res), streamHttpEnd(req), true);
   });

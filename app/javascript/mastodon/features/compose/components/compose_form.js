@@ -33,6 +33,7 @@ const messages = defineMessages({
   hashtag_temp_placeholder: { id: 'compose_form.hashtag_temp_placeholder', defaultMessage: 'Append tag' },
   publish: { id: 'compose_form.publish', defaultMessage: 'Toot' },
   publishLoud: { id: 'compose_form.publish_loud', defaultMessage: '{publish}!' },
+  publish_with_default_tag: { id: 'compose_form.publish_with_default_tag', defaultMessage: 'Toot with default-tag' },
   publish_without_community: { id: 'compose_form.publish_without_community', defaultMessage: 'Toot without Local' },
 });
 
@@ -87,7 +88,7 @@ class ComposeForm extends ImmutablePureComponent {
     }
   }
 
-  handleSubmit = (withCommunity = true) => {
+  handleSubmit = (primary = true) => {
     if (this.props.text !== this.autosuggestTextarea.textarea.value) {
       // Something changed the text inside the textarea (e.g. browser extensions like Grammarly)
       // Update the state to match the current text
@@ -102,10 +103,10 @@ class ComposeForm extends ImmutablePureComponent {
       return;
     }
 
-    this.props.onSubmit(this.context.router ? this.context.router.history : null, withCommunity);
+    this.props.onSubmit(this.context.router ? this.context.router.history : null, primary);
   }
 
-  handleSubmitWithoutCommunity = () => {
+  handleSubmitSecondary = () => {
     this.handleSubmit(false);
   }
 
@@ -195,11 +196,13 @@ class ComposeForm extends ImmutablePureComponent {
     const text     = [this.props.spoiler_text, countableText(this.props.text), preTag.join(''), activeTag.join('')].join('');
     const disabledButton = disabled || this.props.is_uploading || this.props.is_changing_upload || length(text) > 500 || (text.length !== 0 && text.trim().length === 0 && !anyMedia);
     let publishText = '';
+    let secondaryPublishText = '';
 
     if (this.props.privacy === 'private' || this.props.privacy === 'direct') {
       publishText = <span className='compose-form__publish-private'><Icon id='lock' /> {intl.formatMessage(messages.publish)}</span>;
     } else {
       publishText = this.props.privacy !== 'unlisted' ? intl.formatMessage(messages.publishLoud, { publish: intl.formatMessage(messages.publish) }) : intl.formatMessage(messages.publish);
+      secondaryPublishText = this.props.privacy !== 'unlisted' ? intl.formatMessage(messages.publish_without_community) : intl.formatMessage(messages.publish_with_default_tag);
     }
 
     return (
@@ -272,10 +275,8 @@ class ComposeForm extends ImmutablePureComponent {
         </div>
 
         <div className='compose-form__publish'>
-          <div className='compose-form__publish-button-wrapper'><Button text={intl.formatMessage(messages.publish_without_community)} onClick={this.handleSubmitWithoutCommunity} disabled={disabledButton} block secondary /></div>
+          { secondaryPublishText === '' || <div className='compose-form__publish-button-wrapper'><Button text={secondaryPublishText} onClick={this.handleSubmitSecondary} disabled={disabledButton} block secondary /></div> }
         </div>
-
-        <div className='flex-spacer' />
       </div>
     );
   }
