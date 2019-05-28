@@ -149,27 +149,19 @@ export function directCompose(account, routerHistory) {
   };
 };
 
-export function submitCompose(routerHistory, withCommunity) {
+export function submitCompose(routerHistory, primary) {
   return function (dispatch, getState) {
-    let status = getState().getIn(['compose', 'text'], '');
-    const media  = getState().getIn(['compose', 'media_attachments']);
-
-    if ((!status || !status.length) && media.size === 0) {
+    const rawStatus = getState().getIn(['compose', 'text'], '');
+    const media = getState().getIn(['compose', 'media_attachments']);
+    if ((!rawStatus || !rawStatus.length) && media.size === 0) {
       return;
     }
 
-    const hashtag = getState().getIn(['compose', 'tagTemplate']);
-
-    hashtag.map(tag => {
-      if (tag && tag.get('active') && (tag.get('text') || '').length) {
-        status = [status, ` #${tag.get('text')}`].join('')
-      }
-    });
-
-    const { newStatus, visibility, hasDefaultHashtag } = handleDefaultTag(
-      withCommunity,
-      status,
-      getState().getIn(['compose', 'privacy'])
+    const { status, visibility, hasDefaultHashtag } = handleDefaultTag(
+      primary,
+      rawStatus,
+      getState().getIn(['compose', 'privacy']),
+      getState().getIn(['compose', 'in_reply_to']),
     );
 
     dispatch(submitComposeRequest());
@@ -180,8 +172,7 @@ export function submitCompose(routerHistory, withCommunity) {
       media_ids: media.map(item => item.get('id')),
       sensitive: getState().getIn(['compose', 'sensitive']),
       spoiler_text: getState().getIn(['compose', 'spoiler_text'], ''),
-      visibility,
-      quote_id: getState().getIn(['compose', 'quote_from'], null),
+      visibility: visibility,
       poll: getState().getIn(['compose', 'poll'], null),
       quote_id: getState().getIn(['compose', 'quote_from'], null),
     }, {
@@ -212,8 +203,8 @@ export function submitCompose(routerHistory, withCommunity) {
       if (response.data.visibility !== 'direct') {
         insertIfOnline('home');
       }
-      
-      if (response.data.visibility === 'public') {
+
+      if (response.data.in_reply_to_id === null && response.data.visibility === 'public') {
         if (hasDefaultHashtag) {
           // Refresh the community timeline only if there is default hashtag
           insertIfOnline('community');
@@ -226,44 +217,49 @@ export function submitCompose(routerHistory, withCommunity) {
   };
 };
 
-const handleDefaultTag = (withCommunity, status, visibility) => {
-  if (!status || !status.length) {
-    return {};
-  }
-
+const handleDefaultTag = (primary, status, visibility, in_reply_to) => {
   const tags = extractHashtags(status);
   const hasHashtags = tags.length > 0;
   const hasDefaultHashtag = tags.some(tag => tag === process.env.DEFAULT_HASHTAG);
   const isPublic = visibility === 'public';
+  const isUnlisted = visibility === 'unlisted';
 
-  if (withCommunity) {
-    // toot with community:
+  if (primary) {
+    // primary toot button:
     // if has default hashtag: keep
-    // else if public: add default hashtag
+    // else if public && non-reply: add default hashtag
     return hasDefaultHashtag ? {
-      newStatus: status,
+      status,
       visibility,
       hasDefaultHashtag: true,
     } : {
-      newStatus: isPublic ? `${status} #${process.env.DEFAULT_HASHTAG}` : status,
+      status: isPublic && !in_reply_to ? `${status} #${process.env.DEFAULT_HASHTAG}` : status,
       visibility,
       hasDefaultHashtag: true,
+    };
+
+  } else if (isUnlisted) {
+    // secondary toot button:
+    // if unlisted: add default hashta, change visibility to public
+    return {
+      status: !in_reply_to ? `${status} #${process.env.DEFAULT_HASHTAG}` : status,
+      visibility: 'public',
+      hasDefaultHashtag: false,
     };
 
   } else {
-    // toot without community:
+    // secondary toot button:
     // if has hashtag: keep
     // else if public: change visibility to unlisted
     return hasHashtags ? {
-      newStatus: status,
+      status,
       visibility,
       hasDefaultHashtag: false,
     } : {
-      newStatus: status,
+      status,
       visibility: isPublic ? 'unlisted' : visibility,
       hasDefaultHashtag: false,
     };
-
   }
 };
 
