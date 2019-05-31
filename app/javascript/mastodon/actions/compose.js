@@ -202,22 +202,22 @@ const handleDefaultTag = (primary, status, visibility, in_reply_to) => {
   if (primary) {
     // primary toot button:
     // if has default hashtag: keep
-    // else if public && non-reply: add default hashtag
+    // else if public: add default hashtag
     return hasDefaultHashtag ? {
       status,
       visibility,
       hasDefaultHashtag: true,
     } : {
-      status: isPublic && !in_reply_to ? `${status} #${process.env.DEFAULT_HASHTAG}` : status,
+      status: isPublic ? `${status} #${process.env.DEFAULT_HASHTAG}` : status,
       visibility,
       hasDefaultHashtag: true,
     };
 
   } else if (isUnlisted) {
     // secondary toot button:
-    // if unlisted: add default hashta, change visibility to public
+    // if unlisted: add default hashtag, change visibility to public
     return {
-      status: !in_reply_to ? `${status} #${process.env.DEFAULT_HASHTAG}` : status,
+      status: `${status} #${process.env.DEFAULT_HASHTAG}`,
       visibility: 'public',
       hasDefaultHashtag: false,
     };
