@@ -193,11 +193,18 @@ class ComposeForm extends ImmutablePureComponent {
     let publishText = '';
     let secondaryPublishText = '';
 
-    if (this.props.privacy === 'private' || this.props.privacy === 'direct') {
+    switch (this.props.privacy) {
+    case 'private':
+    case 'direct':
       publishText = <span className='compose-form__publish-private'><Icon id='lock' /> {intl.formatMessage(messages.publish)}</span>;
-    } else {
-      publishText = this.props.privacy !== 'unlisted' ? intl.formatMessage(messages.publishLoud, { publish: intl.formatMessage(messages.publish) }) : intl.formatMessage(messages.publish);
-      secondaryPublishText = this.props.privacy !== 'unlisted' ? intl.formatMessage(messages.publish_without_community) : intl.formatMessage(messages.publish_with_default_tag);
+      break;
+    case 'unlisted':
+      publishText = <span><Icon id='unlock' /> {intl.formatMessage(messages.publish)}</span>;
+      secondaryPublishText = <span><Icon id='hashtag' /></span>;
+      break;
+    default:
+      publishText = <span><Icon id='hashtag' /> {intl.formatMessage(messages.publishLoud, { publish: intl.formatMessage(messages.publish) })}</span>;
+      secondaryPublishText = <span><Icon id='unlock' /></span>;
     }
 
     return (
@@ -257,11 +264,9 @@ class ComposeForm extends ImmutablePureComponent {
         </div>
 
         <div className='compose-form__publish'>
-          <div className='compose-form__publish-button-wrapper'><Button text={publishText} onClick={this.handleSubmit} disabled={disabledButton} block /></div>
-        </div>
-
-        <div className='compose-form__publish'>
           { secondaryPublishText === '' || <div className='compose-form__publish-button-wrapper'><Button text={secondaryPublishText} onClick={this.handleSubmitSecondary} disabled={disabledButton} block secondary /></div> }
+
+          <div className='compose-form__publish-button-wrapper'><Button text={publishText} onClick={this.handleSubmit} disabled={disabledButton} block /></div>
         </div>
       </div>
     );
