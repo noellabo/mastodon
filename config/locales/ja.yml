@@ -685,6 +685,9 @@ ja:
     errors:
       limit: 注目のハッシュタグの上限に達しました
     hint_html: "<strong>注目のハッシュタグとは？</strong>プロフィールページに目立つ形で表示され、そのハッシュタグのついたあなたの公開投稿だけを抽出して閲覧できるようにします。クリエイティブな仕事や長期的なプロジェクトを追うのに優れた機能です。"
+  follow_tags:
+    add_new: 追加
+    hint_html: "<strong>ハッシュタグのフォローとは何ですか？</strong> それらはあなたがフォローするハッシュタグのコレクションです。サーバが受け取ったハッシュタグ付きの投稿の中から、ここで指定したハッシュタグのついた投稿をホームタイムラインに挿入します。"
   filters:
     contexts:
       home: ホームタイムライン
@@ -933,6 +936,8 @@ ja:
     export: データのエクスポート
     favourite_tags: お気に入りハッシュタグ
     featured_tags: 注目のハッシュタグ
+    follow_and_subscriptions: フォロー・購読
+    follow_tags: ハッシュタグのフォロー
     identity_proofs: Identity proofs
     import: データのインポート
     import_and_export: インポート・エクスポート

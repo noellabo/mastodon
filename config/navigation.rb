@@ -17,7 +17,11 @@ SimpleNavigation::Configuration.run do |navigation|
       s.item :other, safe_join([fa_icon('cog fw'), t('preferences.other')]), settings_preferences_other_url
     end
 
-    n.item :relationships, safe_join([fa_icon('users fw'), t('settings.relationships')]), relationships_url, if: -> { current_user.functional? }
+    n.item :follow_and_subscriptions, safe_join([fa_icon('users fw'), t('settings.follow_and_subscriptions')]), relationships_url, if: -> { current_user.functional? } do |s|
+      s.item :relationships, safe_join([fa_icon('users fw'), t('settings.relationships')]), relationships_url, highlights_on: %r{/relationships}
+      s.item :follow_tags, safe_join([fa_icon('hashtag fw'), t('settings.follow_tags')]), settings_follow_tags_url
+    end
+
     n.item :filters, safe_join([fa_icon('filter fw'), t('filters.index.title')]), filters_path, highlights_on: %r{/filters}, if: -> { current_user.functional? }
 
     n.item :security, safe_join([fa_icon('lock fw'), t('settings.account')]), edit_user_registration_url do |s|

@@ -311,6 +311,15 @@ ActiveRecord::Schema.define(version: 2019_09_04_222339) do
     t.index ["account_id", "target_account_id"], name: "index_follow_requests_on_account_id_and_target_account_id", unique: true
   end
 
+  create_table "follow_tags", force: :cascade do |t|
+    t.bigint "account_id"
+    t.bigint "tag_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_follow_tags_on_account_id"
+    t.index ["tag_id"], name: "index_follow_tags_on_tag_id"
+  end
+
   create_table "follows", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -318,6 +327,7 @@ ActiveRecord::Schema.define(version: 2019_09_04_222339) do
     t.bigint "target_account_id", null: false
     t.boolean "show_reblogs", default: true, null: false
     t.string "uri"
+    t.boolean "private", default: true, null: false
     t.index ["account_id", "target_account_id"], name: "index_follows_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_follows_on_target_account_id"
   end
@@ -805,6 +815,8 @@ ActiveRecord::Schema.define(version: 2019_09_04_222339) do
   add_foreign_key "featured_tags", "tags", on_delete: :cascade
   add_foreign_key "follow_requests", "accounts", column: "target_account_id", name: "fk_9291ec025d", on_delete: :cascade
   add_foreign_key "follow_requests", "accounts", name: "fk_76d644b0e7", on_delete: :cascade
+  add_foreign_key "follow_tags", "accounts", on_delete: :cascade
+  add_foreign_key "follow_tags", "tags", on_delete: :cascade
   add_foreign_key "follows", "accounts", column: "target_account_id", name: "fk_745ca29eac", on_delete: :cascade
   add_foreign_key "follows", "accounts", name: "fk_32ed1b5560", on_delete: :cascade
   add_foreign_key "identities", "users", name: "fk_bea040f377", on_delete: :cascade
