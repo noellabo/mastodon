@@ -80,6 +80,15 @@ ActiveRecord::Schema.define(version: 2019_09_04_222339) do
     t.index ["account_id"], name: "index_account_stats_on_account_id", unique: true
   end
 
+  create_table "account_subscribes", force: :cascade do |t|
+    t.bigint "account_id"
+    t.bigint "target_account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_account_subscribes_on_account_id"
+    t.index ["target_account_id"], name: "index_account_subscribes_on_target_account_id"
+  end
+
   create_table "account_tag_stats", force: :cascade do |t|
     t.bigint "tag_id", null: false
     t.bigint "accounts_count", default: 0, null: false
@@ -796,6 +805,8 @@ ActiveRecord::Schema.define(version: 2019_09_04_222339) do
   add_foreign_key "account_pins", "accounts", column: "target_account_id", on_delete: :cascade
   add_foreign_key "account_pins", "accounts", on_delete: :cascade
   add_foreign_key "account_stats", "accounts", on_delete: :cascade
+  add_foreign_key "account_subscribes", "accounts", column: "target_account_id", on_delete: :cascade
+  add_foreign_key "account_subscribes", "accounts", on_delete: :cascade
   add_foreign_key "account_tag_stats", "tags", on_delete: :cascade
   add_foreign_key "account_warnings", "accounts", column: "target_account_id", on_delete: :cascade
   add_foreign_key "account_warnings", "accounts", on_delete: :nullify

@@ -58,6 +58,8 @@ ja:
         fields:
           name: ラベル
           value: 内容
+      account_input:
+        acct: アカウント (account@domain.tld)
       account_warning_preset:
         text: プリセット警告文
       admin_account_action:

@@ -76,6 +76,9 @@ en:
       moderator: Mod
     unavailable: Profile unavailable
     unfollow: Unfollow
+  account_subscribes:
+    add_new: Add
+    hint_html: "<strong>What are account subscription?</strong> Insert public posts from the specified account into the home timeline. Posts received by the server (federated timeline) are targets. You cannot subscribe if you are following."
   admin:
     account_actions:
       action: Perform action
@@ -966,6 +969,7 @@ en:
   settings:
     account: Account
     account_settings: Account settings
+    account_subscribes: Account subscribes
     appearance: Appearance
     authorized_apps: Authorized apps
     back: Back to Mastodon

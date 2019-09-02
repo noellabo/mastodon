@@ -83,7 +83,7 @@ class FeedManager
     end
   end
 
-  def merge_into_timeline(from_account, into_account)
+  def merge_into_timeline(from_account, into_account, public_only = false)
     timeline_key = key(:home, into_account.id)
     query        = from_account.statuses.limit(FeedManager::MAX_ITEMS / 4)
 
@@ -93,7 +93,7 @@ class FeedManager
     end
 
     query.each do |status|
-      next if status.direct_visibility? || status.limited_visibility? || filter?(:home, status, into_account)
+      next if status.direct_visibility? || status.limited_visibility? || (public_only && status.unlisted_visibility?) || filter?(:home, status, into_account)
       add_to_feed(:home, into_account.id, status, into_account.user&.aggregates_reblogs?)
     end
 

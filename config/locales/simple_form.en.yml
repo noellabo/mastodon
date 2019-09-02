@@ -58,6 +58,8 @@ en:
         fields:
           name: Label
           value: Content
+      account_input:
+        acct: Account (account@domain.tld)
       account_warning_preset:
         text: Preset text
       admin_account_action:

@@ -23,6 +23,7 @@ class FanOutOnWriteService < BaseService
 
     deliver_to_hashtags(status)
     deliver_to_hashtag_followers(status)
+    deliver_to_subscribers(status)
 
     return if status.reply? && status.in_reply_to_account_id != status.account_id
 
@@ -43,6 +44,16 @@ class FanOutOnWriteService < BaseService
     status.account.followers_for_local_distribution.select(:id).reorder(nil).find_in_batches do |followers|
       FeedInsertWorker.push_bulk(followers) do |follower|
         [status.id, follower.id, :home]
+      end
+    end
+  end
+
+  def deliver_to_subscribers(status)
+    Rails.logger.debug "Delivering status #{status.id} to subscribers"
+
+    status.account.subscribers_for_local_distribution.select(:id).reorder(nil).find_in_batches do |subscribings|
+      FeedInsertWorker.push_bulk(subscribings) do |subscribing|
+        [status.id, subscribing.id, :home]
       end
     end
   end

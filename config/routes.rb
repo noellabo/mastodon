@@ -139,6 +139,7 @@ Rails.application.routes.draw do
     resources :featured_tags, only: [:index, :create, :destroy]
     resources :favourite_tags, only: [:index, :create, :destroy]
     resources :follow_tags, only: [:index, :create, :destroy]
+    resources :account_subscribes, only: [:index, :create, :destroy]
   end
 
   resources :media, only: [:show] do
@@ -392,6 +393,7 @@ Rails.application.routes.draw do
       end
 
       resources :featured_tags, only: [:index, :create, :destroy]
+      resources :account_subscribes, only: [:index, :create, :show, :update, :destroy]
 
       resources :polls, only: [:create, :show] do
         resources :votes, only: :create, controller: 'polls/votes'
