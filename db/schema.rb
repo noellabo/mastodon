@@ -377,6 +377,16 @@ ActiveRecord::Schema.define(version: 2019_09_04_222339) do
     t.index ["user_id"], name: "index_invites_on_user_id"
   end
 
+  create_table "keyword_subscribes", force: :cascade do |t|
+    t.bigint "account_id"
+    t.string "keyword", null: false
+    t.boolean "ignorecase", default: true
+    t.boolean "regexp", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_keyword_subscribes_on_account_id"
+  end
+
   create_table "list_accounts", force: :cascade do |t|
     t.bigint "list_id", null: false
     t.bigint "account_id", null: false
@@ -833,6 +843,7 @@ ActiveRecord::Schema.define(version: 2019_09_04_222339) do
   add_foreign_key "identities", "users", name: "fk_bea040f377", on_delete: :cascade
   add_foreign_key "imports", "accounts", name: "fk_6db1b6e408", on_delete: :cascade
   add_foreign_key "invites", "users", on_delete: :cascade
+  add_foreign_key "keyword_subscribes", "accounts", on_delete: :cascade
   add_foreign_key "list_accounts", "accounts", on_delete: :cascade
   add_foreign_key "list_accounts", "follows", on_delete: :cascade
   add_foreign_key "list_accounts", "lists", on_delete: :cascade

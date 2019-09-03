@@ -24,6 +24,7 @@ class FanOutOnWriteService < BaseService
     deliver_to_hashtags(status)
     deliver_to_hashtag_followers(status)
     deliver_to_subscribers(status)
+    deliver_to_keyword_subscribers(status)
 
     return if status.reply? && status.in_reply_to_account_id != status.account_id
 
@@ -55,6 +56,26 @@ class FanOutOnWriteService < BaseService
       FeedInsertWorker.push_bulk(subscribings) do |subscribing|
         [status.id, subscribing.id, :home]
       end
+    end
+  end
+
+  def deliver_to_keyword_subscribers(status)
+    Rails.logger.debug "Delivering status #{status.id} to keyword subscribers"
+
+    text = [status.spoiler_text, Formatter.instance.plaintext(status)].concat(status.media_attachments.map(&:description)).concat(status.preloadable_poll ? status.preloadable_poll.options : []).join("\n\n")
+    match_accounts = []
+
+    local_followers   = status.account.followers.local.select(:id)
+    local_subscribers = status.account.subscribers.local.select(:id)
+
+    KeywordSubscribe.where.not(account_id: local_followers).where.not(account_id: local_subscribers).order(:account_id).each do |keyword_subscribe|
+      next if match_accounts[-1] == keyword_subscribe.account_id
+      if Regexp.new(keyword_subscribe.regexp ? keyword_subscribe.keyword : keyword_subscribe.keyword.gsub(/,/, "|"), keyword_subscribe.ignorecase).match?(text)
+        match_accounts << keyword_subscribe.account_id
+      end
+    end
+    FeedInsertWorker.push_bulk(match_accounts) do |match_account|
+      [status.id, match_account, :home]
     end
   end
 

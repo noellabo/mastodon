@@ -137,6 +137,14 @@ en:
         comment: Comment
       invite_request:
         text: Why do you want to join?
+      keyword_subscribe:
+        ignorecase: Ignore case
+        keyword: Keyword list (comma / space separated) or regular expression
+        regexp: Use regular expressions for keywords
+      keyword_subscribes:
+        ignorecase: Ignore case
+        keyword: String
+        regexp: Type
       notification_emails:
         digest: Send digest e-mails
         favourite: Send e-mail when someone favourites your status

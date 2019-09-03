@@ -1,0 +1,40 @@
+- content_for :page_title do
+  = t('keyword_subscribes.index.title')
+
+%p= t('keyword_subscribes.hint_html')
+
+%hr.spacer/
+
+= render 'shared/error_messages', object: @keyword_subscribe
+
+.table-wrapper
+  %table.table
+    %thead
+      %tr
+        %th= t('simple_form.labels.keyword_subscribes.regexp')
+        %th= t('simple_form.labels.keyword_subscribes.keyword')
+        %th= t('simple_form.labels.keyword_subscribes.ignorecase')
+        %th
+    %tbody
+      - @keyword_subscribes.each do |keyword_subscribe|
+        %tr
+          %td
+            - if keyword_subscribe.regexp
+              = t 'keyword_subscribes.regexp.enabled'
+            - else
+              = t 'keyword_subscribes.regexp.disabled'
+          %td= keyword_subscribe.keyword
+          %td
+            - if keyword_subscribe.ignorecase
+              = fa_icon('check')
+              = ' '
+              = t 'keyword_subscribes.ignorecase.enabled'
+            - else
+              = fa_icon('times')
+              = ' '
+              = t 'keyword_subscribes.ignorecase.disabled'
+          %td
+            = table_link_to 'pencil', t('keyword_subscribes.edit.title'), edit_settings_keyword_subscribe_path(keyword_subscribe)
+            = table_link_to 'times', t('keyword_subscribes.index.delete'), settings_keyword_subscribe_path(keyword_subscribe), method: :delete
+
+= link_to t('keyword_subscribes.new.title'), new_settings_keyword_subscribe_path, class: 'button'

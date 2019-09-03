@@ -776,6 +776,26 @@ ja:
       expires_at: 有効期限
       uses: 使用
     title: 新規ユーザーの招待
+  keyword_subscribes:
+    add_new: 追加
+    edit:
+      title: 編集
+    errors:
+      duplicate: 既に同じ内容が登録されています
+      limit: キーワード購読の登録可能数の上限に達しました
+      regexp: "正規表現に誤りがあります: %{message}"
+    hint_html: "<strong>キーワードの購読とは何ですか？</strong> 指定した単語のいずれか、または正規表現に一致する公開投稿をホームタイムラインに挿入します。サーバが受け取っている投稿（連合タイムライン）が対象です。"
+    ignorecase:
+      enabled: 区別しない
+      disabled: 区別する
+    index:
+      delete: 削除
+      title: キーワードの購読
+    new:
+      title: 新規キーワード購読を追加
+    regexp:
+      enabled: 正規表現
+      disabled: キーワード
   lists:
     errors:
       limit: リストの上限に達しました
@@ -945,6 +965,7 @@ ja:
     identity_proofs: Identity proofs
     import: データのインポート
     import_and_export: インポート・エクスポート
+    keyword_subscribes: キーワードの購読
     migrate: アカウントの引っ越し
     notifications: 通知
     preferences: ユーザー設定

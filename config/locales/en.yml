@@ -812,6 +812,20 @@ en:
       expires_at: Expires
       uses: Uses
     title: Invite people
+  keyword_subscribes:
+    add_new: Add
+    edit:
+      title: Edit
+    errors:
+      duplicate: The same content has already been registered
+      limit: You have reached the maximum number of "Keyword subscribes" that can be registered
+      regexp: "Regular expression error: %{message}"
+    hint_html: "<strong>What is a keyword subscribes?</strong> Inserts a public post that matches one of the specified words or a regular expression into the home timeline. Posts received by the server (federated timeline) are targets."
+    index:
+      delete: Delete
+      title: Keyword subscribe
+    new:
+      title: Add new keyword subscribe
   lists:
     errors:
       limit: You have reached the maximum amount of lists
@@ -984,6 +998,7 @@ en:
     identity_proofs: Identity proofs
     import: Import
     import_and_export: Import and export
+    keyword_subscribes: Keyword subscribes
     migrate: Account migration
     notifications: Notifications
     preferences: Preferences
