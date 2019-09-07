@@ -129,13 +129,7 @@ class FanOutOnWriteService < BaseService
   def deliver_to_hashtag_followers(status)
     Rails.logger.debug "Delivering status #{status.id} to hashtag followers"
 
-    followers = []
-    # followers = status.tags.joins(follow_tags).select(:account_id).pluck(:account_id).uniq
-    Rails.logger.debug "followers = #{followers}"
-    status.tags.each do |tag|
-      followers |= tag.follow_tags.pluck(:account_id)
-    end
-    FeedInsertWorker.push_bulk(followers) do |follower|
+    FeedInsertWorker.push_bulk(FollowTag.where(tag: status.tags).pluck(:account_id).uniq) do |follower|
       [status.id, follower, :home]
     end
   end
