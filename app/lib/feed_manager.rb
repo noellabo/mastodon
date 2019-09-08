@@ -172,6 +172,7 @@ class FeedManager
       should_filter &&= receiver_id != status.in_reply_to_account_id                                                             # and it's not a reply to me
       should_filter &&= status.account_id != status.in_reply_to_account_id                                                       # and it's not a self-reply
       should_filter &&= !FollowTag.where(tag: status.tags).where(account_id: receiver_id).exists?                                # and It's not follow tag
+      should_filter &&= !Regexp.union(KeywordSubscribe.where(account_id: receiver_id).map(&:to_regexp)).match?(status.index_text)# and It's not subscribe keywords
       return should_filter
     elsif status.reblog?                                                                                                         # Filter out a reblog
       should_filter   = Follow.where(account_id: receiver_id, target_account_id: status.account_id, show_reblogs: false).exists? # if the reblogger's reblogs are suppressed
