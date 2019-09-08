@@ -166,6 +166,7 @@ class FeedManager
     end
 
     return true if blocks_or_mutes?(receiver_id, check_for_blocks, :home)
+    return true if AccountDomainBlock.where(account_id: receiver_id, domain: status.account.domain).exists?
 
     if status.reply? && !status.in_reply_to_account_id.nil?                                                                      # Filter out if it's a reply
       should_filter   = !Follow.where(account_id: receiver_id, target_account_id: status.in_reply_to_account_id).exists?         # and I'm not following the person it's a reply to
