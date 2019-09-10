@@ -1,8 +1,17 @@
 .fields-group
-  = f.input :keyword, as: :string, wrapper: :with_label, hint: false
+  = f.input :name, as: :string, wrapper: :with_label
+
+.fields-group
+  = f.input :keyword, as: :string, wrapper: :with_label
 
 .fields-group
   = f.input :ignorecase, wrapper: :with_label
 
 .fields-group
   = f.input :regexp, wrapper: :with_label
+
+.fields-group
+  = f.input :ignore_block, wrapper: :with_label
+
+.fields-group
+  = f.input :disabled, wrapper: :with_label

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_04_222339) do
+ActiveRecord::Schema.define(version: 2019_09_10_140929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -384,6 +384,10 @@ ActiveRecord::Schema.define(version: 2019_09_04_222339) do
     t.boolean "regexp", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name", default: "", null: false
+    t.boolean "ignore_block", default: false
+    t.boolean "disabled", default: false
+    t.boolean "exclude_home", default: false
     t.index ["account_id"], name: "index_keyword_subscribes_on_account_id"
   end
 

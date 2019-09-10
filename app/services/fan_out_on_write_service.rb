@@ -64,7 +64,7 @@ class FanOutOnWriteService < BaseService
 
     match_accounts = []
 
-    KeywordSubscribe.without_local_followed(status.account).order(:account_id).each do |keyword_subscribe|
+    KeywordSubscribe.active.without_local_followed(status.account).order(:account_id).each do |keyword_subscribe|
       next if match_accounts[-1] == keyword_subscribe.account_id
       match_accounts << keyword_subscribe.account_id if keyword_subscribe.match?(status.index_text)
     end

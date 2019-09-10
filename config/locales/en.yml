@@ -814,18 +814,27 @@ en:
     title: Invite people
   keyword_subscribes:
     add_new: Add
+    disabled: Disabled
     edit:
       title: Edit
+    enabled: Enabled
     errors:
       duplicate: The same content has already been registered
       limit: You have reached the maximum number of "Keyword subscribes" that can be registered
       regexp: "Regular expression error: %{message}"
     hint_html: "<strong>What is a keyword subscribes?</strong> Inserts a public post that matches one of the specified words or a regular expression into the home timeline. Posts received by the server (federated timeline) are targets."
+    ignorecase:
+      enabled: Ignore
+      disabled: Sensitive
+    ignore_block: Ignore
     index:
       delete: Delete
       title: Keyword subscribe
     new:
       title: Add new keyword subscribe
+    regexp:
+      enabled: Regex
+      disabled: Keyword
   lists:
     errors:
       limit: You have reached the maximum amount of lists

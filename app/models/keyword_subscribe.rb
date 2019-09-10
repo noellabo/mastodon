@@ -2,13 +2,17 @@
 #
 # Table name: keyword_subscribes
 #
-#  id         :bigint(8)        not null, primary key
-#  account_id :bigint(8)
-#  keyword    :string           not null
-#  ignorecase :boolean          default(TRUE)
-#  regexp     :boolean          default(FALSE)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id           :bigint(8)        not null, primary key
+#  account_id   :bigint(8)
+#  keyword      :string           not null
+#  ignorecase   :boolean          default(TRUE)
+#  regexp       :boolean          default(FALSE)
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  name         :string           default(""), not null
+#  ignore_block :boolean          default(FALSE)
+#  disabled     :boolean          default(FALSE)
+#  exclude_home :boolean          default(FALSE)
 #
 
 class KeywordSubscribe < ApplicationRecord
@@ -21,6 +25,9 @@ class KeywordSubscribe < ApplicationRecord
   validate :validate_keyword_regexp_syntax
   validate :validate_keyword_uniqueness_in_account, on: :create
 
+  scope :active, -> { where(disabled: false) }
+  scope :home, -> { where(exclude_home: false) }
+  scope :ignore_block, -> { where(ignore_block: true) }
   scope :without_local_followed, ->(account) { where.not(account: account.followers.local).where.not(account: account.subscribers.local) }
 
   def match?(text)
@@ -29,6 +36,16 @@ class KeywordSubscribe < ApplicationRecord
 
   def to_regexp
     Regexp.new(regexp ? keyword : keyword.gsub(/,/, "|"), ignorecase)
+  end
+
+  class << self
+    def as_all_regexp(account_id)
+      Regexp.union(active.where(account_id: account_id).map(&:to_regexp))
+    end
+
+    def as_ignore_block_regexp(account_id)
+      Regexp.union(active.ignore_block.where(account_id: account_id).map(&:to_regexp))
+    end
   end
 
   private
@@ -48,7 +65,7 @@ class KeywordSubscribe < ApplicationRecord
   end
 
   def validate_keyword_subscribes_limit
-    errors.add(:base, I18n.t('keyword_subscribes.errors.limit')) if account.keyword_subscribes.count >= 10
+    errors.add(:base, I18n.t('keyword_subscribes.errors.limit')) if account.keyword_subscribes.count >= 100
   end
 
   def validate_keyword_uniqueness_in_account

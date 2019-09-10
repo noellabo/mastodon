@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Api::V1::KeywordSubscribeController < Api::BaseController
-  before_action -> { doorkeeper_authorize! :read, :'read:keyword_subscribes' }, only: [:index, :show]
-  before_action -> { doorkeeper_authorize! :write, :'write:keyword_subscribes' }, except: [:index, :show]
+  before_action -> { doorkeeper_authorize! :read, :'read:follows' }, only: [:index, :show]
+  before_action -> { doorkeeper_authorize! :write, :'write:follows' }, except: [:index, :show]
   before_action :require_user!
   before_action :set_keyword_subscribes, only: :index
   before_action :set_keyword_subscribe, only: [:show, :update, :destroy]
@@ -43,6 +43,6 @@ class Api::V1::KeywordSubscribeController < Api::BaseController
   end
 
   def resource_params
-    params.permit(:keyword, :ignorecase, :regexp)
+    params.permit(:name, :keyword, :ignorecase, :regexp, :ignore_block, :disabled, :exclude_home)
   end
 end

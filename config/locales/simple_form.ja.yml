@@ -47,6 +47,10 @@ ja:
         data: 他の Mastodon サーバーからエクスポートしたCSVファイルを選択して下さい
       invite_request:
         text: このサーバーは現在承認制です。申請を承認する際に役立つメッセージを添えてください
+      keyword_subscribe:
+        ignore_block: ドメイン全体を非表示にしたまま、キーワードの購読を優先することができます
+        keyword: カンマやスペースで区切って複数のキーワードを並べるか、正規表現を指定します
+        name: オプションです
       sessions:
         otp: '携帯電話のアプリで生成された二段階認証コードを入力するか、リカバリーコードを使用してください:'
       tag:
@@ -140,12 +144,18 @@ ja:
       invite_request:
         text: 意気込みをお聞かせください
       keyword_subscribe:
+        disabled: 一時的に購読を無効にする
         ignorecase: 大文字と小文字を区別しない
-        keyword: キーワードリスト（カンマ・空白区切り）または正規表現
+        ignore_block: ユーザーによるドメインブロックを無視する
+        keyword: キーワードまたは正規表現
+        name: 名称
         regexp: キーワードに正規表現を使う
       keyword_subscribes:
-        ignorecase: 大文字と小文字
+        disabled: 状態
+        ignorecase: 大小
+        ignore_block: ブロック
         keyword: 設定値
+        name: 名称
         regexp: 種別
       notification_emails:
         digest: タイムラインからピックアップしてメールで通知する

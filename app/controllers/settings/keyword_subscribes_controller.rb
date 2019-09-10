@@ -53,7 +53,7 @@ class Settings::KeywordSubscribesController < ApplicationController
   end
 
   def resource_params
-    params.require(:keyword_subscribe).permit(:keyword, :ignorecase, :regexp)
+    params.require(:keyword_subscribe).permit(:name, :keyword, :ignorecase, :regexp, :ignore_block, :disabled, :exclude_home)
   end
 
   def set_body_classes
