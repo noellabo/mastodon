@@ -24,6 +24,7 @@ class FanOutOnWriteService < BaseService
     deliver_to_hashtags(status)
     deliver_to_hashtag_followers(status)
     deliver_to_subscribers(status)
+    deliver_to_domain_subscribers(status)
     deliver_to_keyword_subscribers(status)
 
     return if status.reply? && status.in_reply_to_account_id != status.account_id
@@ -55,6 +56,22 @@ class FanOutOnWriteService < BaseService
     status.account.subscribers_for_local_distribution.select(:id).reorder(nil).find_in_batches do |subscribings|
       FeedInsertWorker.push_bulk(subscribings) do |subscribing|
         [status.id, subscribing.id, :home]
+      end
+    end
+  end
+
+  def deliver_to_domain_subscribers(status)
+    Rails.logger.debug "Delivering status #{status.id} to domain subscribers"
+
+    DomainSubscribe.domain_to_home(status.account.domain).select(:id, :account_id).find_in_batches do |subscribes|
+      FeedInsertWorker.push_bulk(subscribes) do |subscribe|
+        [status.id, subscribe.account_id, :home]
+      end
+    end
+
+    DomainSubscribe.domain_to_list(status.account.domain).select(:id, :list_id).find_in_batches do |subscribes|
+      FeedInsertWorker.push_bulk(subscribes) do |subscribe|
+        [status.id, subscribe.list_id, :list]
       end
     end
   end

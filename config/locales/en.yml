@@ -676,6 +676,9 @@ en:
     silence: Silence
     suspension: Suspension
     title: "%{instance} List of blocked instances"
+  domain_subscribes:
+    add_new: Add
+    hint_html: "<strong>What are domain subscription?</strong> Insert public posts from the specified domain into the home timeline. Posts received by the server (federated timeline) are targets."
   domain_validator:
     invalid_domain: is not a valid domain name
   errors:
@@ -998,6 +1001,7 @@ en:
     back: Back to Mastodon
     delete: Account deletion
     development: Development
+    domain_subscribes: Domain subscribes
     edit_profile: Edit profile
     export: Data export
     favourite_tags: Favourite hashtags

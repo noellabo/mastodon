@@ -643,6 +643,9 @@ ja:
     silence: サイレンス
     suspension: 停止
     title: "%{instance} のドメインブロックリスト"
+  domain_subscribes:
+    add_new: 追加
+    hint_html: "<strong>ドメインの購読とは何ですか？</strong> 指定したドメインの公開投稿をホームタイムラインに挿入します。サーバが受け取っている投稿（連合タイムライン）が対象です。"
   domain_validator:
     invalid_domain: は無効なドメイン名です
   errors:
@@ -959,6 +962,7 @@ ja:
     back: Mastodon に戻る
     delete: アカウントの削除
     development: 開発
+    domain_subscribes: ドメインの購読
     edit_profile: プロフィールを編集
     export: データのエクスポート
     favourite_tags: お気に入りハッシュタグ

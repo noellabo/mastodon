@@ -1,0 +1,25 @@
+- content_for :page_title do
+  = t('settings.domain_subscribes')
+
+%p= t('domain_subscribes.hint_html')
+
+%hr.spacer/
+
+= simple_form_for @domain_subscribe, url: settings_domain_subscribes_path do |f|
+
+  .fields-group
+    = f.input :domain, wrapper: :with_block_label, hint: false
+
+  .actions
+    = f.button :button, t('domain_subscribes.add_new'), type: :submit
+
+%hr.spacer/
+
+- @domain_subscribes.each do |domain_subscribe|
+  .directory__tag
+    %div
+      %h4
+        = fa_icon 'server'
+        = domain_subscribe[:domain]
+        %small
+          = table_link_to 'trash', t('filters.index.delete'), settings_domain_subscribe_path(domain_subscribe), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }

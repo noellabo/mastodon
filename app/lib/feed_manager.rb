@@ -179,6 +179,7 @@ class FeedManager
         should_filter &&= status.account_id != status.in_reply_to_account_id                                                     # and it's not a self-reply
         should_filter &&= !FollowTag.where(tag: status.tags).where(account_id: receiver_id).exists?                              # and It's not follow tag
         should_filter &&= !KeywordSubscribe.as_all_regexp(receiver_id).match?(status.index_text)                                 # and It's not subscribe keywords
+        should_filter &&= !DomainSubscribe.where(domain: status.account.domain, account_id: receiver_id, list_id: nil).exists?   # and It's not domain subscribes
         return true if should_filter
       end
 

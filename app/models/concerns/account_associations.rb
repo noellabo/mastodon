@@ -61,5 +61,8 @@ module AccountAssociations
 
     # KeywordSubscribes
     has_many :keyword_subscribes, inverse_of: :account, dependent: :destroy
+
+    # DomainSubscribes
+    has_many :domain_subscribes, inverse_of: :account, dependent: :destroy
   end
 end

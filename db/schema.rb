@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_10_140929) do
+ActiveRecord::Schema.define(version: 2019_09_11_093445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -271,6 +271,16 @@ ActiveRecord::Schema.define(version: 2019_09_10_140929) do
     t.text "private_comment"
     t.text "public_comment"
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
+  end
+
+  create_table "domain_subscribes", force: :cascade do |t|
+    t.bigint "account_id"
+    t.bigint "list_id"
+    t.string "domain", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_domain_subscribes_on_account_id"
+    t.index ["list_id"], name: "index_domain_subscribes_on_list_id"
   end
 
   create_table "email_domain_blocks", force: :cascade do |t|
@@ -832,6 +842,8 @@ ActiveRecord::Schema.define(version: 2019_09_10_140929) do
   add_foreign_key "conversation_mutes", "accounts", name: "fk_225b4212bb", on_delete: :cascade
   add_foreign_key "conversation_mutes", "conversations", on_delete: :cascade
   add_foreign_key "custom_filters", "accounts", on_delete: :cascade
+  add_foreign_key "domain_subscribes", "accounts", on_delete: :cascade
+  add_foreign_key "domain_subscribes", "lists", on_delete: :cascade
   add_foreign_key "favourite_tags", "accounts", on_delete: :cascade
   add_foreign_key "favourite_tags", "tags", on_delete: :cascade
   add_foreign_key "favourites", "accounts", name: "fk_5eb6c2b873", on_delete: :cascade

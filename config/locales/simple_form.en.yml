@@ -131,6 +131,8 @@ en:
         username: Username
         username_or_email: Username or Email
         whole_word: Whole word
+      domain_subscribe:
+        domain: Domain
       featured_tag:
         name: Hashtag
       interactions:
