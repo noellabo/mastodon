@@ -170,7 +170,7 @@ class FeedManager
     if status.reblog?                                                                                                            # Filter out a reblog
       should_filter   = Follow.where(account_id: receiver_id, target_account_id: status.account_id, show_reblogs: false).exists? # if the reblogger's reblogs are suppressed
       should_filter ||= Block.where(account_id: status.reblog.account_id, target_account_id: receiver_id).exists?                # or if the author of the reblogged status is blocking me
-      should_filter ||= AccountDomainBlock.active.where(account_id: receiver_id, domain: status.reblog.account.domain).exists?   # or the author's domain is blocked
+      should_filter ||= AccountDomainBlock.where(account_id: receiver_id, domain: status.reblog.account.domain).exists?          # or the author's domain is blocked
       return should_filter
     else
       if status.reply? && !status.in_reply_to_account_id.nil?                                                                    # Filter out if it's a reply
@@ -182,7 +182,9 @@ class FeedManager
         return true if should_filter
       end
 
-      should_filter   = AccountDomainBlock.where(account_id: receiver_id, domain: status.account.domain).exists?
+      should_filter   = !Follow.where(account_id: receiver_id, target_account_id: status.account_id).exists?
+      should_filter &&= !AccountSubscribe.where(account_id: receiver_id, target_account_id: status.account_id).exists?
+      should_filter &&= AccountDomainBlock.where(account_id: receiver_id, domain: status.account.domain).exists?
       should_filter &&= !KeywordSubscribe.as_ignore_block_regexp(receiver_id).match?(status.index_text)
       return should_filter
     end
