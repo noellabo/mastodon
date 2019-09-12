@@ -35,7 +35,12 @@ class KeywordSubscribe < ApplicationRecord
   end
 
   def to_regexp
-    Regexp.new(regexp ? keyword : keyword.gsub(/,/, "|"), ignorecase)
+    Regexp.new(regexp ? keyword : "(?<![\/\.#])(#{keyword.split(',').map do |k|
+      sb = k =~ /\A[A-Za-z0-9]/ ? '\b' : ''
+      eb = k =~ /[A-Za-z0-9]\z/ ? '\b' : ''
+
+      /(?m#{ignorecase ? 'i': ''}x:#{sb}#{Regexp.escape(k)}#{eb})/
+    end.join('|')})(?![\/\.])", ignorecase)
   end
 
   class << self
