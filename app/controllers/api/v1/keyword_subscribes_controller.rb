@@ -43,6 +43,6 @@ class Api::V1::KeywordSubscribeController < Api::BaseController
   end
 
   def resource_params
-    params.permit(:name, :keyword, :ignorecase, :regexp, :ignore_block, :disabled, :exclude_home)
+    params.permit(:name, :keyword, :exclude_keyword, :ignorecase, :regexp, :ignore_block, :disabled, :exclude_home)
   end
 end

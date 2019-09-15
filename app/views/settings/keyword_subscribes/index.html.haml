@@ -27,7 +27,11 @@
               = t 'keyword_subscribes.regexp.enabled'
             - else
               = t 'keyword_subscribes.regexp.disabled'
-          %td= keyword_subscribe.keyword
+          %td
+            .include-keyword
+              = keyword_subscribe.keyword
+            .exclude-keyword
+              = keyword_subscribe.exclude_keyword
           %td.nowrap
             - if keyword_subscribe.ignorecase
               = t 'keyword_subscribes.ignorecase.enabled'
