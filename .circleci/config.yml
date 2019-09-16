@@ -3,7 +3,7 @@ version: 2
 aliases:
   - &defaults
     docker:
-      - image: pawoo/circleci-primary:20180405
+      - image: pawoo/circleci-primary:20190916
     environment:
       CONTINUOUS_INTEGRATION: true # for fuubar gem
       DB_HOST: 127.0.0.1
@@ -38,12 +38,12 @@ jobs:
       # Bundler
       - restore_cache:
           keys:
-            - v1-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
-            - v1-ruby-dependencies-{{ checksum ".ruby-version" }}-
-            - v1-ruby-dependencies-
+            - v2-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+            - v2-ruby-dependencies-{{ checksum ".ruby-version" }}-
+            - v2-ruby-dependencies-
       - run: bundle check || bundle install --clean --jobs 4 --path ./vendor/bundle/ --retry 3 --with pam_authentication --without development production
       - save_cache:
-          key: v1-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+          key: v2-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
             - .bundle/config
@@ -94,7 +94,7 @@ jobs:
   test:
     <<: *defaults
     docker:
-      - image: pawoo/circleci-primary:20180405
+      - image: pawoo/circleci-primary:20190916
       - image: postgres:9.5.4
         environment:
           POSTGRES_USER: root
@@ -115,17 +115,17 @@ jobs:
       - *attach_workspace
       - run: ./.circleci/primary/setup.sh
 
-      - run:
-          name: Check vm.max_map_count for elasticsearch container
-          command: |
-            vm_max_map_count=$(sysctl --values vm.max_map_count)
-            if [ $vm_max_map_count -ge 262144 ]; then
-              exit 0
-            fi
-            >&2 echo "Error: elasticsearch container requires vm.max_map_count >= 262144 but $vm_max_map_count now."
-            >&2 echo "Please execute 'sudo sysctl --write vm.max_map_count=262144' to raise that value on your docker host."
-            >&2 echo "See https://www.elastic.co/guide/en/elasticsearch/reference/5.4/docker.html#docker-cli-run-prod-mode"
-            exit 1
+      # - run:
+      #     name: Check vm.max_map_count for elasticsearch container
+      #     command: |
+      #       vm_max_map_count=$(sysctl --values vm.max_map_count)
+      #       if [ $vm_max_map_count -ge 262144 ]; then
+      #         exit 0
+      #       fi
+      #       >&2 echo "Error: elasticsearch container requires vm.max_map_count >= 262144 but $vm_max_map_count now."
+      #       >&2 echo "Please execute 'sudo sysctl --write vm.max_map_count=262144' to raise that value on your docker host."
+      #       >&2 echo "See https://www.elastic.co/guide/en/elasticsearch/reference/5.4/docker.html#docker-cli-run-prod-mode"
+      #       exit 1
 
       - run:
           command: ./bin/spring server
