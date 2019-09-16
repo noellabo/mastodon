@@ -27,6 +27,7 @@ debs="\
   postgresql-client-9.5 \
   python \
   yarn \
+  netcat-openbsd\
 "
 cat <<APT_CONF > /etc/apt/apt.conf.d/docker-mastodon-circleci.conf
 APT::Install-Recommends "0";
