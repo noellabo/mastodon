@@ -38,12 +38,12 @@ jobs:
       # Bundler
       - restore_cache:
           keys:
-            - v1-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
-            - v1-ruby-dependencies-{{ checksum ".ruby-version" }}-
-            - v1-ruby-dependencies-
+            - v2-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+            - v2-ruby-dependencies-{{ checksum ".ruby-version" }}-
+            - v2-ruby-dependencies-
       - run: bundle check || bundle install --clean --jobs 4 --path ./vendor/bundle/ --retry 3 --with pam_authentication --without development production
       - save_cache:
-          key: v1-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+          key: v2-ruby-dependencies-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
             - .bundle/config
