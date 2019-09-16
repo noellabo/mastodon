@@ -3,7 +3,7 @@ version: 2
 aliases:
   - &defaults
     docker:
-      - image: pawoo/circleci-primary:20180405
+      - image: pawoo/circleci-primary:20190916
     environment:
       CONTINUOUS_INTEGRATION: true # for fuubar gem
       DB_HOST: 127.0.0.1
@@ -94,7 +94,7 @@ jobs:
   test:
     <<: *defaults
     docker:
-      - image: pawoo/circleci-primary:20180405
+      - image: pawoo/circleci-primary:20190916
       - image: postgres:9.5.4
         environment:
           POSTGRES_USER: root
