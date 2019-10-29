@@ -347,6 +347,7 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :follows,      only: [:create]
       resources :media,        only: [:create, :update]
       resources :blocks,       only: [:index]
       resources :mutes,        only: [:index]
