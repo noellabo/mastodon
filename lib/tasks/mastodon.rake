@@ -271,12 +271,31 @@ namespace :mastodon do
       prompt.say "\n"
 
       loop do
-        if prompt.yes?('Do you want to send e-mails from localhost?', default: false)
+        case prompt.select('Do you want to send e-mails from?', ['localhost', 'Mailgun API', 'SMTP'])
+        when 'localhost'
           env['SMTP_SERVER'] = 'localhost'
           env['SMTP_PORT'] = 25
           env['SMTP_AUTH_METHOD'] = 'none'
           env['SMTP_OPENSSL_VERIFY_MODE'] = 'none'
-        else
+          env.delete('SMTP_DELIVERY_METHOD')
+        when 'Mailgun API'
+          env['MAILGUN_API_KEY'] = prompt.ask('Mailgun API Key:') do |q|
+            q.required true
+            q.modify :strip
+          end
+
+          env['MAILGUN_DOMAIN'] = prompt.ask('Mailgun domain:') do |q|
+            q.required true
+            q.default env['LOCAL_DOMAIN'].split('.').last(2).unshift('mg').join('.')
+            q.modify :strip
+          end
+
+          if prompt.yes?('If you\'re using the EU domains?', default: false)
+            env['MAILGUN_API_HOST'] = 'api.eu.mailgun.net'
+          end
+
+          env['SMTP_DELIVERY_METHOD'] = 'mailgun'
+        when 'SMTP'
           env['SMTP_SERVER'] = prompt.ask('SMTP server:') do |q|
             q.required true
             q.default 'smtp.mailgun.org'
@@ -304,6 +323,8 @@ namespace :mastodon do
           end
 
           env['SMTP_OPENSSL_VERIFY_MODE'] = prompt.select('SMTP OpenSSL verify mode:', %w(none peer client_once fail_if_no_peer_cert))
+
+          env.delete('SMTP_DELIVERY_METHOD')
         end
 
         env['SMTP_FROM_ADDRESS'] = prompt.ask('E-mail address to send e-mails "from":') do |q|
@@ -317,6 +338,12 @@ namespace :mastodon do
         send_to = prompt.ask('Send test e-mail to:', required: true)
 
         begin
+          Rails.logger = Logger.new(STDOUT)
+
+          ActiveSupport.on_load(:action_mailer) do
+            add_delivery_method :mailgun, Railgun::Mailer
+          end
+
           ActionMailer::Base.smtp_settings = {
             port:                 env['SMTP_PORT'],
             address:              env['SMTP_SERVER'],
@@ -327,6 +354,14 @@ namespace :mastodon do
             openssl_verify_mode:  env['SMTP_OPENSSL_VERIFY_MODE'],
             enable_starttls_auto: true,
           }
+
+          ActionMailer::Base.mailgun_settings = {
+            api_key:              env['MAILGUN_API_KEY'],
+            api_host:             env['MAILGUN_API_HOST'].presence,
+            domain:               env['MAILGUN_DOMAIN'],
+          }
+
+          ActionMailer::Base.delivery_method = (env['SMTP_DELIVERY_METHOD'] || 'smtp').to_sym
 
           ActionMailer::Base.default_options = {
             from: env['SMTP_FROM_ADDRESS'],

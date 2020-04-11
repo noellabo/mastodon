@@ -22,3 +22,5 @@ module Goldfinger
     Goldfinger::Client.new(uri, opts).finger
   end
 end
+
+RestClient.proxy = ENV['http_proxy'] if Rails.application.config.x.http_client_proxy[:proxy].present?

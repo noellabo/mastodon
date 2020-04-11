@@ -101,6 +101,12 @@ Rails.application.configure do
     :tls                  => ENV['SMTP_TLS'].presence,
   }
 
+  config.action_mailer.mailgun_settings = {
+    :api_key              => ENV['MAILGUN_API_KEY'].presence,
+    :api_host             => ENV['MAILGUN_API_HOST'].presence,
+    :domain               => ENV['MAILGUN_DOMAIN'] || ENV['SMTP_DOMAIN'] || ENV['LOCAL_DOMAIN'],
+  }
+
   config.action_mailer.delivery_method = ENV.fetch('SMTP_DELIVERY_METHOD', 'smtp').to_sym
 
   config.action_dispatch.default_headers = {

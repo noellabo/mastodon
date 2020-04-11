@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/fedibird/mailgun-ruby.git
+  revision: baa7916c49480d44b59fc1b24e00419536836df9
+  ref: baa7916c49480d44b59fc1b24e00419536836df9
+  specs:
+    mailgun-ruby (1.2.0)
+      rest-client (>= 2.0.2)
+
+GIT
   remote: https://github.com/ianheggie/health_check
   revision: 0b799ead604f900ed50685e9b2d469cd2befba5b
   ref: 0b799ead604f900ed50685e9b2d469cd2befba5b
@@ -275,6 +283,7 @@ GEM
       http-cookie (~> 1.0)
       http-form_data (~> 2.2)
       http-parser (~> 1.2.0)
+    http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     http-form_data (2.2.0)
@@ -372,6 +381,7 @@ GEM
     net-scp (2.0.0)
       net-ssh (>= 2.6.5, < 6.0.0)
     net-ssh (5.2.0)
+    netrc (0.11.0)
     nio4r (2.5.2)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
@@ -515,6 +525,11 @@ GEM
     responders (3.0.0)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rotp (2.1.2)
     rpam2 (4.0.2)
     rqrcode (1.1.2)
@@ -719,6 +734,7 @@ DEPENDENCIES
   letter_opener_web (~> 1.4)
   link_header (~> 0.0)
   lograge (~> 0.11)
+  mailgun-ruby!
   makara (~> 0.4)
   mario-redis-lock (~> 1.2)
   memory_profiler
