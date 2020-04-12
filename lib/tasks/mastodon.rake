@@ -258,6 +258,18 @@ namespace :mastodon do
 
       prompt.say "\n"
 
+      begin
+        if prompt.yes?('Do you want to use a proxy server?', default: false)
+          env['http_proxy'] = prompt.ask('Proxy URL:') do |q|
+            q.required true
+            q.default ENV['https_proxy'] || ENV['http_proxy'] || ''
+            q.modify :strip
+          end
+        end
+      end
+
+      prompt.say "\n"
+
       loop do
         if prompt.yes?('Do you want to send e-mails from localhost?', default: false)
           env['SMTP_SERVER'] = 'localhost'
